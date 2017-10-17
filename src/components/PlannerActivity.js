@@ -26,12 +26,13 @@ const plannerActivitySource = {
 
 const plannerActivityTarget = {
   hover (props, monitor, component) {
-    if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index)
-    else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem())
+    if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index, props.activity.startDate)
+    else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem(), props.activity.startDate)
   },
   drop (props, monitor) {
-    console.log(props.index)
-    props.addActivity(monitor.getItem(), props.index)
+    // console.log(props.index)
+    let newActivity = Object.assign(monitor.getItem(), {startDate: props.activity.startDate})
+    props.addActivity(newActivity, props.index)
     if (monitor.getItemType() === 'activity') {
       props.deleteActivityFromBucket(monitor.getItem())
     }
@@ -67,8 +68,8 @@ class PlannerActivity extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    hoverOverActivity: (index) => {
-      dispatch(hoverOverActivity(index))
+    hoverOverActivity: (index, date) => {
+      dispatch(hoverOverActivity(index, date))
     },
     addActivity: (activity, index) => {
       dispatch(addActivity(activity, index))
@@ -76,8 +77,8 @@ const mapDispatchToProps = (dispatch) => {
     deleteActivityFromBucket: (activity) => {
       dispatch(deleteActivityFromBucket(activity))
     },
-    plannerActivityHoverOverActivity: (index, activity) => {
-      dispatch(plannerActivityHoverOverActivity(index, activity))
+    plannerActivityHoverOverActivity: (index, activity, date) => {
+      dispatch(plannerActivityHoverOverActivity(index, activity, date))
     },
     addActivityToBucket: (activity) => {
       dispatch(addActivityToBucket(activity))

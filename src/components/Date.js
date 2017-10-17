@@ -7,8 +7,9 @@ import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucket
 
 const dateTarget = {
   drop (props, monitor) {
-    if (props.activities.length === 0) {
-      props.addActivity(monitor.getItem())
+    if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
+      let newActivity = Object.assign(monitor.getItem(), {startDate: props.date})
+      props.addActivity(newActivity)
       props.deleteActivityFromBucket(monitor.getItem())
     }
   }
@@ -25,7 +26,7 @@ class Date extends Component {
   render () {
     const { connectDropTarget, isOver } = this.props
     let preview
-    if (isOver && this.props.activities.length === 0) {
+    if (isOver && this.props.activities.filter(activity => activity.startDate === this.props.date).length === 0) {
       preview = (
         <div style={{border: '1px dashed green', height: '12vh'}} />
       )
@@ -37,7 +38,7 @@ class Date extends Component {
         <div style={{minHeight: '12vh'}}>
           {this.props.activities.filter(activity => activity.startDate === this.props.date).map((activity, i) => {
             return (
-              <PlannerActivity draggable={this.props.draggable} activity={activity} key={activity.id} index={i} handleClick={(activity) => this.handleClick(activity)} />
+              <PlannerActivity draggable={this.props.draggable} activity={activity} key={activity.id} index={i} />
             )
           })}
           {preview}

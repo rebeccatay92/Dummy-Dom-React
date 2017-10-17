@@ -13,10 +13,11 @@ export const deleteActivity = (activity) => {
   }
 }
 
-export const hoverOverActivity = (index) => {
+export const hoverOverActivity = (index, date) => {
   return {
     type: 'HOVER_OVER_ACTIVITY',
-    index
+    index,
+    date
   }
 }
 
@@ -26,10 +27,11 @@ export const hoverOutsidePlanner = () => {
   }
 }
 
-export const plannerActivityHoverOverActivity = (index, activity) => {
+export const plannerActivityHoverOverActivity = (index, activity, date) => {
   return {
     type: 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY',
     index,
-    activity
+    activity,
+    date
   }
 }
