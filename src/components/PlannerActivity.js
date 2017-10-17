@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DropTarget, DragSource } from 'react-dnd'
-import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from './actions/plannerActions'
-import { deleteActivityFromBucket, addActivityToBucket } from './actions/bucketActions'
+import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
+import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 
 const plannerActivitySource = {
@@ -30,6 +30,7 @@ const plannerActivityTarget = {
     else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem())
   },
   drop (props, monitor) {
+    console.log(props.index)
     props.addActivity(monitor.getItem(), props.index)
     if (monitor.getItemType() === 'activity') {
       props.deleteActivityFromBucket(monitor.getItem())
@@ -53,7 +54,7 @@ function collectSource (connect, monitor) {
 class PlannerActivity extends Component {
   render () {
     const { connectDropTarget, connectDragSource } = this.props
-    return connectDragSource(connectDropTarget(<div style={{opacity: '1', marginBottom: '1vh', cursor: this.props.draggable ? 'move' : 'default', minHeight: '12vh', border: this.props.activity.id ? '1px solid black' : '10px solid green'}} key={this.props.activity.id}>
+    return connectDragSource(connectDropTarget(<div style={{ cursor: this.props.draggable ? 'move' : 'default', height: '12vh', border: this.props.activity.id ? '1px solid white' : '1px dashed green' }} key={this.props.activity.id}>
       <h3>{this.props.activity.name}</h3>
       <p>{this.props.activity.city}</p>
       {/* {

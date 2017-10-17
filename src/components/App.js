@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <div>
         <div style={{display: 'inline-block', width: '80vw', verticalAlign: 'top', marginRight: '1vw'}}>
-          <h1>My Planner</h1>
+          <h1>Short Trip to Thailand</h1>
           <Planner />
         </div>
         <div style={{display: 'inline-block', width: '15vw', verticalAlign: 'top', position: 'sticky', top: '0px'}}>
