@@ -64,9 +64,9 @@ class Planner extends Component {
     return (
       <div>
         <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button>
-        {newDates.map((date) => {
+        {newDates.map((date, i) => {
           return (
-            <DateBox date={date} draggable={this.state.draggable} key={date} />
+            <DateBox date={date} draggable={this.state.draggable} key={i} day={i + 1} />
           )
         })}
       </div>

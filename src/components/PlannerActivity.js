@@ -55,8 +55,8 @@ function collectSource (connect, monitor) {
 class PlannerActivity extends Component {
   render () {
     const { connectDropTarget, connectDragSource } = this.props
-    return connectDragSource(connectDropTarget(<div style={{ cursor: this.props.draggable ? 'move' : 'default', height: '12vh', border: this.props.activity.id ? '1px solid white' : '1px dashed green' }} key={this.props.activity.id}>
-      <h3>{this.props.activity.name}</h3>
+    return connectDragSource(connectDropTarget(<div style={{ cursor: this.props.draggable ? 'move' : 'default', height: '10vh', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '0.5em' }} key={this.props.activity.id}>
+      <h4>{this.props.activity.name}</h4>
       <p>{this.props.activity.city}</p>
       {/* {
         !this.props.activity.id ||

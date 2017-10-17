@@ -8,7 +8,7 @@ class App extends Component {
 
   render () {
     return (
-      <div>
+      <div style={{fontFamily: 'Helvetica'}}>
         <div style={{display: 'inline-block', width: '80vw', verticalAlign: 'top', marginRight: '1vw'}}>
           <h1>Short Trip to Thailand</h1>
           <Planner />

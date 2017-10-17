@@ -26,23 +26,25 @@ class Date extends Component {
   render () {
     const { connectDropTarget, isOver } = this.props
     let preview
-    if (isOver && this.props.activities.filter(activity => activity.startDate === this.props.date).length === 0) {
+    if (this.props.activities.filter(activity => activity.startDate === this.props.date).length === 0) {
       preview = (
-        <div style={{border: '1px dashed green', height: '12vh'}} />
+        <div style={{border: '1px dashed black', height: '10vh', backgroundColor: isOver ? 'yellow' : 'white'}}>
+          <h4 style={{textAlign: 'center', fontStyle: 'italic'}}>Drag Activities Here</h4>
+        </div>
       )
     }
-    return connectDropTarget(
+    return (
       <div>
-        <h2>{this.props.date}</h2>
+        <h2>Day {this.props.day}: {this.props.date}</h2>
         <hr />
-        <div style={{minHeight: '12vh'}}>
+        {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
           {this.props.activities.filter(activity => activity.startDate === this.props.date).map((activity, i) => {
             return (
               <PlannerActivity draggable={this.props.draggable} activity={activity} key={activity.id} index={i} />
             )
           })}
           {preview}
-        </div>
+        </div>)}
       </div>
     )
   }
