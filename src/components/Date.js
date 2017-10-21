@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PlannerActivity from './PlannerActivity'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
-import { addActivity, deleteActivity, hoverOutsidePlanner } from '../actions/plannerActions'
+import { addActivity, deleteActivity, hoverOutsidePlanner, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
 
 const dateTarget = {
@@ -11,6 +11,11 @@ const dateTarget = {
       let newActivity = Object.assign(monitor.getItem(), {startDate: props.date})
       props.addActivity(newActivity)
       props.deleteActivityFromBucket(monitor.getItem())
+    }
+  },
+  hover (props, monitor) {
+    if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
+      if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(0, monitor.getItem(), props.date)
     }
   }
 }
@@ -78,6 +83,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     hoverOutsidePlanner: () => {
       dispatch(hoverOutsidePlanner())
+    },
+    plannerActivityHoverOverActivity: (index, activity, date) => {
+      dispatch(plannerActivityHoverOverActivity(index, activity, date))
     }
   }
 }
