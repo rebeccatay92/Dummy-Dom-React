@@ -3,12 +3,27 @@ import { connect } from 'react-redux'
 import { createItinerary } from '../actions/itineraryActions'
 
 class CreateItineraryForm extends Component {
+  constructor () {
+    super()
+    this.state = {
+      name: ''
+    }
+  }
+  handleChange (e) {
+    this.setState({
+      name: e.target.value
+    })
+    console.log('name is now', this.state.name)
+  }
 
   render () {
     return (
       <div>
         <h3>Create Itinerary Form</h3>
-        <button onClick={() => this.props.createItinerary()}>Add fake itinerary</button>
+        <form>
+          <textarea onChange={(e) => this.handleChange(e)} />
+        </form>
+        <button onClick={() => this.props.createItinerary(this.state.name)}>Add fake itinerary</button>
       </div>
     )
   }
@@ -16,8 +31,13 @@ class CreateItineraryForm extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createItinerary: () => {
-      dispatch(createItinerary())
+    createItinerary: (name) => {
+      console.log('textarea', name)
+      var newItinerary = {
+        id: 555,
+        name: name
+      }
+      dispatch(createItinerary(newItinerary))
     }
   }
 }

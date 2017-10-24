@@ -1,9 +1,6 @@
-export const createItinerary = () => {
+export const createItinerary = (itinerary) => {
   return {
     type: 'CREATE_ITINERARY',
-    itinerary: {
-      id: 999,
-      name: 'fake'
-    }
+    itinerary
   }
 }
