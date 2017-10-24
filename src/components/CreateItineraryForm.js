@@ -68,8 +68,13 @@ const mapDispatchToProps = (dispatch) => {
       console.log('textarea', form.name)
       var newItinerary = {
         id: 555,
+        countryId: form.countryId,
         name: form.name,
-        countryId: form.countryId
+        startDate: form.startDate,
+        endDate: form.endDate,
+        pax: form.pax,
+        travelInsurance: form.travelInsurance,
+        budget: form.budget
       }
       dispatch(createItinerary(newItinerary))
     }
