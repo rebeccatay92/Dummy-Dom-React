@@ -1,21 +1,25 @@
 import React, { Component } from 'react'
-// import { connect } from 'react-redux'
+import { connect } from 'react-redux'
+import Itinerary from './Itinerary'
 
 class ItineraryPage extends Component {
   render () {
     return (
       <div>
-        <p>ItineraryPage</p>
+        {this.props.itineraries.map(itinerary => {
+          return (
+            <Itinerary />
+          )
+        })}
       </div>
     )
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     activities: state.bucketList
-//   }
-// }
+const mapStateToProps = (state) => {
+  return {
+    itineraries: state.itineraryList
+  }
+}
 
-// export default connect(mapStateToProps)(ItineraryPage)
-export default ItineraryPage
+export default connect(mapStateToProps)(ItineraryPage)
