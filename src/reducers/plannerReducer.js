@@ -24,12 +24,10 @@ export const plannerReducer = (state = [], action) => {
           ]
         ]
       }
-      break;
     case 'DELETE_ACTIVITY':
       return state.filter((activity) => {
         return activity.id !== action.activity.id
       })
-      break;
     case 'HOVER_OVER_ACTIVITY':
       let stateWithoutActivitiesWithThatDate = state.filter(activity => {
         return activity.id && activity.startDate !== action.date
@@ -50,7 +48,6 @@ export const plannerReducer = (state = [], action) => {
           ...newStateWithActivitiesWithThatDate.slice(action.index, newStateWithActivitiesWithThatDate.length)
         ]
       ]
-      break;
     case 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY':
       let stateWithoutPlannerActivitiesWithThatDate = state.filter(activity => {
         return activity.id && activity.startDate !== action.date && activity.id !== action.activity.id
@@ -71,12 +68,10 @@ export const plannerReducer = (state = [], action) => {
           ...newStateWithPlannerActivitiesWithThatDate.slice(action.index, newStateWithPlannerActivitiesWithThatDate.length)
         ]
       ]
-      break;
     case 'HOVER_OUTSIDE_PLANNER':
       return state.filter(activity => {
         return activity.id
       })
-      break;
     default:
       return state
   }
