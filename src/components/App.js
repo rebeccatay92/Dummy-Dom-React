@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import HomePage from './HomePage'
 import ItineraryPage from './ItineraryPage'
 import PlannerPage from './PlannerPage'
+import Search from './Search'
 
 class App extends Component {
 
@@ -12,14 +13,16 @@ class App extends Component {
         <div>
           <Route exact path='/' component={() => (
             <HomePage />
-          )
-        } />
+          )} />
           <Route path='/itineraries' component={() => (
             <ItineraryPage />
-        )} />
+          )} />
+          <Route path='/search' component={() => (
+            <Search />
+          )} />
           <Route path='/dnd' component={() => (
             <PlannerPage />
-        )} />
+          )} />
         </div>
       </Router>
     )

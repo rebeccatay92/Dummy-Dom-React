@@ -11,3 +11,10 @@ export const deleteItinerary = (id) => {
     id
   }
 }
+
+// export const updateItinerary = (itinerary) => {
+//   return {
+//     type: 'UPDATE_ITINERARY',
+//     itinerary
+//   }
+// }
