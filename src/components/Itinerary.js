@@ -15,7 +15,7 @@ class Itinerary extends Component {
         <h3 style={{display: 'inline-block'}}>pax: {this.props.itinerary.pax}</h3>
         <h3 style={{display: 'inline-block'}}>travelInsurance: {this.props.itinerary.travelInsurance}</h3>
         <h3 style={{display: 'inline-block'}}>budget: {this.props.itinerary.budget}</h3>
-        <button onClick={() => this.props.deleteItinerary(this.state)}>Delete this itinerary</button>
+        <button onClick={() => this.props.deleteItinerary(this.props.itinerary.id)}>Delete this itinerary</button>
       </div>
     )
   }
@@ -23,8 +23,8 @@ class Itinerary extends Component {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteItinerary: () => {
-      dispatch(deleteItinerary())
+    deleteItinerary: (id) => {
+      dispatch(deleteItinerary(id))
     }
   }
 }

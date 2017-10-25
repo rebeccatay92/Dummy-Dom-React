@@ -9,7 +9,7 @@ export const itineraryReducer = (state = itineraries, action) => {
       ]
     case 'DELETE_ITINERARY':
       return state.filter((itinerary) => {
-        return (itinerary.id !== action.itinerary.id)
+        return (itinerary.id !== action.id)
       })
     default:
       return state

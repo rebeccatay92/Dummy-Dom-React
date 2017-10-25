@@ -5,11 +5,9 @@ export const createItinerary = (itinerary) => {
   }
 }
 
-export const deleteItinerary = (itinerary) => {
+export const deleteItinerary = (id) => {
   return {
     type: 'DELETE_ITINERARY',
-    itinerary: {
-      id: 3
-    }
+    id
   }
 }
