@@ -25,7 +25,7 @@ class CreateItineraryForm extends Component {
 
   render () {
     return (
-      <div>
+      <div style={{border: '1px solid black'}}>
         <h3>Create Itinerary Form</h3>
         <form>
           <label>
@@ -318,7 +318,7 @@ const mapDispatchToProps = (dispatch) => {
     createItinerary: (form) => {
       console.log('textarea', form.name)
       var newItinerary = {
-        id: 555,
+        id: null,
         countryCode: form.countryCode,
         name: form.name,
         startDate: form.startDate,

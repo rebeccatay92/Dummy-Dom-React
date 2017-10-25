@@ -4,3 +4,12 @@ export const createItinerary = (itinerary) => {
     itinerary
   }
 }
+
+export const deleteItinerary = (itinerary) => {
+  return {
+    type: 'DELETE_ITINERARY',
+    itinerary: {
+      id: 3
+    }
+  }
+}

@@ -7,10 +7,10 @@ export const itineraryReducer = (state = itineraries, action) => {
         ...state,
         action.itinerary
       ]
-    // case 'DELETE_ACTIVITY_FROM_BUCKET':
-    //   return state.filter((activity) => {
-    //     return (activity.id !== action.activity.id)
-    //   })
+    case 'DELETE_ITINERARY':
+      return state.filter((itinerary) => {
+        return (itinerary.id !== action.itinerary.id)
+      })
     default:
       return state
   }

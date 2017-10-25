@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { deleteItinerary } from '../actions/itineraryActions'
 
 class Itinerary extends Component {
 
@@ -13,9 +15,18 @@ class Itinerary extends Component {
         <h3 style={{display: 'inline-block'}}>pax: {this.props.itinerary.pax}</h3>
         <h3 style={{display: 'inline-block'}}>travelInsurance: {this.props.itinerary.travelInsurance}</h3>
         <h3 style={{display: 'inline-block'}}>budget: {this.props.itinerary.budget}</h3>
+        <button onClick={() => this.props.deleteItinerary(this.state)}>Delete this itinerary</button>
       </div>
     )
   }
 }
 
-export default Itinerary
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteItinerary: () => {
+      dispatch(deleteItinerary())
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Itinerary)
