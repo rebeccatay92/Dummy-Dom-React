@@ -1,6 +1,5 @@
 import { fakeresults } from '../fakeresults'
 
-
 export const searchReducer = (state = fakeresults, action) => {
   switch (action.type) {
     // reducers here
