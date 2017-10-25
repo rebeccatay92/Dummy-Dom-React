@@ -57,7 +57,7 @@ class CreateItineraryForm extends Component {
               <option value='BJ'>Benin</option>
               <option value='BM'>Bermuda</option>
               <option value='BT'>Bhutan</option>
-              <option value='BO'>Bolivia, Plurinational State of</option>
+              <option value='BO'>Bolivia</option>
               <option value='BQ'>Bonaire, Sint Eustatius and Saba</option>
               <option value='BA'>Bosnia and Herzegovina</option>
               <option value='BW'>Botswana</option>
@@ -135,7 +135,7 @@ class CreateItineraryForm extends Component {
               <option value='IS'>Iceland</option>
               <option value='IN'>India</option>
               <option value='ID'>Indonesia</option>
-              <option value='IR'>Iran, Islamic Republic of</option>
+              <option value='IR'>Iran</option>
               <option value='IQ'>Iraq</option>
               <option value='IE'>Ireland</option>
               <option value='IM'>Isle of Man</option>
@@ -148,11 +148,11 @@ class CreateItineraryForm extends Component {
               <option value='KZ'>Kazakhstan</option>
               <option value='KE'>Kenya</option>
               <option value='KI'>Kiribati</option>
-              <option value='KP'>Korea, Democratic People's Republic of</option>
-              <option value='KR'>Korea, Republic of</option>
+              <option value='KP'>North Korea</option>
+              <option value='KR'>South Korea</option>
               <option value='KW'>Kuwait</option>
               <option value='KG'>Kyrgyzstan</option>
-              <option value='LA'>Lao People's Democratic Republic</option>
+              <option value='LA'>Laos</option>
               <option value='LV'>Latvia</option>
               <option value='LB'>Lebanon</option>
               <option value='LS'>Lesotho</option>
@@ -162,7 +162,7 @@ class CreateItineraryForm extends Component {
               <option value='LT'>Lithuania</option>
               <option value='LU'>Luxembourg</option>
               <option value='MO'>Macao</option>
-              <option value='MK'>Macedonia, the former Yugoslav Republic of</option>
+              <option value='MK'>Macedonia</option>
               <option value='MG'>Madagascar</option>
               <option value='MW'>Malawi</option>
               <option value='MY'>Malaysia</option>
@@ -175,8 +175,8 @@ class CreateItineraryForm extends Component {
               <option value='MU'>Mauritius</option>
               <option value='YT'>Mayotte</option>
               <option value='MX'>Mexico</option>
-              <option value='FM'>Micronesia, Federated States of</option>
-              <option value='MD'>Moldova, Republic of</option>
+              <option value='FM'>Micronesia</option>
+              <option value='MD'>Moldova</option>
               <option value='MC'>Monaco</option>
               <option value='MN'>Mongolia</option>
               <option value='ME'>Montenegro</option>
@@ -200,7 +200,7 @@ class CreateItineraryForm extends Component {
               <option value='OM'>Oman</option>
               <option value='PK'>Pakistan</option>
               <option value='PW'>Palau</option>
-              <option value='PS'>Palestinian Territory, Occupied</option>
+              <option value='PS'>Palestinian Territory</option>
               <option value='PA'>Panama</option>
               <option value='PG'>Papua New Guinea</option>
               <option value='PY'>Paraguay</option>
@@ -213,7 +213,7 @@ class CreateItineraryForm extends Component {
               <option value='QA'>Qatar</option>
               <option value='RE'>Réunion</option>
               <option value='RO'>Romania</option>
-              <option value='RU'>Russian Federation</option>
+              <option value='RU'>Russia</option>
               <option value='RW'>Rwanda</option>
               <option value='BL'>Saint Barthélemy</option>
               <option value='SH'>Saint Helena, Ascension and Tristan da Cunha</option>
@@ -248,9 +248,9 @@ class CreateItineraryForm extends Component {
               <option value='SE'>Sweden</option>
               <option value='CH'>Switzerland</option>
               <option value='SY'>Syrian Arab Republic</option>
-              <option value='TW'>Taiwan, Province of China</option>
+              <option value='TW'>Taiwan</option>
               <option value='TJ'>Tajikistan</option>
-              <option value='TZ'>Tanzania, United Republic of</option>
+              <option value='TZ'>Tanzania</option>
               <option value='TH'>Thailand</option>
               <option value='TL'>Timor-Leste</option>
               <option value='TG'>Togo</option>
@@ -271,7 +271,7 @@ class CreateItineraryForm extends Component {
               <option value='UY'>Uruguay</option>
               <option value='UZ'>Uzbekistan</option>
               <option value='VU'>Vanuatu</option>
-              <option value='VE'>Venezuela, Bolivarian Republic of</option>
+              <option value='VE'>Venezuela</option>
               <option value='VN'>Viet Nam</option>
               <option value='VG'>Virgin Islands, British</option>
               <option value='VI'>Virgin Islands, U.S.</option>
