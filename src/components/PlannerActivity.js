@@ -5,8 +5,6 @@ import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucket
 import { connect } from 'react-redux'
 import { gql, graphql } from 'react-apollo'
 
-let mousePosition = {y: 0}
-
 const plannerActivitySource = {
   beginDrag (props) {
     return {
@@ -29,17 +27,12 @@ const plannerActivitySource = {
 
 const plannerActivityTarget = {
   hover (props, monitor, component) {
-    // Check whether object is dragging down or up
-    const clientOffset = monitor.getClientOffset()
-    let lastActivity
-    lastActivity = clientOffset.y > mousePosition.y ? -1 : props.index - 1
-    mousePosition = clientOffset
-    if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.isLast && props.index > 0 ? lastActivity : props.index, props.activity.date)
-    else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.isLast && props.index > 0 ? lastActivity : props.index, monitor.getItem(), props.activity.date)
+    if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index, props.activity.date)
+    else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem(), props.activity.date)
   },
   drop (props, monitor) {
     let newActivity = Object.assign(monitor.getItem(), {date: props.activity.date})
-    props.addActivity(newActivity, (props.index + 1) ? props.index : 'none')
+    props.addActivity(newActivity, props.index)
     if (monitor.getItemType() === 'activity') {
       props.deleteActivityFromBucket(monitor.getItem())
     }
@@ -66,33 +59,34 @@ class PlannerActivity extends Component {
 
     this.state = {
       creatingActivity: false,
+      onBox: false,
       name: '',
       LocationId: ''
     }
   }
   render () {
-    const { connectDropTarget, connectDragSource, isOver } = this.props
+    const { connectDropTarget, connectDragSource } = this.props
     let dragBox = (
-      <h4 style={{textAlign: 'center', fontStyle: 'italic'}}>Drag Activities Here or Click to Add new Activity</h4>
+      <h4>+ Add Activity</h4>
     )
     if (this.state.creatingActivity) {
       dragBox = (
-        <form onSubmit={(e) => this.handleSubmit(e)}>
-          <label style={{display: 'inline-block', width: '14%'}}>Activity Name: </label>
-          <input style={{width: '85%'}} value={this.state.activityName} onChange={(e) => this.handleChange(e)} name='name' />
-          <label style={{display: 'inline-block', width: '14%'}}>Location: </label>
-          <input style={{width: '85%'}} value={this.state.activityLocation} onChange={(e) => this.handleChange(e)} name='LocationId' />
+        <form onSubmit={(e) => this.handleSubmit(e)} style={{margin: '2vh 0 -2vh 0'}}>
+          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Activity Name: </label>
+          <input style={{width: '39%'}} value={this.state.activityName} onChange={(e) => this.handleChange(e)} name='name' />
+          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Location: </label>
+          <input style={{width: '39%'}} value={this.state.activityLocation} onChange={(e) => this.handleChange(e)} name='LocationId' />
           <input type='submit' value='submit' />
-          <button onClick={(e) => {
+          {/* <button onClick={(e) => {
             e.preventDefault()
             this.setState({creatingActivity: false})
-          }}>cancel</button>
+          }}>cancel</button> */}
         </form>
       )
     }
-    if (!(this.props.index + 1)) {
+    if (this.props.empty) {
       return connectDropTarget(
-        <div onClick={() => this.state.creatingActivity || this.setState({creatingActivity: true})} style={{border: '1px dashed black', height: '10vh', backgroundColor: isOver ? 'yellow' : 'white'}}>
+        <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} >
           {dragBox}
         </div>
       )
@@ -105,6 +99,17 @@ class PlannerActivity extends Component {
         <button style={{marginBottom: '1vh'}} onClick={() => this.props.handleClick(this.props.activity)}>Remove</button>
       } */}
     </div>))
+  }
+
+  componentDidMount () {
+    window.addEventListener('mousedown', () => {
+      if (this.state.onBox) {
+        return
+      }
+      this.setState({
+        creatingActivity: false
+      })
+    })
   }
 
   handleSubmit (e) {
@@ -124,9 +129,6 @@ class PlannerActivity extends Component {
         query: gql`
           query queryItinerary($id: ID!) {
             findItinerary(id: $id){
-              startDate
-              endDate
-              name
               activities {
                 id
                 name

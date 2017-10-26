@@ -9,7 +9,7 @@ class Planner extends Component {
     super(props)
 
     this.state = {
-      draggable: false
+      draggable: true
     }
   }
 
@@ -36,7 +36,7 @@ class Planner extends Component {
     return (
       <div>
         <h1>{this.props.data.findItinerary.name}</h1>
-        <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button>
+        {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {
           return (
             <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(activity => activity.date * 1000 === date)} draggable={this.state.draggable} key={i} day={i + 1} />

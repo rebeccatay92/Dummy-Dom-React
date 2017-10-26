@@ -11,7 +11,7 @@ import { itineraryReducer } from './reducers/itineraryReducer'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
 const networkInterface = createNetworkInterface({
-  uri: 'http://localhost:3000/graphql'
+  uri: 'http://localhost:3001/graphql'
 })
 
 const client = new ApolloClient({
