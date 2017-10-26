@@ -39,7 +39,7 @@ class Planner extends Component {
         <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button>
         {newDates.map((date, i) => {
           return (
-            <DateBox itineraryId={this.props.match.params.itineraryId} date={date} activities={this.props.activities.filter(activity => activity.date * 1000 === date)} draggable={this.state.draggable} key={i} day={i + 1} />
+            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(activity => activity.date * 1000 === date)} draggable={this.state.draggable} key={i} day={i + 1} />
           )
         })}
       </div>
@@ -73,7 +73,7 @@ const queryItinerary = gql`
 const options = {
   options: props => ({
     variables: {
-      id: props.match.params.itineraryId
+      id: props.id
     }
   })
 }

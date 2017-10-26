@@ -117,7 +117,8 @@ class PlannerActivity extends Component {
         name: this.state.name,
         date: this.props.activity.date,
         LocationId: this.state.LocationId,
-        ItineraryId: this.props.itineraryId
+        ItineraryId: this.props.itineraryId,
+        loadSequence: 1
       },
       refetchQueries: [{
         query: gql`
@@ -169,8 +170,8 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const createActivity = gql`
-  mutation createActivity($name: String!, $date: Int!, $LocationId: ID!, $ItineraryId: ID!) {
-    createActivity(name: $name, date: $date, LocationId: $LocationId, ItineraryId: $ItineraryId) {
+  mutation createActivity($name: String!, $date: Int!, $LocationId: ID!, $ItineraryId: ID!, $loadSequence: Int!) {
+    createActivity(name: $name, date: $date, LocationId: $LocationId, ItineraryId: $ItineraryId, loadSequence: $loadSequence) {
       id
     }
   }
