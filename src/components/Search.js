@@ -23,9 +23,9 @@ class Search extends Component {
         <h1>TESTING GOOGLE PLACES API</h1>
         <input type='search' onChange={(e) => this.handleChange(e)} />
         <button onClick={() => this.props.searchPlaces(this.state.searchStr)}>Search</button>
-        {this.props.searchResults.map(result => {
+        {this.props.searchResults.map((result, i) => {
           return (
-            <Result result={result} />
+            <Result result={result} key={i} />
           )
         })}
       </div>
