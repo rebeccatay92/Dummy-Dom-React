@@ -1,18 +1,23 @@
 import React, { Component } from 'react'
 import DateBox from './Date'
+import { gql, graphql } from 'react-apollo'
+import { initializePlanner } from '../actions/plannerActions'
+import { connect } from 'react-redux'
 
 class Planner extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      draggable: false
+      draggable: false,
+      initialized: false
     }
   }
 
   render () {
-    const startDate = new Date(2017, 10, 19)
-    const endDate = new Date(2017, 10, 21)
+    if (this.props.data.loading) return (<h1>Loading</h1>)
+    const startDate = new Date(this.props.data.findItinerary.startDate)
+    const endDate = new Date(this.props.data.findItinerary.endDate)
     const getDates = (startDate, stopDate) => {
       let dateArray = []
       let currentDate = new Date(startDate)
@@ -24,19 +29,68 @@ class Planner extends Component {
     }
     const dates = getDates(startDate, endDate)
     const newDates = dates.map((date) => {
-      return date.toDateString()
+      return date.getTime()
     })
     return (
       <div>
+        <h1>{this.props.data.findItinerary.name}</h1>
         <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button>
         {newDates.map((date, i) => {
           return (
-            <DateBox date={date} draggable={this.state.draggable} key={i} day={i + 1} />
+            <DateBox itineraryId={this.props.match.params.itineraryId} date={date} activities={this.props.activities.filter(activity => new Date(activity.date).getTime() === date)} draggable={this.state.draggable} key={i} day={i + 1} />
           )
         })}
       </div>
     )
   }
+
+  componentDidUpdate () {
+    if (!this.props.data.loading && !this.state.initialized) {
+      this.props.initializePlanner(this.props.data.findItinerary.activities)
+      this.setState({
+        initialized: true
+      })
+    }
+  }
 }
 
-export default Planner
+const queryItinerary = gql`
+  query queryItinerary($id: ID!) {
+    findItinerary(id: $id){
+      startDate
+      endDate
+      name
+      activities {
+        id
+        name
+        location {
+          name
+        }
+        date
+      }
+  }
+}`
+
+const options = {
+  options: props => ({
+    variables: {
+      id: props.match.params.itineraryId
+    }
+  })
+}
+
+const mapStateToProps = (state) => {
+  return {
+    activities: state.plannerActivities
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    initializePlanner: (activities) => {
+      dispatch(initializePlanner(activities))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(graphql(queryItinerary, options)(Planner))

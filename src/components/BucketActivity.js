@@ -6,7 +6,7 @@ const activitySource = {
     return {
       id: props.activity.id,
       name: props.activity.name,
-      city: props.activity.city
+      location: props.activity.location
     }
   }
 }
@@ -24,7 +24,7 @@ class BucketActivity extends Component {
     return connectDragSource(
       <div style={{minHeight: '15vh', border: '1px solid black', paddingLeft: '1vw', cursor: 'move'}}>
         <h3>{this.props.activity.name}</h3>
-        <p>{this.props.activity.city}</p>
+        <p>{this.props.activity.location.name}</p>
       </div>
     )
   }

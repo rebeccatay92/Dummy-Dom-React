@@ -7,16 +7,16 @@ import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucket
 
 const dateTarget = {
   drop (props, monitor) {
-    if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
-      let newActivity = Object.assign(monitor.getItem(), {startDate: props.date})
-      props.addActivity(newActivity)
-      props.deleteActivityFromBucket(monitor.getItem())
-    }
+    // if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
+      // let newActivity = Object.assign(monitor.getItem(), {startDate: props.date})
+      // props.addActivity(newActivity)
+      // props.deleteActivityFromBucket(monitor.getItem())
+    // }
   },
   hover (props, monitor) {
-    if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
-      if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(0, monitor.getItem(), props.date)
-    }
+    // if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
+    //   if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(0, monitor.getItem(), props.date)
+    // }
   }
 }
 
@@ -30,25 +30,17 @@ function collect (connect, monitor) {
 class Date extends Component {
   render () {
     const { connectDropTarget, isOver } = this.props
-    let preview
-    if (this.props.activities.filter(activity => activity.startDate === this.props.date).length === 0) {
-      preview = (
-        <div style={{border: '1px dashed black', height: '10vh', backgroundColor: isOver ? 'yellow' : 'white'}}>
-          <h4 style={{textAlign: 'center', fontStyle: 'italic'}}>Drag Activities Here</h4>
-        </div>
-      )
-    }
     return (
       <div>
         <h2>Day {this.props.day}: {this.props.date}</h2>
         <hr />
         {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
-          {this.props.activities.filter(activity => activity.startDate === this.props.date).map((activity, i) => {
+          {this.props.activities.map((activity, i, array) => {
             return (
-              <PlannerActivity draggable={this.props.draggable} activity={activity} key={activity.id} index={i} />
+              <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={activity.id} index={i} isLast={i === array.length - 1} />
             )
           })}
-          {preview}
+          <PlannerActivity itineraryId={this.props.itineraryId} activity={{date: this.props.date}} />
         </div>)}
       </div>
     )
@@ -58,12 +50,6 @@ class Date extends Component {
     if (nextProps.isOver === !this.props.isOver) {
       if (!nextProps.isOver) this.props.hoverOutsidePlanner()
     }
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    activities: state.plannerActivities
   }
 }
 
@@ -90,4 +76,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(Date))
+export default connect(null, mapDispatchToProps)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(Date))

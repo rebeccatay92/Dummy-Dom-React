@@ -1,3 +1,10 @@
+export const initializePlanner = (activities) => {
+  return {
+    type: 'INITIALIZE_PLANNER',
+    activities
+  }
+}
+
 export const addActivity = (activity, index = 'none') => {
   return {
     type: 'ADD_ACTIVITY',
