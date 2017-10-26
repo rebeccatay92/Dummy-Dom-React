@@ -1,5 +1,8 @@
 export const plannerReducer = (state = [], action) => {
   switch (action.type) {
+    case 'INITIALIZE_PLANNER':
+      return action.activities
+      break;
     case 'ADD_ACTIVITY':
       if (action.index === 'none') {
         return [
@@ -10,10 +13,10 @@ export const plannerReducer = (state = [], action) => {
         ]
       } else {
         let stateWithoutActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && activity.startDate !== action.activity.startDate
+          return activity.id && activity.date !== action.activity.date
         })
         let newStateWithActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && activity.startDate === action.activity.startDate
+          return activity.id && activity.date === action.activity.date
         })
         return [
           ...stateWithoutActivitiesWithThatDate,
@@ -29,11 +32,16 @@ export const plannerReducer = (state = [], action) => {
         return activity.id !== action.activity.id
       })
     case 'HOVER_OVER_ACTIVITY':
+      if (!(action.index + 1)) {
+        return state.filter(activity => {
+          return activity.id
+        })
+      }
       let stateWithoutActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.startDate !== action.date
+        return activity.id && activity.date !== action.date
       })
       let newStateWithActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.startDate === action.date
+        return activity.id && activity.date === action.date
       })
       return [
         ...stateWithoutActivitiesWithThatDate,
@@ -42,18 +50,23 @@ export const plannerReducer = (state = [], action) => {
           ...[{
             id: '',
             name: '',
-            city: '',
-            startDate: action.date
+            location: '',
+            date: action.date
           }],
           ...newStateWithActivitiesWithThatDate.slice(action.index, newStateWithActivitiesWithThatDate.length)
         ]
       ]
     case 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY':
+      if (!(action.index + 1)) {
+        return state.filter(activity => {
+          return activity.id && activity.id !== action.activity.id
+        })
+      }
       let stateWithoutPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.startDate !== action.date && activity.id !== action.activity.id
+        return activity.id && activity.date !== action.date && activity.id !== action.activity.id
       })
       let newStateWithPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.startDate === action.date && activity.id !== action.activity.id
+        return activity.id && activity.date === action.date && activity.id !== action.activity.id
       })
       return [
         ...stateWithoutPlannerActivitiesWithThatDate,
@@ -62,8 +75,8 @@ export const plannerReducer = (state = [], action) => {
           ...[{
             id: '',
             name: '',
-            city: '',
-            startDate: action.date
+            location: '',
+            date: action.date
           }],
           ...newStateWithPlannerActivitiesWithThatDate.slice(action.index, newStateWithPlannerActivitiesWithThatDate.length)
         ]

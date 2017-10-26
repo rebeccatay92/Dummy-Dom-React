@@ -1,7 +1,8 @@
-import { bucket } from '../bucket'
-
-export const bucketReducer = (state = bucket, action) => {
+export const bucketReducer = (state = [], action) => {
   switch (action.type) {
+    case 'INITIALIZE_BUCKET':
+      return action.activities
+      break;
     case 'ADD_ACTIVITY_TO_BUCKET':
       return [
         ...state,

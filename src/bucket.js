@@ -2,26 +2,36 @@ export const bucket = [
   {
     id: 1,
     name: 'N Seoul Tower',
-    city: 'Seoul'
+    location: {
+      name: 'Seoul'
+    }
   },
   {
     id: 2,
     name: 'Lotte World',
-    city: 'Seoul'
+    location: {
+      name: 'Seoul'
+    }
   },
   {
     id: 3,
     name: 'Jongno-3-Ga Food Tent',
-    city: 'Seoul'
+    location: {
+      name: 'Seoul'
+    }
   },
   {
     id: 4,
     name: 'Panmunjeom',
-    city: 'Seoul'
+    location: {
+      name: 'Seoul'
+    }
   },
   {
     id: 5,
     name: 'Dom\'s House',
-    city: 'Singapore'
+    location: {
+      name: 'Singapore'
+    }
   }
 ]

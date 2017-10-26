@@ -20,9 +20,7 @@ class App extends Component {
           <Route path='/search' component={() => (
             <Search />
           )} />
-          <Route path='/dnd' component={() => (
-            <PlannerPage />
-          )} />
+          <Route path='/planner/:itineraryId' component={PlannerPage} />
         </div>
       </Router>
     )

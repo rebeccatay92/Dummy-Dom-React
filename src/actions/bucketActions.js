@@ -11,3 +11,10 @@ export const deleteActivityFromBucket = (activity) => {
     activity
   }
 }
+
+export const initializeBucket = (activities) => {
+  return {
+    type: 'INITIALIZE_BUCKET',
+    activities
+  }
+}

@@ -7,9 +7,16 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { plannerReducer } from './reducers/plannerReducer'
 import { bucketReducer } from './reducers/bucketReducer'
 import { itineraryReducer } from './reducers/itineraryReducer'
-import { ApolloClient, ApolloProvider } from 'react-apollo'
+import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
-const client = new ApolloClient()
+const networkInterface = createNetworkInterface({
+  uri: 'http://localhost:3001/graphql'
+})
+
+const client = new ApolloClient({
+  networkInterface: networkInterface,
+  dataIdFromObject: o => o.id
+})
 
 const store = createStore(combineReducers({
   plannerActivities: plannerReducer,
