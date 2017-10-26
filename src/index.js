@@ -6,6 +6,7 @@ import registerServiceWorker from './registerServiceWorker'
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { plannerReducer } from './reducers/plannerReducer'
 import { bucketReducer } from './reducers/bucketReducer'
+import { itineraryReducer } from './reducers/itineraryReducer'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
 const networkInterface = createNetworkInterface({
@@ -20,6 +21,7 @@ const client = new ApolloClient({
 const store = createStore(combineReducers({
   plannerActivities: plannerReducer,
   bucketList: bucketReducer,
+  itineraryList: itineraryReducer,
   apollo: client.reducer()
 }),
 {},

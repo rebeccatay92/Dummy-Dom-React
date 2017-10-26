@@ -8,12 +8,10 @@ export const bucketReducer = (state = [], action) => {
         ...state,
         action.activity
       ]
-      break;
     case 'DELETE_ACTIVITY_FROM_BUCKET':
       return state.filter((activity) => {
         return (activity.id !== action.activity.id)
       })
-      break;
     default:
       return state
   }
