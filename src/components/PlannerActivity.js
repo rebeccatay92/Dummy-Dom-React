@@ -3,7 +3,7 @@ import { DropTarget, DragSource } from 'react-dnd'
 import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
-// import { gql, graphql } from 'react-apollo'
+import { gql, graphql } from 'react-apollo'
 
 let mousePosition = {y: 0}
 
@@ -65,7 +65,9 @@ class PlannerActivity extends Component {
     super(props)
 
     this.state = {
-      creatingActivity: false
+      creatingActivity: false,
+      name: '',
+      LocationId: ''
     }
   }
   render () {
@@ -75,18 +77,22 @@ class PlannerActivity extends Component {
     )
     if (this.state.creatingActivity) {
       dragBox = (
-        <form>
+        <form onSubmit={(e) => this.handleSubmit(e)}>
           <label style={{display: 'inline-block', width: '14%'}}>Activity Name: </label>
-          <input style={{width: '85%'}} />
+          <input style={{width: '85%'}} value={this.state.activityName} onChange={(e) => this.handleChange(e)} name='name' />
           <label style={{display: 'inline-block', width: '14%'}}>Location: </label>
-          <input style={{width: '85%'}} />
+          <input style={{width: '85%'}} value={this.state.activityLocation} onChange={(e) => this.handleChange(e)} name='LocationId' />
           <input type='submit' value='submit' />
+          <button onClick={(e) => {
+            e.preventDefault()
+            this.setState({creatingActivity: false})
+          }}>cancel</button>
         </form>
       )
     }
     if (!(this.props.index + 1)) {
       return connectDropTarget(
-        <div onClick={() => this.setState({creatingActivity: true})} style={{border: '1px dashed black', height: '10vh', backgroundColor: isOver ? 'yellow' : 'white'}}>
+        <div onClick={() => this.state.creatingActivity || this.setState({creatingActivity: true})} style={{border: '1px dashed black', height: '10vh', backgroundColor: isOver ? 'yellow' : 'white'}}>
           {dragBox}
         </div>
       )
@@ -99,6 +105,46 @@ class PlannerActivity extends Component {
         <button style={{marginBottom: '1vh'}} onClick={() => this.props.handleClick(this.props.activity)}>Remove</button>
       } */}
     </div>))
+  }
+
+  handleSubmit (e) {
+    e.preventDefault()
+    this.setState({
+      creatingActivity: false
+    })
+    this.props.mutate({
+      variables: {
+        name: this.state.name,
+        date: this.props.activity.date,
+        LocationId: this.state.LocationId,
+        ItineraryId: this.props.itineraryId
+      },
+      refetchQueries: [{
+        query: gql`
+          query queryItinerary($id: ID!) {
+            findItinerary(id: $id){
+              startDate
+              endDate
+              name
+              activities {
+                id
+                name
+                location {
+                  name
+                }
+                date
+              }
+            }
+          }`,
+        variables: { id: this.props.itineraryId }
+      }]
+    })
+  }
+
+  handleChange (e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
   }
 }
 
@@ -122,4 +168,12 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(PlannerActivity)))
+const createActivity = gql`
+  mutation createActivity($name: String!, $date: Int!, $LocationId: ID!, $ItineraryId: ID!) {
+    createActivity(name: $name, date: $date, LocationId: $LocationId, ItineraryId: $ItineraryId) {
+      id
+    }
+  }
+`
+
+export default connect(null, mapDispatchToProps)(graphql(createActivity)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(PlannerActivity))))

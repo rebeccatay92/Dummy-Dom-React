@@ -27,12 +27,12 @@ function collect (connect, monitor) {
   }
 }
 
-class Date extends Component {
+class DateBox extends Component {
   render () {
     const { connectDropTarget, isOver } = this.props
     return (
       <div>
-        <h2>Day {this.props.day}: {this.props.date}</h2>
+        <h2>Day {this.props.day}: {new Date(this.props.date).toDateString()}</h2>
         <hr />
         {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
           {this.props.activities.map((activity, i, array) => {
@@ -40,7 +40,7 @@ class Date extends Component {
               <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={activity.id} index={i} isLast={i === array.length - 1} />
             )
           })}
-          <PlannerActivity itineraryId={this.props.itineraryId} activity={{date: this.props.date}} />
+          <PlannerActivity itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000}} />
         </div>)}
       </div>
     )
@@ -76,4 +76,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(Date))
+export default connect(null, mapDispatchToProps)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(DateBox))

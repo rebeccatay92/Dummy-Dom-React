@@ -9,15 +9,16 @@ class Planner extends Component {
     super(props)
 
     this.state = {
-      draggable: false,
-      initialized: false
+      draggable: false
     }
   }
 
   render () {
     if (this.props.data.loading) return (<h1>Loading</h1>)
-    const startDate = new Date(this.props.data.findItinerary.startDate)
-    const endDate = new Date(this.props.data.findItinerary.endDate)
+    const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
+    const endDate = new Date(this.props.data.findItinerary.endDate * 1000)
+    // console.log(this.props.data.findItinerary.startDate, this.props.data.findItinerary.endDate);
+    // console.log(startDate, endDate);
     const getDates = (startDate, stopDate) => {
       let dateArray = []
       let currentDate = new Date(startDate)
@@ -28,6 +29,7 @@ class Planner extends Component {
       return dateArray
     }
     const dates = getDates(startDate, endDate)
+    // console.log(dates);
     const newDates = dates.map((date) => {
       return date.getTime()
     })
@@ -37,19 +39,16 @@ class Planner extends Component {
         <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button>
         {newDates.map((date, i) => {
           return (
-            <DateBox itineraryId={this.props.match.params.itineraryId} date={date} activities={this.props.activities.filter(activity => new Date(activity.date).getTime() === date)} draggable={this.state.draggable} key={i} day={i + 1} />
+            <DateBox itineraryId={this.props.match.params.itineraryId} date={date} activities={this.props.activities.filter(activity => activity.date * 1000 === date)} draggable={this.state.draggable} key={i} day={i + 1} />
           )
         })}
       </div>
     )
   }
 
-  componentDidUpdate () {
-    if (!this.props.data.loading && !this.state.initialized) {
-      this.props.initializePlanner(this.props.data.findItinerary.activities)
-      this.setState({
-        initialized: true
-      })
+  componentWillReceiveProps (nextProps) {
+    if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
+      this.props.initializePlanner(nextProps.data.findItinerary.activities)
     }
   }
 }
