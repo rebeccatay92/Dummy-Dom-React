@@ -40,7 +40,7 @@ class DateBox extends Component {
               <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={activity.id} index={i} isLast={i === array.length - 1} />
             )
           })}
-          <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000}} index={this.props.activities.length} />
+          <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} />
         </div>)}
       </div>
     )

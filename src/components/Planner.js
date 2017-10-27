@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import DateBox from './Date'
-import { gql, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import { initializePlanner } from '../actions/plannerActions'
 import { connect } from 'react-redux'
+import { queryItinerary } from '../apollo/itinerary'
 
 class Planner extends Component {
   constructor (props) {
@@ -29,7 +30,6 @@ class Planner extends Component {
       return dateArray
     }
     const dates = getDates(startDate, endDate)
-    // console.log(dates);
     const newDates = dates.map((date) => {
       return date.getTime()
     })
@@ -52,23 +52,6 @@ class Planner extends Component {
     }
   }
 }
-
-const queryItinerary = gql`
-  query queryItinerary($id: ID!) {
-    findItinerary(id: $id){
-      startDate
-      endDate
-      name
-      activities {
-        id
-        name
-        location {
-          name
-        }
-        date
-      }
-  }
-}`
 
 const options = {
   options: props => ({

@@ -3,7 +3,9 @@ import { DropTarget, DragSource } from 'react-dnd'
 import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
-import { gql, graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
+import { createActivity, updateActivity, deleteActivity } from '../apollo/activity'
+import { queryItinerary } from '../apollo/itinerary'
 
 const plannerActivitySource = {
   beginDrag (props) {
@@ -61,22 +63,42 @@ class PlannerActivity extends Component {
       creatingActivity: false,
       onBox: false,
       name: '',
-      LocationId: ''
+      LocationId: '',
+      activityName: this.props.activity.name,
+      locationName: this.props.activity.location.name,
+      editing: {
+        activityName: false,
+        locationName: false
+      }
     }
   }
+
   render () {
     const { connectDropTarget, connectDragSource } = this.props
+    let activityBox = (
+      <div style={{ cursor: this.props.draggable ? 'move' : 'default', minHeight: '10vh', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '0.5em' }} key={this.props.activity.id}>
+        {this.renderProps('activityName')}
+        {this.renderProps('locationName')}
+        {this.props.activity.id && <button onClick={() => this.handleDelete()}>Delete</button>}
+        {/* {
+          !this.props.activity.id ||
+          <button style={{marginBottom: '1vh'}} onClick={() => this.props.handleClick(this.props.activity)}>Remove</button>
+        } */}
+      </div>
+    )
     let dragBox = (
-      <h4>+ Add Activity</h4>
+      <div style={{cursor: 'pointer'}}>
+        <h4>+ Add Activity</h4>
+      </div>
     )
     if (this.state.creatingActivity) {
       dragBox = (
         <form onSubmit={(e) => this.handleSubmit(e)} style={{margin: '2vh 0 -2vh 0'}}>
-          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Activity Name: </label>
-          <input style={{width: '39%'}} value={this.state.activityName} onChange={(e) => this.handleChange(e)} name='name' />
+          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Name: </label>
+          <input required style={{width: '39%'}} value={this.state.activityName} onChange={(e) => this.handleChange(e)} name='name' />
           <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Location: </label>
-          <input style={{width: '39%'}} value={this.state.activityLocation} onChange={(e) => this.handleChange(e)} name='LocationId' />
-          <input type='submit' value='submit' />
+          <input required style={{width: '40%'}} value={this.state.activityLocation} onChange={(e) => this.handleChange(e)} name='LocationId' />
+          <input style={{float: 'right', marginTop: '10px'}} type='submit' value='submit' />
           {/* <button onClick={(e) => {
             e.preventDefault()
             this.setState({creatingActivity: false})
@@ -86,30 +108,61 @@ class PlannerActivity extends Component {
     }
     if (this.props.empty) {
       return connectDropTarget(
-        <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} >
+        <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} style={{overflow: 'hidden'}} >
           {dragBox}
         </div>
       )
     }
-    return connectDragSource(connectDropTarget(<div style={{ cursor: this.props.draggable ? 'move' : 'default', height: '10vh', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '0.5em' }} key={this.props.activity.id}>
-      <h4>{this.props.activity.name}</h4>
-      <p>{this.props.activity.location.name}</p>
-      {/* {
-        !this.props.activity.id ||
-        <button style={{marginBottom: '1vh'}} onClick={() => this.props.handleClick(this.props.activity)}>Remove</button>
-      } */}
-    </div>))
+    // <h4>{this.props.activity.name}</h4>
+    // <p>{this.props.activity.location.name}</p>
+    if (this.allFalse(this.state.editing)) return connectDragSource(connectDropTarget(activityBox))
+    else return activityBox
+  }
+
+  toggleCreateForm () {
+    if (this.state.onBox || !this.state.creatingActivity) {
+      return
+    }
+    this.setState({
+      creatingActivity: false
+    })
   }
 
   componentDidMount () {
-    window.addEventListener('mousedown', () => {
-      if (this.state.onBox) {
-        return
-      }
-      this.setState({
-        creatingActivity: false
-      })
+    window.addEventListener('mousedown', () => this.toggleCreateForm())
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      activityName: nextProps.activity.name,
+      locationName: nextProps.activity.location.name
     })
+  }
+
+  renderProps (element) {
+    if (this.state.editing[element]) {
+      return (
+        <form onSubmit={(e) => this.handleEdit(e, element)} style={{display: 'block'}}>
+          <input name={element} onChange={(e) => this.setState({ [element]: e.target.value })} value={this.state[element]} />
+          <button type='submit'>ok</button>
+        </form>
+      )
+    } else {
+      // const properties = {
+      //   activityName: 'name',
+      //   locationName: 'location'
+      // }
+      return (
+        <p onClick={() => this.setState({editing: Object.assign(this.state.editing, { [element]: true })})}>{this.state[element]}</p>
+      )
+    }
+  }
+
+  allFalse (obj) {
+    for (var o in obj) {
+      if (obj[o]) return false
+    }
+    return true
   }
 
   handleSubmit (e) {
@@ -117,7 +170,7 @@ class PlannerActivity extends Component {
     this.setState({
       creatingActivity: false
     })
-    this.props.mutate({
+    this.props.createActivity({
       variables: {
         name: this.state.name,
         date: this.props.activity.date,
@@ -126,19 +179,7 @@ class PlannerActivity extends Component {
         loadSequence: 1
       },
       refetchQueries: [{
-        query: gql`
-          query queryItinerary($id: ID!) {
-            findItinerary(id: $id){
-              activities {
-                id
-                name
-                location {
-                  name
-                }
-                date
-              }
-            }
-          }`,
+        query: queryItinerary,
         variables: { id: this.props.itineraryId }
       }]
     })
@@ -147,6 +188,41 @@ class PlannerActivity extends Component {
   handleChange (e) {
     this.setState({
       [e.target.name]: e.target.value
+    })
+  }
+
+  handleDelete () {
+    this.props.deleteActivity({
+      variables: {
+        id: this.props.activity.id
+      },
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.itineraryId }
+      }]
+    })
+  }
+
+  handleEdit (e, element) {
+    e.preventDefault()
+    const properties = {
+      activityName: 'name',
+      locationName: 'LocationId'
+    }
+
+    this.setState({
+      editing: Object.assign(this.state.editing, {[element]: false})
+    })
+
+    this.props.updateActivity({
+      variables: {
+        id: this.props.activity.id,
+        [properties[element]]: this.state[element]
+      },
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.itineraryId }
+      }]
     })
   }
 }
@@ -171,12 +247,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-const createActivity = gql`
-  mutation createActivity($name: String!, $date: Int!, $LocationId: ID!, $ItineraryId: ID!, $loadSequence: Int!) {
-    createActivity(name: $name, date: $date, LocationId: $LocationId, ItineraryId: $ItineraryId, loadSequence: $loadSequence) {
-      id
-    }
-  }
-`
-
-export default connect(null, mapDispatchToProps)(graphql(createActivity)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(PlannerActivity))))
+export default connect(null, mapDispatchToProps)(compose(
+  graphql(createActivity, { name: 'createActivity' }),
+  graphql(updateActivity, { name: 'updateActivity' }),
+  graphql(deleteActivity, { name: 'deleteActivity' })
+)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(PlannerActivity))))
