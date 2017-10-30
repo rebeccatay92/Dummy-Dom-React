@@ -210,9 +210,18 @@ class PlannerActivity extends Component {
       locationName: 'LocationId'
     }
 
+    const initialValue = {
+      activityName: this.props.activity.name,
+      locationName: this.props.activity.location.id
+    }
+
     this.setState({
       editing: {...this.state.editing, ...{ [element]: false }}
     })
+
+    if (this.state[element] === initialValue[element]) {
+      return
+    }
 
     this.props.updateActivity({
       variables: {

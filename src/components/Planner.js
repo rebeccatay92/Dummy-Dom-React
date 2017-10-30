@@ -18,8 +18,6 @@ class Planner extends Component {
     if (this.props.data.loading) return (<h1>Loading</h1>)
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
     const endDate = new Date(this.props.data.findItinerary.endDate * 1000)
-    // console.log(this.props.data.findItinerary.startDate, this.props.data.findItinerary.endDate);
-    // console.log(startDate, endDate);
     const getDates = (startDate, stopDate) => {
       let dateArray = []
       let currentDate = new Date(startDate)
@@ -36,6 +34,7 @@ class Planner extends Component {
     return (
       <div>
         <h1>{this.props.data.findItinerary.name}</h1>
+        <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4>
         {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {
           return (
