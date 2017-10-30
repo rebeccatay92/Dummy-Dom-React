@@ -153,7 +153,7 @@ class PlannerActivity extends Component {
       //   locationName: 'location'
       // }
       return (
-        <p onClick={() => this.setState({editing: Object.assign(this.state.editing, { [element]: true })})}>{this.state[element]}</p>
+        <p onClick={() => this.setState({editing: {...this.state.editing, ...{ [element]: true }}})}>{this.state[element]}</p>
       )
     }
   }
@@ -211,7 +211,7 @@ class PlannerActivity extends Component {
     }
 
     this.setState({
-      editing: Object.assign(this.state.editing, {[element]: false})
+      editing: {...this.state.editing, ...{ [element]: false }}
     })
 
     this.props.updateActivity({
