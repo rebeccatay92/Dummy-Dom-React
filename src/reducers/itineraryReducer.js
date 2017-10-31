@@ -2,8 +2,8 @@
 
 export const itineraryReducer = (state = [], action) => {
   switch (action.type) {
-    case 'INITIALIZE_ITINERARIES':
-      return action.itineraries
+    // case 'INITIALIZE_ITINERARIES':
+    //   return action.itineraries
     case 'CREATE_ITINERARY':
       return [
         ...state,
