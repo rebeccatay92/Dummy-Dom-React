@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { createItinerary } from '../actions/itineraryActions'
+import { graphql, compose } from 'react-apollo'
+
+import { createItinerary, allItineraries } from '../apollo/itinerary'
+
+// import { createItinerary } from '../actions/itineraryActions'
 
 class CreateItineraryForm extends Component {
   constructor () {
@@ -21,6 +25,24 @@ class CreateItineraryForm extends Component {
       [field]: e.target.value
     })
     console.log(this.state.countryCode)
+  }
+
+  handleSubmit () {
+    this.props.createItinerary({
+      variables: {
+        UserId: 1,
+        CountryId: [1, 2, 3],
+        name: this.state.name,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+        pax: this.state.pax,
+        travelInsurance: this.state.travelInsurance,
+        budget: this.state.budget
+      },
+      refetchQueries: [{
+        query: allItineraries
+      }]
+    })
   }
 
   render () {
@@ -307,29 +329,29 @@ class CreateItineraryForm extends Component {
             <input type='number' name='budget' onChange={(e) => this.handleChange(e, 'budget')} />
           </label>
         </form>
-        <button onClick={() => this.props.createItinerary(this.state)}>Add fake itinerary</button>
+        <button onClick={() => this.handleSubmit()}>Add itinerary with apollo</button>
       </div>
     )
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    createItinerary: (form) => {
-      console.log('textarea', form.name)
-      var newItinerary = {
-        id: null,
-        countryCode: form.countryCode,
-        name: form.name,
-        startDate: form.startDate,
-        endDate: form.endDate,
-        pax: form.pax,
-        travelInsurance: form.travelInsurance,
-        budget: form.budget
-      }
-      dispatch(createItinerary(newItinerary))
-    }
-  }
-}
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     createItinerary: (form) => {
+//       console.log('textarea', form.name)
+//       var newItinerary = {
+//         id: null,
+//         countryCode: form.countryCode,
+//         name: form.name,
+//         startDate: form.startDate,
+//         endDate: form.endDate,
+//         pax: form.pax,
+//         travelInsurance: form.travelInsurance,
+//         budget: form.budget
+//       }
+//       dispatch(createItinerary(newItinerary))
+//     }
+//   }
+// }
 
-export default connect(null, mapDispatchToProps)(CreateItineraryForm)
+export default connect(null)(compose(graphql(createItinerary, {name: 'createItinerary'})(CreateItineraryForm)))

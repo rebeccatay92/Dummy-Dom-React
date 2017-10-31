@@ -2,7 +2,6 @@ export const plannerReducer = (state = [], action) => {
   switch (action.type) {
     case 'INITIALIZE_PLANNER':
       return action.activities
-      break;
     case 'ADD_ACTIVITY':
       if (action.index === 'none') {
         return [

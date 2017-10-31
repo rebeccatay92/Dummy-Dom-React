@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import DateBox from './Date'
 import { graphql } from 'react-apollo'
-import { initializePlanner } from '../actions/plannerActions'
 import { connect } from 'react-redux'
+import { initializePlanner } from '../actions/plannerActions'
 import { queryItinerary } from '../apollo/itinerary'
+import DateBox from './Date'
 
 class Planner extends Component {
   constructor (props) {
