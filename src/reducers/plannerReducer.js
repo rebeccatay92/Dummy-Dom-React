@@ -2,7 +2,6 @@ export const plannerReducer = (state = [], action) => {
   switch (action.type) {
     case 'INITIALIZE_PLANNER':
       return action.activities
-      break;
     case 'ADD_ACTIVITY':
       if (action.index === 'none') {
         return [
@@ -63,10 +62,10 @@ export const plannerReducer = (state = [], action) => {
         })
       }
       let stateWithoutPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.date !== action.date && activity.id !== action.activity.id
+        return activity.id && activity.date !== action.date && activity.id !== action.activity.id && activity.__typename !== action.activity.__typename
       })
       let newStateWithPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.date === action.date && activity.id !== action.activity.id
+        return activity.id && activity.date === action.date && activity.id !== action.activity.id && activity.__typename !== action.activity.__typename
       })
       return [
         ...stateWithoutPlannerActivitiesWithThatDate,

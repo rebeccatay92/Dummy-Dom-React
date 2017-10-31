@@ -38,7 +38,12 @@ class Planner extends Component {
         {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {
           return (
-            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(activity => activity.date * 1000 === date)} draggable={this.state.draggable} key={i} day={i + 1} />
+            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(
+              activity => {
+                let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
+                return activityDate * 1000 === date
+              }
+            )} draggable={this.state.draggable} key={i} day={i + 1} />
           )
         })}
       </div>
@@ -47,7 +52,20 @@ class Planner extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
-      this.props.initializePlanner(nextProps.data.findItinerary.activities)
+      let lodgingCheckout = nextProps.data.findItinerary.lodgings.map(lodging => {
+        return {
+          id: lodging.id,
+          name: lodging.name,
+          location: {
+            name: lodging.location.name
+          },
+          endDate: lodging.endDate,
+          __typename: lodging.__typename
+        }
+      })
+      let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]
+      console.log(allActivities)
+      this.props.initializePlanner(allActivities)
     }
   }
 }

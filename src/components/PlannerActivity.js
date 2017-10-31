@@ -4,8 +4,9 @@ import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
-import { createActivity, updateActivity, deleteActivity } from '../apollo/activity'
+import { createActivity, createFlight, createFood, createLodging, createTransport, deleteActivity, deleteFlight, deleteFood, deleteLodging, deleteTransport } from '../apollo/activity'
 import { queryItinerary } from '../apollo/itinerary'
+import ActivityInfo from './ActivityInfo'
 
 const plannerActivitySource = {
   beginDrag (props) {
@@ -61,29 +62,25 @@ class PlannerActivity extends Component {
 
     this.state = {
       creatingActivity: false,
-      onBox: false,
-      name: '',
-      LocationId: '',
-      activityName: this.props.activity.name,
-      locationName: this.props.activity.location.name,
-      editing: {
-        activityName: false,
-        locationName: false
-      }
+      onBox: false
+      // activityName: this.props.activity.name,
+      // locationName: this.props.activity.location.name,
+      // Activity: this.props.activity.__typename === 'Activity' && this.props.activity,
+      // Flight: this.props.activity.__typename === 'Flight' && this.props.activity,
+      // Lodging: this.props.activity.__typename === 'Lodging' && this.props.activity,
+      // Transport: this.props.activity.__typename === 'Transport' && this.props.activity,
+      // Food: this.props.activity.__typename === 'Food' && this.props.activity
     }
   }
 
   render () {
     const { connectDropTarget, connectDragSource } = this.props
     let activityBox = (
-      <div style={{ cursor: this.props.draggable ? 'move' : 'default', minHeight: '10vh', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '0.5em' }} key={this.props.activity.id}>
-        {this.renderProps('activityName')}
-        {this.renderProps('locationName')}
-        {this.props.activity.id && <button onClick={() => this.handleDelete()}>Delete</button>}
-        {/* {
-          !this.props.activity.id ||
-          <button style={{marginBottom: '1vh'}} onClick={() => this.props.handleClick(this.props.activity)}>Remove</button>
-        } */}
+      <div style={{ cursor: this.props.draggable ? 'move' : 'default', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '100%', marginBottom: '2vh', minHeight: '10vh' }} key={this.props.activity.id}>
+        {this.renderInfo(this.props.activity.__typename)}
+        {/*
+          {this.props.activity.id && <button onClick={() => this.handleDelete()}>Delete</button>}
+        */}
       </div>
     )
     let dragBox = (
@@ -95,9 +92,9 @@ class PlannerActivity extends Component {
       dragBox = (
         <form onSubmit={(e) => this.handleSubmit(e)} style={{margin: '2vh 0 -2vh 0'}}>
           <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Name: </label>
-          <input required style={{width: '39%'}} value={this.state.activityName} onChange={(e) => this.handleChange(e)} name='name' />
+          <input required style={{width: '39%'}} onChange={(e) => this.handleChange(e)} name='activityName' />
           <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Location: </label>
-          <input required style={{width: '40%'}} value={this.state.activityLocation} onChange={(e) => this.handleChange(e)} name='LocationId' />
+          <input required style={{width: '40%'}} onChange={(e) => this.handleChange(e)} name='locationName' />
           <input style={{float: 'right', marginTop: '10px'}} type='submit' value='submit' />
           {/* <button onClick={(e) => {
             e.preventDefault()
@@ -115,7 +112,7 @@ class PlannerActivity extends Component {
     }
     // <h4>{this.props.activity.name}</h4>
     // <p>{this.props.activity.location.name}</p>
-    if (this.allFalse(this.state.editing)) return connectDragSource(connectDropTarget(activityBox))
+    if (!this.state.editing) return connectDragSource(connectDropTarget(activityBox))
     else return activityBox
   }
 
@@ -133,37 +130,84 @@ class PlannerActivity extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.setState({
-      activityName: nextProps.activity.name,
-      locationName: nextProps.activity.location.name
-    })
+    // this.setState({
+    //   activityName: nextProps.activity.name,
+    //   locationName: nextProps.activity.location.name
+    // })
   }
 
-  renderProps (element) {
-    if (this.state.editing[element]) {
-      return (
-        <form onSubmit={(e) => this.handleEdit(e, element)} style={{display: 'block'}}>
-          <input name={element} onChange={(e) => this.setState({ [element]: e.target.value })} value={this.state[element]} />
-          <button type='submit'>ok</button>
-        </form>
-      )
-    } else {
-      // const properties = {
-      //   activityName: 'name',
-      //   locationName: 'location'
-      // }
-      return (
-        <p onClick={() => this.setState({editing: {...this.state.editing, ...{ [element]: true }}})}>{this.state[element]}</p>
-      )
+  renderInfo (type) {
+    const activityBoxStyle = {
+      fontSize: '10pt'
+    }
+    switch (type) {
+      case 'Activity':
+        let startTime = new Date(this.props.activity.startTime).toTimeString().split('').slice(0, 5)
+        return (
+          <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
+            <h4 style={{display: 'inline'}}>
+              <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} />: <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='location' value={this.props.activity.location.name} />
+            </h4>
+            <p style={{marginTop: 0}}><ActivityInfo itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /></p>
+          </div>
+        )
+      case 'Flight':
+        let departureTime = new Date(this.props.activity.departureTime).toTimeString().split('').slice(0, 5)
+        let arrivalTime = new Date(this.props.activity.arrivalTime).toTimeString().split('').slice(0, 5)
+        return (
+          <div style={activityBoxStyle}>
+            <div style={{height: '10vh', marginBottom: '2vh'}}>
+              <h4 style={{display: 'inline'}}> Departure: <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></h4>
+              <p style={{marginTop: 0}}><ActivityInfo itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
+            </div>
+            <div style={{height: '10vh'}}>
+              <h4 style={{display: 'inline'}}> Arrival: <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity.arrivalLocation.name} /></h4>
+              <p style={{marginTop: 0}}><ActivityInfo itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={arrivalTime} /></p>
+            </div>
+          </div>
+        )
+      case 'Food':
+        startTime = new Date(this.props.activity.startTime).toTimeString().split('').slice(0, 5)
+        return (
+          <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
+            <h4 style={{display: 'inline'}}>
+              <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} />: <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='location' value={this.props.activity.location.name} />
+            </h4>
+            <p style={{marginTop: 0}}><ActivityInfo itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /></p>
+          </div>
+        )
+      case 'Transport':
+        departureTime = new Date(this.props.activity.departureTime).toTimeString().split('').slice(0, 5)
+        arrivalTime = new Date(this.props.activity.arrivalTime).toTimeString().split('').slice(0, 5)
+        return (
+          <div style={activityBoxStyle}>
+            <div style={{height: '10vh', marginBottom: '2vh'}}>
+              <h4 style={{display: 'inline'}}> Departure: <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></h4>
+              <p style={{marginTop: 0}}><ActivityInfo itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
+            </div>
+            <div style={{height: '10vh'}}>
+              <h4 style={{display: 'inline'}}> Arrival: <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity.arrivalLocation.name} /></h4>
+              <p style={{marginTop: 0}}><ActivityInfo itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={arrivalTime} /></p>
+            </div>
+          </div>
+        )
+      case 'Lodging':
+        return (
+          <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
+            <div style={{display: 'inline'}}>
+              <h4 style={{display: 'inline'}}> {this.props.activity.startDate ? 'Check In:' : 'Check Out:'} <ActivityInfo itineraryId={this.props.itineraryId} type={type} name='location' value={this.props.activity.location.name} /></h4>
+            </div>
+          </div>
+        )
     }
   }
 
-  allFalse (obj) {
-    for (var o in obj) {
-      if (obj[o]) return false
-    }
-    return true
-  }
+  // allFalse (obj) {
+  //   for (var o in obj) {
+  //     if (obj[o]) return false
+  //   }
+  //   return true
+  // }
 
   handleSubmit (e) {
     e.preventDefault()
@@ -172,9 +216,9 @@ class PlannerActivity extends Component {
     })
     this.props.createActivity({
       variables: {
-        name: this.state.name,
+        name: this.state.activityName,
         date: this.props.activity.date,
-        LocationId: this.state.LocationId,
+        LocationId: this.state.locationName,
         ItineraryId: this.props.itineraryId,
         loadSequence: 1
       },
@@ -195,38 +239,6 @@ class PlannerActivity extends Component {
     this.props.deleteActivity({
       variables: {
         id: this.props.activity.id
-      },
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.itineraryId }
-      }]
-    })
-  }
-
-  handleEdit (e, element) {
-    e.preventDefault()
-    const properties = {
-      activityName: 'name',
-      locationName: 'LocationId'
-    }
-
-    const initialValue = {
-      activityName: this.props.activity.name,
-      locationName: this.props.activity.location.id
-    }
-
-    this.setState({
-      editing: {...this.state.editing, ...{ [element]: false }}
-    })
-
-    if (this.state[element] === initialValue[element]) {
-      return
-    }
-
-    this.props.updateActivity({
-      variables: {
-        id: this.props.activity.id,
-        [properties[element]]: this.state[element]
       },
       refetchQueries: [{
         query: queryItinerary,
@@ -258,6 +270,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(null, mapDispatchToProps)(compose(
   graphql(createActivity, { name: 'createActivity' }),
-  graphql(updateActivity, { name: 'updateActivity' }),
   graphql(deleteActivity, { name: 'deleteActivity' })
 )(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(PlannerActivity))))

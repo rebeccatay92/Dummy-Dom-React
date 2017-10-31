@@ -37,7 +37,7 @@ class DateBox extends Component {
         {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
           {this.props.activities.map((activity, i, array) => {
             return (
-              <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={activity.id} index={i} isLast={i === array.length - 1} />
+              <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} />
             )
           })}
           <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} />

@@ -12,6 +12,8 @@ export const queryItinerary = gql`
       activities {
         id
         name
+        startTime
+        endTime
         location {
           id
           name
@@ -31,6 +33,8 @@ export const queryItinerary = gql`
         }
         departureDate
         arrivalDate
+        departureTime
+        arrivalTime
       }
       lodgings {
         id
@@ -50,6 +54,8 @@ export const queryItinerary = gql`
           name
         }
         date
+        startTime
+        endTime
       }
       transports {
         id
@@ -63,6 +69,8 @@ export const queryItinerary = gql`
           name
         }
         date
+        departureTime
+        arrivalTime
       }
     }
   }`
