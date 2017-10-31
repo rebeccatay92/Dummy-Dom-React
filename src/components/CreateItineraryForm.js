@@ -335,23 +335,4 @@ class CreateItineraryForm extends Component {
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     createItinerary: (form) => {
-//       console.log('textarea', form.name)
-//       var newItinerary = {
-//         id: null,
-//         countryCode: form.countryCode,
-//         name: form.name,
-//         startDate: form.startDate,
-//         endDate: form.endDate,
-//         pax: form.pax,
-//         travelInsurance: form.travelInsurance,
-//         budget: form.budget
-//       }
-//       dispatch(createItinerary(newItinerary))
-//     }
-//   }
-// }
-
 export default connect(null)(compose(graphql(createItinerary, {name: 'createItinerary'})(CreateItineraryForm)))
