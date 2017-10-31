@@ -16,3 +16,51 @@ export const queryItinerary = gql`
       }
     }
   }`
+
+export const allItineraries = gql`
+  query allItineraries {
+    allItineraries {
+      id
+      name
+      startDate
+      endDate
+      pax
+      travelInsurance
+      budget
+      countries {
+        id
+        name
+        code
+      }
+      owner {
+        id
+        name
+        email
+      }
+      users {
+        id
+        name
+        email
+      }
+      activities {
+        id
+        name
+      }
+      food {
+        id
+        name
+      }
+      lodgings {
+        id
+        name
+      }
+      flights {
+        id
+        name
+      }
+      transports {
+        id
+        name
+      }
+    }
+  }`

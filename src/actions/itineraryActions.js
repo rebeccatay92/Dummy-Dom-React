@@ -12,9 +12,9 @@ export const deleteItinerary = (id) => {
   }
 }
 
-// export const updateItinerary = (itinerary) => {
-//   return {
-//     type: 'UPDATE_ITINERARY',
-//     itinerary
-//   }
-// }
+export const initializeItineraries = (itineraries) => {
+  return {
+    type: 'INITIALIZE_ITINERARIES',
+    itineraries
+  }
+}
