@@ -1,8 +1,15 @@
 export const plannerReducer = (state = [], action) => {
   switch (action.type) {
     case 'INITIALIZE_PLANNER':
-      return action.activities
-    case 'ADD_ACTIVITY':
+      return action.activities.sort(
+        (a, b) => {
+          const loadSequence = activity => {
+            return activity.loadSequence || activity.startLoadSequence || activity.endLoadSequence || activity.departureLoadSequence
+          }
+          return loadSequence(a) - loadSequence(b)
+        }
+      )
+    case 'DROP_ACTIVITY':
       if (action.index === 'none') {
         return [
           ...state.filter(activity => {
@@ -12,10 +19,10 @@ export const plannerReducer = (state = [], action) => {
         ]
       } else {
         let stateWithoutActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && activity.date !== action.activity.date
+          return activity.id && (activity.date || activity.startDate || activity.endDate || activity.departureDate) !== (action.activity.date || action.activity.startDate || action.activity.endDate || action.activity.departureDate)
         })
         let newStateWithActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && activity.date === action.activity.date
+          return activity.id && (activity.date || activity.startDate || activity.endDate || activity.departureDate) === (action.activity.date || action.activity.startDate || action.activity.endDate || action.activity.departureDate)
         })
         return [
           ...stateWithoutActivitiesWithThatDate,
@@ -58,14 +65,14 @@ export const plannerReducer = (state = [], action) => {
     case 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY':
       if (!(action.index + 1)) {
         return state.filter(activity => {
-          return activity.id && activity.id !== action.activity.id
+          return activity.id && (activity.id !== action.activity.id || activity.__typename !== action.activity.__typename)
         })
       }
       let stateWithoutPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.date !== action.date && activity.id !== action.activity.id && activity.__typename !== action.activity.__typename
+        return activity.id && (activity.date || activity.startDate || activity.departureDate) !== (action.date || action.startDate || action.endDate) && (activity.id !== action.activity.id || activity.__typename !== action.activity.__typename)
       })
       let newStateWithPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.date === action.date && activity.id !== action.activity.id && activity.__typename !== action.activity.__typename
+        return activity.id && (activity.date || activity.startDate || activity.departureDate) === (action.date || action.startDate || action.endDate) && (activity.id !== action.activity.id || activity.__typename !== action.activity.__typename)
       })
       return [
         ...stateWithoutPlannerActivitiesWithThatDate,

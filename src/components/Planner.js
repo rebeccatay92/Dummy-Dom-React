@@ -60,7 +60,9 @@ class Planner extends Component {
             name: lodging.location.name
           },
           endDate: lodging.endDate,
-          __typename: lodging.__typename
+          endTime: lodging.endTime,
+          __typename: lodging.__typename,
+          endLoadSequence: lodging.endLoadSequence
         }
       })
       let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]

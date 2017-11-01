@@ -30,17 +30,25 @@ function collect (connect, monitor) {
 class DateBox extends Component {
   render () {
     const { connectDropTarget, isOver } = this.props
+    // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
       <div>
-        <h2>Day {this.props.day}: {new Date(this.props.date).toDateString()}</h2>
-        <hr />
+        <h2 style={{display: 'inline-block', margin: '0 0 0 1vw'}}>Day {this.props.day} </h2>
+        <span style={{fontSize: '12pt', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
+        <hr style={{marginBottom: '2vh'}} />
         {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
           {this.props.activities.map((activity, i, array) => {
             return (
               <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} />
             )
           })}
-          <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} />
+          <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
+            this.props.activities.length > 0 &&
+            (this.props.activities[this.props.activities.length - 1].loadSequence ||
+            this.props.activities[this.props.activities.length - 1].startLoadSequence ||
+            this.props.activities[this.props.activities.length - 1].endLoadSequence ||
+            this.props.activities[this.props.activities.length - 1].departureLoadSequence)
+          } />
         </div>)}
       </div>
     )

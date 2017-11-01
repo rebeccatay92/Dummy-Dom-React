@@ -19,6 +19,7 @@ export const queryItinerary = gql`
           name
         }
         date
+        loadSequence
       }
       flights {
         id
@@ -35,6 +36,8 @@ export const queryItinerary = gql`
         arrivalDate
         departureTime
         arrivalTime
+        departureLoadSequence
+        arrivalLoadSequence
       }
       lodgings {
         id
@@ -45,6 +48,10 @@ export const queryItinerary = gql`
         }
         startDate
         endDate
+        startTime
+        endTime
+        startLoadSequence
+        endLoadSequence
       }
       food {
         id
@@ -56,6 +63,7 @@ export const queryItinerary = gql`
         date
         startTime
         endTime
+        loadSequence
       }
       transports {
         id
@@ -71,6 +79,8 @@ export const queryItinerary = gql`
         date
         departureTime
         arrivalTime
+        startLoadSequence
+        endLoadSequence
       }
     }
   }`

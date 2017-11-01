@@ -7,12 +7,12 @@ import Planner from './Planner'
 class PlannerPage extends Component {
   render () {
     return (
-      <div style={{fontFamily: 'Helvetica'}}>
-        <div style={{display: 'inline-block', width: '80vw', verticalAlign: 'top', marginRight: '1vw'}}>
+      <div style={{fontFamily: '\'Roboto\', sans-serif'}}>
+        <div style={{display: 'inline-block', width: '70vw', verticalAlign: 'top', marginRight: '1vw'}}>
           {/* <h1>Short Trip to Thailand</h1> */}
           <Planner id={this.props.match.params.itineraryId} />
         </div>
-        <div style={{display: 'inline-block', width: '15vw', verticalAlign: 'top', position: 'sticky', top: '0px'}}>
+        <div style={{display: 'inline-block', width: '25vw', verticalAlign: 'top', position: 'sticky', top: '0px'}}>
           <h1 style={{textAlign: 'center'}}>Bucket</h1>
           {/* <BucketList /> */}
         </div>

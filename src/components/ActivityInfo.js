@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import { updateActivity, updateFlight, updateFood, updateLodging, updateTransport } from '../apollo/activity'
 import { queryItinerary } from '../apollo/itinerary'
 
@@ -11,20 +11,30 @@ class ActivityInfo extends Component {
       editing: false,
       value: this.props.value
     }
+
+    this.toggleDraggable = this.props.toggleDraggable
   }
 
   render () {
     if (this.state.editing) {
       return (
-        <form onSubmit={(e) => this.handleEdit(e)} style={{display: 'block'}}>
+        <form onSubmit={(e) => this.handleEdit(e)} style={{display: 'inline'}}>
           <input name={this.props.name} onChange={(e) => this.setState({ value: e.target.value })} value={this.state.value} />
           <button type='submit'>ok</button>
         </form>
       )
     }
     return (
-      <span onClick={() => this.setState({editing: false})}>{this.state.value}</span>
+      <span onClick={() => this.handleClick()}>{this.state.value}</span>
     )
+  }
+
+  handleClick () {
+    this.setState({
+      editing: true
+    })
+
+    this.toggleDraggable()
   }
 
   handleEdit (e, element) {
@@ -38,9 +48,17 @@ class ActivityInfo extends Component {
       return
     }
 
-    this.props.updateActivity({
+    const update = {
+      Activity: this.props.updateActivity,
+      Flight: this.props.updateFlight,
+      Lodging: this.props.updateLodging,
+      Food: this.props.updateFood,
+      Transport: this.props.updateTransport
+    }
+
+    update[this.props.type]({
       variables: {
-        id: this.props.activity.id,
+        id: this.props.activityId,
         [this.props.name]: this.state.value
       },
       refetchQueries: [{
@@ -51,4 +69,10 @@ class ActivityInfo extends Component {
   }
 }
 
-export default ActivityInfo
+export default (compose(
+  graphql(updateActivity, { name: 'updateActivity' }),
+  graphql(updateFlight, { name: 'updateFlight' }),
+  graphql(updateTransport, { name: 'updateTransport' }),
+  graphql(updateLodging, { name: 'updateLodging' }),
+  graphql(updateFood, { name: 'updateFood' })
+))(ActivityInfo)
