@@ -126,3 +126,12 @@ export const createItinerary = gql`
       budget
     }
   }`
+
+export const createCountriesItineraries = gql`
+    mutation createCountriesItineraries($ItineraryId: Int!, $countryCode: String!) {
+      createCountriesItineraries(ItineraryId: $ItineraryId, countryCode: $countryCode) {
+        ItineraryId
+        CountryId
+      }
+    }
+  `

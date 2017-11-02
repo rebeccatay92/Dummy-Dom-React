@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
+import { createCountriesItineraries, allItineraries } from '../apollo/itinerary'
 
 class AddCountry extends Component {
   constructor (props) {
@@ -17,6 +18,16 @@ class AddCountry extends Component {
   handleSubmit (e) {
     e.preventDefault()
     console.log('countryCode is', this.state.countryCode)
+    this.props.createCountriesItineraries({
+      variables: {
+        ItineraryId: this.props.ItineraryId,
+        countryCode: this.state.countryCode
+      },
+      refetchQueries: [{
+        query: allItineraries
+      }]
+      // should i refetch allItineraries or only the updated one?
+    })
   }
 
   render () {
@@ -32,4 +43,4 @@ class AddCountry extends Component {
   }
 }
 
-export default AddCountry
+export default connect(null)(compose(graphql(createCountriesItineraries, {name: 'createCountriesItineraries'})(AddCountry)))
