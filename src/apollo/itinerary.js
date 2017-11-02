@@ -135,3 +135,9 @@ export const createCountriesItineraries = gql`
       }
     }
   `
+
+export const deleteCountriesItineraries = gql`
+      mutation deleteCountriesItineraries($ItineraryId: Int!, $CountryId: Int!) {
+        deleteCountriesItineraries(ItineraryId: $ItineraryId, CountryId: $CountryId)
+      }
+    `
