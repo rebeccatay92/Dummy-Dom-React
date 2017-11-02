@@ -127,6 +127,11 @@ export const createItinerary = gql`
     }
   }`
 
+export const deleteItinerary = gql`
+  mutation deleteItinerary($ItineraryId: ID!) {
+    deleteItinerary(id:$ItineraryId)
+  }
+`
 export const createCountriesItineraries = gql`
     mutation createCountriesItineraries($ItineraryId: Int!, $countryCode: String!) {
       createCountriesItineraries(ItineraryId: $ItineraryId, countryCode: $countryCode) {

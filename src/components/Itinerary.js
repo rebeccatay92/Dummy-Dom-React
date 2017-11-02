@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
 
-import { deleteCountriesItineraries, allItineraries } from '../apollo/itinerary'
+import { deleteItinerary, deleteCountriesItineraries, allItineraries } from '../apollo/itinerary'
 
 import AddCountry from './AddCountry'
 
@@ -19,6 +19,19 @@ class Itinerary extends Component {
       }]
     })
   }
+
+  deleteItinerary (ItineraryId) {
+    console.log('ItineraryId', ItineraryId)
+    this.props.deleteItinerary({
+      variables: {
+        ItineraryId: ItineraryId
+      },
+      refetchQueries: [{
+        query: allItineraries
+      }]
+    })
+  }
+
   render () {
     var itinerary = this.props.itinerary
     return (
@@ -40,18 +53,13 @@ class Itinerary extends Component {
         <h3 style={{display: 'inline-block'}}>travelInsurance: {itinerary.travelInsurance}</h3>
         <h3 style={{display: 'inline-block'}}>budget: {itinerary.budget}</h3>
         <h3>Owner: {itinerary.owner.name}</h3>
-        <button onClick={() => this.props.deleteItinerary(itinerary.id)}>Delete this itinerary</button>
+        <button onClick={() => this.deleteItinerary(itinerary.id)}>Delete this itinerary</button>
       </div>
     )
   }
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     deleteItinerary: (id) => {
-//       dispatch(deleteItinerary(id))
-//     }
-//   }
-// }
-
-export default connect(null)(compose(graphql(deleteCountriesItineraries, {name: 'deleteCountriesItineraries'})(Itinerary)))
+export default compose(
+  graphql(deleteCountriesItineraries, {name: 'deleteCountriesItineraries'}),
+  graphql(deleteItinerary, {name: 'deleteItinerary'})
+)(Itinerary)
