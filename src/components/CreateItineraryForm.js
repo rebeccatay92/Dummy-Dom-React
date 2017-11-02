@@ -10,11 +10,11 @@ class CreateItineraryForm extends Component {
     this.state = {
       name: '',
       countryCode: '',
-      startDate: null,
-      endDate: null,
-      pax: null,
+      startDate: '',
+      endDate: '',
+      pax: 0,
       travelInsurance: '',
-      budget: null
+      budget: 0
     }
   }
 
@@ -22,17 +22,21 @@ class CreateItineraryForm extends Component {
     this.setState({
       [field]: e.target.value
     })
-    console.log(this.state.countryCode)
   }
 
-  handleSubmit () {
+  handleSubmit (e) {
+    e.preventDefault()
+    var startDate = new Date(this.state.startDate)
+    var startUnix = startDate.getTime() / 1000
+    var endDate = new Date(this.state.endDate)
+    var endUnix = endDate.getTime() / 1000
     this.props.createItinerary({
       variables: {
         UserId: 1,
         countryCode: this.state.countryCode,
         name: this.state.name,
-        startDate: this.state.startDate,
-        endDate: this.state.endDate,
+        startDate: startUnix,
+        endDate: endUnix,
         pax: this.state.pax,
         travelInsurance: this.state.travelInsurance,
         budget: this.state.budget
@@ -41,13 +45,22 @@ class CreateItineraryForm extends Component {
         query: allItineraries
       }]
     })
+    this.setState({
+      name: '',
+      countryCode: '',
+      startDate: '',
+      endDate: '',
+      pax: 0,
+      travelInsurance: '',
+      budget: 0
+    })
   }
 
   render () {
     return (
       <div style={{border: '1px solid black'}}>
         <h3>Create Itinerary Form</h3>
-        <form>
+        <form onSubmit={(e) => this.handleSubmit(e)}>
           <label>
             Country
             <select name='countryCode' value={this.state.countryCode} onChange={(e) => this.handleChange(e, 'countryCode')}>
@@ -304,30 +317,30 @@ class CreateItineraryForm extends Component {
           </label>
           <label>
             Name of this itinerary
-            <input type='text' name='name' onChange={(e) => this.handleChange(e, 'name')} />
+            <input type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} />
           </label>
           <label>
             Start Date
-            <input type='date' name='startDate' onChange={(e) => this.handleChange(e, 'startDate')} />
+            <input type='date' name='startDate' value={this.state.startDate} onChange={(e) => this.handleChange(e, 'startDate')} />
           </label>
           <label>
             End Date
-            <input type='date' name='endDate' onChange={(e) => this.handleChange(e, 'endDate')} />
+            <input type='date' name='endDate' value={this.state.endDate} onChange={(e) => this.handleChange(e, 'endDate')} />
           </label>
           <label>
             Pax
-            <input type='number' name='pax' onChange={(e) => this.handleChange(e, 'pax')} />
+            <input type='number' name='pax' value={this.state.pax} onChange={(e) => this.handleChange(e, 'pax')} />
           </label>
           <label>
             Travel Insurance
-            <input type='text' name='travelInsurance' onChange={(e) => this.handleChange(e, 'travelInsurance')} />
+            <input type='text' name='travelInsurance' value={this.state.travelInsurance} onChange={(e) => this.handleChange(e, 'travelInsurance')} />
           </label>
           <label>
             Budget
-            <input type='number' name='budget' onChange={(e) => this.handleChange(e, 'budget')} />
+            <input type='number' name='budget' value={this.state.budget} onChange={(e) => this.handleChange(e, 'budget')} />
           </label>
+          <button type='submit'>Add itinerary with apollo</button>
         </form>
-        <button onClick={() => this.handleSubmit()}>Add itinerary with apollo</button>
       </div>
     )
   }
