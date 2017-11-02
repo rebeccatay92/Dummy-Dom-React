@@ -1,23 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { deleteItinerary } from '../actions/itineraryActions'
+import AddCountry from './AddCountry'
 
 class Itinerary extends Component {
-
-  handleSubmit(e) {
-    e.preventDefault()
-    console.log(e.target.value)
-  }
 
   render () {
     var itinerary = this.props.itinerary
     return (
       <div style={{border: '1px solid black'}}>
         <div>
-          <form>
-            <input type='text' name='countryCode' />
-            <button type='submit' onClick={(e) => this.handleSubmit(e)}>Add country (testing with countryCode)</button>
-          </form>
+          <AddCountry ItineraryId={itinerary.id} />
           Countries:
           <ul>
             {itinerary.countries.map(country => {

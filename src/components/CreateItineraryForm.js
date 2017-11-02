@@ -29,7 +29,7 @@ class CreateItineraryForm extends Component {
     this.props.createItinerary({
       variables: {
         UserId: 1,
-        CountryId: [1, 2, 3],
+        countryCode: this.state.countryCode,
         name: this.state.name,
         startDate: this.state.startDate,
         endDate: this.state.endDate,

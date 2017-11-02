@@ -115,8 +115,8 @@ export const allItineraries = gql`
 
 // include country code. coutnryIdArr
 export const createItinerary = gql`
-  mutation createItinerary($UserId: Int!, $CountryId: [Int!], $name: String!, $startDate: Int, $endDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {
-    createItinerary(UserId:$UserId, CountryId: $CountryId, name: $name, startDate: $startDate, endDate: $endDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget) {
+  mutation createItinerary($UserId: Int!, $countryCode: String, $name: String!, $startDate: Int, $endDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {
+    createItinerary(UserId:$UserId, countryCode: $countryCode, name: $name, startDate: $startDate, endDate: $endDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget) {
       id
       name
       startDate
