@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
 
 import { createItinerary, allItineraries } from '../apollo/itinerary'
@@ -346,4 +345,4 @@ class CreateItineraryForm extends Component {
   }
 }
 
-export default connect(null)(compose(graphql(createItinerary, {name: 'createItinerary'})(CreateItineraryForm)))
+export default graphql(createItinerary, {name: 'createItinerary'})(CreateItineraryForm)

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { graphql, compose } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import { allItineraries } from '../apollo/itinerary'
 
 import CreateItineraryForm from './CreateItineraryForm'
@@ -24,4 +24,4 @@ class ItineraryPage extends Component {
   }
 }
 
-export default compose(graphql(allItineraries))(ItineraryPage)
+export default graphql(allItineraries)(ItineraryPage)
