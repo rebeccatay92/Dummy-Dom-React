@@ -18,8 +18,6 @@ class Planner extends Component {
     if (this.props.data.loading) return (<h1>Loading</h1>)
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
     const endDate = new Date(this.props.data.findItinerary.endDate * 1000)
-    // console.log(this.props.data.findItinerary.startDate, this.props.data.findItinerary.endDate);
-    // console.log(startDate, endDate);
     const getDates = (startDate, stopDate) => {
       let dateArray = []
       let currentDate = new Date(startDate)
@@ -36,10 +34,16 @@ class Planner extends Component {
     return (
       <div>
         <h1>{this.props.data.findItinerary.name}</h1>
+        <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4>
         {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {
           return (
-            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(activity => activity.date * 1000 === date)} draggable={this.state.draggable} key={i} day={i + 1} />
+            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(
+              activity => {
+                let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
+                return activityDate * 1000 === date
+              }
+            )} draggable={this.state.draggable} key={i} day={i + 1} />
           )
         })}
       </div>
@@ -48,7 +52,22 @@ class Planner extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
-      this.props.initializePlanner(nextProps.data.findItinerary.activities)
+      let lodgingCheckout = nextProps.data.findItinerary.lodgings.map(lodging => {
+        return {
+          id: lodging.id,
+          name: lodging.name,
+          location: {
+            name: lodging.location.name
+          },
+          endDate: lodging.endDate,
+          endTime: lodging.endTime,
+          __typename: lodging.__typename,
+          endLoadSequence: lodging.endLoadSequence
+        }
+      })
+      let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]
+      console.log(allActivities)
+      this.props.initializePlanner(allActivities)
     }
   }
 }

@@ -7,7 +7,7 @@ export const initializePlanner = (activities) => {
 
 export const addActivity = (activity, index = 'none') => {
   return {
-    type: 'ADD_ACTIVITY',
+    type: 'DROP_ACTIVITY',
     activity,
     index
   }
