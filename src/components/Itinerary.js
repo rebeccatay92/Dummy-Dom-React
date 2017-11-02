@@ -14,7 +14,6 @@ class Itinerary extends Component {
     }
   }
   deleteCountry (CountryId, ItineraryId) {
-    console.log('country', CountryId, 'itinerary', ItineraryId)
     this.props.deleteCountriesItineraries({
       variables: {
         ItineraryId: ItineraryId,
@@ -29,12 +28,7 @@ class Itinerary extends Component {
   toggleUpdateForm () {
     this.setState({updating: !this.state.updating})
   }
-  updateItineraryDetails (e) {
-    e.preventDefault()
-    console.log('update itinerary details')
-  }
   deleteItinerary (ItineraryId) {
-    console.log('ItineraryId', ItineraryId)
     this.props.deleteItinerary({
       variables: {
         ItineraryId: ItineraryId
@@ -63,8 +57,8 @@ class Itinerary extends Component {
           </ul>
         </div>
         <h3>name: {itinerary.name}</h3>
-        <h3 style={{display: 'inline-block'}}>startDate: {itinerary.startDate}</h3>
-        <h3 style={{display: 'inline-block'}}>endDate: {itinerary.endDate}</h3>
+        <h3 style={{display: 'inline-block'}}>startDate: {startDate}</h3>
+        <h3 style={{display: 'inline-block'}}>endDate: {endDate}</h3>
         <h3 style={{display: 'inline-block'}}>pax: {itinerary.pax}</h3>
         <h3 style={{display: 'inline-block'}}>travelInsurance: {itinerary.travelInsurance}</h3>
         <h3 style={{display: 'inline-block'}}>budget: {itinerary.budget}</h3>
