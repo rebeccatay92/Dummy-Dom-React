@@ -4,8 +4,6 @@ import { graphql, compose } from 'react-apollo'
 
 import { createItinerary, allItineraries } from '../apollo/itinerary'
 
-// import { createItinerary } from '../actions/itineraryActions'
-
 class CreateItineraryForm extends Component {
   constructor () {
     super()

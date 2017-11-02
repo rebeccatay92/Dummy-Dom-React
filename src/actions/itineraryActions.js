@@ -11,10 +11,3 @@ export const deleteItinerary = (id) => {
     id
   }
 }
-
-// export const initializeItineraries = (itineraries) => {
-//   return {
-//     type: 'INITIALIZE_ITINERARIES',
-//     itineraries
-//   }
-// }

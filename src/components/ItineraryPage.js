@@ -25,10 +25,10 @@ class ItineraryPage extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    itineraries: state.itineraryList
-  }
-}
+// const mapStateToProps = (state) => {
+//   return {
+//     itineraries: state.itineraryList
+//   }
+// }
 
-export default connect(mapStateToProps)(compose(graphql(allItineraries))(ItineraryPage))
+export default connect(null)(compose(graphql(allItineraries))(ItineraryPage))

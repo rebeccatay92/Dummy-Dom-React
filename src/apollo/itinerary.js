@@ -110,26 +110,6 @@ export const allItineraries = gql`
         name
         email
       }
-      activities {
-        id
-        name
-      }
-      food {
-        id
-        name
-      }
-      lodgings {
-        id
-        name
-      }
-      flights {
-        id
-        name
-      }
-      transports {
-        id
-        name
-      }
     }
   }`
 

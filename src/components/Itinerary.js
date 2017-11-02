@@ -4,17 +4,28 @@ import { deleteItinerary } from '../actions/itineraryActions'
 
 class Itinerary extends Component {
 
+  handleSubmit(e) {
+    e.preventDefault()
+    console.log(e.target.value)
+  }
+
   render () {
     var itinerary = this.props.itinerary
     return (
       <div style={{border: '1px solid black'}}>
-        <h3 style={{display: 'inline-block'}}>id: {itinerary.id}</h3>
-        <span>
+        <div>
+          <form>
+            <input type='text' name='countryCode' />
+            <button type='submit' onClick={(e) => this.handleSubmit(e)}>Add country (testing with countryCode)</button>
+          </form>
           Countries:
-          {itinerary.countries.map(country => {
-            return <span>{country.name} {country.code}</span>
-          })}
-        </span>
+          <ul>
+            {itinerary.countries.map(country => {
+              return <li key={country.id}>{country.id} {country.name} {country.code}</li>
+            })}
+          </ul>
+        </div>
+        <h3 style={{display: 'inline-block'}}>id: {itinerary.id}</h3>
         <h3 style={{display: 'inline-block'}}>name: {itinerary.name}</h3>
         <h3 style={{display: 'inline-block'}}>startDate: {itinerary.startDate}</h3>
         <h3 style={{display: 'inline-block'}}>endDate: {itinerary.endDate}</h3>
