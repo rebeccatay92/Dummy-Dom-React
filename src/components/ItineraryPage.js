@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
 import { graphql, compose } from 'react-apollo'
 import { allItineraries } from '../apollo/itinerary'
@@ -25,10 +24,4 @@ class ItineraryPage extends Component {
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     itineraries: state.itineraryList
-//   }
-// }
-
-export default connect(null)(compose(graphql(allItineraries))(ItineraryPage))
+export default compose(graphql(allItineraries))(ItineraryPage)

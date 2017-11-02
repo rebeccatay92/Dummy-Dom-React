@@ -32,13 +32,10 @@ class AddCountry extends Component {
 
   render () {
     return (
-      <div>
-        <h3>ItineraryId: {this.props.ItineraryId}</h3>
-        <form>
-          <input type='text' onChange={(e) => this.handleChange(e)} />
-          <button type='submit' onClick={(e) => this.handleSubmit(e)}>Add country by countryCode</button>
-        </form>
-      </div>
+      <form>
+        <input type='text' onChange={(e) => this.handleChange(e)} />
+        <button type='submit' onClick={(e) => this.handleSubmit(e)}>Add country by countryCode</button>
+      </form>
     )
   }
 }
