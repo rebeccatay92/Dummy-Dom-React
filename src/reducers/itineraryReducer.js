@@ -1,7 +1,9 @@
-import { itineraries } from '../itineraries'
+// import { itineraries } from '../itineraries'
 
-export const itineraryReducer = (state = itineraries, action) => {
+export const itineraryReducer = (state = [], action) => {
   switch (action.type) {
+    // case 'INITIALIZE_ITINERARIES':
+    //   return action.itineraries
     case 'CREATE_ITINERARY':
       return [
         ...state,
