@@ -28,6 +28,7 @@ class Itinerary extends Component {
   toggleUpdateForm () {
     this.setState({updating: !this.state.updating})
   }
+
   deleteItinerary (ItineraryId) {
     this.props.deleteItinerary({
       variables: {
@@ -65,7 +66,7 @@ class Itinerary extends Component {
 
         <button onClick={() => this.toggleUpdateForm()}>Toggle update form</button>
         <div hidden={!this.state.updating}>
-          <UpdateItineraryDetails itinerary={itinerary} />
+          <UpdateItineraryDetails itinerary={itinerary} toggleUpdateForm={() => this.toggleUpdateForm()} />
         </div>
         <button onClick={() => this.deleteItinerary(itinerary.id)}>Delete this itinerary</button>
       </div>
