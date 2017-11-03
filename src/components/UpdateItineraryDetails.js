@@ -24,10 +24,26 @@ class UpdateItineraryDetails extends Component {
     e.preventDefault()
     console.log(this.state)
     // these dates are different from those in the render. render takes props. this takes state.
-    var startDate = new Date(this.state.startDate)
-    var startUnix = startDate.getTime() / 1000
-    var endDate = new Date(this.state.endDate)
-    var endUnix = endDate.getTime() / 1000
+
+    // convert to unix int only if state was changed to a string by input type 'date'. else this.state.startDate is already a unix
+    console.log('type', typeof (this.state.startDate))
+    if (typeof (this.state.startDate) !== 'number') {
+      var startDate = new Date(this.state.startDate)
+      var startUnix = startDate.getTime() / 1000
+      console.log('inside if', this.state)
+    } else {
+      startUnix = this.state.startDate
+    }
+    if (typeof (this.state.endDate) !== 'number') {
+      var endDate = new Date(this.state.endDate)
+      var endUnix = endDate.getTime() / 1000
+      this.setState({endDate: endUnix})
+    } else {
+      endUnix = this.state.endDate
+    }
+    console.log('outside if startUnix', startUnix)
+    console.log('outside if endUnix', endUnix)
+
     this.props.updateItineraryDetails({
       variables: {
         id: this.state.id,
