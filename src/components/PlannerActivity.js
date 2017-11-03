@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { DropTarget, DragSource } from 'react-dnd'
-import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
+import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
@@ -25,22 +25,21 @@ const plannerActivitySource = {
 
 const plannerActivityTarget = {
   hover (props, monitor, component) {
-    let date = props.activity.date || props.activity.startDate || props.activity.departureDate
+    let date = props.activity.date || props.activity.startDate || props.activity.departureDate || props.activity.endDate
     if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index, date)
     else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem(), date)
   },
   drop (props, monitor) {
-    let date = props.activity.date || props.activity.startDate || props.activity.departureDate
+    let date = props.activity.date || props.activity.startDate || props.activity.departureDate || props.activity.endDate
     const typeOfDates = {
       Activity: 'date',
       Food: 'date',
-      Lodging: 'startDate',
+      Lodging: monitor.getItem().startDate ? 'startDate' : 'endDate',
       Transport: 'date',
       Flight: 'departureDate'
     }
     let newActivity = {...monitor.getItem(), ...{[typeOfDates[monitor.getItem().__typename]]: date}}
-    console.log(newActivity)
-    props.addActivity(newActivity, props.index)
+    props.dropActivity(newActivity, props.index)
     if (monitor.getItemType() === 'activity') {
       props.deleteActivityFromBucket(monitor.getItem())
     }
@@ -84,10 +83,10 @@ class PlannerActivity extends Component {
     const { connectDropTarget, connectDragSource, getItem } = this.props
     let minHeight
     if (!this.props.activity.id && !this.props.empty) {
-      minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '20vh' : '10vh'
+      minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '22vh' : '12vh'
     }
     let activityBox = (
-      <div style={{ cursor: this.state.draggable ? 'move' : 'default', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '100%', marginBottom: '2vh', minHeight: this.props.activity.id ? '10vh' : minHeight }} key={this.props.activity.id}>
+      <div style={{ cursor: this.state.draggable ? 'move' : 'default', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '100%', paddingBottom: '2vh', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
         {this.renderInfo(this.props.activity.__typename)}
         {/*
           {this.props.activity.id && <button onClick={() => this.handleDelete()}>Delete</button>}
@@ -121,8 +120,6 @@ class PlannerActivity extends Component {
         </div>
       )
     }
-    // <h4>{this.props.activity.name}</h4>
-    // <p>{this.props.activity.location.name}</p>
     if (this.state.draggable) return connectDragSource(connectDropTarget(activityBox))
     else return activityBox
   }
@@ -138,13 +135,6 @@ class PlannerActivity extends Component {
 
   componentDidMount () {
     window.addEventListener('mousedown', () => this.toggleCreateForm())
-  }
-
-  componentWillReceiveProps (nextProps) {
-    // this.setState({
-    //   activityName: nextProps.activity.name,
-    //   locationName: nextProps.activity.location.name
-    // })
   }
 
   renderInfo (type) {
@@ -168,7 +158,7 @@ class PlannerActivity extends Component {
         let arrivalTime = new Date(this.props.activity.arrivalTime).toTimeString().split('').slice(0, 5)
         return (
           <div style={activityBoxStyle}>
-            <div style={{height: '10vh', marginBottom: '2vh'}}>
+            <div style={{height: '10vh', paddingBottom: '2vh'}}>
               <h4 style={{display: 'inline'}}> Flight Departure: <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></h4>
               <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
             </div>
@@ -193,7 +183,7 @@ class PlannerActivity extends Component {
         arrivalTime = new Date(this.props.activity.arrivalTime).toTimeString().split('').slice(0, 5)
         return (
           <div style={activityBoxStyle}>
-            <div style={{height: '10vh', marginBottom: '2vh'}}>
+            <div style={{height: '10vh', paddingBottom: '2vh'}}>
               <h4 style={{display: 'inline'}}> Departure: <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></h4>
               <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
             </div>
@@ -276,8 +266,8 @@ const mapDispatchToProps = (dispatch) => {
     hoverOverActivity: (index, date) => {
       dispatch(hoverOverActivity(index, date))
     },
-    addActivity: (activity, index) => {
-      dispatch(addActivity(activity, index))
+    dropActivity: (activity, index) => {
+      dispatch(dropActivity(activity, index))
     },
     deleteActivityFromBucket: (activity) => {
       dispatch(deleteActivityFromBucket(activity))

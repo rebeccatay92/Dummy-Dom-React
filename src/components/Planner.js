@@ -66,7 +66,7 @@ class Planner extends Component {
         }
       })
       let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]
-      console.log(allActivities)
+      // console.log(allActivities)
       this.props.initializePlanner(allActivities)
     }
   }

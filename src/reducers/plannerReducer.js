@@ -63,16 +63,41 @@ export const plannerReducer = (state = [], action) => {
         ]
       ]
     case 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY':
+      // console.log(state, action.activity)
       if (!(action.index + 1)) {
         return state.filter(activity => {
-          return activity.id && (activity.id !== action.activity.id || activity.__typename !== action.activity.__typename)
+          const types = {
+            Activity: 'Activity',
+            Flight: 'Flight',
+            Food: 'Food',
+            Transport: 'Transport',
+            Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+          }
+          const draggedtypes = {...types, ...{ Lodging: action.activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout' }}
+          return activity.id && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
         })
       }
       let stateWithoutPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && (activity.date || activity.startDate || activity.departureDate) !== (action.date || action.startDate || action.endDate) && (activity.id !== action.activity.id || activity.__typename !== action.activity.__typename)
+        const types = {
+          Activity: 'Activity',
+          Flight: 'Flight',
+          Food: 'Food',
+          Transport: 'Transport',
+          Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+        }
+        const draggedtypes = {...types, ...{ Lodging: action.activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout' }}
+        return activity.id && (activity.date || activity.startDate || activity.departureDate || activity.endDate) !== (action.date || action.startDate || action.departureDate || action.endDate) && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
       })
       let newStateWithPlannerActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && (activity.date || activity.startDate || activity.departureDate) === (action.date || action.startDate || action.endDate) && (activity.id !== action.activity.id || activity.__typename !== action.activity.__typename)
+        const types = {
+          Activity: 'Activity',
+          Flight: 'Flight',
+          Food: 'Food',
+          Transport: 'Transport',
+          Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+        }
+        const draggedtypes = {...types, ...{ Lodging: action.activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout' }}
+        return activity.id && (activity.date || activity.startDate || activity.departureDate || activity.endDate) === (action.date || action.startDate || activity.departureDate || action.endDate) && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
       })
       return [
         ...stateWithoutPlannerActivitiesWithThatDate,

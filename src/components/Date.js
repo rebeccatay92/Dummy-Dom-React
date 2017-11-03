@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
 import PlannerActivity from './PlannerActivity'
+import { graphql } from 'react-apollo'
+import { changingLoadSequence } from '../apollo/activity'
+// import { queryItinerary } from '../apollo/itinerary'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
-import { addActivity, deleteActivity, hoverOutsidePlanner, plannerActivityHoverOverActivity } from '../actions/plannerActions'
+import { dropActivity, deleteActivity, hoverOutsidePlanner, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
 
 const dateTarget = {
   drop (props, monitor) {
     // if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
       // let newActivity = Object.assign(monitor.getItem(), {startDate: props.date})
-      // props.addActivity(newActivity)
+      // props.dropActivity(newActivity)
       // props.deleteActivityFromBucket(monitor.getItem())
     // }
   },
@@ -58,13 +61,47 @@ class DateBox extends Component {
     if (nextProps.isOver === !this.props.isOver) {
       if (!nextProps.isOver) this.props.hoverOutsidePlanner()
     }
+
+    const checkIfNoBlankBoxes = array => {
+      let result = true
+      array.forEach(activity => {
+        if (!activity.id) result = false
+      })
+      return result
+    }
+
+    if (!checkIfNoBlankBoxes(this.props.activities) && checkIfNoBlankBoxes(nextProps.activities) && nextProps.isOver) {
+      // console.log(nextProps.activities)
+      const loadSequenceArr = nextProps.activities.map((activity, i) => {
+        const date = activity.date || activity.startDate || activity.departureDate || activity.endDate
+        const types = {
+          Activity: 'Activity',
+          Flight: 'Flight',
+          Food: 'Food',
+          Transport: 'Transport',
+          Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+        }
+        return {
+          id: activity.id,
+          type: types[activity.__typename],
+          loadSequence: i + 1,
+          date: date
+        }
+      })
+      // console.log(loadSequenceArr)
+      this.props.mutate({
+        variables: {
+          input: loadSequenceArr
+        }
+      })
+    }
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addActivity: (activity) => {
-      dispatch(addActivity(activity))
+    dropActivity: (activity) => {
+      dispatch(dropActivity(activity))
     },
     deleteActivity: (activity) => {
       dispatch(deleteActivity(activity))
@@ -84,4 +121,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(DateBox))
+export default connect(null, mapDispatchToProps)(graphql(changingLoadSequence)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(DateBox)))
