@@ -33,8 +33,8 @@ class Planner extends Component {
     })
     return (
       <div>
-        <h1>{this.props.data.findItinerary.name}</h1>
-        <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4>
+        <h1 style={{margin: '0 0 5vh 0', fontSize: '56px', fontWeight: '100'}}>{this.props.data.findItinerary.name}</h1>
+        {/* <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4> */}
         {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {
           return (
@@ -66,7 +66,6 @@ class Planner extends Component {
         }
       })
       let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]
-      console.log(allActivities)
       this.props.initializePlanner(allActivities)
     }
   }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { DropTarget, DragSource } from 'react-dnd'
-import { hoverOverActivity, addActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
+import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
@@ -25,22 +25,21 @@ const plannerActivitySource = {
 
 const plannerActivityTarget = {
   hover (props, monitor, component) {
-    let date = props.activity.date || props.activity.startDate || props.activity.departureDate
+    let date = props.activity.date || props.activity.startDate || props.activity.departureDate || props.activity.endDate
     if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index, date)
     else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem(), date)
   },
   drop (props, monitor) {
-    let date = props.activity.date || props.activity.startDate || props.activity.departureDate
+    let date = props.activity.date || props.activity.startDate || props.activity.departureDate || props.activity.endDate
     const typeOfDates = {
       Activity: 'date',
       Food: 'date',
-      Lodging: 'startDate',
+      Lodging: monitor.getItem().startDate ? 'startDate' : 'endDate',
       Transport: 'date',
       Flight: 'departureDate'
     }
     let newActivity = {...monitor.getItem(), ...{[typeOfDates[monitor.getItem().__typename]]: date}}
-    console.log(newActivity)
-    props.addActivity(newActivity, props.index)
+    props.dropActivity(newActivity, props.index)
     if (monitor.getItemType() === 'activity') {
       props.deleteActivityFromBucket(monitor.getItem())
     }
@@ -84,10 +83,10 @@ class PlannerActivity extends Component {
     const { connectDropTarget, connectDragSource, getItem } = this.props
     let minHeight
     if (!this.props.activity.id && !this.props.empty) {
-      minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '20vh' : '10vh'
+      minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '22vh' : '12vh'
     }
     let activityBox = (
-      <div style={{ cursor: this.state.draggable ? 'move' : 'default', border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow', lineHeight: '100%', marginBottom: '2vh', minHeight: this.props.activity.id ? '10vh' : minHeight }} key={this.props.activity.id}>
+      <div style={{ cursor: this.state.draggable ? 'move' : 'default', /* border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow',*/ lineHeight: '100%', paddingBottom: '2vh', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
         {this.renderInfo(this.props.activity.__typename)}
         {/*
           {this.props.activity.id && <button onClick={() => this.handleDelete()}>Delete</button>}
@@ -96,7 +95,7 @@ class PlannerActivity extends Component {
     )
     let dragBox = (
       <div style={{cursor: 'pointer'}}>
-        <h5 style={{marginTop: 0}}>+ Add Activity</h5>
+        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF'}}>+ Add Activity</p>
       </div>
     )
     if (this.state.creatingActivity) {
@@ -121,8 +120,6 @@ class PlannerActivity extends Component {
         </div>
       )
     }
-    // <h4>{this.props.activity.name}</h4>
-    // <p>{this.props.activity.location.name}</p>
     if (this.state.draggable) return connectDragSource(connectDropTarget(activityBox))
     else return activityBox
   }
@@ -140,27 +137,29 @@ class PlannerActivity extends Component {
     window.addEventListener('mousedown', () => this.toggleCreateForm())
   }
 
-  componentWillReceiveProps (nextProps) {
-    // this.setState({
-    //   activityName: nextProps.activity.name,
-    //   locationName: nextProps.activity.location.name
-    // })
-  }
-
   renderInfo (type) {
     const activityBoxStyle = {
-      fontSize: '10pt',
-      marginLeft: '1vw'
+      fontSize: '16px',
+      marginLeft: '1vw',
+      fontWeight: '300'
+    }
+    const nameStyle = {
+      display: 'inline-block',
+      marginBottom: '10px'
+    }
+    const timeStyle = {
+      marginTop: 0,
+      color: '#9FACBC'
     }
     switch (type) {
       case 'Activity':
         let startTime = new Date(this.props.activity.startTime).toTimeString().split('').slice(0, 5)
         return (
           <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
-            <h4 style={{display: 'inline'}}>
-              <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} />: <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} />
-            </h4>
-            <p style={{marginTop: 0}}><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /></p>
+            <p style={nameStyle}>
+              <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} /> - <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} />
+            </p>
+            <p style={timeStyle}><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /></p>
           </div>
         )
       case 'Flight':
@@ -169,12 +168,12 @@ class PlannerActivity extends Component {
         return (
           <div style={activityBoxStyle}>
             <div style={{height: '10vh', marginBottom: '2vh'}}>
-              <h4 style={{display: 'inline'}}> Flight Departure: <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></h4>
-              <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
+              <p style={nameStyle}> Flight Departure - <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></p>
+              <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
             </div>
             <div style={{height: '10vh'}}>
-              <h4 style={{display: 'inline'}}> Flight Arrival: <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity.arrivalLocation.name} /></h4>
-              <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={arrivalTime} /></p>
+              <p style={nameStyle}> Flight Arrival - <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity.arrivalLocation.name} /></p>
+              <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={arrivalTime} /></p>
             </div>
           </div>
         )
@@ -182,10 +181,10 @@ class PlannerActivity extends Component {
         startTime = new Date(this.props.activity.startTime).toTimeString().split('').slice(0, 5)
         return (
           <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
-            <h4 style={{display: 'inline'}}>
-              <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} />: <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} />
-            </h4>
-            <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /></p>
+            <p style={nameStyle}>
+              <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} /> - <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} />
+            </p>
+            <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /></p>
           </div>
         )
       case 'Transport':
@@ -194,12 +193,12 @@ class PlannerActivity extends Component {
         return (
           <div style={activityBoxStyle}>
             <div style={{height: '10vh', marginBottom: '2vh'}}>
-              <h4 style={{display: 'inline'}}> Departure: <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></h4>
-              <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
+              <p style={nameStyle}> Departure - <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity.departureLocation.name} /></p>
+              <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={departureTime} /></p>
             </div>
             <div style={{height: '10vh'}}>
-              <h4 style={{display: 'inline'}}> Arrival: <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity.arrivalLocation.name} /></h4>
-              <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={arrivalTime} /></p>
+              <p style={nameStyle}> Arrival - <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity.arrivalLocation.name} /></p>
+              <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={arrivalTime} /></p>
             </div>
           </div>
         )
@@ -216,8 +215,8 @@ class PlannerActivity extends Component {
         return (
           <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
             <div style={{display: 'inline'}}>
-              <h4 style={{display: 'inline'}}> {this.props.activity.startDate ? 'Check In:' : 'Check Out:'} <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} /></h4>
-              <p style={{marginTop: 0}}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name={name} value={time} /></p>
+              <p style={nameStyle}> {this.props.activity.startDate ? 'Check In -' : 'Check Out -'} <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} /></p>
+              <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name={name} value={time} /></p>
             </div>
           </div>
         )
@@ -276,8 +275,8 @@ const mapDispatchToProps = (dispatch) => {
     hoverOverActivity: (index, date) => {
       dispatch(hoverOverActivity(index, date))
     },
-    addActivity: (activity, index) => {
-      dispatch(addActivity(activity, index))
+    dropActivity: (activity, index) => {
+      dispatch(dropActivity(activity, index))
     },
     deleteActivityFromBucket: (activity) => {
       dispatch(deleteActivityFromBucket(activity))
