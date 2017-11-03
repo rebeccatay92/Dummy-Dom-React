@@ -4,13 +4,14 @@ import HomePage from './HomePage'
 import ItineraryPage from './ItineraryPage'
 import PlannerPage from './PlannerPage'
 import Search from './Search'
+import Navbar from './Navbar'
 
 class App extends Component {
-
   render () {
     return (
       <Router>
         <div>
+          {Navbar}
           <Route exact path='/' component={() => (
             <HomePage />
           )} />

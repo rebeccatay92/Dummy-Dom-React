@@ -36,9 +36,9 @@ class DateBox extends Component {
     // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
       <div>
-        <h2 style={{display: 'inline-block', margin: '0 0 0 1vw'}}>Day {this.props.day} </h2>
-        <span style={{fontSize: '12pt', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
-        <hr style={{marginBottom: '2vh'}} />
+        <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
+        <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
+        <hr style={{margin: '1vh 0 4vh 0'}} />
         {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
           {this.props.activities.map((activity, i, array) => {
             return (
