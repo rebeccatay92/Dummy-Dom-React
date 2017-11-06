@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { connect } from 'react-redux'
 import { graphql } from 'react-apollo'
 import { allItineraries } from '../apollo/itinerary'
 
@@ -13,6 +13,7 @@ class ItineraryPage extends Component {
     return (
       <div>
         <h1>ITINERARY PAGE</h1>
+        <h4>Token: {this.props.token}</h4>
         <CreateItineraryForm />
         {this.props.data.allItineraries.map(itinerary => {
           return (
@@ -24,4 +25,10 @@ class ItineraryPage extends Component {
   }
 }
 
-export default graphql(allItineraries)(ItineraryPage)
+const mapStateToProps = (state) => {
+  return {
+    token: state.token
+  }
+}
+
+export default connect(mapStateToProps)(graphql(allItineraries)(ItineraryPage))
