@@ -15,7 +15,7 @@ const searchIconStyle = {
 const bucketLogoStyle = {
   lineHeight: '54px',
   fontSize: '36px',
-  marginLeft: '5vw',
+  // marginLeft: '1vw',
   color: '#EDB5BF'
 }
 
