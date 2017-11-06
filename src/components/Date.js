@@ -32,28 +32,68 @@ function collect (connect, monitor) {
 
 class DateBox extends Component {
   render () {
-    const { connectDropTarget, isOver } = this.props
+    const { connectDropTarget } = this.props
+    const columnValues = {
+      'Price': 'cost',
+      'Booking Status': 'bookingStatus',
+      'Booking Platform': 'bookedThrough'
+    }
     // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
-      <div>
-        <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
-        <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
-        <hr style={{margin: '1vh 0 4vh 0'}} />
-        {connectDropTarget(<div style={{minHeight: isOver ? '10vh' : '2vh'}}>
+      <table style={{width: '100%'}}>
+        <tbody>
+          <tr>
+            <th style={{width: '40%'}}>
+              <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
+              <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
+            </th>
+            {this.props.firstDay && (
+              this.props.columns.map((column, i) => {
+                return (
+                  <th key={i} style={{width: '20%', textAlign: 'center'}}>
+                    <span style={{display: 'inline-block', fontSize: '16px', color: '#9FACBC'}}>{column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}} >keyboard_arrow_down</i></span>
+                  </th>
+                )
+              })
+            )}
+          </tr>
+          <tr>
+            <td colSpan='4' >
+              <hr style={{margin: '1vh 0 4vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #9FACBC inset'}} />
+            </td>
+          </tr>
           {this.props.activities.map((activity, i, array) => {
-            return (
-              <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} />
+            return connectDropTarget(
+              <tr key={i}>
+                <td style={{width: '40%'}}>
+                  <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} index={i} isLast={i === array.length - 1} />
+                </td>
+                {this.props.columns.map((column, i) => {
+                  return (
+                    <td key={i} style={{textAlign: 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px'}}>
+                      {typeof activity[columnValues[column]] === 'boolean' ? activity[columnValues[column]].toString() : activity[columnValues[column]]}
+                    </td>
+                  )
+                })}
+              </tr>
             )
           })}
-          <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
-            this.props.activities.length > 0 &&
-            (this.props.activities[this.props.activities.length - 1].loadSequence ||
-            this.props.activities[this.props.activities.length - 1].startLoadSequence ||
-            this.props.activities[this.props.activities.length - 1].endLoadSequence ||
-            this.props.activities[this.props.activities.length - 1].departureLoadSequence)
-          } />
-        </div>)}
-      </div>
+          {connectDropTarget(
+            <tr>
+              <td colSpan='4'>
+                <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
+                  this.props.activities.length > 0 &&
+                  (this.props.activities[this.props.activities.length - 1].loadSequence ||
+                    this.props.activities[this.props.activities.length - 1].startLoadSequence ||
+                    this.props.activities[this.props.activities.length - 1].endLoadSequence ||
+                    this.props.activities[this.props.activities.length - 1].departureLoadSequence)
+                  }
+                />
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     )
   }
 
@@ -121,4 +161,10 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(graphql(changingLoadSequence)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(DateBox)))
+const mapStateToProps = (state) => {
+  return {
+    columns: state.plannerColumns
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(graphql(changingLoadSequence)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(DateBox)))

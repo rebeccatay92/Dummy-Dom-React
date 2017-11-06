@@ -7,6 +7,7 @@ import { searchReducer } from './reducers/searchReducer'
 import { plannerReducer } from './reducers/plannerReducer'
 import { bucketReducer } from './reducers/bucketReducer'
 import { itineraryReducer } from './reducers/itineraryReducer'
+import { plannerColumnReducer } from './reducers/plannerColumnReducer'
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
 const networkInterface = createNetworkInterface({
@@ -22,6 +23,7 @@ const store = createStore(combineReducers({
   bucketList: bucketReducer,
   itineraryList: itineraryReducer,
   searchResults: searchReducer,
+  plannerColumns: plannerColumnReducer,
   apollo: client.reducer()
 }),
 {},

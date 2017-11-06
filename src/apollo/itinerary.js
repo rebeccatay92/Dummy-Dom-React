@@ -20,6 +20,9 @@ export const queryItinerary = gql`
         }
         date
         loadSequence
+        cost
+        bookedThrough
+        bookingStatus
       }
       flights {
         id
@@ -38,6 +41,9 @@ export const queryItinerary = gql`
         arrivalTime
         departureLoadSequence
         arrivalLoadSequence
+        cost
+        bookedThrough
+        bookingStatus
       }
       lodgings {
         id
@@ -52,6 +58,9 @@ export const queryItinerary = gql`
         endTime
         startLoadSequence
         endLoadSequence
+        cost
+        bookedThrough
+        bookingStatus
       }
       food {
         id
@@ -64,6 +73,9 @@ export const queryItinerary = gql`
         startTime
         endTime
         loadSequence
+        cost
+        bookedThrough
+        bookingStatus
       }
       transports {
         id
@@ -81,6 +93,9 @@ export const queryItinerary = gql`
         arrivalTime
         startLoadSequence
         endLoadSequence
+        cost
+        bookedThrough
+        bookingStatus
       }
     }
   }`
