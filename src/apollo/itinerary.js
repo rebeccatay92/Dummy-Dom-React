@@ -23,6 +23,7 @@ export const queryItinerary = gql`
         cost
         bookedThrough
         bookingStatus
+        notes
       }
       flights {
         id
@@ -44,6 +45,7 @@ export const queryItinerary = gql`
         cost
         bookedThrough
         bookingStatus
+        notes
       }
       lodgings {
         id
@@ -61,6 +63,7 @@ export const queryItinerary = gql`
         cost
         bookedThrough
         bookingStatus
+        notes
       }
       food {
         id
@@ -76,6 +79,7 @@ export const queryItinerary = gql`
         cost
         bookedThrough
         bookingStatus
+        notes
       }
       transports {
         id
@@ -96,6 +100,7 @@ export const queryItinerary = gql`
         cost
         bookedThrough
         bookingStatus
+        notes
       }
     }
   }`

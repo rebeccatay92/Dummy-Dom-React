@@ -93,7 +93,11 @@ class PlannerActivity extends Component {
             {this.renderInfo(this.props.activity.__typename)}
           </div>
         </td>
-        {this.props.columns && this.props.columns.map((column, i) => {
+        {
+          this.props.columns && this.props.columns.includes('Notes') &&
+          <PlannerColumnValue column='Notes' activity={this.props.activity} />
+        }
+        {this.props.columns && !this.props.columns.includes('Notes') && this.props.columns.map((column, i) => {
           return <PlannerColumnValue key={i} column={column} activity={this.props.activity} />
         })}
       </tr>

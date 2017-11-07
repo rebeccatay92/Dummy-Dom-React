@@ -7,6 +7,7 @@ import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOutsidePlanner  } from '../actions/plannerActions'
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
+import PlannerColumnHeader from './PlannerColumnHeader'
 
 const dateTarget = {
   drop (props, monitor) {
@@ -42,19 +43,21 @@ class DateBox extends Component {
               <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
               <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
             </th>
-            {this.props.firstDay && (
+            {
+              this.props.firstDay && this.props.columns.includes('Notes') &&
+              <PlannerColumnHeader column='Notes' index={0} />
+            }
+            {this.props.firstDay && !this.props.columns.includes('Notes') && (
               this.props.columns.map((column, i) => {
                 return (
-                  <th key={i} style={{width: '20%', textAlign: 'center'}}>
-                    <span style={{display: 'inline-block', fontSize: '16px', color: '#9FACBC'}}>{column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle', cursor: 'pointer'}} >keyboard_arrow_down</i></span>
-                  </th>
+                  <PlannerColumnHeader key={i} column={column} index={i} />
                 )
               })
             )}
           </tr>
           <tr>
             <td colSpan='4' >
-              <hr style={{margin: '1vh 0 4vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #9FACBC inset'}} />
+              <hr style={{margin: '1vh 0 4vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
             </td>
           </tr>
         </thead>

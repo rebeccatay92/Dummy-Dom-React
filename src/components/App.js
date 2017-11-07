@@ -10,7 +10,7 @@ class App extends Component {
   render () {
     return (
       <Router>
-        <div>
+        <div style={{backgroundColor: '#FAFAFA'}}>
           {Navbar}
           <Route exact path='/' component={() => (
             <HomePage />
