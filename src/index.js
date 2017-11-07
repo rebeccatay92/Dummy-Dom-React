@@ -4,9 +4,11 @@ import App from './components/App'
 import registerServiceWorker from './registerServiceWorker'
 
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+
 import { plannerReducer } from './reducers/plannerReducer'
 import { bucketReducer } from './reducers/bucketReducer'
 import { userReducer } from './reducers/userReducer'
+import { plannerColumnReducer } from './reducers/plannerColumnReducer'
 
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
@@ -32,6 +34,7 @@ const client = new ApolloClient({
 const store = createStore(combineReducers({
   plannerActivities: plannerReducer,
   bucketList: bucketReducer,
+  plannerColumns: plannerColumnReducer,
   token: userReducer,
   apollo: client.reducer()
 }),
