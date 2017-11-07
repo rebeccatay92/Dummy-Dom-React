@@ -31,10 +31,14 @@ class PlannerColumnHeader extends Component {
   }
 
   render () {
+    const notesIsVisible = this.props.columns.includes('Notes') && this.props.column !== 'Notes'
     if (!this.state.dropdown) {
       return (
         <th style={{width: '20%', textAlign: 'center'}}>
-          <span onClick={() => this.setState({dropdown: !this.state.dropdown})} style={dropdownStyle}>{this.props.column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}} onClick={() => this.setState({dropdown: !this.state.dropdown})}>keyboard_arrow_down</i></span>
+          <span onClick={() => {
+            if (notesIsVisible) return
+            this.setState({dropdown: !this.state.dropdown})
+          }} style={{...dropdownStyle, ...{opacity: notesIsVisible ? 0.3 : 1, cursor: notesIsVisible ? 'auto' : 'pointer'}}}>{this.props.column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}}>keyboard_arrow_down</i></span>
         </th>
       )
     } else if (this.state.dropdown) {
@@ -46,7 +50,7 @@ class PlannerColumnHeader extends Component {
               {options.filter(option => option !== this.props.column).map((option, i) => {
                 // if (this.props.index !== 0 && option === 'Notes') return null
                 return (
-                  <span style={optionStyle} onClick={() => this.handleClick(option)}>{option}</span>
+                  <span key={i} style={optionStyle} onClick={() => this.handleClick(option)}>{option}</span>
                 )
               })}
             </div>

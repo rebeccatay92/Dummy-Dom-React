@@ -43,11 +43,11 @@ class DateBox extends Component {
               <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
               <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
             </th>
-            {
+            {/* {
               this.props.firstDay && this.props.columns.includes('Notes') &&
               <PlannerColumnHeader column='Notes' index={0} />
-            }
-            {this.props.firstDay && !this.props.columns.includes('Notes') && (
+            } */}
+            {this.props.firstDay && (
               this.props.columns.map((column, i) => {
                 return (
                   <PlannerColumnHeader key={i} column={column} index={i} />
