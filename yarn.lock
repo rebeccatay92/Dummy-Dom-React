@@ -160,6 +160,10 @@ apollo-client@^1.4.0:
   optionalDependencies:
     "@types/graphql" "0.10.2"
 
+apollo-link-context@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/apollo-link-context/-/apollo-link-context-1.0.0.tgz#8e0d02c5778f95b6658a2175481c09b79ff929d6"
+
 apollo-link-core@^0.5.0:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/apollo-link-core/-/apollo-link-core-0.5.4.tgz#8efd4cd747959872a32f313f0ccfc2a76b396668"
@@ -167,6 +171,21 @@ apollo-link-core@^0.5.0:
     graphql "^0.10.3"
     graphql-tag "^2.4.2"
     zen-observable-ts "^0.4.4"
+
+apollo-link-http@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/apollo-link-http/-/apollo-link-http-1.1.0.tgz#a85cc43d9a5286bb54ac32213f7a16bef3554ae4"
+
+apollo-link@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.0.0.tgz#3d334285789c217f95712ebce434d56ce7f3e991"
+  dependencies:
+    apollo-utilities "^0.2.0-beta.0"
+    zen-observable "^0.6.0"
+
+apollo-utilities@^0.2.0-beta.0:
+  version "0.2.0-rc.3"
+  resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-0.2.0-rc.3.tgz#7bd93be0f587f20c5b46e21880272e305759fdc2"
 
 append-transform@^0.4.0:
   version "0.4.0"
@@ -6937,3 +6956,7 @@ yargs@~3.10.0:
 zen-observable-ts@^0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.4.4.tgz#c244c71eaebef79a985ccf9895bc90307a6e9712"
+
+zen-observable@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.6.0.tgz#8a6157ed15348d185d948cfc4a59d90a2c0f70ee"
