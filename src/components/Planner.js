@@ -16,6 +16,7 @@ class Planner extends Component {
 
   render () {
     if (this.props.data.loading) return (<h1>Loading</h1>)
+
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
     const endDate = new Date(this.props.data.findItinerary.endDate * 1000)
     const getDates = (startDate, stopDate) => {

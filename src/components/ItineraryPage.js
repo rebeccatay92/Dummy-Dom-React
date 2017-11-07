@@ -10,16 +10,26 @@ class ItineraryPage extends Component {
 
   render () {
     if (this.props.data.loading) return <p>loading</p>
+    if (!this.props.token) return <p>not logged in</p>
+    var itinerariesByUser = this.props.data.itinerariesByUser
+    if (itinerariesByUser) {
+      var itineraryList = this.props.data.itinerariesByUser.map(itinerary => {
+        return (
+          <Itinerary itinerary={itinerary} key={itinerary.id} />
+        )
+      })
+    }
     return (
       <div>
         <h1>ITINERARY PAGE</h1>
         <h4>Token: {this.props.token}</h4>
         <CreateItineraryForm />
-        {this.props.data.itinerariesByUser.map(itinerary => {
+        {itineraryList}
+        {/* {this.props.data.itinerariesByUser.map(itinerary => {
           return (
             <Itinerary itinerary={itinerary} key={itinerary.id} />
           )
-        })}
+        })} */}
       </div>
     )
   }
