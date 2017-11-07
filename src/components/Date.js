@@ -5,7 +5,7 @@ import { changingLoadSequence } from '../apollo/activity'
 // import { queryItinerary } from '../apollo/itinerary'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
-import { dropActivity, deleteActivity, hoverOutsidePlanner, plannerActivityHoverOverActivity } from '../actions/plannerActions'
+import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOutsidePlanner  } from '../actions/plannerActions'
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
 
 const dateTarget = {
@@ -33,15 +33,10 @@ function collect (connect, monitor) {
 class DateBox extends Component {
   render () {
     const { connectDropTarget } = this.props
-    const columnValues = {
-      'Price': 'cost',
-      'Booking Status': 'bookingStatus',
-      'Booking Platform': 'bookedThrough'
-    }
     // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
       <table style={{width: '100%'}}>
-        <tbody>
+        <thead>
           <tr>
             <th style={{width: '40%'}}>
               <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
@@ -51,7 +46,7 @@ class DateBox extends Component {
               this.props.columns.map((column, i) => {
                 return (
                   <th key={i} style={{width: '20%', textAlign: 'center'}}>
-                    <span style={{display: 'inline-block', fontSize: '16px', color: '#9FACBC'}}>{column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}} >keyboard_arrow_down</i></span>
+                    <span style={{display: 'inline-block', fontSize: '16px', color: '#9FACBC'}}>{column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle', cursor: 'pointer'}} >keyboard_arrow_down</i></span>
                   </th>
                 )
               })
@@ -62,37 +57,24 @@ class DateBox extends Component {
               <hr style={{margin: '1vh 0 4vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #9FACBC inset'}} />
             </td>
           </tr>
-          {this.props.activities.map((activity, i, array) => {
-            return connectDropTarget(
-              <tr key={i}>
-                <td style={{width: '40%'}}>
-                  <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} index={i} isLast={i === array.length - 1} />
-                </td>
-                {this.props.columns.map((column, i) => {
-                  return (
-                    <td key={i} style={{textAlign: 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px'}}>
-                      {typeof activity[columnValues[column]] === 'boolean' ? activity[columnValues[column]].toString() : activity[columnValues[column]]}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-          {connectDropTarget(
-            <tr>
-              <td colSpan='4'>
-                <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
-                  this.props.activities.length > 0 &&
-                  (this.props.activities[this.props.activities.length - 1].loadSequence ||
-                    this.props.activities[this.props.activities.length - 1].startLoadSequence ||
-                    this.props.activities[this.props.activities.length - 1].endLoadSequence ||
-                    this.props.activities[this.props.activities.length - 1].departureLoadSequence)
-                  }
-                />
-              </td>
-            </tr>
-          )}
-        </tbody>
+        </thead>
+        {connectDropTarget(
+          <tbody>
+            {this.props.activities.map((activity, i, array) => {
+              return (
+                <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} />
+              )
+            })}
+            <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
+              this.props.activities.length > 0 &&
+              (this.props.activities[this.props.activities.length - 1].loadSequence ||
+              this.props.activities[this.props.activities.length - 1].startLoadSequence ||
+              this.props.activities[this.props.activities.length - 1].endLoadSequence ||
+              this.props.activities[this.props.activities.length - 1].departureLoadSequence)
+              }
+            />
+          </tbody>
+        )}
       </table>
     )
   }
@@ -112,6 +94,7 @@ class DateBox extends Component {
 
     if (!checkIfNoBlankBoxes(this.props.activities) && checkIfNoBlankBoxes(nextProps.activities) && nextProps.isOver) {
       // console.log(nextProps.activities)
+      console.log('called')
       const loadSequenceArr = nextProps.activities.map((activity, i) => {
         const date = activity.date || activity.startDate || activity.departureDate || activity.endDate
         const types = {
@@ -152,11 +135,11 @@ const mapDispatchToProps = (dispatch) => {
     deleteActivityFromBucket: (activity) => {
       dispatch(deleteActivityFromBucket(activity))
     },
-    hoverOutsidePlanner: () => {
-      dispatch(hoverOutsidePlanner())
-    },
     plannerActivityHoverOverActivity: (index, activity, date) => {
       dispatch(plannerActivityHoverOverActivity(index, activity, date))
+    },
+    hoverOutsidePlanner: () => {
+      dispatch(hoverOutsidePlanner())
     }
   }
 }

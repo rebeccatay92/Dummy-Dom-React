@@ -7,6 +7,7 @@ import { graphql, compose } from 'react-apollo'
 import { createActivity, createFlight, createFood, createLodging, createTransport, deleteActivity, deleteFlight, deleteFood, deleteLodging, deleteTransport } from '../apollo/activity'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
+import PlannerColumnValue from './PlannerColumnValue'
 
 const plannerActivitySource = {
   beginDrag (props) {
@@ -83,15 +84,19 @@ class PlannerActivity extends Component {
     const { connectDropTarget, connectDragSource, getItem } = this.props
     let minHeight
     if (!this.props.activity.id && !this.props.empty) {
-      minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '22vh' : '12vh'
+      minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '24vh' : '12vh'
     }
     let activityBox = (
-      <div style={{ cursor: this.state.draggable ? 'move' : 'default', /* border: this.props.activity.id ? '1px solid white' : '1px dashed black', backgroundColor: this.props.activity.id ? 'white' : 'yellow',*/ lineHeight: '100%', paddingBottom: '2vh', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
-        {this.renderInfo(this.props.activity.__typename)}
-        {/*
-          {this.props.activity.id && <button onClick={() => this.handleDelete()}>Delete</button>}
-        */}
-      </div>
+      <tr style={{cursor: this.state.draggable ? 'move' : 'default'}}>
+        <td style={{width: '40%'}}>
+          <div style={{ lineHeight: '100%', paddingBottom: '2vh', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
+            {this.renderInfo(this.props.activity.__typename)}
+          </div>
+        </td>
+        {this.props.columns && this.props.columns.map((column, i) => {
+          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} />
+        })}
+      </tr>
     )
     let dragBox = (
       <div style={{cursor: 'pointer'}}>
@@ -106,22 +111,25 @@ class PlannerActivity extends Component {
           <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Location: </label>
           <input required style={{width: '40%'}} onChange={(e) => this.handleChange(e)} name='locationName' />
           <input style={{float: 'right', marginTop: '10px'}} type='submit' value='submit' />
-          {/* <button onClick={(e) => {
-            e.preventDefault()
-            this.setState({creatingActivity: false})
-          }}>cancel</button> */}
         </form>
       )
     }
     if (this.props.empty) {
       return connectDropTarget(
-        <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} style={{overflow: 'hidden', marginLeft: '1vw'}} >
-          {dragBox}
-        </div>
+        <tr>
+          <td colSpan='4'>
+            <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} style={{overflow: 'hidden', marginLeft: '1vw'}} >
+              {dragBox}
+            </div>
+          </td>
+        </tr>
       )
     }
-    if (this.state.draggable) return connectDragSource(connectDropTarget(activityBox))
-    else return activityBox
+    if (this.state.draggable) {
+      return connectDragSource(connectDropTarget(activityBox))
+    } else {
+      return activityBox
+    }
   }
 
   toggleCreateForm () {
