@@ -25,11 +25,6 @@ class ItineraryPage extends Component {
         <h4>Token: {this.props.token}</h4>
         <CreateItineraryForm />
         {itineraryList}
-        {/* {this.props.data.itinerariesByUser.map(itinerary => {
-          return (
-            <Itinerary itinerary={itinerary} key={itinerary.id} />
-          )
-        })} */}
       </div>
     )
   }

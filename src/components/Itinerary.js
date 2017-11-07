@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { Link } from 'react-router-dom'
 
-import { deleteItinerary, deleteCountriesItineraries, allItineraries } from '../apollo/itinerary'
+import { deleteItinerary, deleteCountriesItineraries, itinerariesByUser } from '../apollo/itinerary'
 
 import AddCountry from './AddCountry'
 import UpdateItineraryDetails from './UpdateItineraryDetails'
@@ -21,7 +21,7 @@ class Itinerary extends Component {
         CountryId: CountryId
       },
       refetchQueries: [{
-        query: allItineraries
+        query: itinerariesByUser
       }]
     })
   }
@@ -36,7 +36,7 @@ class Itinerary extends Component {
         ItineraryId: ItineraryId
       },
       refetchQueries: [{
-        query: allItineraries
+        query: itinerariesByUser
       }]
     })
   }

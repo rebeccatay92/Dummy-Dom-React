@@ -17,7 +17,7 @@ class App extends Component {
       console.log('logging in')
       this.props.createToken({
         variables: {
-          email: 'Rene_Kohler@gmail.com',
+          email: 'Jerrold_Hettinger@gmail.com',
           password: 'password1'
         }
       })
@@ -43,7 +43,7 @@ class App extends Component {
         <div>
           {Navbar}
           <div style={{border: '1px solid red'}}>
-            <button onClick={() => this.toggleLoginLogout()}>Fake login/logout toggle</button>
+            <button onClick={() => this.toggleLoginLogout()}>Fake login/logout toggle. User 1's token. change toggleLoginLogout email to your own seeded user 1's.</button>
             <h4>Token: {this.props.token}</h4>
           </div>
           <Route exact path='/' component={() => (
