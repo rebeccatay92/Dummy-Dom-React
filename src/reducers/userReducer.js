@@ -1,6 +1,6 @@
 export const userReducer = (state = '', action) => {
   switch (action.type) {
-    case 'LOGIN_USER':
+    case 'INITIALIZE_USER':
       var localStorage = window.localStorage.getItem('token')
       return localStorage
     case 'LOGOUT_USER':

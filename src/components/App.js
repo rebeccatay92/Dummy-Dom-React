@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import { createToken } from '../apollo/user'
-import { loginUser, logoutUser } from '../actions/userActions'
+
+import { initializeUser, logoutUser } from '../actions/userActions'
 
 import HomePage from './HomePage'
 import ItineraryPage from './ItineraryPage'
@@ -11,12 +12,6 @@ import PlannerPage from './PlannerPage'
 import Navbar from './Navbar'
 
 class App extends Component {
-  constructor (props) {
-    super(props)
-    // this.state = {
-    //   token: null
-    // }
-  }
   toggleLoginLogout () {
     if (!this.props.token) {
       console.log('logging in')
@@ -29,13 +24,17 @@ class App extends Component {
         .then(({data}) => {
           console.log('token', data.createToken.token)
           window.localStorage.setItem('token', data.createToken.token)
-          this.props.loginUser()
+          this.props.initializeUser()
         })
     } else {
       console.log('logging out')
       window.localStorage.removeItem('token')
       this.props.logoutUser()
     }
+  }
+
+  componentDidMount () {
+    this.props.initializeUser()
   }
 
   render () {
@@ -68,8 +67,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUser: () => {
-      dispatch(loginUser())
+    initializeUser: () => {
+      dispatch(initializeUser())
     },
     logoutUser: () => {
       dispatch(logoutUser())
@@ -77,4 +76,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(graphql(createToken, {name: 'createToken'})(App))
+export default connect(mapStateToProps, mapDispatchToProps)(compose(
+  graphql(createToken, {name: 'createToken'})
+)(App))
