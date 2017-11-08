@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
+
 import { createToken } from '../apollo/user'
 
 import { initializeUser, logoutUser } from '../actions/userActions'
