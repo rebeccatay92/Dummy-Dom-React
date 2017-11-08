@@ -45,49 +45,55 @@ class DateBox extends Component {
     const { connectDropTarget } = this.props
     // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
-      <table style={{width: '100%'}}>
-        <thead>
-          <tr>
-            <th style={{width: '40%'}}>
-              <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
-              <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
-            </th>
-            {/* {
-              this.props.firstDay && this.props.columns.includes('Notes') &&
-              <PlannerColumnHeader column='Notes' index={0} />
-            } */}
-            {this.props.firstDay && (
-              this.props.columns.map((column, i) => {
+      <div>
+        <table style={{width: '100%'}}>
+          <thead>
+            <tr>
+              <th style={{width: '40%'}}>
+                <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
+                <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
+              </th>
+              {/* {
+                this.props.firstDay && this.props.columns.includes('Notes') &&
+                <PlannerColumnHeader column='Notes' index={0} />
+              } */}
+              {this.props.firstDay && (
+                this.props.columns.map((column, i) => {
+                  return (
+                    <PlannerColumnHeader key={i} column={column} index={i} />
+                  )
+                })
+              )}
+            </tr>
+            <tr>
+              <td colSpan='4' >
+                <hr style={{margin: '1vh 0 2vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
+              </td>
+            </tr>
+          </thead>
+          {connectDropTarget(
+            <tbody>
+              {this.props.activities.map((activity, i, array) => {
                 return (
-                  <PlannerColumnHeader key={i} column={column} index={i} />
+                  <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} />
                 )
-              })
-            )}
-          </tr>
-          <tr>
-            <td colSpan='4' >
-              <hr style={{margin: '1vh 0 2vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
-            </td>
-          </tr>
-        </thead>
-        {connectDropTarget(
-          <tbody>
-            {this.props.activities.map((activity, i, array) => {
-              return (
-                <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} />
-              )
-            })}
-            <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
-              this.props.activities.length > 0 &&
-              (this.props.activities[this.props.activities.length - 1].loadSequence ||
-              this.props.activities[this.props.activities.length - 1].startLoadSequence ||
-              this.props.activities[this.props.activities.length - 1].endLoadSequence ||
-              this.props.activities[this.props.activities.length - 1].departureLoadSequence)
-              }
-            />
-          </tbody>
-        )}
-      </table>
+              })}
+              <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
+                this.props.activities.length > 0 &&
+                (this.props.activities[this.props.activities.length - 1].loadSequence ||
+                  this.props.activities[this.props.activities.length - 1].startLoadSequence ||
+                  this.props.activities[this.props.activities.length - 1].endLoadSequence ||
+                  this.props.activities[this.props.activities.length - 1].departureLoadSequence)
+                }
+              />
+            </tbody>
+          )}
+        </table>
+        <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
+        <div hidden={!this.state.creatingActivity}>
+          <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} />
+        </div>
+      </div>
     )
   }
   toggleCreateActivityForm () {
