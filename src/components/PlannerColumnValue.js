@@ -3,13 +3,14 @@ import React, { Component } from 'react'
 const columnValues = {
   'Price': 'cost',
   'Booking Status': 'bookingStatus',
-  'Booking Platform': 'bookedThrough'
+  'Booking Platform': 'bookedThrough',
+  'Notes': 'notes'
 }
 
 class PlannerColumnValue extends Component {
   render () {
     return (
-      <td style={{textAlign: 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px'}}>
+      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={{textAlign: this.props.column === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px'}}>
         {this.renderInfo()}
       </td>
     )
