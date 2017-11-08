@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo'
 import { connect } from 'react-redux'
 import { initializePlanner } from '../actions/plannerActions'
 import { queryItinerary } from '../apollo/itinerary'
+import { Image } from 'react-bootstrap'
 import DateBox from './Date'
 
 class Planner extends Component {
@@ -33,7 +34,21 @@ class Planner extends Component {
     })
     return (
       <div>
-        <h1 style={{margin: '0 0 5vh 0', fontSize: '56px', fontWeight: '100'}}>{this.props.data.findItinerary.name}</h1>
+        <h1 style={{fontSize: '56px', fontWeight: '100'}}>{this.props.data.findItinerary.name}</h1>
+        <p style={{margin: '0 0 2vh 0', fontSize: '16px', fontWeight: '100', color: '#9FACBC'}}>Just a short getaway, 5D4N to DomLand, maybe we can see some Dominics whoop whoop!</p>
+        <div style={{position: 'relative', height: '4vh', margin: '0 0 2vh 0'}}>
+          <div style={{position: 'absolute', left: '0', top: '0'}}>
+            <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/14225571_677406772406900_4575646425482055747_n.jpg?oh=935665cd290c11b5c698a4b91772fe91&oe=5AACAA18' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
+            <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/13335715_630881200392791_5149958966299133966_n.jpg?oh=c360bd9cf2063d1daf86cd294e3e231f&oe=5A9CF157' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
+            <Image src='https://media.licdn.com/media/AAEAAQAAAAAAAAqQAAAAJDhmZmZhOTg2LWE1YmYtNDQ2OC1iMzhiLWU0Y2RiZTBmNGRkMw.jpg' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
+            <i className='material-icons' style={{fontSize: '24px', marginLeft: '10px', color: '#EDB5BF', verticalAlign: 'middle'}}>add</i>
+          </div>
+          <div style={{position: 'absolute', right: '0', bottom: '0'}}>
+            <i className='material-icons' style={{fontSize: '24px', marginLeft: '2vh', color: '#EDB5BF'}}>line_weight</i>
+            <i className='material-icons' style={{fontSize: '24px', marginLeft: '2vh', color: '#EDB5BF'}}>share</i>
+            <i className='material-icons' style={{fontSize: '24px', marginLeft: '2vh', color: '#EDB5BF'}}>map</i>
+          </div>
+        </div>
         {/* <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4> */}
         {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {

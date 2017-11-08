@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
+import onClickOutside from 'react-onclickoutside'
 import { DropTarget, DragSource } from 'react-dnd'
 import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
@@ -115,20 +116,25 @@ class PlannerActivity extends Component {
     )
     if (this.state.creatingActivity) {
       dragBox = (
-        <form onSubmit={(e) => this.handleSubmit(e)} style={{margin: '2vh 0 -2vh 0'}}>
-          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Name: </label>
-          <input required style={{width: '39%'}} onChange={(e) => this.handleChange(e)} name='activityName' />
-          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Location: </label>
-          <input required style={{width: '40%'}} onChange={(e) => this.handleChange(e)} name='locationName' />
-          <input style={{float: 'right', marginTop: '10px'}} type='submit' value='submit' />
-        </form>
+        <div style={{position: 'absolute', top: '-1vh'}}>
+          <span>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>directions_run</i>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>hotel</i>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>flight</i>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>directions_subway</i>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>local_car_wash</i>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>restaurant</i>
+            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>directions_boat</i>
+            <span style={{fontSize: '16px', color: '#EDB5BF', position: 'relative', top: '-6px'}}>Pick One</span>
+          </span>
+        </div>
       )
     }
     if (this.props.empty) {
       return connectDropTarget(
         <tr>
           <td colSpan='4'>
-            <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} style={{overflow: 'hidden', marginLeft: '1vw'}} >
+            <div onClick={() => this.setState({creatingActivity: true})} style={{margin: '1vh 0 3vh 1vw', height: '40px', position: 'relative'}} >
               {dragBox}
             </div>
           </td>
@@ -142,17 +148,11 @@ class PlannerActivity extends Component {
     }
   }
 
-  toggleCreateForm () {
-    if (this.state.onBox || !this.state.creatingActivity) {
-      return
-    }
+  handleClickOutside (event) {
+    if (!this.props.empty) return
     this.setState({
       creatingActivity: false
     })
-  }
-
-  componentDidMount () {
-    window.addEventListener('mousedown', () => this.toggleCreateForm())
   }
 
   renderInfo (type) {
@@ -313,4 +313,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(null, mapDispatchToProps)(compose(
   graphql(createActivity, { name: 'createActivity' }),
   graphql(deleteActivity, { name: 'deleteActivity' })
-)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(Radium(PlannerActivity)))))
+)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(onClickOutside(Radium(PlannerActivity))))))
