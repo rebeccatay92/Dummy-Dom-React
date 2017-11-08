@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
-import { updateItineraryDetails, allItineraries } from '../apollo/itinerary'
+import { updateItineraryDetails, itinerariesByUser } from '../apollo/itinerary'
 
 class UpdateItineraryDetails extends Component {
   constructor (props) {
@@ -50,7 +50,7 @@ class UpdateItineraryDetails extends Component {
         budget: this.state.budget
       },
       refetchQueries: [{
-        query: allItineraries
+        query: itinerariesByUser
       }]
     })
     this.props.toggleUpdateForm()

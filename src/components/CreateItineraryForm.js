@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 
-import { createItinerary, allItineraries } from '../apollo/itinerary'
+import { createItinerary, itinerariesByUser } from '../apollo/itinerary'
 
 class CreateItineraryForm extends Component {
   constructor () {
@@ -41,7 +41,7 @@ class CreateItineraryForm extends Component {
         budget: this.state.budget
       },
       refetchQueries: [{
-        query: allItineraries
+        query: itinerariesByUser
       }]
     })
     this.setState({
@@ -63,6 +63,7 @@ class CreateItineraryForm extends Component {
           <label>
             Country
             <select name='countryCode' value={this.state.countryCode} onChange={(e) => this.handleChange(e, 'countryCode')}>
+              <option value=''>Select a country</option>
               <option value='AF'>Afghanistan</option>
               <option value='AX'>Åland Islands</option>
               <option value='AL'>Albania</option>
