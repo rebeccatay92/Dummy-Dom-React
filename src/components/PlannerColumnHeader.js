@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
 import { connect } from 'react-redux'
 import { changeColumns } from '../actions/plannerColumnActions'
 import onClickOutside from 'react-onclickoutside'
@@ -7,7 +8,8 @@ const dropdownStyle = {
   display: 'inline-block',
   fontSize: '16px',
   color: '#9FACBC',
-  cursor: 'pointer'
+  cursor: 'pointer',
+  padding: '1vh'
 }
 
 const optionStyle = {
@@ -17,6 +19,15 @@ const optionStyle = {
   color: '#9FACBC',
   margin: '1vh 0',
   cursor: 'pointer'
+}
+
+const tableHeadingStyle = {
+  width: '20%',
+  textAlign: 'center',
+  position: 'relative',
+  ':hover': {
+    backgroundColor: '#f0f0f0'
+  }
 }
 
 const options = ['Price', 'Booking Status', 'Booking Platform', 'Notes'].sort()
@@ -34,7 +45,7 @@ class PlannerColumnHeader extends Component {
     const notesIsVisible = this.props.columns.includes('Notes') && this.props.column !== 'Notes'
     if (!this.state.dropdown) {
       return (
-        <th style={{width: '20%', textAlign: 'center'}}>
+        <th style={tableHeadingStyle}>
           <span onClick={() => {
             if (notesIsVisible) return
             this.setState({dropdown: !this.state.dropdown})
@@ -43,8 +54,8 @@ class PlannerColumnHeader extends Component {
       )
     } else if (this.state.dropdown) {
       return (
-        <th style={{width: '20%', textAlign: 'center', position: 'relative'}}>
-          <div style={{width: '100%', border: '1px solid #9FACBC', position: 'absolute', top: '0', backgroundColor: 'white'}}>
+        <th style={tableHeadingStyle}>
+          <div style={{width: '100%', border: '1px solid #9FACBC', position: 'absolute', top: '-1px', backgroundColor: 'white'}}>
             <span onClick={() => this.setState({dropdown: !this.state.dropdown})} style={dropdownStyle}>{this.props.column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}}>keyboard_arrow_down</i></span>
             <div style={{width: '95%', margin: '3vh auto 0 auto'}}>
               {options.filter(option => option !== this.props.column).map((option, i) => {
@@ -92,4 +103,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(PlannerColumnHeader))
+export default connect(mapStateToProps, mapDispatchToProps)(onClickOutside(Radium(PlannerColumnHeader)))

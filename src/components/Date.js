@@ -57,7 +57,7 @@ class DateBox extends Component {
           </tr>
           <tr>
             <td colSpan='4' >
-              <hr style={{margin: '1vh 0 4vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
+              <hr style={{margin: '1vh 0 2vh 0', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
             </td>
           </tr>
         </thead>

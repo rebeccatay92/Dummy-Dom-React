@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
 import { DropTarget, DragSource } from 'react-dnd'
 import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
@@ -87,9 +88,14 @@ class PlannerActivity extends Component {
       minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '24vh' : '12vh'
     }
     let activityBox = (
-      <tr style={{cursor: this.state.draggable ? 'move' : 'default'}}>
+      <tr style={{
+        cursor: this.state.draggable ? 'move' : 'default',
+        ':hover': {
+          backgroundColor: getItem ? '#FAFAFA' : '#f0f0f0'
+        }
+      }}>
         <td style={{width: '40%'}}>
-          <div style={{ lineHeight: '100%', paddingBottom: '2vh', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
+          <div style={{ lineHeight: '100%', padding: '1vh 0', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
             {this.renderInfo(this.props.activity.__typename)}
           </div>
         </td>
@@ -307,4 +313,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(null, mapDispatchToProps)(compose(
   graphql(createActivity, { name: 'createActivity' }),
   graphql(deleteActivity, { name: 'deleteActivity' })
-)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(PlannerActivity))))
+)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(Radium(PlannerActivity)))))
