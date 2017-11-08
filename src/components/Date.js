@@ -91,7 +91,7 @@ class DateBox extends Component {
         </table>
         <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
         <div hidden={!this.state.creatingActivity}>
-          <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} />
+          <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} />
         </div>
       </div>
     )
