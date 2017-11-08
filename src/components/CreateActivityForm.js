@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { graphql } from 'react-apollo'
+
+// import { createActivity } from '../apollo/activity'
 
 class CreateActivityForm extends Component {
   constructor (props) {
@@ -7,6 +10,9 @@ class CreateActivityForm extends Component {
       ItineraryId: this.props.ItineraryId,
       date: this.props.date,
       day: this.props.day,
+      loadSequence: 0,
+      googlePlaceData: {},
+      LocationId: 0,
       name: '',
       notes: '',
       startTime: '', // should be Int
@@ -28,6 +34,25 @@ class CreateActivityForm extends Component {
 
   handleSubmit () {
     console.log(this.state)
+    this.props.createActivity({
+      variables: {
+        ItineraryId: this.state.ItineraryId,
+        date: this.state.date,
+        loadSequence: 1,
+        googlePlaceData: this.state.googlePlaceData,
+        LocationId: this.state.LocationId,
+        name: this.state.name,
+        startTime: this.state.startTime,
+        endTime: this.state.endTime,
+        cost: this.state.cost,
+        currency: this.state.currency,
+        bookingStatus: this.state.bookingStatus,
+        bookedThrough: this.state.bookedThrough,
+        bookingConfirmation: this.state.bookingConfirmation,
+        notes: this.state.notes,
+        attachment: this.state.attachment
+      }
+    })
   }
 
   render () {
@@ -73,8 +98,10 @@ class CreateActivityForm extends Component {
               Additional Notes
               <textarea type='text' name='notes' onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
             </label>
-            <button onClick={() => this.handleSubmit()}>Create New Activity</button>
-            <button onClick={() => this.props.toggleCreateActivityForm()}>Cancel</button>
+            <div>
+              <button onClick={() => this.handleSubmit()}>Create New Activity</button>
+              <button onClick={() => this.props.toggleCreateActivityForm()}>Cancel</button>
+            </div>
           </div>
         </div>
       </div>
@@ -82,4 +109,5 @@ class CreateActivityForm extends Component {
   }
 }
 
+// export default graphql(createActivity, {name: 'createActivity'})(CreateActivityForm)
 export default CreateActivityForm
