@@ -28,13 +28,15 @@ class CreateActivityForm extends Component {
           <h4>Day: {this.state.day}</h4>
           <span><input type='time' /> to <input type='time' /></span>
         </div>
-        <div style={{width: '60%', height: '100%', background: 'grey', display: 'inline-block', verticalAlign: 'top'}}>
-          <h4>Booking Details</h4>
-          <h4>Booking service</h4>
-          <h4>Booking confirmation number</h4>
-          <h4>Cost</h4>
-          <h4>Notes</h4>
-          <h4>Space for notesss</h4>
+        <div style={{width: '60%', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
+          <div style={{width: '94%', position: 'absolute', left: '3%', top: '3%', bottom: '3%', background: 'white'}}>
+            <h4>Booking Details</h4>
+            <h4>Booking service</h4>
+            <h4>Booking confirmation number</h4>
+            <h4>Cost</h4>
+            <h4>Notes</h4>
+            <h4>Space for notesss</h4>
+          </div>
         </div>
       </div>
     )
