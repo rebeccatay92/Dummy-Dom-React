@@ -1,5 +1,6 @@
 import { Navbar, FormGroup, FormControl, InputGroup, Button } from 'react-bootstrap'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const dropdownIconStyle = {
   lineHeight: '54px',
@@ -36,6 +37,8 @@ const navbarInstance = (
       </FormGroup>
       {' '}
     </Navbar.Form>
+    <Link to='/'>Home</Link>
+    <Link to='/itineraries'>Itineraries</Link>
   </Navbar>
 )
 

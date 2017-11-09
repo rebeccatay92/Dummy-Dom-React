@@ -133,6 +133,34 @@ export const allItineraries = gql`
     }
   }`
 
+export const itinerariesByUser = gql`
+  query itinerariesByUser {
+    itinerariesByUser {
+      id
+      name
+      startDate
+      endDate
+      pax
+      travelInsurance
+      budget
+      countries {
+        id
+        name
+        code
+      }
+      owner {
+        id
+        name
+        email
+      }
+      users {
+        id
+        name
+        email
+      }
+    }
+  }
+`
 // include country code. coutnryIdArr
 export const createItinerary = gql`
   mutation createItinerary($UserId: Int!, $countryCode: String, $name: String!, $startDate: Int, $endDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {

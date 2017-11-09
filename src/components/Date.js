@@ -5,9 +5,11 @@ import { changingLoadSequence } from '../apollo/activity'
 // import { queryItinerary } from '../apollo/itinerary'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
-import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOutsidePlanner  } from '../actions/plannerActions'
+import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOutsidePlanner } from '../actions/plannerActions'
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
 import PlannerColumnHeader from './PlannerColumnHeader'
+
+import CreateActivityForm from './CreateActivityForm'
 
 const dateTarget = {
   drop (props, monitor) {
@@ -32,6 +34,13 @@ function collect (connect, monitor) {
 }
 
 class DateBox extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      creatingActivity: false
+    }
+  }
+
   render () {
     const { connectDropTarget } = this.props
     // if (this.props.activities.length > 0) console.log(this.props.activities)
@@ -81,7 +90,9 @@ class DateBox extends Component {
       </table>
     )
   }
-
+  toggleCreateActivityForm () {
+    this.setState({creatingActivity: !this.state.creatingActivity})
+  }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isOver === !this.props.isOver) {
       if (!nextProps.isOver) this.props.hoverOutsidePlanner()
