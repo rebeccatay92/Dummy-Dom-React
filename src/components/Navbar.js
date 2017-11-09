@@ -37,8 +37,8 @@ const navbarInstance = (
       </FormGroup>
       {' '}
     </Navbar.Form>
-    <Link to='/'>Home</Link>
-    <Link to='/itineraries'>Itineraries</Link>
+    {/* <Link to='/'>Home</Link>
+    <Link to='/itineraries'>Itineraries</Link> */}
   </Navbar>
 )
 

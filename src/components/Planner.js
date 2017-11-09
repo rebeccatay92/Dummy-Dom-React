@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { initializePlanner } from '../actions/plannerActions'
 import { queryItinerary } from '../apollo/itinerary'
 import { Image } from 'react-bootstrap'
+import { Scrollbars } from 'react-custom-scrollbars'
 import DateBox from './Date'
 
 const iconStyle = {
@@ -46,34 +47,50 @@ class Planner extends Component {
       return date.getTime()
     })
     return (
-      <div>
-        <h1 style={{fontSize: '56px', fontWeight: '100'}}>{this.props.data.findItinerary.name}</h1>
-        <p style={{margin: '0 0 2vh 0', fontSize: '16px', fontWeight: '100', color: '#9FACBC'}}>Just a short getaway, 5D4N to DomLand, maybe we can see some Dominics whoop whoop!</p>
-        <div style={{position: 'relative', height: '4vh', margin: '0 0 2vh 0'}}>
-          <div style={{position: 'absolute', left: '0', top: '0'}}>
-            <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/14225571_677406772406900_4575646425482055747_n.jpg?oh=935665cd290c11b5c698a4b91772fe91&oe=5AACAA18' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
-            <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/13335715_630881200392791_5149958966299133966_n.jpg?oh=c360bd9cf2063d1daf86cd294e3e231f&oe=5A9CF157' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
-            <Image src='https://media.licdn.com/media/AAEAAQAAAAAAAAqQAAAAJDhmZmZhOTg2LWE1YmYtNDQ2OC1iMzhiLWU0Y2RiZTBmNGRkMw.jpg' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
-            <i className='material-icons' style={{...iconStyle, ...{verticalAlign: 'middle', marginLeft: '10px'}}}>add</i>
+      <div style={{
+        height: '90vh',
+        width: '100%',
+        borderRight: '1px solid rgba(159, 172, 188, 0.5)'
+      }}>
+        <Scrollbars renderThumbVertical={({ style }) =>
+          <div style={{ ...style, backgroundColor: '#EDB5BF', right: '-4px' }} />
+        } thumbSize={60} >
+          <div style={{
+            paddingRight: '44px'
+          }}>
+            <div>
+              <h1 style={{fontSize: '56px', fontWeight: '100', marginTop: '0'}}>{this.props.data.findItinerary.name}</h1>
+              <p style={{margin: '0 0 2vh 0', fontSize: '16px', fontWeight: '100', color: '#9FACBC'}}>Just a short getaway, 5D4N to DomLand, maybe we can see some Dominics whoop whoop!</p>
+              <div style={{position: 'relative', height: '4vh', margin: '0 0 2vh 0'}}>
+                <div style={{position: 'absolute', left: '0', top: '0'}}>
+                  <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/14225571_677406772406900_4575646425482055747_n.jpg?oh=935665cd290c11b5c698a4b91772fe91&oe=5AACAA18' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
+                  <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/13335715_630881200392791_5149958966299133966_n.jpg?oh=c360bd9cf2063d1daf86cd294e3e231f&oe=5A9CF157' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
+                  <Image src='https://media.licdn.com/media/AAEAAQAAAAAAAAqQAAAAJDhmZmZhOTg2LWE1YmYtNDQ2OC1iMzhiLWU0Y2RiZTBmNGRkMw.jpg' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
+                  <i className='material-icons' style={{...iconStyle, ...{verticalAlign: 'middle', marginLeft: '10px'}}}>add</i>
+                </div>
+                <div style={{position: 'absolute', right: '0', bottom: '0'}}>
+                  <i className='material-icons' style={iconStyle} key={1}>line_weight</i>
+                  <i className='material-icons' style={iconStyle} key={2}>share</i>
+                  <i className='material-icons' style={iconStyle} key={3}>map</i>
+                </div>
+              </div>
+            </div>
+            {/* <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4> */}
+            {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
+            <div>
+              {newDates.map((date, i) => {
+                return (
+                  <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(
+                    activity => {
+                      let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
+                      return activityDate * 1000 === date
+                    }
+                  )} draggable={this.state.draggable} key={i} day={i + 1} firstDay={i === 0} />
+                )
+              })}
+            </div>
           </div>
-          <div style={{position: 'absolute', right: '0', bottom: '0'}}>
-            <i className='material-icons' style={iconStyle} key={1}>line_weight</i>
-            <i className='material-icons' style={iconStyle} key={2}>share</i>
-            <i className='material-icons' style={iconStyle} key={3}>map</i>
-          </div>
-        </div>
-        {/* <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4> */}
-        {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
-        {newDates.map((date, i) => {
-          return (
-            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(
-              activity => {
-                let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
-                return activityDate * 1000 === date
-              }
-            )} draggable={this.state.draggable} key={i} day={i + 1} firstDay={i === 0} />
-          )
-        })}
+        </Scrollbars>
       </div>
     )
   }
