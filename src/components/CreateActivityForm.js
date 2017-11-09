@@ -9,7 +9,10 @@ class CreateActivityForm extends Component {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      date: this.props.date,
+      dates: this.props.dates.map(e => {
+        return e.toISOString().substring(0, 10)
+      }),
+      date: (new Date(this.props.date)).toISOString().substring(0, 10),
       day: this.props.day,
       googlePlaceData: {},
       LocationId: 0,
@@ -29,6 +32,9 @@ class CreateActivityForm extends Component {
     this.setState({
       [field]: e.target.value
     })
+    if (field === 'date') {
+      this.setState({day: this.state.dates.indexOf(this.state.date) + 1})
+    }
   }
 
   handleSubmit () {
@@ -87,8 +93,7 @@ class CreateActivityForm extends Component {
   cancelCreateActivity () {
     this.props.toggleCreateActivityForm()
     this.setState({
-      ItineraryId: this.props.ItineraryId,
-      date: this.props.date,
+      date: (new Date(this.props.date)).toISOString().substring(0, 10),
       day: this.props.day,
       googlePlaceData: {},
       LocationId: 0,
@@ -105,13 +110,17 @@ class CreateActivityForm extends Component {
     })
   }
   render () {
+    // console.log('date state', this.state.date)
+    // console.log('arr', this.state.dates)
+    // console.log('day', this.state.dates.indexOf(this.state.date) + 1)
+    var dateInEnglish = (new Date(this.state.date)).toString().substring(0,16)
     return (
       <div style={{border: '2px solid black', backgroundColor: 'pink', position: 'fixed', top: '10%', left: '20%', width: '60%', height: '50%'}}>
         <div style={{width: '40%', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
           <h4>Activity</h4>
           {/* how to link day with date input field? */}
-          <h4>Day {this.state.day}, {new Date(this.props.date).toDateString().toUpperCase()}</h4>
-          <input type='date' name='date' min={this.props.startDate} max={this.props.endDate} />
+          <h4>Day {this.state.dates.indexOf(this.state.date) + 1}, {dateInEnglish}</h4>
+          <input type='date' name='date' defaultValue={this.state.date} min={this.state.dates[0]} max={this.state.dates[this.state.dates.length - 1]} onChange={(e) => this.handleChange(e, 'date')} />
           <h4>Location: </h4>
           <label>
             Name:

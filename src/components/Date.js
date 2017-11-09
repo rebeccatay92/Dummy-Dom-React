@@ -44,10 +44,6 @@ class DateBox extends Component {
   render () {
     const { connectDropTarget } = this.props
     // if (this.props.activities.length > 0) console.log(this.props.activities)
-    var startDate = (this.props.startDate).toISOString().substring(0, 10)
-    var endDate = (this.props.endDate).toISOString().substring(0, 10)
-    console.log(startDate, endDate)
-
     return (
       <div>
         <table style={{width: '100%'}}>
@@ -95,7 +91,7 @@ class DateBox extends Component {
         </table>
         <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
         <div hidden={!this.state.creatingActivity}>
-          <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} startDate={startDate} endDate={endDate} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} />
+          <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} />
         </div>
       </div>
     )
