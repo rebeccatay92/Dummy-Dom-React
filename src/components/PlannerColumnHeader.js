@@ -22,7 +22,7 @@ const optionStyle = {
 }
 
 const tableHeadingStyle = {
-  width: '20%',
+  width: `${0.2 * 962}px`,
   textAlign: 'center',
   position: 'relative',
   backgroundColor: '#FAFAFA',

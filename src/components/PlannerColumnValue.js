@@ -10,7 +10,7 @@ const columnValues = {
 class PlannerColumnValue extends Component {
   render () {
     return (
-      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={{textAlign: this.props.column === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '1vh'}}>
+      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={{textAlign: this.props.column === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '12px', width: `${0.2 * 962}px`}}>
         {this.renderInfo()}
       </td>
     )

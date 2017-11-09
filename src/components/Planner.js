@@ -54,11 +54,17 @@ class Planner extends Component {
       }}>
         <Scrollbars renderThumbVertical={({ style }) =>
           <div style={{ ...style, backgroundColor: '#EDB5BF', right: '-4px' }} />
+        } renderThumbHorizontal={({ style }) =>
+          <div style={{ ...style, display: 'none' }} />
+        }
+          renderTrackVertical={({style}) =>
+          <div style={{ ...style, top: 0, right: 0, width: '10px', height: '100%' }} />
         } thumbSize={60} >
           <div style={{
-            paddingRight: '44px'
+            paddingRight: '44px',
+            paddingLeft: '10px'
           }}>
-            <div>
+            <div style={{marginLeft: '89px'}}>
               <h1 style={{fontSize: '56px', fontWeight: '100', marginTop: '0'}}>{this.props.data.findItinerary.name}</h1>
               <p style={{margin: '0 0 2vh 0', fontSize: '16px', fontWeight: '100', color: '#9FACBC'}}>Just a short getaway, 5D4N to DomLand, maybe we can see some Dominics whoop whoop!</p>
               <div style={{position: 'relative', height: '4vh', margin: '0 0 2vh 0'}}>

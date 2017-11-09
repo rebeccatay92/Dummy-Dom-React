@@ -103,10 +103,14 @@ class PlannerActivity extends Component {
       <tr style={{
         cursor: this.state.draggable ? 'move' : 'default',
         ':hover': {
-          backgroundColor: getItem ? '#FAFAFA' : '#f0f0f0'
+          backgroundColor: getItem ? '#FAFAFA' : '#FAFAFA',
+          boxShadow: getItem ? '' : '2px 2px 20px 1px rgba(0, 0, 0, .2)'
         }
       }}>
-        <td style={{width: '40%'}}>
+        <td style={{width: '89px'}}>
+
+        </td>
+        <td style={{width: `${0.4 * 962}px`}}>
           <div style={{ lineHeight: '100%', padding: '1vh 0', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
             {this.renderInfo(this.props.activity.__typename)}
           </div>
@@ -145,6 +149,9 @@ class PlannerActivity extends Component {
     if (this.props.empty) {
       return connectDropTarget(
         <tr>
+          <td style={{width: '89px'}}>
+
+          </td>
           <td colSpan='4'>
             <div onClick={() => this.setState({
               creatingActivity: true
@@ -182,7 +189,7 @@ class PlannerActivity extends Component {
     }
     const nameStyle = {
       display: 'inline-block',
-      marginBottom: '10px'
+      margin: '10px 0'
     }
     const timeStyle = {
       marginTop: 0,

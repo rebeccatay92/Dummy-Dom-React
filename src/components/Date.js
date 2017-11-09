@@ -45,17 +45,20 @@ class DateBox extends Component {
     const { connectDropTarget } = this.props
     // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
-      <table style={{width: '100%'}}>
+      <table style={{width: '1052px'}}>
         <thead>
           <tr>
-            <th style={{width: '40%'}}>
+            <th style={{width: '89px'}}>
+            </th>
+            <th style={{width: `${0.4 * 962}px`}}>
               <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
               <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
             </th>
-            {/* {
-              this.props.firstDay && this.props.columns.includes('Notes') &&
-              <PlannerColumnHeader column='Notes' index={0} />
-            } */}
+            {[1, 2, 3].map(i => {
+              return !this.props.firstDay && (
+                <th style={{width: `${0.2 * 962}px`}} />
+              )
+            })}
             {this.props.firstDay && (
               this.props.columns.map((column, i) => {
                 return (
@@ -65,7 +68,10 @@ class DateBox extends Component {
             )}
           </tr>
           <tr>
-            <td colSpan='4' >
+            <td style={{width: '89px'}}>
+
+            </td>
+            <td colSpan='4'>
               <hr style={{marginBottom: '2vh', marginTop: this.props.firstDay ? '0' : '1vh', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
             </td>
           </tr>
