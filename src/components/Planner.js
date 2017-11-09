@@ -1,10 +1,22 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
 import { graphql } from 'react-apollo'
 import { connect } from 'react-redux'
 import { initializePlanner } from '../actions/plannerActions'
 import { queryItinerary } from '../apollo/itinerary'
 import { Image } from 'react-bootstrap'
 import DateBox from './Date'
+
+const iconStyle = {
+  fontSize: '24px',
+  marginLeft: '2vh',
+  color: '#EDB5BF',
+  opacity: '0.6',
+  cursor: 'pointer',
+  ':hover': {
+    opacity: '1'
+  }
+}
 
 class Planner extends Component {
   constructor (props) {
@@ -41,12 +53,12 @@ class Planner extends Component {
             <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/14225571_677406772406900_4575646425482055747_n.jpg?oh=935665cd290c11b5c698a4b91772fe91&oe=5AACAA18' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
             <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/13335715_630881200392791_5149958966299133966_n.jpg?oh=c360bd9cf2063d1daf86cd294e3e231f&oe=5A9CF157' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
             <Image src='https://media.licdn.com/media/AAEAAQAAAAAAAAqQAAAAJDhmZmZhOTg2LWE1YmYtNDQ2OC1iMzhiLWU0Y2RiZTBmNGRkMw.jpg' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
-            <i className='material-icons' style={{fontSize: '24px', marginLeft: '10px', color: '#EDB5BF', verticalAlign: 'middle'}}>add</i>
+            <i className='material-icons' style={{...iconStyle, ...{verticalAlign: 'middle', marginLeft: '10px'}}}>add</i>
           </div>
           <div style={{position: 'absolute', right: '0', bottom: '0'}}>
-            <i className='material-icons' style={{fontSize: '24px', marginLeft: '2vh', color: '#EDB5BF'}}>line_weight</i>
-            <i className='material-icons' style={{fontSize: '24px', marginLeft: '2vh', color: '#EDB5BF'}}>share</i>
-            <i className='material-icons' style={{fontSize: '24px', marginLeft: '2vh', color: '#EDB5BF'}}>map</i>
+            <i className='material-icons' style={iconStyle} key={1}>line_weight</i>
+            <i className='material-icons' style={iconStyle} key={2}>share</i>
+            <i className='material-icons' style={iconStyle} key={3}>map</i>
           </div>
         </div>
         {/* <h4 style={{lineHeight: '-0px'}}>{this.props.data.findItinerary.countries[0].name}</h4> */}
@@ -108,4 +120,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(graphql(queryItinerary, options)(Planner))
+export default connect(mapStateToProps, mapDispatchToProps)(graphql(queryItinerary, options)(Radium(Planner)))

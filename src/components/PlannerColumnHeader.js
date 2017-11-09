@@ -25,6 +25,7 @@ const tableHeadingStyle = {
   width: '20%',
   textAlign: 'center',
   position: 'relative',
+  backgroundColor: '#FAFAFA',
   ':hover': {
     backgroundColor: '#f0f0f0'
   }
@@ -57,7 +58,7 @@ class PlannerColumnHeader extends Component {
         <th style={tableHeadingStyle}>
           <div style={{width: '100%', border: '1px solid #9FACBC', position: 'absolute', top: '-1px', backgroundColor: 'white'}}>
             <span onClick={() => this.setState({dropdown: !this.state.dropdown})} style={dropdownStyle}>{this.props.column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}}>keyboard_arrow_down</i></span>
-            <div style={{width: '95%', margin: '3vh auto 0 auto'}}>
+            <div style={{width: '95%', margin: '1vh auto 0 auto'}}>
               {options.filter(option => option !== this.props.column).map((option, i) => {
                 // if (this.props.index !== 0 && option === 'Notes') return null
                 return (
@@ -78,7 +79,8 @@ class PlannerColumnHeader extends Component {
     })
     this.props.changeColumns(newArr)
     this.setState({
-      dropdown: false
+      dropdown: false,
+      _radiumStyleState: {}
     })
   }
 

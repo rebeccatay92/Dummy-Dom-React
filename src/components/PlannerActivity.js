@@ -11,6 +11,17 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 
+const activityIconStyle = {
+  fontSize: '24px',
+  marginRight: '1vw',
+  WebkitTextStroke: '1px #EDB5BF',
+  WebkitTextFillColor: '#FAFAFA',
+  cursor: 'pointer',
+  ':hover': {
+    WebkitTextStroke: '2px #EDB5BF'
+  }
+}
+
 const plannerActivitySource = {
   beginDrag (props) {
     return props.activity
@@ -110,21 +121,22 @@ class PlannerActivity extends Component {
       </tr>
     )
     let dragBox = (
-      <div style={{cursor: 'pointer'}}>
-        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF'}}>+ Add Activity</p>
+      <div style={{
+        cursor: 'pointer'
+      }}>
+        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingActivity ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Activity</p>
       </div>
     )
     if (this.state.creatingActivity) {
+      const types = ['directions_run', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'restaurant', 'directions_boat']
       dragBox = (
         <div style={{position: 'absolute', top: '-1vh'}}>
           <span>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>directions_run</i>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>hotel</i>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>flight</i>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>directions_subway</i>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>local_car_wash</i>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>restaurant</i>
-            <i className='material-icons' style={{fontSize: '24px', marginRight: '1vw', WebkitTextStroke: '1px #EDB5BF', WebkitTextFillColor: '#FAFAFA'}}>directions_boat</i>
+            {types.map((type, i) => {
+              return (
+                <i key={i} className='material-icons' style={activityIconStyle}>{type}</i>
+              )
+            })}
             <span style={{fontSize: '16px', color: '#EDB5BF', position: 'relative', top: '-6px'}}>Pick One</span>
           </span>
         </div>
@@ -134,7 +146,13 @@ class PlannerActivity extends Component {
       return connectDropTarget(
         <tr>
           <td colSpan='4'>
-            <div onClick={() => this.setState({creatingActivity: true})} style={{margin: '1vh 0 3vh 1vw', height: '40px', position: 'relative'}} >
+            <div onClick={() => this.setState({
+              creatingActivity: true
+            })} style={{
+              margin: '1vh 0 3vh 1vw',
+              height: '40px',
+              position: 'relative'
+            }}>
               {dragBox}
             </div>
           </td>
@@ -151,7 +169,8 @@ class PlannerActivity extends Component {
   handleClickOutside (event) {
     if (!this.props.empty) return
     this.setState({
-      creatingActivity: false
+      creatingActivity: false,
+      _radiumStyleState: {}
     })
   }
 
