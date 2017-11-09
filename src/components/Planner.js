@@ -39,7 +39,7 @@ class Planner extends Component {
         {/* <button onClick={() => this.setState({draggable: !this.state.draggable})}>{this.state.draggable ? 'Rearrange Mode: On' : 'Rearrange Mode: Off'}</button> */}
         {newDates.map((date, i) => {
           return (
-            <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(
+            <DateBox itineraryId={this.props.id} date={date} startDate={startDate} endDate={endDate} activities={this.props.activities.filter(
               activity => {
                 let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
                 return activityDate * 1000 === date

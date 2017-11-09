@@ -109,7 +109,9 @@ class CreateActivityForm extends Component {
       <div style={{border: '2px solid black', backgroundColor: 'pink', position: 'fixed', top: '10%', left: '20%', width: '60%', height: '50%'}}>
         <div style={{width: '40%', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
           <h4>Activity</h4>
+          {/* how to link day with date input field? */}
           <h4>Day {this.state.day}, {new Date(this.props.date).toDateString().toUpperCase()}</h4>
+          <input type='date' name='date' min={this.props.startDate} max={this.props.endDate} />
           <h4>Location: </h4>
           <label>
             Name:
