@@ -44,8 +44,14 @@ class Itinerary extends Component {
   render () {
     var itinerary = this.props.itinerary
     var url = '/planner/' + itinerary.id
-    var startDate = (new Date(itinerary.startDate * 1000).toISOString()).substring(0, 10)
-    var endDate = (new Date(itinerary.endDate * 1000).toISOString()).substring(0, 10)
+
+    if (itinerary.startDate) {
+      var startDate = (new Date(itinerary.startDate * 1000).toISOString()).substring(0, 10)
+    }
+    if (itinerary.endDate) {
+      var endDate = (new Date(itinerary.endDate * 1000).toISOString()).substring(0, 10)
+    }
+
     return (
       <div style={{border: '1px solid black'}}>
         <Link to={url}>Plan your itinerary</Link>
