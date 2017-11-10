@@ -8,7 +8,8 @@ const plannerStyles = {
   fontFamily: '\'Roboto\', sans-serif',
   color: '#3C3A44',
   margin: '0 auto',
-  width: '1445px'
+  width: '1445px',
+  fontWeight: '300'
 }
 
 class PlannerPage extends Component {

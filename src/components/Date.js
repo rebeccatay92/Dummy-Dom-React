@@ -48,15 +48,25 @@ class DateBox extends Component {
       <table style={{width: '1052px'}}>
         <thead>
           <tr>
-            <th style={{width: '89px'}}>
+            <th style={{width: '89px', position: 'relative'}}>
+              {this.props.firstDay && (
+                <div style={{position: 'absolute', display: 'inline-block', top: '8px', textAlign: 'center'}}>
+                  <span style={{fontSize: '24px', color: '#EDB5BF', display: 'inline-block'}}>
+                    <span>{'<'}</span>
+                    {' '}
+                    <span>{'>'}</span>
+                  </span>
+                  <span style={{fontSize: '16px', display: 'inline-block', color: '#EDB5BF'}}>Duration</span>
+                </div>
+              )}
             </th>
             <th style={{width: `${0.4 * 962}px`}}>
-              <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px'}}>Day {this.props.day} </h3>
+              <h3 style={{display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px', fontWeight: '300'}}>Day {this.props.day} </h3>
               <span style={{fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}}>{new Date(this.props.date).toDateString().toUpperCase()}</span>
             </th>
             {[1, 2, 3].map(i => {
               return !this.props.firstDay && (
-                <th style={{width: `${0.2 * 962}px`}} />
+                <th style={{width: `${0.2 * 962}px`}} key={i} />
               )
             })}
             {this.props.firstDay && (
