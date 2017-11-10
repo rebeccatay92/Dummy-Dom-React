@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
+import onClickOutside from 'react-onclickoutside'
 import { DropTarget, DragSource } from 'react-dnd'
 import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } from '../actions/plannerActions'
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
@@ -9,6 +10,17 @@ import { createActivity, createFlight, createFood, createLodging, createTranspor
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
+
+const activityIconStyle = {
+  fontSize: '24px',
+  marginRight: '1vw',
+  WebkitTextStroke: '1px #EDB5BF',
+  WebkitTextFillColor: '#FAFAFA',
+  cursor: 'pointer',
+  ':hover': {
+    WebkitTextStroke: '2px #EDB5BF'
+  }
+}
 
 const plannerActivitySource = {
   beginDrag (props) {
@@ -91,10 +103,14 @@ class PlannerActivity extends Component {
       <tr style={{
         cursor: this.state.draggable ? 'move' : 'default',
         ':hover': {
-          backgroundColor: getItem ? '#FAFAFA' : '#f0f0f0'
+          backgroundColor: getItem ? '#FAFAFA' : '#FAFAFA',
+          boxShadow: getItem ? '' : '2px 2px 20px 1px rgba(0, 0, 0, .2)'
         }
       }}>
-        <td style={{width: '40%'}}>
+        <td style={{width: '89px'}}>
+
+        </td>
+        <td style={{width: `${0.4 * 962}px`}}>
           <div style={{ lineHeight: '100%', padding: '1vh 0', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
             {this.renderInfo(this.props.activity.__typename)}
           </div>
@@ -109,26 +125,41 @@ class PlannerActivity extends Component {
       </tr>
     )
     let dragBox = (
-      <div style={{cursor: 'pointer'}}>
-        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF'}}>+ Add Activity</p>
+      <div style={{
+        cursor: 'pointer'
+      }}>
+        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingActivity ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Activity</p>
       </div>
     )
     if (this.state.creatingActivity) {
+      const types = ['directions_run', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'restaurant', 'directions_boat']
       dragBox = (
-        <form onSubmit={(e) => this.handleSubmit(e)} style={{margin: '2vh 0 -2vh 0'}}>
-          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Name: </label>
-          <input required style={{width: '39%'}} onChange={(e) => this.handleChange(e)} name='activityName' />
-          <label style={{display: 'inline-block', width: '10%', textAlign: 'center'}}>Location: </label>
-          <input required style={{width: '40%'}} onChange={(e) => this.handleChange(e)} name='locationName' />
-          <input style={{float: 'right', marginTop: '10px'}} type='submit' value='submit' />
-        </form>
+        <div style={{position: 'absolute', top: '-1vh'}}>
+          <span>
+            {types.map((type, i) => {
+              return (
+                <i key={i} className='material-icons' style={activityIconStyle}>{type}</i>
+              )
+            })}
+            <span style={{fontSize: '16px', color: '#EDB5BF', position: 'relative', top: '-6px'}}>Pick One</span>
+          </span>
+        </div>
       )
     }
     if (this.props.empty) {
       return connectDropTarget(
         <tr>
+          <td style={{width: '89px'}}>
+
+          </td>
           <td colSpan='4'>
-            <div onClick={() => this.setState({creatingActivity: true})} onMouseDown={() => this.setState({onBox: true})} onMouseUp={() => this.setState({onBox: false})} style={{overflow: 'hidden', marginLeft: '1vw'}} >
+            <div onClick={() => this.setState({
+              creatingActivity: true
+            })} style={{
+              margin: '1vh 0 3vh 1vw',
+              height: '40px',
+              position: 'relative'
+            }}>
               {dragBox}
             </div>
           </td>
@@ -142,17 +173,12 @@ class PlannerActivity extends Component {
     }
   }
 
-  toggleCreateForm () {
-    if (this.state.onBox || !this.state.creatingActivity) {
-      return
-    }
+  handleClickOutside (event) {
+    if (!this.props.empty) return
     this.setState({
-      creatingActivity: false
+      creatingActivity: false,
+      _radiumStyleState: {}
     })
-  }
-
-  componentDidMount () {
-    window.addEventListener('mousedown', () => this.toggleCreateForm())
   }
 
   renderInfo (type) {
@@ -163,7 +189,7 @@ class PlannerActivity extends Component {
     }
     const nameStyle = {
       display: 'inline-block',
-      marginBottom: '10px'
+      margin: '10px 0'
     }
     const timeStyle = {
       marginTop: 0,
@@ -313,4 +339,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(null, mapDispatchToProps)(compose(
   graphql(createActivity, { name: 'createActivity' }),
   graphql(deleteActivity, { name: 'deleteActivity' })
-)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(Radium(PlannerActivity)))))
+)(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(onClickOutside(Radium(PlannerActivity))))))

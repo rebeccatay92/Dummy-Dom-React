@@ -21,24 +21,24 @@ const bucketLogoStyle = {
 }
 
 const navbarInstance = (
-  <Navbar style={{backgroundColor: 'white'}}>
+  <Navbar style={{backgroundColor: 'white', boxShadow: '2px 2px 20px 0px rgba(0, 0, 0, .2)'}}>
     <Navbar.Header>
       <i style={dropdownIconStyle} className='material-icons'>menu</i>
       <i style={bucketLogoStyle} className='material-icons'>delete</i>
     </Navbar.Header>
-    <Navbar.Form style={{margin: '10px 0 10px 0'}} pullLeft>
-      <FormGroup>
+    <Navbar.Form style={{margin: '10px 0', marginLeft: '89px', paddingLeft: '0'}}>
+      <FormGroup style={{boxShadow: '2px 2px 10px -1px rgba(0, 0, 0, .2)'}}>
         <InputGroup>
-          <FormControl type='text' placeholder='Discover' style={{width: '30vw'}} />
+          <FormControl type='text' placeholder='Discover' style={{width: '30vw', borderRadius: '0'}} />
           <InputGroup.Button>
-            <Button style={{paddingBottom: '3px'}}><i style={searchIconStyle} className='material-icons md-18'>search</i></Button>
+            <Button style={{paddingBottom: '3px', borderRadius: '0'}}><i style={searchIconStyle} className='material-icons md-18'>search</i></Button>
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
       {' '}
     </Navbar.Form>
-    <Link to='/'>Home</Link>
-    <Link to='/itineraries'>Itineraries</Link>
+    {/* <Link to='/'>Home</Link>
+    <Link to='/itineraries'>Itineraries</Link> */}
   </Navbar>
 )
 
