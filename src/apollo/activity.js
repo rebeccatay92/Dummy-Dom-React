@@ -2,18 +2,36 @@ import { gql } from 'react-apollo'
 
 export const createActivity = gql`
   mutation createActivity(
-    $name: String!,
-    $date: Int!,
-    $googlePlaceData: googlePlaceData!,
     $ItineraryId: ID!,
-    $loadSequence: Int!
+    $loadSequence: Int
+    $date: Int!,
+    $startTime: Int,
+    $endTime: Int,
+    $googlePlaceData: googlePlaceData,
+    $LocationId: ID,
+    $name: String,
+    $currency: String,
+    $cost: Int,
+    $bookingStatus: Boolean,
+    $bookedThrough: String,
+    $bookingConfirmation: String,
+    $notes: String
   ) {
     createActivity(
-      name: $name,
-      date: $date,
-      googlePlaceData: $googlePlaceData,
       ItineraryId: $ItineraryId,
-      loadSequence: $loadSequence
+      loadSequence: $loadSequence,
+      date: $date,
+      startTime: $startTime,
+      endTime: $endTime,
+      googlePlaceData: $googlePlaceData,
+      LocationId: $LocationId,
+      name: $name,
+      currency: $currency,
+      cost: $cost,
+      bookingStatus: $bookingStatus,
+      bookedThrough: $bookedThrough,
+      bookingConfirmation: $bookingConfirmation,
+      notes: $notes
     ) {
       id
     }
