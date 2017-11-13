@@ -58,7 +58,7 @@ class Planner extends Component {
           <div style={{ ...style, display: 'none' }} />
         }
           renderTrackVertical={({style}) =>
-          <div style={{ ...style, top: 0, right: 0, width: '10px', height: '100%' }} />
+            <div style={{ ...style, top: 0, right: 0, width: '10px', height: '100%' }} />
         } thumbSize={60} >
           <div style={{
             paddingRight: '44px',
@@ -91,7 +91,7 @@ class Planner extends Component {
                       let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
                       return activityDate * 1000 === date
                     }
-                  )} draggable={this.state.draggable} key={i} day={i + 1} firstDay={i === 0} />
+                  )} draggable={this.state.draggable} key={i} day={i + 1} firstDay={i === 0} lastDay={i === newDates.length - 1} />
                 )
               })}
             </div>

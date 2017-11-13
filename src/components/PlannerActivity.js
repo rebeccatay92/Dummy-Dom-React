@@ -10,6 +10,7 @@ import { createActivity, createFlight, createFood, createLodging, createTranspor
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
+import PlannerActivityTimeline from './PlannerActivityTimeline'
 
 const activityIconStyle = {
   fontSize: '24px',
@@ -99,16 +100,30 @@ class PlannerActivity extends Component {
     if (!this.props.activity.id && !this.props.empty) {
       minHeight = getItem.__typename === 'Flight' || getItem.__typename === 'Transport' ? '24vh' : '12vh'
     }
+    const timeline = (
+      <div style={{
+        width: '1.5px',
+        height: this.props.lastDay && this.props.isLast ? '60%' : '100%',
+        display: 'inline-block',
+        position: 'absolute',
+        top: this.props.firstDay && this.props.index === 0 ? '20px' : '0',
+        left: '50%',
+        bottom: '0',
+        margin: '0 auto',
+        backgroundColor: '#EDB5BF'
+      }} />
+    )
     let activityBox = (
       <tr style={{
         cursor: this.state.draggable ? 'move' : 'default',
         ':hover': {
-          backgroundColor: getItem ? '#FAFAFA' : '#FAFAFA',
+          backgroundColor: '#FAFAFA',
           boxShadow: getItem ? '' : '2px 2px 20px 1px rgba(0, 0, 0, .2)'
         }
       }}>
-        <td style={{width: '89px'}}>
-
+        <td style={{width: '89px', position: 'relative'}}>
+          {timeline}
+          <PlannerActivityTimeline type={this.props.activity.__typename} checkout={this.props.activity.__typename === 'Lodging' && !this.props.activity.startTime} isLast={this.props.isLast} lastDay={this.props.lastDay} startTime={this.props.activity.startTime || this.props.activity.departureTime} endTime={this.props.activity.endTime || this.props.activity.arrivalTime || this.props.activity.startTime} id={this.props.activity.id} draggingItem={getItem} />
         </td>
         <td style={{width: `${0.4 * 962}px`}}>
           <div style={{ lineHeight: '100%', padding: '1vh 0', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
@@ -149,8 +164,8 @@ class PlannerActivity extends Component {
     if (this.props.empty) {
       return connectDropTarget(
         <tr>
-          <td style={{width: '89px'}}>
-
+          <td style={{width: '89px', position: 'relative'}}>
+            {!this.props.lastDay && timeline}
           </td>
           <td colSpan='4'>
             <div onClick={() => this.setState({

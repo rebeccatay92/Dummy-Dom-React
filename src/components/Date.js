@@ -43,6 +43,19 @@ class DateBox extends Component {
 
   render () {
     const { connectDropTarget } = this.props
+    const timeline = (
+      <div style={{
+        width: '1.5px',
+        height: '100%',
+        display: 'inline-block',
+        position: 'absolute',
+        top: '0',
+        left: '50%',
+        bottom: '0',
+        margin: '0 auto',
+        backgroundColor: '#EDB5BF'
+      }} />
+    )
     // if (this.props.activities.length > 0) console.log(this.props.activities)
     return (
       <table style={{width: '1052px'}}>
@@ -50,14 +63,16 @@ class DateBox extends Component {
           <tr>
             <th style={{width: '89px', position: 'relative'}}>
               {this.props.firstDay && (
-                <div style={{position: 'absolute', display: 'inline-block', top: '8px', textAlign: 'center'}}>
+                <div style={{position: 'absolute', display: 'inline-block', top: '8px', textAlign: 'center', lineHeight: 'initial'}}>
                   <span style={{fontSize: '24px', color: '#EDB5BF', display: 'inline-block'}}>
-                    <span>{'<'}</span>
-                    {' '}
-                    <span>{'>'}</span>
+                    <i className='material-icons' style={{marginRight: '-10px'}}>keyboard_arrow_left</i>
+                    <i className='material-icons'>keyboard_arrow_right</i>
                   </span>
                   <span style={{fontSize: '16px', display: 'inline-block', color: '#EDB5BF'}}>Duration</span>
                 </div>
+              )}
+              {!this.props.firstDay && (
+                timeline
               )}
             </th>
             <th style={{width: `${0.4 * 962}px`}}>
@@ -78,8 +93,8 @@ class DateBox extends Component {
             )}
           </tr>
           <tr>
-            <td style={{width: '89px'}}>
-
+            <td style={{width: '89px', position: 'relative'}}>
+              {!this.props.firstDay && timeline}
             </td>
             <td colSpan='4'>
               <hr style={{marginBottom: '2vh', marginTop: this.props.firstDay ? '0' : '1vh', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
@@ -90,10 +105,10 @@ class DateBox extends Component {
           <tbody>
             {this.props.activities.map((activity, i, array) => {
               return (
-                <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} />
+                <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
               )
             })}
-            <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} highestLoadSequence={
+            <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} highestLoadSequence={
               this.props.activities.length > 0 &&
               (this.props.activities[this.props.activities.length - 1].loadSequence ||
               this.props.activities[this.props.activities.length - 1].startLoadSequence ||

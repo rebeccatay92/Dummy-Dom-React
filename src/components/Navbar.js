@@ -21,7 +21,7 @@ const bucketLogoStyle = {
 }
 
 const navbarInstance = (
-  <Navbar style={{backgroundColor: 'white', boxShadow: '2px 2px 20px 0px rgba(0, 0, 0, .2)'}}>
+  <Navbar style={{backgroundColor: 'white'}}>
     <Navbar.Header>
       <i style={dropdownIconStyle} className='material-icons'>menu</i>
       <i style={bucketLogoStyle} className='material-icons'>delete</i>

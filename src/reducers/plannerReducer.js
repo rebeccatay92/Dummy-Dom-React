@@ -7,8 +7,7 @@ export const plannerReducer = (state = [], action) => {
             return activity.loadSequence || activity.startLoadSequence || activity.endLoadSequence || activity.departureLoadSequence
           }
           return loadSequence(a) - loadSequence(b)
-        }
-      )
+        })
     case 'DROP_ACTIVITY':
       if (action.index === 'none') {
         return [
