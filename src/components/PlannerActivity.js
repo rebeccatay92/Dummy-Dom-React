@@ -212,7 +212,7 @@ class PlannerActivity extends Component {
     }
     switch (type) {
       case 'Activity':
-        let startTime = new Date(this.props.activity.startTime * 1000).toTimeString().split('').slice(0, 5)
+        let startTime = new Date(this.props.activity.startTime * 1000).toGMTString().substring(17, 22)
         return (
           <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
             <p style={nameStyle}>
@@ -223,8 +223,8 @@ class PlannerActivity extends Component {
           </div>
         )
       case 'Flight':
-        let departureTime = new Date(this.props.activity.departureTime * 1000).toTimeString().split('').slice(0, 5)
-        let arrivalTime = new Date(this.props.activity.arrivalTime * 1000).toTimeString().split('').slice(0, 5)
+        let departureTime = new Date(this.props.activity.departureTime * 1000).toGMTString().substring(17, 22)
+        let arrivalTime = new Date(this.props.activity.arrivalTime * 1000).toGMTString().substring(17, 22)
         return (
           <div style={activityBoxStyle}>
             <div style={{height: '10vh', marginBottom: '2vh'}}>
@@ -238,7 +238,7 @@ class PlannerActivity extends Component {
           </div>
         )
       case 'Food':
-        startTime = new Date(this.props.activity.startTime * 1000).toTimeString().split('').slice(0, 5)
+        startTime = new Date(this.props.activity.startTime * 1000).toGMTString().substring(17, 22)
         return (
           <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
             <p style={nameStyle}>
@@ -249,8 +249,8 @@ class PlannerActivity extends Component {
           </div>
         )
       case 'Transport':
-        departureTime = new Date(this.props.activity.departureTime * 1000).toTimeString().split('').slice(0, 5)
-        arrivalTime = new Date(this.props.activity.arrivalTime * 1000).toTimeString().split('').slice(0, 5)
+        departureTime = new Date(this.props.activity.departureTime * 1000).toGMTString().substring(17, 22)
+        arrivalTime = new Date(this.props.activity.arrivalTime * 1000).toGMTString().substring(17, 22)
         return (
           <div style={activityBoxStyle}>
             <div style={{height: '10vh', marginBottom: '2vh'}}>
@@ -266,10 +266,10 @@ class PlannerActivity extends Component {
       case 'Lodging':
         let time, name
         if (this.props.activity.startTime) {
-          time = new Date(this.props.activity.startTime * 1000).toTimeString().split('').slice(0, 5)
+          time = new Date(this.props.activity.startTime * 1000).toGMTString().substring(17, 22)
           name = 'startTime'
         } else {
-          time = new Date(this.props.activity.endTime * 1000).toTimeString().split('').slice(0, 5)
+          time = new Date(this.props.activity.endTime * 1000).toGMTString().substring(17, 22)
           name = 'endTime'
         }
 

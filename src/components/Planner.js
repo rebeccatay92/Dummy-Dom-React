@@ -86,7 +86,7 @@ class Planner extends Component {
             <div>
               {newDates.map((date, i) => {
                 return (
-                  <DateBox itineraryId={this.props.id} date={date} activities={this.props.activities.filter(
+                  <DateBox itineraryId={this.props.id} date={date} dates={dates} activities={this.props.activities.filter(
                     activity => {
                       let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
                       return activityDate * 1000 === date

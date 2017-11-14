@@ -25,21 +25,26 @@ class CreateItineraryForm extends Component {
 
   handleSubmit (e) {
     e.preventDefault()
-    var startDate = new Date(this.state.startDate)
-    var startUnix = startDate.getTime() / 1000
-    var endDate = new Date(this.state.endDate)
-    var endUnix = endDate.getTime() / 1000
+    var newItinerary = {}
+    Object.keys(this.state).forEach(key => {
+      if (key !== 'startDate' && key !== 'endDate') {
+        newItinerary[key] = this.state[key]
+      }
+    })
+
+    if (this.state.startDate) {
+      var startDate = new Date(this.state.startDate)
+      var startUnix = startDate.getTime() / 1000
+      newItinerary.startDate = startUnix
+    }
+    if (this.state.endDate) {
+      var endDate = new Date(this.state.endDate)
+      var endUnix = endDate.getTime() / 1000
+      newItinerary.endDate = endUnix
+    }
+    newItinerary.UserId = 1
     this.props.createItinerary({
-      variables: {
-        UserId: 1,
-        countryCode: this.state.countryCode,
-        name: this.state.name,
-        startDate: startUnix,
-        endDate: endUnix,
-        pax: this.state.pax,
-        travelInsurance: this.state.travelInsurance,
-        budget: this.state.budget
-      },
+      variables: newItinerary,
       refetchQueries: [{
         query: itinerariesByUser
       }]
