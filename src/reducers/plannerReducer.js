@@ -18,10 +18,10 @@ export const plannerReducer = (state = [], action) => {
         ]
       } else {
         let stateWithoutActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && (activity.date || activity.startDate || activity.endDate || activity.departureDate) !== (action.activity.date || action.activity.startDate || action.activity.endDate || action.activity.departureDate)
+          return activity.id && (activity.day || activity.startDay || activity.endDay || activity.departureDay) !== (action.activity.day || action.activity.startDay || action.activity.endDay || action.activity.departureDay)
         })
         let newStateWithActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && (activity.date || activity.startDate || activity.endDate || activity.departureDate) === (action.activity.date || action.activity.startDate || action.activity.endDate || action.activity.departureDate)
+          return activity.id && (activity.day || activity.startDay || activity.endDay || activity.departureDay) === (action.activity.day || action.activity.startDay || action.activity.endDay || action.activity.departureDay)
         })
         return [
           ...stateWithoutActivitiesWithThatDate,
@@ -43,10 +43,10 @@ export const plannerReducer = (state = [], action) => {
         })
       }
       let stateWithoutActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.date !== action.date
+        return activity.id && activity.day !== action.day
       })
       let newStateWithActivitiesWithThatDate = state.filter(activity => {
-        return activity.id && activity.date === action.date
+        return activity.id && activity.day === action.day
       })
       return [
         ...stateWithoutActivitiesWithThatDate,
@@ -56,7 +56,7 @@ export const plannerReducer = (state = [], action) => {
             id: '',
             name: '',
             location: '',
-            date: action.date
+            day: action.day
           }],
           ...newStateWithActivitiesWithThatDate.slice(action.index, newStateWithActivitiesWithThatDate.length)
         ]
@@ -70,9 +70,9 @@ export const plannerReducer = (state = [], action) => {
             Flight: 'Flight',
             Food: 'Food',
             Transport: 'Transport',
-            Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+            Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
           }
-          const draggedtypes = {...types, ...{ Lodging: action.activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout' }}
+          const draggedtypes = {...types, ...{ Lodging: action.activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout' }}
           return activity.id && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
         })
       }
@@ -82,10 +82,10 @@ export const plannerReducer = (state = [], action) => {
           Flight: 'Flight',
           Food: 'Food',
           Transport: 'Transport',
-          Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+          Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
         }
-        const draggedtypes = {...types, ...{ Lodging: action.activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout' }}
-        return activity.id && (activity.date || activity.startDate || activity.departureDate || activity.endDate) !== (action.date || action.startDate || action.departureDate || action.endDate) && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
+        const draggedtypes = {...types, ...{ Lodging: action.activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout' }}
+        return activity.id && (activity.day || activity.startDay || activity.departureDay || activity.endDay) !== (action.day || action.startDay || action.departureDay || action.endDay) && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
       })
       let newStateWithPlannerActivitiesWithThatDate = state.filter(activity => {
         const types = {
@@ -93,10 +93,10 @@ export const plannerReducer = (state = [], action) => {
           Flight: 'Flight',
           Food: 'Food',
           Transport: 'Transport',
-          Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+          Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
         }
-        const draggedtypes = {...types, ...{ Lodging: action.activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout' }}
-        return activity.id && (activity.date || activity.startDate || activity.departureDate || activity.endDate) === (action.date || action.startDate || activity.departureDate || action.endDate) && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
+        const draggedtypes = {...types, ...{ Lodging: action.activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout' }}
+        return activity.id && (activity.day || activity.startDay || activity.departureDay || activity.endDay) === (action.day || action.startDay || activity.departureDay || action.endDay) && (activity.id !== action.activity.id || types[activity.__typename] !== draggedtypes[action.activity.__typename])
       })
       return [
         ...stateWithoutPlannerActivitiesWithThatDate,
@@ -106,7 +106,7 @@ export const plannerReducer = (state = [], action) => {
             id: '',
             name: '',
             location: '',
-            date: action.date
+            day: action.day
           }],
           ...newStateWithPlannerActivitiesWithThatDate.slice(action.index, newStateWithPlannerActivitiesWithThatDate.length)
         ]

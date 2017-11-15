@@ -28,10 +28,10 @@ class PlannerActivityTimeline extends Component {
   }
 
   renderDuration (duration, style) {
-    if (this.props.draggingItem) {
+    if (this.props.draggingItem || (!Math.floor(duration / 3600) && !Math.floor((duration % 3600) / 60))) {
       return (
         <div style={{...{textAlign: 'center', position: 'relative', color: '#9FACBC', top: '3px', fontWeight: 'bold', padding: '2px 0'}, ...style}}>
-          {/* <span style={{color: this.props.isLast && this.props.lastDay ? '#FAFAFA' : '#9FACBC'}}>{time.hours}{time.minutes}</span> */}
+          <span style={{opacity: '0'}}>empty string</span>
         </div>
       )
     }
@@ -47,43 +47,52 @@ class PlannerActivityTimeline extends Component {
   }
 
   renderTimeline (type) {
-    const indexOfNextActivity = this.props.activities.sort(
-      (a, b) => {
-        const date = activity => {
-          return activity.date || activity.startDate || activity.endDate || activity.departureDate
+    let timeOfNextActivity, indexOfNextActivity
+    if (this.props.draggingItem) {
+      indexOfNextActivity = 0
+    } else {
+      indexOfNextActivity = this.props.activities.sort(
+        (a, b) => {
+          const day = activity => {
+            return activity.day || activity.startDay || activity.endDay || activity.departureDay
+          }
+          return day(a) - day(b)
         }
-        return date(a) - date(b)
-      }
-    ).findIndex(activity => {
-      return activity.id === this.props.id && activity.__typename === this.props.type
-    }) + 1
-    let timeOfNextActivity
+      ).findIndex(activity => {
+        return activity.id === this.props.id && activity.__typename === this.props.type
+      }) + 1
+    }
+    let dayAdjustedTime
     if (indexOfNextActivity === 0 || this.props.draggingItem) {
+      timeOfNextActivity = 0
+    } else if (indexOfNextActivity >= this.props.activities.length) {
       timeOfNextActivity = 0
     } else {
       const nextActivity = this.props.activities[indexOfNextActivity]
       timeOfNextActivity = nextActivity['startTime'] || nextActivity['departureTime'] || nextActivity['endTime']
+      const dayOfNextActivity = nextActivity['day'] || nextActivity['startDay'] || nextActivity['departureDay'] || nextActivity['endDay']
+      dayAdjustedTime = timeOfNextActivity + (dayOfNextActivity - this.props.day) * 86400
     }
     switch (type) {
       case 'Activity':
         return (
           <div>
             {this.renderIcon('directions_run')}
-            {this.renderDuration(timeOfNextActivity - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Food':
         return (
           <div>
             {this.renderIcon('restaurant')}
-            {this.renderDuration(timeOfNextActivity - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Lodging':
         return (
           <div>
             {this.renderIcon('hotel', this.props.checkout && endStyle)}
-            {this.renderDuration(timeOfNextActivity - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - (this.props.startTime || this.props.endTime), this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Flight':
@@ -92,7 +101,7 @@ class PlannerActivityTimeline extends Component {
             {this.renderIcon('flight_takeoff')}
             {this.renderDuration(this.props.endTime - this.props.startTime)}
             {this.renderIcon('flight_land')}
-            {this.renderDuration(timeOfNextActivity - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Transport':
@@ -101,7 +110,7 @@ class PlannerActivityTimeline extends Component {
             {this.renderIcon('directions_subway')}
             {this.renderDuration(this.props.endTime - this.props.startTime)}
             {this.renderIcon('directions_subway', endStyle)}
-            {this.renderDuration(timeOfNextActivity - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       default:

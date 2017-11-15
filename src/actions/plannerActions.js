@@ -34,11 +34,11 @@ export const hoverOutsidePlanner = () => {
   }
 }
 
-export const plannerActivityHoverOverActivity = (index, activity, date) => {
+export const plannerActivityHoverOverActivity = (index, activity, day) => {
   return {
     type: 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY',
     index,
     activity,
-    date
+    day
   }
 }

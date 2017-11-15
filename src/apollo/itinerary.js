@@ -8,7 +8,7 @@ export const queryItinerary = gql`
         name
       }
       startDate
-      endDate
+      days
       activities {
         id
         name
@@ -18,7 +18,7 @@ export const queryItinerary = gql`
           id
           name
         }
-        date
+        day
         loadSequence
         cost
         bookedThrough
@@ -36,8 +36,8 @@ export const queryItinerary = gql`
           id
           name
         }
-        departureDate
-        arrivalDate
+        departureDay
+        arrivalDay
         departureTime
         arrivalTime
         departureLoadSequence
@@ -54,8 +54,8 @@ export const queryItinerary = gql`
           id
           name
         }
-        startDate
-        endDate
+        startDay
+        endDay
         startTime
         endTime
         startLoadSequence
@@ -72,7 +72,7 @@ export const queryItinerary = gql`
           id
           name
         }
-        date
+        day
         startTime
         endTime
         loadSequence
@@ -92,7 +92,7 @@ export const queryItinerary = gql`
           id
           name
         }
-        date
+        day
         departureTime
         arrivalTime
         startLoadSequence
@@ -111,7 +111,6 @@ export const allItineraries = gql`
       id
       name
       startDate
-      endDate
       pax
       travelInsurance
       budget
@@ -139,7 +138,6 @@ export const itinerariesByUser = gql`
       id
       name
       startDate
-      endDate
       pax
       travelInsurance
       budget
@@ -168,7 +166,6 @@ export const createItinerary = gql`
       id
       name
       startDate
-      endDate
       pax
       travelInsurance
       budget
@@ -181,7 +178,6 @@ export const updateItineraryDetails = gql`
       id
       name
       startDate
-      endDate
       pax
       travelInsurance
       budget

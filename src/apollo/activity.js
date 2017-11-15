@@ -4,7 +4,7 @@ export const createActivity = gql`
   mutation createActivity(
     $ItineraryId: ID!,
     $loadSequence: Int
-    $date: Int!,
+    $day: Int!,
     $startTime: Int,
     $endTime: Int,
     $googlePlaceData: googlePlaceData,
@@ -20,7 +20,7 @@ export const createActivity = gql`
     createActivity(
       ItineraryId: $ItineraryId,
       loadSequence: $loadSequence,
-      date: $date,
+      day: $day,
       startTime: $startTime,
       endTime: $endTime,
       googlePlaceData: $googlePlaceData,
@@ -42,14 +42,14 @@ export const updateActivity = gql`
   mutation updateActivity(
     $id: ID!,
     $name: String,
-    $date: Int,
+    $day: Int,
     $googlePlaceData: googlePlaceData,
     $loadSequence: Int
   ) {
     updateActivity(
       id: $id,
       name: $name,
-      date: $date,
+      day: $day,
       googlePlaceData: $googlePlaceData,
       loadSequence: $loadSequence
     ) {
@@ -69,8 +69,8 @@ export const deleteActivity = gql`
 export const createFlight = gql`
   mutation createFlight(
     $name: String!,
-    $departureDate: Int!,
-    $arrivalDate: Int!,
+    $departureDay: Int!,
+    $arrivalDay: Int!,
     $ItineraryId: ID!,
     $departureLoadSequence: Int!,
     $arrivalLoadSequence: Int!,
@@ -80,8 +80,8 @@ export const createFlight = gql`
   ) {
     createFlight(
       name: $name,
-      departureDate: $departureDate,
-      arrivalDate: $arrivalDate,
+      departureDay: $departureDay,
+      arrivalDay: $arrivalDay,
       ItineraryId: $ItineraryId,
       departureLoadSequence: $departureLoadSequence,
       arrivalLoadSequence: $arrivalLoadSequence,
@@ -96,8 +96,8 @@ export const updateFlight = gql`
   mutation updateFlight(
     $id: ID!,
     $name: String,
-    $arrivalDate: Int,
-    $departureDate: Int,
+    $arrivalDay: Int,
+    $departureDay: Int,
     $ItineraryId: ID,
     $departureLoadSequence: Int,
     $arrivalLoadSequence: Int,
@@ -108,8 +108,8 @@ export const updateFlight = gql`
     updateFlight(
       id: $id,
       name: $name,
-      arrivalDate: $arrivalDate,
-      departureDate: $departureDate,
+      arrivalDay: $arrivalDay,
+      departureDay: $departureDay,
       DepartureGooglePlaceData: $DepartureGooglePlaceData,
       ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       departureLoadSequence: $departureLoadSequence,
@@ -131,8 +131,8 @@ export const deleteFlight = gql`
 export const createLodging = gql`
   mutation createLodging(
     $name: String!,
-    $startDate: Int!,
-    $endDate: Int!,
+    $startDay: Int!,
+    $endDay: Int!,
     $googlePlaceData: ID!,
     $ItineraryId: ID!,
     $startloadSequence: Int!,
@@ -140,8 +140,8 @@ export const createLodging = gql`
   ) {
     createLodging(
       name: $name,
-      startDate: $startDate,
-      endDate: $endDate,
+      startDay: $startDay,
+      endDay: $endDay,
       googlePlaceData: $googlePlaceData,
       ItineraryId: $ItineraryId,
       startLoadSequence: $startLoadSequence,
@@ -156,8 +156,8 @@ export const updateLodging = gql`
   mutation updateLodging(
     $id: ID!,
     $name: String,
-    $startDate: Int,
-    $endDate: Int,
+    $startDay: Int,
+    $endDay: Int,
     $googlePlaceData: ID,
     $startLoadSequence: Int,
     $endLoadSequence: Int
@@ -165,8 +165,8 @@ export const updateLodging = gql`
     updateLodging(
       id: $id,
       name: $name,
-      startDate: $startDate,
-      endDate: $endDate,
+      startDay: $startDay,
+      endDay: $endDay,
       googlePlaceData: $googlePlaceData,
       startLoadSequence: $startLoadSequence,
       endLoadSequence: $endLoadSequence
@@ -187,14 +187,14 @@ export const deleteLodging = gql`
 export const createFood = gql`
   mutation createFood(
     $name: String!,
-    $date: Int!,
+    $day: Int!,
     $googlePlaceData: ID!,
     $ItineraryId: ID!,
     $loadSequence: Int!
   ) {
     createFood(
       name: $name,
-      date: $date,
+      day: $day,
       googlePlaceData: $googlePlaceData,
       ItineraryId: $ItineraryId,
       loadSequence: $loadSequence
@@ -208,14 +208,14 @@ export const updateFood = gql`
   mutation updateFood(
     $id: ID!,
     $name: String,
-    $date: Int,
+    $day: Int,
     $googlePlaceData: ID,
     $loadSequence: Int
   ) {
     updateFood(
       id: $id,
       name: $name,
-      date: $date,
+      day: $day,
       googlePlaceData: $googlePlaceData,
       loadSequence: $loadSequence
     ) {
@@ -235,7 +235,7 @@ export const deleteFood = gql`
 export const createTransport = gql`
   mutation createTransport(
     $name: String!,
-    $date: Int!,
+    $day: Int!,
     $DepartureGooglePlaceData: ID!,
     $ArrivalGooglePlaceData: ID!,
     $ItineraryId: ID!,
@@ -244,7 +244,7 @@ export const createTransport = gql`
   ) {
     createTransport(
       name: $name,
-      date: $date,
+      day: $day,
       DepartureGooglePlaceData: $DepartureGooglePlaceData,
       ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       ItineraryId: $ItineraryId,
@@ -260,7 +260,7 @@ export const updateTransport = gql`
   mutation updateTransport(
     $id: ID!,
     $name: String,
-    $date: Int,
+    $day: Int,
     $DepartureGooglePlaceData: ID,
     $ArrivalGooglePlaceData: ID,
     $departureLoadSequence: Int,
@@ -269,7 +269,7 @@ export const updateTransport = gql`
     updateTransport(
       id: $id,
       name: $name,
-      date: $date,
+      day: $day,
       DepartureGooglePlaceData: $DepartureGooglePlaceData,
       ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       departureLoadSequence: $departureLoadSequence,

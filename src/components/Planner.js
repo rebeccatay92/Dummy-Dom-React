@@ -32,17 +32,18 @@ class Planner extends Component {
     if (this.props.data.loading) return (<h1>Loading</h1>)
 
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
-    const endDate = new Date(this.props.data.findItinerary.endDate * 1000)
-    const getDates = (startDate, stopDate) => {
+    // const endDate = new Date(this.props.data.findItinerary.endDate * 1000)
+    const days = this.props.data.findItinerary.days
+    const getDates = (startDate, days) => {
       let dateArray = []
       let currentDate = new Date(startDate)
-      while (currentDate <= stopDate) {
+      while (dateArray.length < days) {
         dateArray.push(new Date(currentDate))
         currentDate.setDate(currentDate.getDate() + 1)
       }
       return dateArray
     }
-    const dates = getDates(startDate, endDate)
+    const dates = getDates(startDate, days)
     const newDates = dates.map((date) => {
       return date.getTime()
     })
@@ -86,12 +87,12 @@ class Planner extends Component {
             <div>
               {newDates.map((date, i) => {
                 return (
-                  <DateBox itineraryId={this.props.id} date={date} dates={dates} activities={this.props.activities.filter(
+                  <DateBox itineraryId={this.props.id} day={i + 1} date={date} dates={dates} activities={this.props.activities.filter(
                     activity => {
-                      let activityDate = activity.date || activity.departureDate || activity.startDate || activity.endDate
-                      return activityDate * 1000 === date
+                      let activityDay = activity.day || activity.departureDay || activity.startDay || activity.endDay
+                      return activityDay === i + 1
                     }
-                  )} draggable={this.state.draggable} key={i} day={i + 1} firstDay={i === 0} lastDay={i === newDates.length - 1} />
+                  )} draggable={this.state.draggable} key={i} firstDay={i === 0} lastDay={i === newDates.length - 1} />
                 )
               })}
             </div>
@@ -110,7 +111,7 @@ class Planner extends Component {
           location: {
             name: lodging.location.name
           },
-          endDate: lodging.endDate,
+          endDay: lodging.endDay,
           endTime: lodging.endTime,
           __typename: lodging.__typename,
           endLoadSequence: lodging.endLoadSequence

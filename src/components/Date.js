@@ -7,22 +7,15 @@ import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOutsidePlanner } from '../actions/plannerActions'
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
+import { toggleTimeline } from '../actions/plannerTimelineActions'
 import PlannerColumnHeader from './PlannerColumnHeader'
 
 import CreateActivityForm from './CreateActivityForm'
 
 const dateTarget = {
   drop (props, monitor) {
-    // if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
-      // let newActivity = Object.assign(monitor.getItem(), {startDate: props.date})
-      // props.dropActivity(newActivity)
-      // props.deleteActivityFromBucket(monitor.getItem())
-    // }
   },
   hover (props, monitor) {
-    // if (props.activities.filter(activity => activity.startDate === props.date).length === 0) {
-    //   if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(0, monitor.getItem(), props.date)
-    // }
   }
 }
 
@@ -64,15 +57,28 @@ class DateBox extends Component {
             <tr>
               <th style={{width: '89px', position: 'relative'}}>
                 {this.props.firstDay && (
-                <div style={{position: 'absolute', display: 'inline-block', top: '8px', textAlign: 'center'}}>
+                <div style={{position: 'absolute', top: '8px', textAlign: 'center', width: '100%'}}>
                   <span style={{fontSize: '24px', color: '#EDB5BF', display: 'inline-block'}}>
-                    <i className='material-icons' style={{marginRight: '-10px'}}>keyboard_arrow_left</i>
-                    <i className='material-icons'>keyboard_arrow_right</i>
+                    <i onClick={() => this.handleClick()} className='material-icons' style={{marginRight: '-10px', cursor: 'pointer'}}>keyboard_arrow_left</i>
+                    <i onClick={() => this.handleClick()} className='material-icons' style={{cursor: 'pointer'}}>keyboard_arrow_right</i>
                   </span>
-                  <span style={{fontSize: '16px', display: 'inline-block', color: '#EDB5BF'}}>Duration</span>
+                  <span style={{fontSize: '16px', display: 'block', color: '#EDB5BF'}}>{this.props.timeline.events ? 'Duration' : 'Days'}</span>
                 </div>
-              )}
-                {!this.props.firstDay && (
+                )}
+                {this.props.firstDay && this.props.timeline.days && (
+                <div style={{position: 'absolute', textAlign: 'center', width: '100%', top: '80px'}}>
+                  <div>
+                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 1</span>
+                  </div>
+                  <div>
+                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 1</span>
+                  </div>
+                  <div>
+                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 1</span>
+                  </div>
+                </div>
+                )}
+                {!this.props.firstDay && this.props.timeline.events && (
                   timeline
                 )}
               </th>
@@ -95,7 +101,7 @@ class DateBox extends Component {
             </tr>
             <tr>
               <td style={{width: '89px', position: 'relative'}}>
-                {!this.props.firstDay && timeline}
+                {!this.props.firstDay && this.props.timeline.events && timeline}
               </td>
               <td colSpan='4'>
                 <hr style={{marginBottom: '2vh', marginTop: this.props.firstDay ? '0' : '1vh', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
@@ -106,10 +112,10 @@ class DateBox extends Component {
             <tbody>
               {this.props.activities.map((activity, i, array) => {
                 return (
-                  <PlannerActivity itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
+                  <PlannerActivity day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
                 )
               })}
-              <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{date: this.props.date / 1000, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} highestLoadSequence={
+              <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{day: this.props.day, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} highestLoadSequence={
                 this.props.activities.length > 0 &&
                 (this.props.activities[this.props.activities.length - 1].loadSequence ||
                 this.props.activities[this.props.activities.length - 1].startLoadSequence ||
@@ -120,16 +126,23 @@ class DateBox extends Component {
             </tbody>
         )}
         </table>
-        <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
-        <div hidden={!this.state.creatingActivity}>
-          <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} />
-        </div>
+        {/* <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button> */}
+        {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} />}
       </div>
     )
   }
+
   toggleCreateActivityForm () {
     this.setState({creatingActivity: !this.state.creatingActivity})
   }
+
+  handleClick () {
+    this.props.toggleTimeline({
+      events: !this.props.timeline.events,
+      days: !this.props.timeline.days
+    })
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.isOver === !this.props.isOver) {
       if (!nextProps.isOver) this.props.hoverOutsidePlanner()
@@ -144,22 +157,20 @@ class DateBox extends Component {
     }
 
     if (!checkIfNoBlankBoxes(this.props.activities) && checkIfNoBlankBoxes(nextProps.activities) && nextProps.isOver) {
-      // console.log(nextProps.activities)
-      console.log('called')
       const loadSequenceArr = nextProps.activities.map((activity, i) => {
-        const date = activity.date || activity.startDate || activity.departureDate || activity.endDate
+        const day = activity.day || activity.startDay || activity.departureDay || activity.endDay
         const types = {
           Activity: 'Activity',
           Flight: 'Flight',
           Food: 'Food',
           Transport: 'Transport',
-          Lodging: activity.startDate ? 'LodgingCheckin' : 'LodgingCheckout'
+          Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
         }
         return {
           id: activity.id,
           type: types[activity.__typename],
           loadSequence: i + 1,
-          date: date
+          day: day
         }
       })
       // console.log(loadSequenceArr)
@@ -186,18 +197,22 @@ const mapDispatchToProps = (dispatch) => {
     deleteActivityFromBucket: (activity) => {
       dispatch(deleteActivityFromBucket(activity))
     },
-    plannerActivityHoverOverActivity: (index, activity, date) => {
-      dispatch(plannerActivityHoverOverActivity(index, activity, date))
+    plannerActivityHoverOverActivity: (index, activity, day) => {
+      dispatch(plannerActivityHoverOverActivity(index, activity, day))
     },
     hoverOutsidePlanner: () => {
       dispatch(hoverOutsidePlanner())
+    },
+    toggleTimeline: (options) => {
+      dispatch(toggleTimeline(options))
     }
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    columns: state.plannerColumns
+    columns: state.plannerColumns,
+    timeline: state.plannerTimeline
   }
 }
 

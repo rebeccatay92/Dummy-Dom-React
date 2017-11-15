@@ -9,6 +9,7 @@ import { plannerReducer } from './reducers/plannerReducer'
 import { bucketReducer } from './reducers/bucketReducer'
 import { userReducer } from './reducers/userReducer'
 import { plannerColumnReducer } from './reducers/plannerColumnReducer'
+import { plannerTimelineReducer } from './reducers/plannerTimelineReducer'
 
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
@@ -35,6 +36,7 @@ const store = createStore(combineReducers({
   plannerActivities: plannerReducer,
   bucketList: bucketReducer,
   plannerColumns: plannerColumnReducer,
+  plannerTimeline: plannerTimelineReducer,
   token: userReducer,
   apollo: client.reducer()
 }),
