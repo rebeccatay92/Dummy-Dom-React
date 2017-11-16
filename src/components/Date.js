@@ -30,7 +30,8 @@ class DateBox extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      creatingActivity: false
+      creatingActivity: false,
+      mouseOverTimeline: false
     }
   }
 
@@ -66,15 +67,21 @@ class DateBox extends Component {
                 </div>
                 )}
                 {this.props.firstDay && this.props.timeline.days && (
-                <div style={{position: 'absolute', textAlign: 'center', width: '100%', top: '80px'}}>
-                  <div>
+                <div onMouseEnter={() => this.setState({mouseOverTimeline: true})} onMouseLeave={() => this.setState({mouseOverTimeline: false})} style={{position: 'absolute', textAlign: 'center', width: '100%', top: '60px', zIndex: 1, padding: '20px 0'}}>
+                  <div style={{padding: '5px'}}>
                     <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 1</span>
                   </div>
-                  <div>
-                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 1</span>
+                  <div style={{height: '20px', position: 'relative'}}>
+                    {timeline}
                   </div>
-                  <div>
-                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 1</span>
+                  <div style={{padding: '5px'}}>
+                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 2</span>
+                  </div>
+                  <div style={{height: '20px', position: 'relative'}}>
+                    {timeline}
+                  </div>
+                  <div style={{padding: '5px'}}>
+                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>Day 3</span>
                   </div>
                 </div>
                 )}
@@ -112,7 +119,7 @@ class DateBox extends Component {
             <tbody>
               {this.props.activities.map((activity, i, array) => {
                 return (
-                  <PlannerActivity day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
+                  <PlannerActivity mouseOverTimeline={this.state.mouseOverTimeline} day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
                 )
               })}
               <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{day: this.props.day, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} highestLoadSequence={

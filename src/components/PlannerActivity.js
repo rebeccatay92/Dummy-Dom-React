@@ -47,10 +47,10 @@ const plannerActivityTarget = {
   drop (props, monitor) {
     let day = props.activity.day
     const typeOfDays = {
-      Activity: 'day',
-      Food: 'day',
+      Activity: 'startDay',
+      Food: 'startDay',
       Lodging: monitor.getItem().startDay ? 'startDay' : 'endDay',
-      Transport: 'day',
+      Transport: 'departureDay',
       Flight: 'departureDay'
     }
     // const typeOfTimes = {
@@ -154,7 +154,7 @@ class PlannerActivity extends Component {
       }}>
         <td style={{width: '89px', position: 'relative'}}>
           {this.props.timeline.events && timeline}
-          {this.props.timeline.events && <PlannerActivityTimeline day={this.props.day} type={this.props.activity.__typename} checkout={this.props.activity.__typename === 'Lodging' && !this.props.activity.startTime} isLast={this.props.isLast} lastDay={this.props.lastDay} startTime={this.props.activity.startTime || this.props.activity.departureTime} endTime={this.props.activity.endTime || this.props.activity.arrivalTime} id={this.props.activity.id} draggingItem={getItem} />}
+          {this.props.timeline.events && <PlannerActivityTimeline activity={this.props.activity} day={this.props.day} type={this.props.activity.__typename} checkout={this.props.activity.__typename === 'Lodging' && !this.props.activity.startTime} isLast={this.props.isLast} lastDay={this.props.lastDay} startTime={this.props.activity.startTime || this.props.activity.departureTime} endTime={this.props.activity.endTime || this.props.activity.arrivalTime} id={this.props.activity.id} draggingItem={getItem} />}
         </td>
         <td style={{width: `${0.4 * 962}px`}}>
           <div style={{ lineHeight: '100%', padding: '1vh 0', minHeight: this.props.activity.id ? '12vh' : minHeight }} key={this.props.activity.id}>
@@ -212,7 +212,7 @@ class PlannerActivity extends Component {
         </tr>
       )
     }
-    if (this.state.draggable) {
+    if (this.state.draggable && !this.props.mouseOverTimeline) {
       return connectDragSource(connectDropTarget(activityBox))
     } else {
       return activityBox

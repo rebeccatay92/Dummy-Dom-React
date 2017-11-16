@@ -54,23 +54,23 @@ class PlannerActivityTimeline extends Component {
       indexOfNextActivity = this.props.activities.sort(
         (a, b) => {
           const day = activity => {
-            return activity.day || activity.startDay || activity.endDay || activity.departureDay
+            return activity.startDay || activity.endDay || activity.departureDay
           }
           return day(a) - day(b)
         }
       ).findIndex(activity => {
-        return activity.id === this.props.id && activity.__typename === this.props.type
+        return activity === this.props.activity
       }) + 1
     }
     let dayAdjustedTime
     if (indexOfNextActivity === 0 || this.props.draggingItem) {
-      timeOfNextActivity = 0
+      dayAdjustedTime = this.props.endTime
     } else if (indexOfNextActivity >= this.props.activities.length) {
-      timeOfNextActivity = 0
+      dayAdjustedTime = this.props.endTime
     } else {
       const nextActivity = this.props.activities[indexOfNextActivity]
       timeOfNextActivity = nextActivity['startTime'] || nextActivity['departureTime'] || nextActivity['endTime']
-      const dayOfNextActivity = nextActivity['day'] || nextActivity['startDay'] || nextActivity['departureDay'] || nextActivity['endDay']
+      const dayOfNextActivity = nextActivity['startDay'] || nextActivity['departureDay'] || nextActivity['endDay']
       dayAdjustedTime = timeOfNextActivity + (dayOfNextActivity - this.props.day) * 86400
     }
     switch (type) {

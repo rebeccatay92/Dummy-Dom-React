@@ -18,7 +18,8 @@ export const queryItinerary = gql`
           id
           name
         }
-        day
+        startDay
+        endDay
         loadSequence
         cost
         bookedThrough
@@ -72,7 +73,8 @@ export const queryItinerary = gql`
           id
           name
         }
-        day
+        startDay
+        endDay
         startTime
         endTime
         loadSequence
@@ -92,7 +94,8 @@ export const queryItinerary = gql`
           id
           name
         }
-        day
+        departureDay
+        arrivalDay
         departureTime
         arrivalTime
         startLoadSequence
