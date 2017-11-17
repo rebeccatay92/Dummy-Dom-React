@@ -100,8 +100,8 @@ export const updateFlight = gql`
   mutation updateFlight(
     $id: ID!,
     $name: String,
-    $arrivalDay: Int,
     $departureDay: Int,
+    $arrivalDay: Int,
     $ItineraryId: ID,
     $departureLoadSequence: Int,
     $arrivalLoadSequence: Int,
@@ -112,8 +112,8 @@ export const updateFlight = gql`
     updateFlight(
       id: $id,
       name: $name,
-      arrivalDay: $arrivalDay,
       departureDay: $departureDay,
+      arrivalDay: $arrivalDay,
       DepartureGooglePlaceData: $DepartureGooglePlaceData,
       ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       departureLoadSequence: $departureLoadSequence,

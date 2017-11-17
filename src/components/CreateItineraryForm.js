@@ -9,6 +9,7 @@ class CreateItineraryForm extends Component {
     this.state = {
       name: '',
       countryCode: '',
+      days: 0,
       startDate: '',
       endDate: '',
       pax: 0,
@@ -52,6 +53,7 @@ class CreateItineraryForm extends Component {
     this.setState({
       name: '',
       countryCode: '',
+      days: 0,
       startDate: '',
       endDate: '',
       pax: 0,
@@ -323,6 +325,10 @@ class CreateItineraryForm extends Component {
           <label>
             Name of this itinerary
             <input type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} />
+          </label>
+          <label>
+            Number of days
+            <input type='number' name='days' onChange={(e) => this.handleChange(e, 'days')}/>
           </label>
           <label>
             Start Date

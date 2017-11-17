@@ -67,6 +67,7 @@ class Itinerary extends Component {
           </ul>
         </div>
         <h3>name: {itinerary.name}</h3>
+        <h3 style={{display: 'inline-block'}}>Days: {itinerary.days}</h3>
         <h3 style={{display: 'inline-block'}}>startDate: {startDate}</h3>
         <h3 style={{display: 'inline-block'}}>endDate: {endDate}</h3>
         <h3 style={{display: 'inline-block'}}>pax: {itinerary.pax}</h3>
@@ -74,9 +75,9 @@ class Itinerary extends Component {
         <h3 style={{display: 'inline-block'}}>budget: {itinerary.budget}</h3>
 
         <button onClick={() => this.toggleUpdateForm()}>Toggle update form</button>
-        <div hidden={!this.state.updating}>
+        {this.state.updating &&
           <UpdateItineraryDetails itinerary={itinerary} toggleUpdateForm={() => this.toggleUpdateForm()} />
-        </div>
+        }
         <button onClick={() => this.deleteItinerary(itinerary.id)}>Delete this itinerary</button>
       </div>
     )

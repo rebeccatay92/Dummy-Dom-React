@@ -8,6 +8,7 @@ class UpdateItineraryDetails extends Component {
     this.state = {
       id: this.props.itinerary.id,
       name: this.props.itinerary.name,
+      days: this.props.itinerary.days,
       startDate: this.props.itinerary.startDate,
       endDate: this.props.itinerary.endDate,
       pax: this.props.itinerary.pax,
@@ -43,6 +44,7 @@ class UpdateItineraryDetails extends Component {
       variables: {
         id: this.state.id,
         name: this.state.name,
+        days: this.state.days,
         startDate: startUnix,
         endDate: endUnix,
         pax: this.state.pax,

@@ -7,8 +7,8 @@ export const queryItinerary = gql`
       countries {
         name
       }
-      startDate
       days
+      startDate
       activities {
         id
         name
@@ -95,8 +95,8 @@ export const queryItinerary = gql`
           name
         }
         departureDay
-        arrivalDay
         departureTime
+        arrivalDay
         arrivalTime
         startLoadSequence
         endLoadSequence
@@ -113,6 +113,7 @@ export const allItineraries = gql`
     allItineraries {
       id
       name
+      days
       startDate
       pax
       travelInsurance
@@ -140,6 +141,7 @@ export const itinerariesByUser = gql`
     itinerariesByUser {
       id
       name
+      days
       startDate
       pax
       travelInsurance
@@ -164,10 +166,11 @@ export const itinerariesByUser = gql`
 `
 // include country code. coutnryIdArr
 export const createItinerary = gql`
-  mutation createItinerary($UserId: Int!, $countryCode: String, $name: String!, $startDate: Int, $endDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {
-    createItinerary(UserId:$UserId, countryCode: $countryCode, name: $name, startDate: $startDate, endDate: $endDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget) {
+  mutation createItinerary($UserId: Int!, $countryCode: String, $name: String!, $days: Int!, $startDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {
+    createItinerary(UserId:$UserId, countryCode: $countryCode, name: $name, days: $days, startDate: $startDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget) {
       id
       name
+      days
       startDate
       pax
       travelInsurance
@@ -180,6 +183,7 @@ export const updateItineraryDetails = gql`
     updateItineraryDetails(id: $id, name: $name, startDate: $startDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget, days: $days) {
       id
       name
+      days
       startDate
       days
       pax

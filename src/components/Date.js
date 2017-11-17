@@ -141,8 +141,15 @@ class DateBox extends Component {
             </tbody>
         )}
         </table>
-        {/* <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button> */}
-        {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} />}
+        <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
+        {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} highestLoadSequence={
+          this.props.activities.length > 0 &&
+          (this.props.activities[this.props.activities.length - 1].loadSequence ||
+          this.props.activities[this.props.activities.length - 1].startLoadSequence ||
+          this.props.activities[this.props.activities.length - 1].endLoadSequence ||
+          this.props.activities[this.props.activities.length - 1].departureLoadSequence)
+          } />
+        }
       </div>
     )
   }
