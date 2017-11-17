@@ -176,11 +176,12 @@ export const createItinerary = gql`
   }`
 
 export const updateItineraryDetails = gql`
-  mutation updateItineraryDetails($id: ID!, $name: String, $startDate: Int, $endDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {
-    updateItineraryDetails(id: $id, name: $name, startDate: $startDate, endDate: $endDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget) {
+  mutation updateItineraryDetails($id: ID!, $name: String, $startDate: Int, $pax: Int, $travelInsurance: String, $budget: Int, $days: Int) {
+    updateItineraryDetails(id: $id, name: $name, startDate: $startDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget, days: $days) {
       id
       name
       startDate
+      days
       pax
       travelInsurance
       budget

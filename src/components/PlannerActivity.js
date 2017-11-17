@@ -40,12 +40,12 @@ const plannerActivitySource = {
 
 const plannerActivityTarget = {
   hover (props, monitor, component) {
-    let day = props.activity.day || props.activity.startDay || props.activity.departureDay || props.activity.endDay
+    let day = props.activity.startDay || props.activity.departureDay || props.activity.endDay
     if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index, day)
     else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem(), day)
   },
   drop (props, monitor) {
-    let day = props.activity.day
+    let day = props.activity.startDay
     const typeOfDays = {
       Activity: 'startDay',
       Food: 'startDay',
@@ -146,10 +146,6 @@ class PlannerActivity extends Component {
     let activityBox = (
       <tr style={{
         cursor: this.state.draggable ? 'move' : 'default',
-        ':hover': {
-          backgroundColor: '#FAFAFA',
-          boxShadow: getItem ? '' : '2px 2px 20px 1px rgba(0, 0, 0, .2)'
-        },
         border: this.props.activity.id ? 'none' : '1px dashed black'
       }}>
         <td style={{width: '89px', position: 'relative'}}>
@@ -212,7 +208,7 @@ class PlannerActivity extends Component {
         </tr>
       )
     }
-    if (this.state.draggable && !this.props.mouseOverTimeline) {
+    if (this.state.draggable) {
       return connectDragSource(connectDropTarget(activityBox))
     } else {
       return activityBox

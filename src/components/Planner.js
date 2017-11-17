@@ -60,7 +60,7 @@ class Planner extends Component {
         }
           renderTrackVertical={({style}) =>
             <div style={{ ...style, top: 0, right: 0, width: '10px', height: '100%' }} />
-        } thumbSize={60} >
+        } thumbSize={60} onScroll={(e) => this.handleScroll(e)}>
           <div style={{
             paddingRight: '44px',
             paddingLeft: '10px'
@@ -87,7 +87,7 @@ class Planner extends Component {
             <div>
               {newDates.map((date, i) => {
                 return (
-                  <DateBox itineraryId={this.props.id} day={i + 1} date={date} dates={dates} activities={this.props.activities.filter(
+                  <DateBox days={days} timelineAtTop={this.state.timelineAtTop} dateOffsets={this.state.dateOffsets || {'day 1': true}} itineraryId={this.props.id} day={i + 1} date={date} dates={dates} activities={this.props.activities.filter(
                     activity => {
                       let activityDay = activity.day || activity.departureDay || activity.startDay || activity.endDay
                       return activityDay === i + 1
@@ -100,6 +100,32 @@ class Planner extends Component {
         </Scrollbars>
       </div>
     )
+  }
+
+  handleScroll (e) {
+    function offset (el) {
+      const rect = el.getBoundingClientRect(),
+      scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      return { top: rect.top + scrollTop - 76 }
+    }
+
+    var div = document.querySelector('#timeline-top')
+    var divOffset = offset(div)
+    const days = this.props.data.findItinerary.days
+    let obj = {}
+    for (var i = 1; i <= days; i++) {
+      var dateDiv = document.querySelector(`#day-${i}`)
+      if (i === 1 || offset(dateDiv).top < 50) {
+        Object.keys(obj).forEach(key => {
+          obj[key] = false
+        })
+        obj[`day ${i}`] = i === 1 ? true : offset(dateDiv).top < 50
+      }
+    }
+    this.setState({
+      timelineAtTop: divOffset.top < 0,
+      dateOffsets: obj
+    })
   }
 
   componentWillReceiveProps (nextProps) {
