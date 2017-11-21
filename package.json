@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "country-data": "^0.0.31",
+    "dotenv": "^4.0.0",
+    "jsonwebtoken": "^8.1.0",
     "material-design-icons": "^3.0.1",
     "prop-types": "^15.6.0",
     "radium": "^0.19.6",

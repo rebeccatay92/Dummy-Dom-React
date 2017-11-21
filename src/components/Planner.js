@@ -87,7 +87,7 @@ class Planner extends Component {
             <div>
               {newDates.map((date, i) => {
                 return (
-                  <DateBox days={days} timelineAtTop={this.state.timelineAtTop} dateOffsets={this.state.dateOffsets || {'day 1': true}} itineraryId={this.props.id} day={i + 1} date={date} dates={dates} activities={this.props.activities.filter(
+                  <DateBox days={days} timelineAtTop={this.state.timelineAtTop} dateOffsets={this.state.dateOffsets || {'day 1': true}} itineraryId={this.props.id} day={i + 1} date={date} dates={dates} countries={this.props.data.findItinerary.countries} activities={this.props.activities.filter(
                     activity => {
                       let activityDay = activity.day || activity.departureDay || activity.startDay || activity.endDay
                       return activityDay === i + 1

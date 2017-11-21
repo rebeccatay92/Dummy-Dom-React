@@ -63,19 +63,19 @@ class LocationSelection extends Component {
   }
 
   handleClickOutside () {
-     this.setState({selecting: false})
-     if (this.state.selectedLocation.name) {
-       this.setState({search: this.state.selectedLocation.name})
-     } else {
-       this.setState({search: ''})
-     }
-   }
+    this.setState({selecting: false})
+    if (this.state.selectedLocation.name) {
+      this.setState({search: this.state.selectedLocation.name})
+    } else {
+      this.setState({search: ''})
+    }
+  }
 
   render () {
     return (
       <div>
         <form>
-          <input type='text' autoComplete='off' placeholder='Select a location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{ width: '300px', background: 'pink', border: 'none', borderBottom: '1px solid pink', outline: 'none', ':hover': {borderBottom: '1px solid black'} }} value={this.state.search} />
+          <input type='text' autoComplete='off' placeholder='Search for a location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{ width: '300px', background: 'pink', border: 'none', borderBottom: '1px solid pink', outline: 'none', ':hover': {borderBottom: '1px solid black'} }} value={this.state.search} />
         </form>
 
         {this.state.selecting &&

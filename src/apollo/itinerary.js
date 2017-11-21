@@ -6,6 +6,7 @@ export const queryItinerary = gql`
       name
       countries {
         name
+        code
       }
       days
       startDate
@@ -25,6 +26,10 @@ export const queryItinerary = gql`
         bookedThrough
         bookingStatus
         notes
+        attachments {
+          id
+          url
+        }
       }
       flights {
         id
@@ -47,6 +52,10 @@ export const queryItinerary = gql`
         bookedThrough
         bookingStatus
         notes
+        attachments {
+          id
+          url
+        }
       }
       lodgings {
         id
@@ -65,6 +74,10 @@ export const queryItinerary = gql`
         bookedThrough
         bookingStatus
         notes
+        attachments {
+          id
+          url
+        }
       }
       food {
         id
@@ -82,6 +95,10 @@ export const queryItinerary = gql`
         bookedThrough
         bookingStatus
         notes
+        attachments {
+          id
+          url
+        }
       }
       transports {
         id
@@ -104,6 +121,10 @@ export const queryItinerary = gql`
         bookedThrough
         bookingStatus
         notes
+        attachments {
+          id
+          url
+        }
       }
     }
   }`

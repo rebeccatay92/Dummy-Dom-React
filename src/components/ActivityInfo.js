@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
-import { updateActivity, updateFlight, updateFood, updateLodging, updateTransport } from '../apollo/activity'
+
+import { updateActivity} from '../apollo/activity'
+import { updateFlight } from '../apollo/flight'
+import { updateLodging } from '../apollo/lodging'
+import { updateTransport } from '../apollo/transport'
+import { updateFood } from '../apollo/food'
+
 import { queryItinerary } from '../apollo/itinerary'
 
 class ActivityInfo extends Component {

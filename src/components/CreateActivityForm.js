@@ -9,6 +9,11 @@ import LocationSelection from './LocationSelection'
 import { queryItinerary } from '../apollo/itinerary'
 import { createActivity } from '../apollo/activity'
 
+var countries = require('country-data').countries
+// var fs = require('fs')
+
+require('dotenv').config()
+
 class CreateActivityForm extends Component {
   constructor (props) {
     super(props)
@@ -23,16 +28,17 @@ class CreateActivityForm extends Component {
       startDate: moment(new Date(this.props.date)),
       endDate: moment(new Date(this.props.date)),
       googlePlaceData: {},
-      LocationId: 0,
       name: '',
       notes: '',
       startTime: '', // should be Int
       endTime: '', // should be Int
       cost: 0,
-      currency: 'USD',
+      currency: '',
+      currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      attachments: ''
+      fileNames: [],
+      attachments: []
     }
   }
 
@@ -74,7 +80,6 @@ class CreateActivityForm extends Component {
           this.setState({endDate: moment(e._d)})
           this.setState({endDay: newDay})
         }
-
       } else if (field === 'endDate') {
         this.setState({endDay: newDay})
       }
@@ -106,9 +111,6 @@ class CreateActivityForm extends Component {
       ItineraryId: parseInt(this.state.ItineraryId),
       startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
-      googlePlaceData: this.state.googlePlaceData,
-      // LocationId: 1, // fake locationId before api is added
-      // loadSequence: this.props.length + 1,
       loadSequence: this.props.highestLoadSequence + 1,
       name: this.state.name,
       currency: this.state.currency,
@@ -116,12 +118,12 @@ class CreateActivityForm extends Component {
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
-      notes: this.state.notes
-      // attachment: this.state.attachment
+      notes: this.state.notes,
+      attachments: this.state.attachments
     }
     if (startUnix) newActivity.startTime = startUnix
     if (endUnix) newActivity.endTime = endUnix
-
+    if (this.state.googlePlaceData.placeId) newActivity.googlePlaceData = this.state.googlePlaceData
     console.log('newActivity', newActivity)
 
     this.props.createActivity({
@@ -132,28 +134,49 @@ class CreateActivityForm extends Component {
       }]
     })
 
-    this.cancelCreateActivity()
+    this.resetState()
+    this.props.toggleCreateActivityForm()
   }
 
-  cancelCreateActivity () {
+  closeCreateActivity () {
+    var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatotest/o?uploadType=media&name='
+    this.state.attachments.forEach(uri => {
+      fetch(uri, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ya29.c.EloKBa_BDG7OIg6_fKFXjlu8zDrr1HVW-vjM9uA54pQM8RS2FRcTRdpMltKmLyOKH3WmNMw2ty2Z76FuJjDSl-goOhpzZe-v1pZD7s8Rz2kuH9xPsIrxkbfzQL8'
+        }
+      })
+      .then(response => {
+        console.log(response)
+        if (response.status === 204) {
+          console.log('delete from cloud storage succeeded')
+        }
+      })
+      .catch(err => console.log(err))
+    })
+    this.resetState()
     this.props.toggleCreateActivityForm()
+  }
+
+  resetState () {
     this.setState({
       startDay: this.props.startDay,
       endDay: this.props.endDay,
       startDate: (new Date(this.props.date)).toISOString().substring(0, 10),
       endDate: (new Date(this.props.date)).toISOString().substring(0, 10),
       googlePlaceData: {},
-      LocationId: 0,
       name: '',
       notes: '',
       startTime: '', // should be Int
       endTime: '', // should be Int
       cost: 0,
-      currency: 'USD',
+      currency: this.state.currencyList[0],
       bookingStatus: false,
       bookedThrough: '',
       bookingConfirmation: '',
-      attachments: ''
+      fileNames: [],
+      attachments: []
     })
   }
 
@@ -161,10 +184,112 @@ class CreateActivityForm extends Component {
     this.setState({googlePlaceData: location})
   }
 
+  handleFileUpload (e) {
+    e.preventDefault()
+    var file = e.target.files[0]
+    console.log('file', file)
+    var ItineraryId = this.state.ItineraryId
+    var timestamp = Date.now()
+    // file is uploaded upon select. need to show uploading status. display list of uploaded files. button to remove upload (deletes from cloud)
+    // key expires every hour. regenerate from private key. see serviceaccount.js
+    var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatotest/o?uploadType=media&name='
+    var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
+    fetch(uriFull,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ya29.c.EloKBbb-E-Yx9U54qbyEkZRsIb6Ei9CVFDj_L7ZMonb402GtnjKHgJ3TGach__4dG0xAXmvBe2RfkBoNpm10Wu6doWCTLHTkuQasNW6vu9RmDtDehCCnX0leFqg`,
+          // 'Authorization': `Bearer ${process.env.CLOUDSTORAGEKEY}`,
+          'Content-Type': file.type,
+          'Content-Length': file.size
+        },
+        body: file
+      }
+    )
+    .then(response => {
+      console.log(response)
+      return response.json()
+    })
+    .then(json => {
+      // console.log('json', json)
+      // console.log('selfLink', json.selfLink)
+      this.setState({attachments: this.state.attachments.concat([json.selfLink])})
+      this.setState({fileNames: this.state.fileNames.concat([file.name])})
+    })
+    .catch(err => {
+      console.log('err', err)
+    })
+  }
+
+  removeUpload (e) {
+    var index = e.target.value
+    var deleteUri = this.state.attachments[index]
+
+    fetch(deleteUri, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Bearer ya29.c.EloKBbb-E-Yx9U54qbyEkZRsIb6Ei9CVFDj_L7ZMonb402GtnjKHgJ3TGach__4dG0xAXmvBe2RfkBoNpm10Wu6doWCTLHTkuQasNW6vu9RmDtDehCCnX0leFqg'
+      }
+    })
+    .then(response => {
+      console.log(response)
+      if (response.status === 204) {
+        console.log('delete from cloud storage succeeded')
+      }
+    })
+    .then(() => {
+      var attach = this.state.attachments
+      var files = this.state.fileNames
+      var newAttachmentsArr = (attach.slice(0, index)).concat(attach.slice(index + 1))
+      var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
+
+      this.setState({attachments: newAttachmentsArr})
+      this.setState({fileNames: newFilesArr})
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  preview (event, i) {
+    console.log('link', this.state.attachments[i])
+    fetch(this.state.attachments[i], {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ya29.c.EloKBbb-E-Yx9U54qbyEkZRsIb6Ei9CVFDj_L7ZMonb402GtnjKHgJ3TGach__4dG0xAXmvBe2RfkBoNpm10Wu6doWCTLHTkuQasNW6vu9RmDtDehCCnX0leFqg`
+      }
+    })
+    .then(response => {
+      console.log(response)
+      // var streamFile = fs.createReadStream('stream.png')
+      // response.body.pipe(streamFile)
+      // console.log('streamFile', streamFile)
+      return response.json()
+    })
+    .then(json => {
+      console.log(json)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  componentDidMount () {
+    var currencyList = []
+    this.props.countries.forEach(e => {
+      var currencyCode = countries[e.code].currencies[0]
+      if (!currencyList.includes(currencyCode)) {
+        currencyList.push(currencyCode)
+      }
+    })
+    this.setState({currencyList: currencyList})
+    this.setState({currency: currencyList[0]})
+  }
+
   render () {
     return (
       <div style={{border: '2px solid black', backgroundColor: 'pink', position: 'fixed', top: '10%', left: '20%', width: '60%', height: '50%'}}>
-        <div style={{width: '50%', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
+        <div style={{width: '50%', height: '90%', display: 'inline-block', verticalAlign: 'top'}}>
           <h4>Activity</h4>
           <label>
             Name:
@@ -174,10 +299,9 @@ class CreateActivityForm extends Component {
             Location:
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
           </label>
-{/*
+          {/*
           <h5>Location: {this.state.googlePlaceData.name}</h5>
           <h5>Address: {this.state.googlePlaceData.address}</h5> */}
-
           <select name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.state.startDay} style={{background: 'pink', border: 'none'}}>
             {this.state.dates.map((indiv, i) => {
               return <option value={i + 1} key={i}>Day {i + 1}</option>
@@ -198,9 +322,8 @@ class CreateActivityForm extends Component {
             })}
           </select>
           <DatePicker selected={this.state.endDate} dateFormat={'ddd, MMM DD YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
-
         </div>
-        <div style={{width: '50%', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
+        <div style={{width: '50%', height: '90%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
           <div style={{width: '96%', position: 'absolute', left: '2%', top: '2%', bottom: '2%', background: 'white'}}>
             <h4>Booking Details</h4>
             <label>
@@ -214,8 +337,9 @@ class CreateActivityForm extends Component {
             <label>
               Cost:
               <select name='currency' value={this.state.currency} onChange={(e) => this.handleChange(e, 'currency')}>
-                <option>USD</option>
-                <option>SGD</option>
+                {this.state.currencyList.map((e, i) => {
+                  return <option key={i}>{e}</option>
+                })}
               </select>
               <input type='number' name='cost' value={this.state.cost} onChange={(e) => this.handleChange(e, 'cost')} />
             </label>
@@ -225,8 +349,20 @@ class CreateActivityForm extends Component {
             </label>
             <div>
               <button onClick={() => this.handleSubmit()}>Create New Activity</button>
-              <button onClick={() => this.cancelCreateActivity()}>Cancel</button>
+              <button onClick={() => this.closeCreateActivity()}>Cancel</button>
             </div>
+          </div>
+        </div>
+        <div style={{width: '100%', height: '10%', background: 'white'}}>
+          <div>
+            <label style={{display: 'inline-block'}}>
+              Upload
+              <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
+            </label>
+            {this.state.fileNames.map((name, i) => {
+              return <span key={i} onClick={(event) => this.preview(event, i)} style={{margin: '0 20px 0 20px', ':hover': {color: 'blue'}}}>{name}<button key={i} value={i} onClick={(e) => this.removeUpload(e)}>X</button></span>
+            })}
+            {/* <img src='stream.png' /> */}
           </div>
         </div>
       </div>

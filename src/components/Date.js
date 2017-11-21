@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import PlannerActivity from './PlannerActivity'
 import { graphql, compose } from 'react-apollo'
-import { changingLoadSequence } from '../apollo/activity'
+import { changingLoadSequence } from '../apollo/changingLoadSequence'
 import { updateItineraryDetails, queryItinerary } from '../apollo/itinerary'
-// import { queryItinerary } from '../apollo/itinerary'
 import { DropTarget } from 'react-dnd'
 import { connect } from 'react-redux'
 import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOutsidePlanner } from '../actions/plannerActions'
@@ -142,7 +141,7 @@ class DateBox extends Component {
         )}
         </table>
         <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
-        {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} length={this.props.activities.length} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} highestLoadSequence={
+        {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} highestLoadSequence={
           this.props.activities.length > 0 &&
           (this.props.activities[this.props.activities.length - 1].loadSequence ||
           this.props.activities[this.props.activities.length - 1].startLoadSequence ||
