@@ -10,7 +10,7 @@ import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucket
 import { toggleTimeline } from '../actions/plannerTimelineActions'
 import PlannerColumnHeader from './PlannerColumnHeader'
 
-import CreateActivityForm from './CreateActivityForm'
+// import CreateActivityForm from './CreateActivityForm'
 
 const dateTarget = {
   drop (props, monitor) {
@@ -129,7 +129,7 @@ class DateBox extends Component {
                   <PlannerActivity mouseOverTimeline={this.state.mouseOverTimeline} day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
                 )
               })}
-              <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{startDay: this.props.day, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} highestLoadSequence={
+              <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{startDay: this.props.day, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={
                 this.props.activities.length > 0 &&
                 (this.props.activities[this.props.activities.length - 1].loadSequence ||
                 this.props.activities[this.props.activities.length - 1].startLoadSequence ||
@@ -140,22 +140,15 @@ class DateBox extends Component {
             </tbody>
         )}
         </table>
-        <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button>
-        {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateActivityForm={() => this.toggleCreateActivityForm()} highestLoadSequence={
-          this.props.activities.length > 0 &&
-          (this.props.activities[this.props.activities.length - 1].loadSequence ||
-          this.props.activities[this.props.activities.length - 1].startLoadSequence ||
-          this.props.activities[this.props.activities.length - 1].endLoadSequence ||
-          this.props.activities[this.props.activities.length - 1].departureLoadSequence)
-          } />
-        }
+        {/* <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button> */}
+        {/* {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} />} */}
       </div>
     )
   }
 
-  toggleCreateActivityForm () {
-    this.setState({creatingActivity: !this.state.creatingActivity})
-  }
+  // toggleCreateActivityForm () {
+  //   this.setState({creatingActivity: !this.state.creatingActivity})
+  // }
 
   handleClick () {
     this.props.toggleTimeline({

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
-import Radium from 'radium'
+import Radium, { Style } from 'radium'
 import GooglePlaceResult from './GooglePlaceResult'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
@@ -16,7 +16,8 @@ class LocationSelection extends Component {
       search: '',
       results: [],
       selecting: false,
-      selectedLocation: {}
+      selectedLocation: {},
+      marginTop: 160
     }
   }
 
@@ -27,7 +28,32 @@ class LocationSelection extends Component {
     this.setState({selecting: false}) // close results
   }
 
+  resizeTextArea () {
+    let locationInput = document.querySelector('#locationInput')
+    let initialClientHeight = locationInput.clientHeight
+    locationInput.style.height = 'auto'
+    // console.log(locationInput.style.height);
+    // locationInput.style.height = locationInput.scrollHeight + 'px'
+    console.log(locationInput.clientHeight, locationInput.scrollHeight);
+    if (locationInput.clientHeight < locationInput.scrollHeight) {
+      locationInput.style.height = locationInput.scrollHeight + 'px'
+      if (locationInput.clientHeight < locationInput.scrollHeight) {
+        locationInput.style.height = (locationInput.scrollHeight * 2 - locationInput.clientHeight) + 'px'
+      }
+    }
+    if (initialClientHeight < locationInput.clientHeight) {
+      this.setState({
+        marginTop: this.state.marginTop - 55
+      })
+    } else if (initialClientHeight > locationInput.clientHeight) {
+      this.setState({
+        marginTop: this.state.marginTop + 55
+      })
+    }
+  }
+
   handleChange (e, field) {
+    this.resizeTextArea()
     this.setState({
       [field]: e.target.value
     })
@@ -69,13 +95,40 @@ class LocationSelection extends Component {
     } else {
       this.setState({search: ''})
     }
+    this.resizeTextArea()
   }
 
   render () {
     return (
       <div>
         <form>
-          <input type='text' autoComplete='off' placeholder='Search for a location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{ width: '300px', background: 'pink', border: 'none', borderBottom: '1px solid pink', outline: 'none', ':hover': {borderBottom: '1px solid black'} }} value={this.state.search} />
+          <Style scopeSelector='*' rules={{
+            '::-webkit-input-placeholder': {
+              color: 'white'
+            },
+            ':-moz-placeholder': {
+              color: 'white'
+            },
+            '::-moz-placeholder': {
+              color: 'white'
+            },
+            ':ms-input-placeholder': {
+              color: 'white'
+            },
+            ':focus::-webkit-input-placeholder': {
+              color: 'transparent'
+            },
+            ':focus:-moz-placeholder': {
+              color: 'transparent'
+            },
+            ':focus::-moz-placeholder': {
+              color: 'transparent'
+            },
+            ':focus:ms-input-placeholder': {
+              color: 'transparent'
+            }
+          }} />
+          <textarea id='locationInput' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{fontSize: '36px', textAlign: 'center', width: '335px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: this.state.marginTop + 'px', maxHeight: '195px', ':hover': { outline: '0.3px solid white' }}} value={this.state.search} />
         </form>
 
         {this.state.selecting &&
@@ -87,6 +140,10 @@ class LocationSelection extends Component {
           }
       </div>
     )
+  }
+
+  componentDidMount () {
+    this.resizeTextArea()
   }
 }
 

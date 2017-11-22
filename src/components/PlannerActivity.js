@@ -11,6 +11,7 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
+import CreateActivityForm from './CreateActivityForm'
 
 const activityIconStyle = {
   fontSize: '24px',
@@ -175,12 +176,13 @@ class PlannerActivity extends Component {
     )
     if (this.state.creatingActivity) {
       const types = ['directions_run', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'restaurant', 'directions_boat']
+      const eventTypes = ['activity', 'lodging', 'flight', 'train', 'car', 'food', 'ferry']
       createActivityBox = (
         <div style={{position: 'absolute', top: '-1vh'}}>
           <span>
             {types.map((type, i) => {
               return (
-                <i key={i} className='material-icons' style={activityIconStyle}>{type}</i>
+                <i key={i} onClick={() => this.handleCreateActivityClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
             <span style={{fontSize: '16px', color: '#EDB5BF', position: 'relative', top: '-6px'}}>Pick One</span>
@@ -204,6 +206,7 @@ class PlannerActivity extends Component {
             }}>
               {createActivityBox}
             </div>
+            {this.state.createEventForm && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateActivityClick()} />}
           </td>
         </tr>
       )
@@ -220,6 +223,12 @@ class PlannerActivity extends Component {
     this.setState({
       creatingActivity: false,
       _radiumStyleState: {}
+    })
+  }
+
+  handleCreateActivityClick (eventType = null) {
+    this.setState({
+      createEventForm: eventType
     })
   }
 
@@ -276,7 +285,7 @@ class PlannerActivity extends Component {
             </p>
             <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} />{' - '}<ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
           </div>
-        )
+        )// import CreateActivityForm from './CreateActivityForm'
       case 'Transport':
         departureTime = new Date(this.props.activity.departureTime * 1000).toGMTString().substring(17, 22)
         arrivalTime = new Date(this.props.activity.arrivalTime * 1000).toGMTString().substring(17, 22)
