@@ -323,7 +323,11 @@ class CreateActivityForm extends Component {
           </div>
         </div>
         <div style={{width: '493px', height: '90%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
-          <div style={{width: '100%', height: '100%', position: 'absolute', background: 'white', padding: '77px 2% 2% 77px'}}>
+          <div style={{width: '100%', height: '100%', position: 'absolute', background: 'white', padding: '65px 2% 2% 77px'}}>
+            <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
+              <i className='material-icons' style={{marginRight: '5px'}}>done</i>
+              <i className='material-icons'>clear</i>
+            </div>
             <h4 style={{fontSize: '24px'}}>Booking Details</h4>
             <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
               Service
