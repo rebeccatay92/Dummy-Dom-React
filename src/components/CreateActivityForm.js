@@ -7,18 +7,20 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { FormGroup, InputGroup } from 'react-bootstrap'
 
 import LocationSelection from './LocationSelection'
+import ImagePreview from './ImagePreview'
+import Thumbnail from './Thumbnail'
 import PlannerDatePicker from './PlannerDatePicker'
+
 import { queryItinerary } from '../apollo/itinerary'
 import { createActivity } from '../apollo/activity'
 
+const jwt = require('jsonwebtoken')
 var countries = require('country-data').countries
-// var fs = require('fs')
-
-require('dotenv').config()
 
 class CreateActivityForm extends Component {
   constructor (props) {
     super(props)
+    let apiToken
     this.state = {
       ItineraryId: this.props.ItineraryId,
       dates: this.props.dates.map(e => {
@@ -40,7 +42,12 @@ class CreateActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       fileNames: [],
-      attachments: []
+      attachments: [],
+      thumbnail: false,
+      thumbnailUrl: null,
+      offset: null,
+      preview: false,
+      previewUrl: null
     }
   }
 
@@ -141,12 +148,15 @@ class CreateActivityForm extends Component {
   }
 
   closeCreateActivity () {
-    var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatotest/o?uploadType=media&name='
     this.state.attachments.forEach(uri => {
-      fetch(uri, {
+      uri = uri.replace('/', '%2F')
+      var uriBase = 'https://www.googleapis.com/storage/v1/b/domatotest/o/'
+      var uriFull = uriBase + uri
+
+      fetch(uriFull, {
         method: 'DELETE',
         headers: {
-          'Authorization': 'Bearer ya29.c.EloKBa_BDG7OIg6_fKFXjlu8zDrr1HVW-vjM9uA54pQM8RS2FRcTRdpMltKmLyOKH3WmNMw2ty2Z76FuJjDSl-goOhpzZe-v1pZD7s8Rz2kuH9xPsIrxkbfzQL8'
+          'Authorization': `Bearer ${this.apiToken}`
         }
       })
       .then(response => {
@@ -178,8 +188,14 @@ class CreateActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       fileNames: [],
-      attachments: []
+      attachments: [],
+      thumbnail: false,
+      thumbnailUrl: null,
+      offset: null,
+      preview: false,
+      previewUrl: null
     })
+    this.apiToken = null
   }
 
   selectLocation (location) {
@@ -192,16 +208,13 @@ class CreateActivityForm extends Component {
     console.log('file', file)
     var ItineraryId = this.state.ItineraryId
     var timestamp = Date.now()
-    // file is uploaded upon select. need to show uploading status. display list of uploaded files. button to remove upload (deletes from cloud)
-    // key expires every hour. regenerate from private key. see serviceaccount.js
     var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatotest/o?uploadType=media&name='
     var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
     fetch(uriFull,
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ya29.c.EloKBbb-E-Yx9U54qbyEkZRsIb6Ei9CVFDj_L7ZMonb402GtnjKHgJ3TGach__4dG0xAXmvBe2RfkBoNpm10Wu6doWCTLHTkuQasNW6vu9RmDtDehCCnX0leFqg`,
-          // 'Authorization': `Bearer ${process.env.CLOUDSTORAGEKEY}`,
+          'Authorization': `Bearer ${this.apiToken}`,
           'Content-Type': file.type,
           'Content-Length': file.size
         },
@@ -213,9 +226,8 @@ class CreateActivityForm extends Component {
       return response.json()
     })
     .then(json => {
-      // console.log('json', json)
-      // console.log('selfLink', json.selfLink)
-      this.setState({attachments: this.state.attachments.concat([json.selfLink])})
+      console.log('json', json)
+      this.setState({attachments: this.state.attachments.concat([json.name])})
       this.setState({fileNames: this.state.fileNames.concat([file.name])})
     })
     .catch(err => {
@@ -225,12 +237,15 @@ class CreateActivityForm extends Component {
 
   removeUpload (e) {
     var index = e.target.value
-    var deleteUri = this.state.attachments[index]
+    var objectName = this.state.attachments[index]
+    objectName = objectName.replace('/', '%2F')
+    var uriBase = 'https://www.googleapis.com/storage/v1/b/domatotest/o/'
+    var uriFull = uriBase + objectName
 
-    fetch(deleteUri, {
+    fetch(uriFull, {
       method: 'DELETE',
       headers: {
-        'Authorization': 'Bearer ya29.c.EloKBbb-E-Yx9U54qbyEkZRsIb6Ei9CVFDj_L7ZMonb402GtnjKHgJ3TGach__4dG0xAXmvBe2RfkBoNpm10Wu6doWCTLHTkuQasNW6vu9RmDtDehCCnX0leFqg'
+        'Authorization': `Bearer ${this.apiToken}`
       }
     })
     .then(response => {
@@ -253,27 +268,51 @@ class CreateActivityForm extends Component {
     })
   }
 
-  preview (event, i) {
-    console.log('link', this.state.attachments[i])
-    fetch(this.state.attachments[i], {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ya29.c.EloKBbb-E-Yx9U54qbyEkZRsIb6Ei9CVFDj_L7ZMonb402GtnjKHgJ3TGach__4dG0xAXmvBe2RfkBoNpm10Wu6doWCTLHTkuQasNW6vu9RmDtDehCCnX0leFqg`
-      }
-    })
-    .then(response => {
-      console.log(response)
-      // var streamFile = fs.createReadStream('stream.png')
-      // response.body.pipe(streamFile)
-      // console.log('streamFile', streamFile)
-      return response.json()
-    })
-    .then(json => {
-      console.log(json)
-    })
-    .catch(err => {
-      console.log(err)
-    })
+  thumbnailMouseEnter (event, i) {
+    var fileName = this.state.attachments[i]
+    var offset = `${100 * i}px` //need to check element position
+    this.setState({offset: offset})
+
+    if (fileName.match('.pdf')) {
+      var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
+    } else {
+      url = `https://storage.cloud.google.com/domatotest/${fileName}`
+    }
+    this.setState({thumbnailUrl: url})
+    this.setState({thumbnail: true})
+  }
+
+  thumbnailMouseLeave (event) {
+    this.setState({thumbnail: false})
+    this.setState({thumbnailUrl: null})
+  }
+
+  openPreview (event, i) {
+    var fileName = this.state.attachments[i]
+    var url = `https://storage.cloud.google.com/domatotest/${fileName}`
+
+    if (fileName.match('.pdf')) {
+      window.open(url)
+    } else {
+      this.setState({preview: true})
+      this.setState({previewUrl: url})
+    }
+  }
+
+  changePreview (event, i) {
+    console.log('change preview to', this.state.attachments[i])
+    var fileName = this.state.attachments[i]
+    var url = `https://storage.cloud.google.com/domatotest/${fileName}`
+    if (fileName.match('.pdf')) {
+      window.open(url)
+    } else {
+      this.setState({previewUrl: url})
+    }
+  }
+
+  closePreview () {
+    this.setState({previewUrl: null})
+    this.setState({preview: false})
   }
 
   componentDidMount () {
@@ -286,6 +325,37 @@ class CreateActivityForm extends Component {
     })
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
+
+    // start api token generation
+    var payload = {
+      'iss': 'domatotest@places-test-1508944859339.iam.gserviceaccount.com',
+      'scope': 'https://www.googleapis.com/auth/cloud-platform',
+      'aud': 'https://www.googleapis.com/oauth2/v4/token',
+      'exp': (Date.now() / 1000) + 3600,
+      'iat': Date.now() / 1000
+    }
+
+    var token = jwt.sign(payload, process.env.REACT_APP_OAUTH_PRIVATE_KEY, {algorithm: 'RS256'})
+
+    var dataString = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${token}`
+
+    // using jwt to fetch api token from oauth endpoint
+    fetch('https://www.googleapis.com/oauth2/v4/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: dataString
+    })
+    .then(response => {
+      return response.json()
+    })
+    .then(json => {
+      this.apiToken = json.access_token
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   render () {
@@ -358,14 +428,34 @@ class CreateActivityForm extends Component {
         </div>
         <div style={{width: '100%', height: '10%', background: 'white'}}>
           <div>
-            <label style={{display: 'inline-block'}}>
-              Upload
-              <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
+            <label style={{display: 'inline-block', color: 'black'}}>
+            Upload
+            <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
             </label>
             {this.state.fileNames.map((name, i) => {
-              return <span key={i} onClick={(event) => this.preview(event, i)} style={{margin: '0 20px 0 20px', ':hover': {color: 'blue'}}}>{name}<button key={i} value={i} onClick={(e) => this.removeUpload(e)}>X</button></span>
+              return <div style={{margin: '0 10px 0 10px', display: 'inline-block', ':hover': {color: 'blue'}}} key={i}>
+                <span onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} onClick={(e) => this.openPreview(e, i)} style={{fontSize: '10px', color: 'black'}}>{name}</span>
+                <button value={i} onClick={(e) => this.removeUpload(e)} style={{fontSize: '10px'}}>X</button>
+              </div>
             })}
-            {/* <img src='stream.png' /> */}
+            {this.state.thumbnail &&
+              <Thumbnail thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} />
+            }
+            {this.state.preview &&
+              <div>
+                <div>
+                  {!this.state.previewUrl.match('.pdf') &&
+                    <ImagePreview previewUrl={this.state.previewUrl} />
+                  }
+                </div>
+                <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
+                  <button onClick={() => this.closePreview()}>Close Preview</button>
+                  {this.state.fileNames.map((name, i) => {
+                    return <span key={i} onClick={(e) => this.changePreview(e, i)} style={{margin: '0 20px 0 20px'}}>{name}</span>
+                  })}
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>

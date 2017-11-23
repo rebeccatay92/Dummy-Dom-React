@@ -11,6 +11,7 @@ import HomePage from './HomePage'
 import ItineraryPage from './ItineraryPage'
 import PlannerPage from './PlannerPage'
 import Navbar from './Navbar'
+import ReactPlacesAutocomplete from './ReactPlacesAutocomplete'
 
 class App extends Component {
   toggleLoginLogout () {
@@ -54,6 +55,7 @@ class App extends Component {
             <ItineraryPage />
           )} />
           <Route path='/planner/:itineraryId' component={PlannerPage} />
+          <Route path='/maps' component={ReactPlacesAutocomplete} />
         </div>
       </Router>
     )
