@@ -325,8 +325,8 @@ class CreateActivityForm extends Component {
         <div style={{width: '493px', height: '90%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
           <div style={{width: '100%', height: '100%', position: 'absolute', background: 'white', padding: '65px 2% 2% 77px'}}>
             <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
-              <i className='material-icons' style={{marginRight: '5px'}}>done</i>
-              <i className='material-icons'>clear</i>
+              <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
+              <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
             </div>
             <h4 style={{fontSize: '24px'}}>Booking Details</h4>
             <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
@@ -351,8 +351,8 @@ class CreateActivityForm extends Component {
             </h4>
             <textarea type='text' name='notes' value={this.state.notes} onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
             <div>
-              <button onClick={() => this.handleSubmit()}>Create New Activity</button>
-              <button onClick={() => this.closeCreateActivity()}>Cancel</button>
+              {/* <button onClick={() => this.handleSubmit()}>Create New Activity</button>
+              <button onClick={() => this.closeCreateActivity()}>Cancel</button> */}
             </div>
           </div>
         </div>
