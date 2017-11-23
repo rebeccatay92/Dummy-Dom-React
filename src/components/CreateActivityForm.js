@@ -150,7 +150,7 @@ class CreateActivityForm extends Component {
   closeCreateActivity () {
     this.state.attachments.forEach(uri => {
       uri = uri.replace('/', '%2F')
-      var uriBase = 'https://www.googleapis.com/storage/v1/b/domatotest/o/'
+      var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
       var uriFull = uriBase + uri
 
       fetch(uriFull, {
@@ -206,39 +206,41 @@ class CreateActivityForm extends Component {
     e.preventDefault()
     var file = e.target.files[0]
     console.log('file', file)
-    var ItineraryId = this.state.ItineraryId
-    var timestamp = Date.now()
-    var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatotest/o?uploadType=media&name='
-    var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
-    fetch(uriFull,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiToken}`,
-          'Content-Type': file.type,
-          'Content-Length': file.size
-        },
-        body: file
-      }
-    )
-    .then(response => {
-      console.log(response)
-      return response.json()
-    })
-    .then(json => {
-      console.log('json', json)
-      this.setState({attachments: this.state.attachments.concat([json.name])})
-      this.setState({fileNames: this.state.fileNames.concat([file.name])})
-    })
-    .catch(err => {
-      console.log('err', err)
-    })
+    if (file) {
+      var ItineraryId = this.state.ItineraryId
+      var timestamp = Date.now()
+      var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatodevs/o?uploadType=media&name='
+      var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
+      fetch(uriFull,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.apiToken}`,
+            'Content-Type': file.type,
+            'Content-Length': file.size
+          },
+          body: file
+        }
+      )
+      .then(response => {
+        console.log(response)
+        return response.json()
+      })
+      .then(json => {
+        console.log('json', json)
+        this.setState({attachments: this.state.attachments.concat([json.name])})
+        this.setState({fileNames: this.state.fileNames.concat([file.name])})
+      })
+      .catch(err => {
+        console.log('err', err)
+      })
+    }
   }
 
   removeUpload (index) {
     var objectName = this.state.attachments[index]
     objectName = objectName.replace('/', '%2F')
-    var uriBase = 'https://www.googleapis.com/storage/v1/b/domatotest/o/'
+    var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
     var uriFull = uriBase + objectName
 
     fetch(uriFull, {
@@ -279,7 +281,7 @@ class CreateActivityForm extends Component {
     if (fileName.match('.pdf')) {
       var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
     } else {
-      url = `https://storage.cloud.google.com/domatotest/${fileName}`
+      url = `https://storage.cloud.google.com/domatodevs/${fileName}`
     }
     this.setState({thumbnailUrl: url})
     this.setState({thumbnail: true})
@@ -293,7 +295,7 @@ class CreateActivityForm extends Component {
 
   openPreview (event, i) {
     var fileName = this.state.attachments[i]
-    var url = `https://storage.cloud.google.com/domatotest/${fileName}`
+    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
 
     if (fileName.match('.pdf')) {
       window.open(url)
@@ -306,7 +308,7 @@ class CreateActivityForm extends Component {
   changePreview (event, i) {
     console.log('change preview to', this.state.attachments[i])
     var fileName = this.state.attachments[i]
-    var url = `https://storage.cloud.google.com/domatotest/${fileName}`
+    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
     if (fileName.match('.pdf')) {
       window.open(url)
     } else {
@@ -332,7 +334,7 @@ class CreateActivityForm extends Component {
 
     // start api token generation
     var payload = {
-      'iss': 'domatotest@places-test-1508944859339.iam.gserviceaccount.com',
+      'iss': 'domatodevs@neon-rex-186905.iam.gserviceaccount.com',
       'scope': 'https://www.googleapis.com/auth/cloud-platform',
       'aud': 'https://www.googleapis.com/oauth2/v4/token',
       'exp': (Date.now() / 1000) + 3600,
@@ -356,6 +358,7 @@ class CreateActivityForm extends Component {
     })
     .then(json => {
       this.apiToken = json.access_token
+      // console.log(json.access_token)
     })
     .catch(err => {
       console.log(err)
@@ -434,10 +437,15 @@ class CreateActivityForm extends Component {
         </div>
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
           <div>
-            <label style={{display: 'inline-block', color: 'black'}}>
-              <i style={{color: '#EDB5BF', margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
-              <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
-            </label>
+            {(this.state.attachments.length <= 4) &&
+              <label style={{display: 'inline-block', color: 'black'}}>
+                <i style={{color: '#EDB5BF', margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
+                <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
+              </label>
+            }
+            {this.state.attachments.length > 4 &&
+              <span style={{color: 'black'}}>Upload maxed</span>
+            }
             {this.state.fileNames.map((name, i) => {
               return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
                 <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
@@ -456,9 +464,9 @@ class CreateActivityForm extends Component {
                   }
                 </div>
                 <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-                  <button onClick={() => this.closePreview()}>Close Preview</button>
+                  <button onClick={() => this.closePreview()} style={{color: 'black'}}>Close Preview</button>
                   {this.state.fileNames.map((name, i) => {
-                    return <span key={i} onClick={(e) => this.changePreview(e, i)} style={{margin: '0 20px 0 20px'}}>{name}</span>
+                    return <span key={i} onClick={(e) => this.changePreview(e, i)} style={{margin: '0 20px 0 20px', color: 'black'}}>{name}</span>
                   })}
                 </div>
               </div>

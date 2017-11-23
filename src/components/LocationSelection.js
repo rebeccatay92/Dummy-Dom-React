@@ -4,7 +4,7 @@ import Radium, { Style } from 'radium'
 import GooglePlaceResult from './GooglePlaceResult'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
-var key = 'key=AIzaSyAxgvwjGHtDymECJveRuiwnult-2VfDwhA'
+var key = 'key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU'
 var placeSearch = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 
 
