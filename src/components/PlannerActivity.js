@@ -208,6 +208,7 @@ class PlannerActivity extends Component {
             </div>
             {this.state.createEventForm && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateActivityClick()} />}
           </td>
+          {this.state.createEventForm && <td style={{position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.7)', zIndex: 555}} />}
         </tr>
       )
     }
