@@ -7,6 +7,7 @@
     "jsonwebtoken": "^8.1.0",
     "material-design-icons": "^3.0.1",
     "node-fetch": "^1.7.3",
+    "pdfjs-dist": "^2.0.153",
     "prop-types": "^15.6.0",
     "radium": "^0.19.6",
     "react": "^16.0.0",
@@ -17,11 +18,13 @@
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^16.0.0",
+    "react-google-maps": "^9.2.2",
     "react-onclickoutside": "^6.6.3",
     "react-places-autocomplete": "^5.4.3",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
+    "recompose": "^0.26.0",
     "redux": "^3.7.2"
   },
   "scripts": {

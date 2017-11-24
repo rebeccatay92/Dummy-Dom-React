@@ -1,4 +1,7 @@
 import React, {Component} from 'react'
+import { compose, withProps } from 'recompose'
+import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps'
+import { SearchBox } from 'react-google-maps/lib/components/places/SearchBox'
 
 class ReactPlacesAutocomplete extends Component {
   constructor (props) {
@@ -12,7 +15,7 @@ class ReactPlacesAutocomplete extends Component {
   // handleChange (e) {
   //   this.setState({search: e.target.value})
   // }
-
+  //
   // customDebounce () {
   //   var queryStr = this.state.search
   //   clearTimeout(this.timeout)
@@ -20,7 +23,7 @@ class ReactPlacesAutocomplete extends Component {
   //     this.autocomplete(queryStr)
   //   }, 250)
   // }
-
+  //
   // autocomplete () {
   //   var service = new window.google.maps.places.AutocompleteService()
   //   service.getPlacePredictions({input: this.state.search}, function (predictions, status) {
@@ -28,86 +31,40 @@ class ReactPlacesAutocomplete extends Component {
   //   })
   // }
 
-  initAutocomplete () {
-    var map = new window.google.maps.Map(document.getElementById('map'), {
-      center: {lat: -33.8688, lng: 151.2195},
-      zoom: 13,
-      mapTypeId: 'roadmap'
-    })
-
-// Create the search box and link it to the UI element.
-    var input = document.getElementById('pac-input')
-    var searchBox = new window.google.maps.places.SearchBox(input)
-    map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input)
-
-// Bias the SearchBox results towards current map's viewport.
-    map.addListener('bounds_changed', function () {
-      searchBox.setBounds(map.getBounds())
-    })
-
-    var markers = []
-// Listen for the event fired when the user selects a prediction and retrieve
-// more details for that place.
-    searchBox.addListener('places_changed', function () {
-      var places = searchBox.getPlaces()
-
-      if (places.length == 0) {
-        return
-      }
-
-  // Clear out the old markers.
-      markers.forEach(function (marker) {
-        marker.setMap(null)
-      })
-      markers = []
-
-  // For each place, get the icon, name and location.
-      var bounds = new window.google.maps.LatLngBounds()
-      places.forEach(function (place) {
-        if (!place.geometry) {
-          console.log('Returned place contains no geometry')
-          return
-        }
-        var icon = {
-          url: place.icon,
-          size: new window.google.maps.Size(71, 71),
-          origin: new window.google.maps.Point(0, 0),
-          anchor: new window.google.maps.Point(17, 34),
-          scaledSize: new window.google.maps.Size(25, 25)
-        }
-
-    // Create a marker for each place.
-        markers.push(new window.google.maps.Marker({
-          map: map,
-          icon: icon,
-          title: place.name,
-          position: place.geometry.location
-        }))
-
-        if (place.geometry.viewport) {
-      // Only geocodes have viewport.
-          bounds.union(place.geometry.viewport)
-        } else {
-          bounds.extend(place.geometry.location)
-        }
-      })
-      map.fitBounds(bounds)
-    })
-  }
-
-  componentDidMount () {
-    this.initAutocomplete()
-  }
-
   render () {
     return (
       <div>
-        <input id='pac-input' className='controls' type='text' placeholder='Search Box' />
-        <div id='map' />
+        <GoogleMap defaultZoom={10} defaultCenter={{ lat: 1.400, lng: 104.000 }} >
+          <SearchBox controlPosition={window.google.maps.ControlPosition.TOP_LEFT}>
+            <input type='text' placeholder='Search for a location' style={{
+              boxSizing: `border-box`,
+              border: `1px solid transparent`,
+              width: `240px`,
+              height: `32px`,
+              marginTop: `10px`,
+              padding: `0 12px`,
+              borderRadius: `3px`,
+              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+              fontSize: `14px`,
+              outline: `none`,
+              textOverflow: `ellipses`
+            }} />
+          </SearchBox>
+        </GoogleMap>
       </div>
-
     )
   }
 }
 
-export default ReactPlacesAutocomplete
+const Testing = compose(
+  withProps({
+    googleMapURL: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU&v=3.exp&libraries=geometry,drawing,places',
+    loadingElement: <div style={{ height: `100%` }} />,
+    containerElement: <div style={{ height: `600px` }} />,
+    mapElement: <div style={{ height: `100%` }} />
+  }),
+  withScriptjs,
+  withGoogleMap
+)(ReactPlacesAutocomplete)
+
+export default Testing

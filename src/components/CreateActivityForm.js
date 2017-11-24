@@ -17,6 +17,8 @@ import { createActivity } from '../apollo/activity'
 const jwt = require('jsonwebtoken')
 var countries = require('country-data').countries
 
+const PDFJS = require('pdfjs-dist')
+
 class CreateActivityForm extends Component {
   constructor (props) {
     super(props)
@@ -47,7 +49,8 @@ class CreateActivityForm extends Component {
       thumbnailUrl: null,
       offset: null,
       preview: false,
-      previewUrl: null
+      previewUrl: null,
+      backgroundImage: ''
     }
   }
 
@@ -193,7 +196,8 @@ class CreateActivityForm extends Component {
       thumbnailUrl: null,
       offset: null,
       preview: false,
-      previewUrl: null
+      previewUrl: null,
+      backgroundImage: ''
     })
     this.apiToken = null
   }
@@ -274,7 +278,7 @@ class CreateActivityForm extends Component {
 
   thumbnailMouseEnter (event, i) {
     var fileName = this.state.attachments[i]
-    var offset = `${100 * i}px` //need to check element position
+    var offset = `${100 * i}px` // need to check element position
     this.setState({offset: offset})
     this.setState({hoveringOver: i})
 
@@ -296,6 +300,44 @@ class CreateActivityForm extends Component {
   openPreview (event, i) {
     var fileName = this.state.attachments[i]
     var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+
+    // fileName = fileName.replace('/', '%2F')
+    //
+    // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Authorization': `Bearer ${this.apiToken}`
+    //   }
+    // })
+    // .then(response => {
+    //   let result
+    //   const reader = response.body.getReader()
+    //   reader.read().then(function processText ({ done, value }) {
+    //     if (done) {
+    //       console.log('Stream complete')
+    //       // console.log('complete result', result)
+    //       // console.log('typeof', typeof (result))
+    //       var scrub = result.substring(9)
+    //       scrub = scrub.split(',')
+    //       var array = JSON.parse('[' + scrub + ']')
+    //       // console.log(array)
+    //       var int8arr = Uint8Array.from(array)
+    //       console.log(int8arr)
+    //       PDFJS.getDocument(int8arr).then(function (pdf) {
+    //         pdf.getPage(1).then(function (page) {
+    //           console.log(page.toDataURL())
+    //         })
+    //       })
+    //       return
+    //     }
+    //     result += value
+    //
+    //     return reader.read().then(processText)
+    //   })
+    // })
+    // .catch(err => {
+    //   console.log(err)
+    // })
 
     if (fileName.match('.pdf')) {
       window.open(url)
@@ -319,6 +361,12 @@ class CreateActivityForm extends Component {
   closePreview () {
     this.setState({previewUrl: null})
     this.setState({preview: false})
+  }
+
+  setBackground (previewUrl) {
+    console.log(previewUrl)
+    previewUrl = previewUrl.replace(/ /gi, '%20')
+    this.setState({backgroundImage: `${previewUrl}`})
   }
 
   componentDidMount () {
@@ -369,7 +417,8 @@ class CreateActivityForm extends Component {
     return (
       <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
-          <div style={{backgroundColor: '#6D6A7A', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
+          {/* background: '#6D6A7A', */}
+          <div style={{backgroundImage: `url(${this.state.backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overflow: 'hidden', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
             <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', ':hover': { outline: '0.3px solid white' }}} />
             {/*
@@ -458,11 +507,11 @@ class CreateActivityForm extends Component {
             }
             {this.state.preview &&
               <div>
-                <div>
                   {!this.state.previewUrl.match('.pdf') &&
-                    <ImagePreview previewUrl={this.state.previewUrl} />
+                  <div>
+                    <ImagePreview previewUrl={this.state.previewUrl} setBackground={(url) => this.setBackground(url)} />
+                  </div>
                   }
-                </div>
                 <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
                   <button onClick={() => this.closePreview()} style={{color: 'black'}}>Close Preview</button>
                   {this.state.fileNames.map((name, i) => {
