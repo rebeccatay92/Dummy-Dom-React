@@ -50,7 +50,7 @@ class CreateActivityForm extends Component {
       offset: null,
       preview: false,
       previewUrl: null,
-      backgroundImage: './Activity_Background.jpg'
+      backgroundImage: ''
     }
   }
 
@@ -417,8 +417,8 @@ class CreateActivityForm extends Component {
     return (
       <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
-          <img src={this.state.backgroundImage} style={{maxHeight: '510px', position: 'fixed', opacity: '0.75'}} />
-          <div style={{width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
+          {/* background: '#6D6A7A', */}
+          <div style={{backgroundImage: `url(${this.state.backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overflow: 'hidden', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
             <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', ':hover': { outline: '0.3px solid white' }}} />
             {/*
