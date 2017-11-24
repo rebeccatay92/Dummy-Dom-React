@@ -104,16 +104,16 @@ class LocationSelection extends Component {
         <form>
           <Style scopeSelector='*' rules={{
             '::-webkit-input-placeholder': {
-              color: 'black'
+              color: 'white'
             },
             ':-moz-placeholder': {
-              color: 'black'
+              color: 'white'
             },
             '::-moz-placeholder': {
-              color: 'black'
+              color: 'white'
             },
             ':ms-input-placeholder': {
-              color: 'black'
+              color: 'white'
             },
             ':focus::-webkit-input-placeholder': {
               color: 'transparent'
