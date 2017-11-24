@@ -7,6 +7,7 @@
     "jsonwebtoken": "^8.1.0",
     "material-design-icons": "^3.0.1",
     "node-fetch": "^1.7.3",
+    "pdfjs-dist": "^2.0.153",
     "prop-types": "^15.6.0",
     "radium": "^0.19.6",
     "react": "^16.0.0",
