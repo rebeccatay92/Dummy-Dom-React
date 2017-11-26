@@ -100,7 +100,7 @@ class LocationSelection extends Component {
 
   render () {
     return (
-      <div>
+      <div style={{position: 'relative'}}>
         <form>
           <Style scopeSelector='*' rules={{
             '::-webkit-input-placeholder': {
