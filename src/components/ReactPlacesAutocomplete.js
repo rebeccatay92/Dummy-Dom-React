@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import { compose, withProps, withStateHandlers, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow, OverlayView } from 'react-google-maps'
 import SearchBox from 'react-google-maps/lib/components/places/SearchBox'
+import { MAP } from 'react-google-maps/lib/constants'
+import CustomControl from './CustomControl'
 
 const _ = require('lodash')
 
-const getPixelPositionOffset = (width, height) => ({
-  x: 0,
-  y: -(300),
-})
+// const getPixelPositionOffset = (width, height) => ({
+//   x: 0,
+//   y: -(300),
+// })
 
 const MyMapComponent = compose(
   withProps({
@@ -97,9 +99,16 @@ const MyMapComponent = compose(
   withGoogleMap
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={15} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}}>
-    <div style={{background: 'white', height: '50px', width: '200px', position: 'absolute', top: '90px', left: '600px', zIndex: '999'}}>
+    {/* <div style={{background: 'white', height: '50px', width: '200px', position: 'absolute', top: '90px', left: '600px', zIndex: '999'}}>
       <h4>Selected Location: </h4>
-    </div>
+    </div> */}
+
+    <CustomControl controlPosition={window.google.maps.ControlPosition.TOP_RIGHT}>
+      <div style={{background: 'white', width: '100px', height: '50px'}}>
+        <h3>Hello, World</h3>
+      </div>
+    </CustomControl>
+
     {/* <OverlayView ref={props.onOverlayViewMounted} position={props.center} mapPaneName={OverlayView.FLOAT_PANE} getPixelPositionOffset={getPixelPositionOffset}>
       <div style={{background: 'white', width: '300px', height: '100px'}}>
         <h4>Selected Location:</h4>
