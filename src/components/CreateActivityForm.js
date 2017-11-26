@@ -397,65 +397,65 @@ class CreateActivityForm extends Component {
             {/*
               <h5>Location: {this.state.googlePlaceData.name}</h5>
               <h5>Address: {this.state.googlePlaceData.address}</h5> */}
-              <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px'}}>
-                <div className='planner-date-picker'>
-                  <select key={12345} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.state.startDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
-                    {this.state.dates.map((indiv, i) => {
-                      return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
-                    })}
-                  </select>
-                  <DatePicker customInput={<PlannerDatePicker />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
-                </div>
-                <div className='planner-time-picker'>
-                  <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} /> <span>to</span>
-                  <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
-                </div>
-                <div className='planner-date-picker'>
-                  <select key={12346} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.state.endDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
-                    {this.state.dates.map((indiv, i) => {
-                      if (i + 1 >= this.state.startDay) {
-                        return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
-                      }
-                    })}
-                  </select>
-                  <DatePicker customInput={<PlannerDatePicker />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
-                </div>
-              </div>
-            </div>
-            <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
-              <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
-                <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
-                  <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
-                  <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
-                </div>
-                <h4 style={{fontSize: '24px'}}>Booking Details</h4>
-                <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Service
-                </label>
-                <input style={{width: '80%'}} type='text' name='bookedThrough' value={this.state.bookedThrough} onChange={(e) => this.handleChange(e, 'bookedThrough')} />
-                <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Confirmation Number
-                </label>
-                <input style={{width: '80%'}} type='text' name='bookingConfirmation' value={this.state.bookingConfirmation} onChange={(e) => this.handleChange(e, 'bookingConfirmation')} />
-                <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Amount:
-                </label>
-                <select style={{height: '25px', borderRight: '0', background: 'white', width: '20%'}} name='currency' value={this.state.currency} onChange={(e) => this.handleChange(e, 'currency')}>
-                  {this.state.currencyList.map((e, i) => {
-                    return <option key={i}>{e}</option>
+            <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px'}}>
+              <div className='planner-date-picker'>
+                <select key={12345} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.state.startDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
+                  {this.state.dates.map((indiv, i) => {
+                    return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
                   })}
                 </select>
-                <input style={{width: '60%'}} type='number' name='cost' value={this.state.cost} onChange={(e) => this.handleChange(e, 'cost')} />
-                <h4 style={{fontSize: '24px'}}>
-                  Additional Notes
-                </h4>
-                <textarea type='text' name='notes' value={this.state.notes} onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
-                <div>
-                  {/* <button onClick={() => this.handleSubmit()}>Create New Activity</button>
-                  <button onClick={() => this.closeCreateActivity()}>Cancel</button> */}
-                </div>
+                <DatePicker customInput={<PlannerDatePicker />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
+              </div>
+              <div className='planner-time-picker'>
+                <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} /> <span>to</span>
+                <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
+              </div>
+              <div className='planner-date-picker'>
+                <select key={12346} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.state.endDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
+                  {this.state.dates.map((indiv, i) => {
+                    if (i + 1 >= this.state.startDay) {
+                      return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
+                    }
+                  })}
+                </select>
+                <DatePicker customInput={<PlannerDatePicker />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
               </div>
             </div>
+          </div>
+          <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
+            <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
+              <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
+                <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
+                <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
+              </div>
+              <h4 style={{fontSize: '24px'}}>Booking Details</h4>
+              <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
+                  Service
+                </label>
+              <input style={{width: '80%'}} type='text' name='bookedThrough' value={this.state.bookedThrough} onChange={(e) => this.handleChange(e, 'bookedThrough')} />
+              <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
+                  Confirmation Number
+                </label>
+              <input style={{width: '80%'}} type='text' name='bookingConfirmation' value={this.state.bookingConfirmation} onChange={(e) => this.handleChange(e, 'bookingConfirmation')} />
+              <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
+                  Amount:
+                </label>
+              <select style={{height: '25px', borderRight: '0', background: 'white', width: '20%'}} name='currency' value={this.state.currency} onChange={(e) => this.handleChange(e, 'currency')}>
+                {this.state.currencyList.map((e, i) => {
+                  return <option key={i}>{e}</option>
+                })}
+              </select>
+              <input style={{width: '60%'}} type='number' name='cost' value={this.state.cost} onChange={(e) => this.handleChange(e, 'cost')} />
+              <h4 style={{fontSize: '24px'}}>
+                  Additional Notes
+                </h4>
+              <textarea type='text' name='notes' value={this.state.notes} onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
+              <div>
+                {/* <button onClick={() => this.handleSubmit()}>Create New Activity</button>
+                  <button onClick={() => this.closeCreateActivity()}>Cancel</button> */}
+              </div>
+            </div>
+          </div>
         </div>
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
           <div>
