@@ -17,7 +17,8 @@ export const createActivity = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $notes: String,
-    $attachments: [String]
+    $attachments: [String],
+    $backgroundImage: String
   ) {
     createActivity(
       ItineraryId: $ItineraryId,
@@ -35,7 +36,8 @@ export const createActivity = gql`
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
       notes: $notes,
-      attachments: $attachments
+      attachments: $attachments,
+      backgroundImage: $backgroundImage
     ) {
       id
     }

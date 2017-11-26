@@ -8,7 +8,8 @@ export const createLodging = gql`
     $googlePlaceData: ID!,
     $ItineraryId: ID!,
     $startloadSequence: Int!,
-    $endLoadSequence: Int!
+    $endLoadSequence: Int!,
+    $backgroundImage: String
   ) {
     createLodging(
       name: $name,
@@ -18,6 +19,7 @@ export const createLodging = gql`
       ItineraryId: $ItineraryId,
       startLoadSequence: $startLoadSequence,
       endLoadSequence: $endLoadSequence
+      backgroundImage: $backgroundImage
     ) {
       id
     }
@@ -32,7 +34,8 @@ export const updateLodging = gql`
     $endDay: Int,
     $googlePlaceData: ID,
     $startLoadSequence: Int,
-    $endLoadSequence: Int
+    $endLoadSequence: Int,
+    $backgroundImage: String
   ) {
     updateLodging(
       id: $id,
@@ -41,7 +44,8 @@ export const updateLodging = gql`
       endDay: $endDay,
       googlePlaceData: $googlePlaceData,
       startLoadSequence: $startLoadSequence,
-      endLoadSequence: $endLoadSequence
+      endLoadSequence: $endLoadSequence,
+      backgroundImage: $backgroundImage
     ) {
       id
     }

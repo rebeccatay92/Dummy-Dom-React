@@ -9,7 +9,8 @@ export const createTransport = gql`
     $ArrivalGooglePlaceData: ID!,
     $ItineraryId: ID!,
     $departureLoadSequence: Int!,
-    $arrivalLoadSequence: Int!
+    $arrivalLoadSequence: Int!,
+    $backgroundImage: String
   ) {
     createTransport(
       name: $name,
@@ -19,7 +20,8 @@ export const createTransport = gql`
       ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       ItineraryId: $ItineraryId,
       departureLoadSequence: $departureLoadSequence,
-      arrivalLoadSequence: $arrivalLoadSequence
+      arrivalLoadSequence: $arrivalLoadSequence,
+      backgroundImage: $backgroundImage
     ) {
       id
     }
@@ -35,7 +37,8 @@ export const updateTransport = gql`
     $DepartureGooglePlaceData: ID,
     $ArrivalGooglePlaceData: ID,
     $departureLoadSequence: Int,
-    $arrivalLoadSequence: Int
+    $arrivalLoadSequence: Int,
+    $backgroundImage: String
   ) {
     updateTransport(
       id: $id,
@@ -45,7 +48,8 @@ export const updateTransport = gql`
       DepartureGooglePlaceData: $DepartureGooglePlaceData,
       ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       departureLoadSequence: $departureLoadSequence,
-      arrivalLoadSequence: $arrivalLoadSequence
+      arrivalLoadSequence: $arrivalLoadSequence,
+      backgroundImage: $backgroundImage
     ) {
       id
     }

@@ -7,7 +7,8 @@ export const createFood = gql`
     $endDay: Int!,
     $googlePlaceData: ID!,
     $ItineraryId: ID!,
-    $loadSequence: Int!
+    $loadSequence: Int!,
+    $backgroundImage: String
   ) {
     createFood(
       name: $name,
@@ -16,6 +17,7 @@ export const createFood = gql`
       googlePlaceData: $googlePlaceData,
       ItineraryId: $ItineraryId,
       loadSequence: $loadSequence
+      backgroundImage: $backgroundImage
     ) {
       id
     }
@@ -29,7 +31,8 @@ export const updateFood = gql`
     $startDay: Int,
     $endDay: Int,
     $googlePlaceData: ID,
-    $loadSequence: Int
+    $loadSequence: Int,
+    $backgroundImage: String
   ) {
     updateFood(
       id: $id,
@@ -38,6 +41,7 @@ export const updateFood = gql`
       endDay: $endDay,
       googlePlaceData: $googlePlaceData,
       loadSequence: $loadSequence
+      backgroundImage: $backgroundImage
     ) {
       id
     }

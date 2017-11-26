@@ -132,7 +132,8 @@ class CreateActivityForm extends Component {
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
       notes: this.state.notes,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      backgroundImage: this.state.backgroundImage
     }
     if (startUnix) newActivity.startTime = startUnix
     if (endUnix) newActivity.endTime = endUnix

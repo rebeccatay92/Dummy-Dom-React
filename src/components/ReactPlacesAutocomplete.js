@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
-import { compose, withProps, withStateHandlers, lifecycle } from 'recompose'
-import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow, OverlayView } from 'react-google-maps'
+import { compose, withProps, lifecycle } from 'recompose'
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
 import SearchBox from 'react-google-maps/lib/components/places/SearchBox'
 import { MAP } from 'react-google-maps/lib/constants'
 import CustomControl from './CustomControl'
-
 const _ = require('lodash')
-
-// const getPixelPositionOffset = (width, height) => ({
-//   x: 0,
-//   y: -(300),
-// })
 
 const MyMapComponent = compose(
   withProps({
@@ -30,6 +24,15 @@ const MyMapComponent = compose(
         markers: [],
         infoOpen: false,
         markerIndex: null,
+        googlePlaceData: {
+          placeId: null,
+          name: null,
+          address: null,
+          latitude: null,
+          longitude: null,
+          openingHours: null,
+          countryCode: null
+        },
         onMapMounted: ref => {
           refs.map = ref
         },
@@ -49,7 +52,6 @@ const MyMapComponent = compose(
           refs.overlayView = ref
         },
         handleMarkerClick: (index) => {
-          // console.log('index', index)
           var marker = this.state.markers[index]
           console.log('place', marker.place)
           if (!this.state.infoOpen || this.state.markerIndex !== index) {
@@ -60,10 +62,13 @@ const MyMapComponent = compose(
             this.setState({markerIndex: null})
           }
         },
+        selectLocation: (place) => {
+          console.log('place_id', place.place_id)
+          this.setState({googlePlaceData: {placeId: place.place_id}})
+        },
         closeInfoWindow: () => {
           this.setState({infoOpen: false})
           this.setState({markerIndex: null})
-          // console.log('close info window')
         },
         onPlacesChanged: () => {
           const places = refs.searchBox.getPlaces()
@@ -99,21 +104,17 @@ const MyMapComponent = compose(
   withGoogleMap
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={15} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}}>
-    {/* <div style={{background: 'white', height: '50px', width: '200px', position: 'absolute', top: '90px', left: '600px', zIndex: '999'}}>
-      <h4>Selected Location: </h4>
-    </div> */}
-
-    <CustomControl controlPosition={window.google.maps.ControlPosition.TOP_RIGHT}>
-      <div style={{background: 'white', width: '100px', height: '50px'}}>
-        <h3>Hello, World</h3>
+    <CustomControl controlPosition={window.google.maps.ControlPosition.LEFT_CENTER}>
+      <div style={{background: 'white', width: '200px', margin: '0'}}>
+        <h4 style={{margin: '0'}}>Selected Location</h4>
+        <h5>placeId: {props.googlePlaceData.placeId}</h5>
+        <h5>countryCode: {props.googlePlaceData.countryCode}</h5>
+        <h5>name: {props.googlePlaceData.name}</h5>
+        <h5>address: {props.googlePlaceData.address}</h5>
+        <h5>lat/lng: {props.googlePlaceData.latitude}, {props.googlePlaceData.longitude}</h5>
+        {/* <h5>openingHours: {this.state.openingHours}</h5> */}
       </div>
     </CustomControl>
-
-    {/* <OverlayView ref={props.onOverlayViewMounted} position={props.center} mapPaneName={OverlayView.FLOAT_PANE} getPixelPositionOffset={getPixelPositionOffset}>
-      <div style={{background: 'white', width: '300px', height: '100px'}}>
-        <h4>Selected Location:</h4>
-      </div>
-    </OverlayView> */}
     <SearchBox ref={props.onSearchBoxMounted} bounds={props.bounds} controlPosition={window.google.maps.ControlPosition.TOP_LEFT} onPlacesChanged={props.onPlacesChanged}>
       <input type='text' placeholder='Search for location'
         style={{
@@ -138,6 +139,7 @@ const MyMapComponent = compose(
             <h5>Name: {marker.place.name}</h5>
             <h5>Address: {marker.place.formatted_address}</h5>
             <h5>place_id: {marker.place.place_id}</h5>
+            <button onClick={() => props.selectLocation(marker.place)}>Select this location</button>
           </div>
         </InfoWindow>}
       </Marker>
@@ -149,7 +151,6 @@ class MyFancyComponent extends Component {
   render () {
     return (
       <div>
-
         <MyMapComponent />
       </div>
     )
