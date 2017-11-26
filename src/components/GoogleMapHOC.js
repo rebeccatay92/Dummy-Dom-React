@@ -48,9 +48,6 @@ const MyMapComponent = compose(
         onMarkerMounted: ref => {
           refs.marker = ref
         },
-        onOverlayViewMounted: ref => {
-          refs.overlayView = ref
-        },
         handleMarkerClick: (index) => {
           var marker = this.state.markers[index]
           console.log('place', marker.place)
@@ -63,8 +60,29 @@ const MyMapComponent = compose(
           }
         },
         selectLocation: (place) => {
-          console.log('place_id', place.place_id)
-          this.setState({googlePlaceData: {placeId: place.place_id}})
+          var addressArr = place.address_components
+          var countryCode = null
+          addressArr.forEach(e => {
+            if (e.types.includes('country')) {
+              countryCode = e.short_name
+            }
+          })
+
+          var openingHours = null
+          if (place.opening_hours && place.opening_hours.periods) {
+            openingHours = place.opening_hours.periods
+            console.log('openinghours arr', openingHours)
+          }
+
+          this.setState({googlePlaceData: {
+            placeId: place.place_id,
+            countryCode: countryCode,
+            name: place.name,
+            address: place.formatted_address,
+            openingHours: openingHours,
+            latitude: place.geometry.location.lat(),
+            longitude: place.geometry.location.lng()
+          }})
         },
         closeInfoWindow: () => {
           this.setState({infoOpen: false})
@@ -147,7 +165,7 @@ const MyMapComponent = compose(
   </GoogleMap>
 )
 
-class MyFancyComponent extends Component {
+class CustomMap extends Component {
   render () {
     return (
       <div>
@@ -157,4 +175,4 @@ class MyFancyComponent extends Component {
   }
 }
 
-export default MyFancyComponent
+export default CustomMap

@@ -28,7 +28,7 @@ export const queryItinerary = gql`
         notes
         attachments {
           id
-          url
+          fileName
         }
       }
       flights {
@@ -54,7 +54,7 @@ export const queryItinerary = gql`
         notes
         attachments {
           id
-          url
+          fileName
         }
       }
       lodgings {
@@ -76,7 +76,7 @@ export const queryItinerary = gql`
         notes
         attachments {
           id
-          url
+          fileName
         }
       }
       food {
@@ -97,7 +97,7 @@ export const queryItinerary = gql`
         notes
         attachments {
           id
-          url
+          fileName
         }
       }
       transports {
@@ -123,7 +123,7 @@ export const queryItinerary = gql`
         notes
         attachments {
           id
-          url
+          fileName
         }
       }
     }
