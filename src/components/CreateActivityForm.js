@@ -14,10 +14,11 @@ import PlannerDatePicker from './PlannerDatePicker'
 import { queryItinerary } from '../apollo/itinerary'
 import { createActivity } from '../apollo/activity'
 
-const jwt = require('jsonwebtoken')
+import retrieveToken from '../helpers/cloudstorage.js'
+
 var countries = require('country-data').countries
 
-const PDFJS = require('pdfjs-dist')
+// const PDFJS = require('pdfjs-dist')
 
 class CreateActivityForm extends Component {
   constructor (props) {
@@ -370,6 +371,11 @@ class CreateActivityForm extends Component {
   }
 
   componentDidMount () {
+    retrieveToken()
+    .then(retrieved => {
+      this.apiToken = retrieved
+    })
+
     var currencyList = []
     this.props.countries.forEach(e => {
       var currencyCode = countries[e.code].currencies[0]
@@ -379,38 +385,6 @@ class CreateActivityForm extends Component {
     })
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
-
-    // start api token generation
-    var payload = {
-      'iss': 'domatodevs@neon-rex-186905.iam.gserviceaccount.com',
-      'scope': 'https://www.googleapis.com/auth/cloud-platform',
-      'aud': 'https://www.googleapis.com/oauth2/v4/token',
-      'exp': (Date.now() / 1000) + 3600,
-      'iat': Date.now() / 1000
-    }
-
-    var token = jwt.sign(payload, process.env.REACT_APP_OAUTH_PRIVATE_KEY, {algorithm: 'RS256'})
-
-    var dataString = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${token}`
-
-    // using jwt to fetch api token from oauth endpoint
-    fetch('https://www.googleapis.com/oauth2/v4/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: dataString
-    })
-    .then(response => {
-      return response.json()
-    })
-    .then(json => {
-      this.apiToken = json.access_token
-      // console.log(json.access_token)
-    })
-    .catch(err => {
-      console.log(err)
-    })
   }
 
   render () {
