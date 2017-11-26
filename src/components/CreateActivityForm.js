@@ -392,20 +392,18 @@ class CreateActivityForm extends Component {
     return (
       <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
-          <div style={{background: '#6D6A7A', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top'}}>
+          <div style={{backgroundImage: `url(${this.state.backgroundImage})`, background: '#6D6A7A', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
+            <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
-            <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', ':hover': { outline: '0.3px solid white' }}} />
-            {/*
-              <h5>Location: {this.state.googlePlaceData.name}</h5>
-              <h5>Address: {this.state.googlePlaceData.address}</h5> */}
-            <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px'}}>
+            <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { outline: '0.3px solid white' }}} />
+            <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px', position: 'relative'}}>
               <div className='planner-date-picker'>
                 <select key={12345} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.state.startDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
                   {this.state.dates.map((indiv, i) => {
                     return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
                   })}
                 </select>
-                <DatePicker customInput={<PlannerDatePicker />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
+                <DatePicker customInput={<PlannerDatePicker backgroundImage={this.state.backgroundImage} />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
               </div>
               <div className='planner-time-picker'>
                 <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} /> <span>to</span>
@@ -419,10 +417,11 @@ class CreateActivityForm extends Component {
                     }
                   })}
                 </select>
-                <DatePicker customInput={<PlannerDatePicker />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
+                <DatePicker customInput={<PlannerDatePicker backgroundImage={this.state.backgroundImage} />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
               </div>
             </div>
           </div>
+
           <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
             <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
               <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
@@ -451,10 +450,6 @@ class CreateActivityForm extends Component {
                   Additional Notes
                 </h4>
               <textarea type='text' name='notes' value={this.state.notes} onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
-              <div>
-                {/* <button onClick={() => this.handleSubmit()}>Create New Activity</button>
-                  <button onClick={() => this.closeCreateActivity()}>Cancel</button> */}
-              </div>
             </div>
           </div>
         </div>
