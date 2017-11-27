@@ -164,8 +164,10 @@ class CreateActivityForm extends Component {
       })
       .then(json => {
         console.log('json', json)
-        this.setState({attachments: this.state.attachments.concat([json.name])})
-        this.setState({fileNames: this.state.fileNames.concat([file.name])})
+        if (json.name) {
+          this.setState({attachments: this.state.attachments.concat([json.name])})
+          this.setState({fileNames: this.state.fileNames.concat([file.name])})
+        }
       })
       .catch(err => {
         console.log('err', err)
