@@ -49,6 +49,10 @@ class CreateActivityForm extends Component {
     }
   }
 
+  handleDateTimeChange (field, value) {
+    console.log(field, value)
+  }
+
   handleChange (e, field) {
     if (field !== 'startDate' && field !== 'endDate') {
       this.setState({
@@ -302,7 +306,7 @@ class CreateActivityForm extends Component {
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
             <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { outline: '0.3px solid white' }}} />
 
-            <DateTimePicker handleChange={(e, field) => this.handleChange(e, field)} dates={this.state.dates} startDay={this.state.startDay} startDate={this.state.startDate} endDay={this.state.endDay} endDate={this.state.endDate} backgroundImage={this.state.backgroundImage} startTime={this.state.startTime} endTime={this.state.endTime} />
+            <DateTimePicker handleChange={(e, field) => this.handleChange(e, field)} dates={this.state.dates} startDay={this.state.startDay} startDate={this.state.startDate} endDay={this.state.endDay} endDate={this.state.endDate} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}

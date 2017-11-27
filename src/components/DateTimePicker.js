@@ -16,7 +16,17 @@ const timeStyle = {
   background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'
 }
 
+// dates, date, startDate, endDate
+// handleDateTime changes
+
 class DateTimePicker extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+
+    }
+  }
+
   render () {
     return (
       <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px', position: 'relative'}}>
@@ -26,7 +36,7 @@ class DateTimePicker extends Component {
               return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
             })}
           </select>
-          <DatePicker customInput={<PlannerDatePicker backgroundImage={this.props.backgroundImage} />} selected={this.props.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.props.dates[0])} maxDate={moment.unix(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.props.handleChange(e, 'startDate')} />
+          <DatePicker customInput={<PlannerDatePicker />} selected={this.props.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.props.dates[0])} maxDate={moment.unix(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.props.handleChange(e, 'startDate')} />
         </div>
         <div className='planner-time-picker'>
           <input style={timeStyle} type='time' name='startTime' value={this.props.startTime} onChange={(e) => this.props.handleChange(e, 'startTime')} />
