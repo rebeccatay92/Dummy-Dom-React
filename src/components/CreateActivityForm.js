@@ -44,11 +44,12 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      thumbnail: false,
-      thumbnailUrl: null,
-      offset: null,
-      preview: false,
-      previewUrl: null,
+      // thumbnail: false,
+      // thumbnailUrl: null,
+      // hoveringOver: null,
+      // offset: null,
+      // preview: false,
+      // previewUrl: null,
       backgroundImage: ''
     }
   }
@@ -276,91 +277,94 @@ class CreateActivityForm extends Component {
     })
   }
 
-  thumbnailMouseEnter (event, i) {
-    var fileName = this.state.attachments[i]
-    var offset = `${100 * i}px` // need to check element position
-    this.setState({offset: offset})
-    this.setState({hoveringOver: i})
 
-    if (fileName.match('.pdf')) {
-      var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
-    } else {
-      url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-    }
-    this.setState({thumbnailUrl: url})
-    this.setState({thumbnail: true})
-  }
+  // thumbnailMouseEnter (event, i) {
+  //   var fileName = this.state.attachments[i]
+  //   var offset = `${100 * i}px` // need to check element position
+  //   this.setState({offset: offset})
+  //   //determining which file's X icon to display
+  //   this.setState({hoveringOver: i})
+  //
+  //   if (fileName.match('.pdf')) {
+  //     var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
+  //   } else {
+  //     url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+  //   }
+  //   this.setState({thumbnailUrl: url})
+  //   this.setState({thumbnail: true})
+  // }
 
-  thumbnailMouseLeave (event) {
-    this.setState({thumbnail: false})
-    this.setState({thumbnailUrl: null})
-    this.setState({hoveringOver: null})
-  }
+  // thumbnailMouseLeave (event) {
+  //   this.setState({thumbnail: false})
+  //   this.setState({thumbnailUrl: null})
+  //   this.setState({hoveringOver: null})
+  // }
 
-  openPreview (event, i) {
-    var fileName = this.state.attachments[i]
-    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+  // openPreview (event, i) {
+  //   var fileName = this.state.attachments[i]
+  //   var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+  //
+  //   // fileName = fileName.replace('/', '%2F')
+  //   //
+  //   // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
+  //   //   method: 'GET',
+  //   //   headers: {
+  //   //     'Authorization': `Bearer ${this.apiToken}`
+  //   //   }
+  //   // })
+  //   // .then(response => {
+  //   //   let result
+  //   //   const reader = response.body.getReader()
+  //   //   reader.read().then(function processText ({ done, value }) {
+  //   //     if (done) {
+  //   //       console.log('Stream complete')
+  //   //       // console.log('complete result', result)
+  //   //       // console.log('typeof', typeof (result))
+  //   //       var scrub = result.substring(9)
+  //   //       scrub = scrub.split(',')
+  //   //       var array = JSON.parse('[' + scrub + ']')
+  //   //       // console.log(array)
+  //   //       var int8arr = Uint8Array.from(array)
+  //   //       console.log(int8arr)
+  //   //       PDFJS.getDocument(int8arr).then(function (pdf) {
+  //   //         pdf.getPage(1).then(function (page) {
+  //   //           console.log(page.toDataURL())
+  //   //         })
+  //   //       })
+  //   //       return
+  //   //     }
+  //   //     result += value
+  //   //
+  //   //     return reader.read().then(processText)
+  //   //   })
+  //   // })
+  //   // .catch(err => {
+  //   //   console.log(err)
+  //   // })
+  //
+  //   if (fileName.match('.pdf')) {
+  //     window.open(url)
+  //   } else {
+  //     this.setState({preview: true})
+  //     this.setState({previewUrl: url})
+  //   }
+  // }
 
-    // fileName = fileName.replace('/', '%2F')
-    //
-    // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Authorization': `Bearer ${this.apiToken}`
-    //   }
-    // })
-    // .then(response => {
-    //   let result
-    //   const reader = response.body.getReader()
-    //   reader.read().then(function processText ({ done, value }) {
-    //     if (done) {
-    //       console.log('Stream complete')
-    //       // console.log('complete result', result)
-    //       // console.log('typeof', typeof (result))
-    //       var scrub = result.substring(9)
-    //       scrub = scrub.split(',')
-    //       var array = JSON.parse('[' + scrub + ']')
-    //       // console.log(array)
-    //       var int8arr = Uint8Array.from(array)
-    //       console.log(int8arr)
-    //       PDFJS.getDocument(int8arr).then(function (pdf) {
-    //         pdf.getPage(1).then(function (page) {
-    //           console.log(page.toDataURL())
-    //         })
-    //       })
-    //       return
-    //     }
-    //     result += value
-    //
-    //     return reader.read().then(processText)
-    //   })
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    // })
+  // changePreview (event, i) {
+  //   var fileName = this.state.attachments[i]
+  //   var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+  //   if (fileName.match('.pdf')) {
+  //     window.open(url)
+  //   } else {
+  //     this.setState({previewUrl: url})
+  //   }
+  // }
 
-    if (fileName.match('.pdf')) {
-      window.open(url)
-    } else {
-      this.setState({preview: true})
-      this.setState({previewUrl: url})
-    }
-  }
+  // closePreview () {
+  //   this.setState({previewUrl: null})
+  //   this.setState({preview: false})
+  // }
 
-  changePreview (event, i) {
-    var fileName = this.state.attachments[i]
-    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-    if (fileName.match('.pdf')) {
-      window.open(url)
-    } else {
-      this.setState({previewUrl: url})
-    }
-  }
-
-  closePreview () {
-    this.setState({previewUrl: null})
-    this.setState({preview: false})
-  }
 
   setBackground (previewUrl) {
     previewUrl = previewUrl.replace(/ /gi, '%20')
@@ -414,9 +418,8 @@ class CreateActivityForm extends Component {
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
-          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileNames={this.state.fileNames} thumbnailMouseEnter={(event, i) => this.thumbnailMouseEnter(event, i)} thumbnailMouseLeave={event => this.thumbnailMouseLeave(event)} openPreview={(e, i) => this.openPreview(e, i)} removeUpload={i => this.removeUpload(i)} hoveringOver={this.state.hoveringOver} thumbnail={this.state.thumbnail} thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} preview={this.state.preview} previewUrl={this.state.previewUrl} setBackground={url => this.setBackground(url)} closePreview={() => this.closePreview()} changePreview={(e, i) => this.changePreview(e, i)} />
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileNames={this.state.fileNames} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
-
       </div>
     )
   }

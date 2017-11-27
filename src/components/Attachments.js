@@ -4,6 +4,105 @@ import Thumbnail from './Thumbnail'
 import Radium, { Style } from 'radium'
 
 class Attachments extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      thumbnail: false,
+      thumbnailUrl: null,
+      //determining which file's X icon to display
+      hoveringOver: null,
+      offset: null,
+      preview: false,
+      previewUrl: null
+    }
+  }
+
+  thumbnailMouseEnter (event, i) {
+    var fileName = this.props.attachments[i]
+    var offset = `${100 * i}px` // need to check element position
+    this.setState({offset: offset})
+    this.setState({hoveringOver: i})
+
+    if (fileName.match('.pdf')) {
+      var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
+    } else {
+      url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+    }
+    this.setState({thumbnailUrl: url})
+    this.setState({thumbnail: true})
+  }
+
+  thumbnailMouseLeave (event) {
+    this.setState({thumbnail: false})
+    this.setState({thumbnailUrl: null})
+    this.setState({hoveringOver: null})
+  }
+
+  openPreview (event, i) {
+    var fileName = this.props.attachments[i]
+    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+
+    // fileName = fileName.replace('/', '%2F')
+    //
+    // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Authorization': `Bearer ${this.apiToken}`
+    //   }
+    // })
+    // .then(response => {
+    //   let result
+    //   const reader = response.body.getReader()
+    //   reader.read().then(function processText ({ done, value }) {
+    //     if (done) {
+    //       console.log('Stream complete')
+    //       // console.log('complete result', result)
+    //       // console.log('typeof', typeof (result))
+    //       var scrub = result.substring(9)
+    //       scrub = scrub.split(',')
+    //       var array = JSON.parse('[' + scrub + ']')
+    //       // console.log(array)
+    //       var int8arr = Uint8Array.from(array)
+    //       console.log(int8arr)
+    //       PDFJS.getDocument(int8arr).then(function (pdf) {
+    //         pdf.getPage(1).then(function (page) {
+    //           console.log(page.toDataURL())
+    //         })
+    //       })
+    //       return
+    //     }
+    //     result += value
+    //
+    //     return reader.read().then(processText)
+    //   })
+    // })
+    // .catch(err => {
+    //   console.log(err)
+    // })
+
+    if (fileName.match('.pdf')) {
+      window.open(url)
+    } else {
+      this.setState({preview: true})
+      this.setState({previewUrl: url})
+    }
+  }
+
+  changePreview (event, i) {
+    var fileName = this.props.attachments[i]
+    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+    if (fileName.match('.pdf')) {
+      window.open(url)
+    } else {
+      this.setState({previewUrl: url})
+    }
+  }
+
+  closePreview () {
+    this.setState({previewUrl: null})
+    this.setState({preview: false})
+  }
+
   render () {
     return (
       <div>
@@ -17,30 +116,30 @@ class Attachments extends Component {
           <span style={{color: 'black'}}>Upload maxed</span>
         }
         {this.props.fileNames.map((name, i) => {
-          return <div onMouseEnter={(event) => this.props.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.props.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
+          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
             <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
-            <span onClick={(e) => this.props.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
-            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', opacity: this.props.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
+            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
           </div>
         })}
-        {this.props.thumbnail &&
-          <Thumbnail thumbnailUrl={this.props.thumbnailUrl} offset={this.props.offset} />
+        {this.state.thumbnail &&
+          <Thumbnail thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} />
         }
-        {this.props.preview &&
+        {this.state.preview &&
           <div>
-              {!this.props.previewUrl.match('.pdf') &&
+              {!this.state.previewUrl.match('.pdf') &&
               <div>
-                <ImagePreview previewUrl={this.props.previewUrl} setBackground={(url) => this.props.setBackground(url)} />
+                <ImagePreview previewUrl={this.state.previewUrl} setBackground={(url) => this.props.setBackground(url)} />
               </div>
               }
             <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-              <i className='material-icons' onClick={() => this.props.closePreview()} style={{color: 'black', cursor: 'pointer'}}>arrow_back</i>
+              <i className='material-icons' onClick={() => this.closePreview()} style={{color: 'black', cursor: 'pointer'}}>arrow_back</i>
 
               {this.props.fileNames.map((name, i) => {
                 return (
                   <div key={i} style={{display: 'inline'}}>
                     <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
-                    <span key={i} onClick={(e) => this.props.changePreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
+                    <span key={i} onClick={(e) => this.changePreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
                   </div>
                 )
               })}
