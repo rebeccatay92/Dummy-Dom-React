@@ -107,7 +107,7 @@ class DateTimePicker extends Component {
     return (
       <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px', position: 'relative'}}>
         <div className='planner-date-picker'>
-          <select key={12345} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.props.startDay} style={dayStyle}>
+          <select key={'startDaySelect'} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.props.startDay} style={dayStyle}>
             {this.state.dates.map((indiv, i) => {
               return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
             })}
@@ -120,7 +120,7 @@ class DateTimePicker extends Component {
           <input style={timeStyle} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
         </div>
         <div className='planner-date-picker'>
-          <select key={12346} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.props.endDay} style={dayStyle}>
+          <select key={'endDaySelect'} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.props.endDay} style={dayStyle}>
             {this.state.dates.map((indiv, i) => {
               if (i + 1 >= this.props.startDay) {
                 return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
