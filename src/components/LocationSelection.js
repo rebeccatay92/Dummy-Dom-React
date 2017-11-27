@@ -43,11 +43,11 @@ class LocationSelection extends Component {
     }
     if (initialClientHeight < locationInput.clientHeight) {
       this.setState({
-        marginTop: this.state.marginTop - 55
+        marginTop: this.state.marginTop - 51
       })
     } else if (initialClientHeight > locationInput.clientHeight) {
       this.setState({
-        marginTop: this.state.marginTop + 55
+        marginTop: this.state.marginTop + 51
       })
     }
   }
@@ -128,11 +128,11 @@ class LocationSelection extends Component {
               color: 'transparent'
             }
           }} />
-          <textarea id='locationInput' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{fontSize: '36px', textAlign: 'center', width: '335px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: this.state.marginTop + 'px', maxHeight: '195px', ':hover': { outline: '0.3px solid white' }}} value={this.state.search} />
+          <textarea id='locationInput' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{fontSize: '36px', textAlign: 'center', width: '335px', background: 'inherit', border: 'none', borderBottom: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: this.state.marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}} value={this.state.search} />
         </form>
 
         {this.state.selecting &&
-        <div style={{width: '300px', maxHeight: '200px', overflow: 'scroll', background: 'white', position: 'fixed', zIndex: '2'}}>
+        <div style={{width: '300px', maxHeight: '150px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: 'calc(50% - 150px)'}}>
           {this.state.results.map((indiv, i) => {
             return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
           })}
