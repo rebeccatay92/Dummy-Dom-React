@@ -9,8 +9,7 @@ class Attachments extends Component {
     this.state = {
       thumbnail: false,
       thumbnailUrl: null,
-      hoveringOver: null, //determining which file's X icon to display
-      offset: null, // string 'no. px' for thumbnail to offset left
+      hoveringOver: null, // determining which file's X icon to display
       preview: false,
       previewUrl: null
     }
@@ -18,8 +17,6 @@ class Attachments extends Component {
 
   thumbnailMouseEnter (event, i) {
     var fileName = this.props.attachments[i]
-    var offset = `${100 * i}px` // need to check element position
-    this.setState({offset: offset})
     this.setState({hoveringOver: i})
 
     if (fileName.match('.pdf')) {
@@ -120,17 +117,16 @@ class Attachments extends Component {
 
         {/* UPLOADED FILE NAMES */}
         {this.props.fileNames.map((name, i) => {
-          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
+          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: '#EDB5BF'}}} key={i}>
             <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
             <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
             <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            {/* THUMBNAIL ON HOVER */}
+            {this.state.thumbnail && this.state.hoveringOver === i &&
+              <Thumbnail thumbnailUrl={this.state.thumbnailUrl} />
+            }
           </div>
         })}
-
-        {/* THUMBNAIL ON HOVER */}
-        {this.state.thumbnail &&
-          <Thumbnail thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} />
-        }
 
         {/* PREVIEW OVERLAY WITH ITS OWN FILE NAMES */}
         {this.state.preview &&

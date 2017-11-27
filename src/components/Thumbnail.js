@@ -2,8 +2,15 @@ import React, {Component} from 'react'
 
 class Thumbnail extends Component {
   render () {
+    const style = {
+      display: 'block',
+      position: 'absolute',
+      left: 0,
+      top: '30px',
+      zIndex: 1
+    }
     return (
-      <div style={{display: 'block', position: 'relative', left: `${this.props.offset}`}}>
+      <div style={style}>
         <img src={this.props.thumbnailUrl} alt='thumbnail' width='auto' height='auto' style={{maxWidth: '200px', maxHeight: '200px'}} />
       </div>
     )
