@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
 import PlannerDatePicker from './PlannerDatePicker'
 import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+
 import moment from 'moment'
 import Radium, { Style } from 'radium'
 
 class DateTimePicker extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render () {
     return (
       <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px', position: 'relative'}}>

@@ -1,23 +1,19 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
-import 'react-datepicker/dist/react-datepicker.css'
-import { FormGroup, InputGroup } from 'react-bootstrap'
+// import { FormGroup, InputGroup } from 'react-bootstrap'
 import moment from 'moment'
 
 import LocationSelection from './LocationSelection'
-import ImagePreview from './ImagePreview'
-import Thumbnail from './Thumbnail'
-
 import DateTimePicker from './DateTimePicker'
+import BookingNotes from './BookingNotes'
+import Attachments from './Attachments'
 
-import { queryItinerary } from '../apollo/itinerary'
 import { createActivity } from '../apollo/activity'
 
 import retrieveToken from '../helpers/cloudstorage.js'
 
 var countries = require('country-data').countries
-
 
 // const PDFJS = require('pdfjs-dist')
 
@@ -393,6 +389,8 @@ class CreateActivityForm extends Component {
     return (
       <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
+
+          {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={{backgroundImage: `url(${this.state.backgroundImage})`, background: '#6D6A7A', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
             <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
@@ -401,75 +399,23 @@ class CreateActivityForm extends Component {
             <DateTimePicker handleChange={(e, field) => this.handleChange(e, field)} dates={this.state.dates} startDay={this.state.startDay} startDate={this.state.startDate} endDay={this.state.endDay} endDate={this.state.endDate} backgroundImage={this.state.backgroundImage} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
 
+          {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
             <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
               <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
                 <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
                 <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
               </div>
-              <h4 style={{fontSize: '24px'}}>Booking Details</h4>
-              <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Service
-                </label>
-              <input style={{width: '80%'}} type='text' name='bookedThrough' value={this.state.bookedThrough} onChange={(e) => this.handleChange(e, 'bookedThrough')} />
-              <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Confirmation Number
-                </label>
-              <input style={{width: '80%'}} type='text' name='bookingConfirmation' value={this.state.bookingConfirmation} onChange={(e) => this.handleChange(e, 'bookingConfirmation')} />
-              <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Amount:
-                </label>
-              <select style={{height: '25px', borderRight: '0', background: 'white', width: '20%'}} name='currency' value={this.state.currency} onChange={(e) => this.handleChange(e, 'currency')}>
-                {this.state.currencyList.map((e, i) => {
-                  return <option key={i}>{e}</option>
-                })}
-              </select>
-              <input style={{width: '60%'}} type='number' name='cost' value={this.state.cost} onChange={(e) => this.handleChange(e, 'cost')} />
-              <h4 style={{fontSize: '24px'}}>
-                  Additional Notes
-                </h4>
-              <textarea type='text' name='notes' value={this.state.notes} onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
+              <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} bookedThrough={this.state.bookedThrough} bookingConfirmation={this.state.bookingConfirmation} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} notes={this.state.notes} />
             </div>
           </div>
         </div>
+
+        {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
-          <div>
-            {(this.state.attachments.length <= 4) &&
-              <label style={{display: 'inline-block', color: 'black'}}>
-                <i style={{color: '#EDB5BF', margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
-                <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
-              </label>
-            }
-            {this.state.attachments.length > 4 &&
-              <span style={{color: 'black'}}>Upload maxed</span>
-            }
-            {this.state.fileNames.map((name, i) => {
-              return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
-                <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
-                <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
-                <i className='material-icons' value={i} onClick={() => this.removeUpload(i)} style={{color: '#EDB5BF', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
-              </div>
-            })}
-            {this.state.thumbnail &&
-              <Thumbnail thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} />
-            }
-            {this.state.preview &&
-              <div>
-                  {!this.state.previewUrl.match('.pdf') &&
-                  <div>
-                    <ImagePreview previewUrl={this.state.previewUrl} setBackground={(url) => this.setBackground(url)} />
-                  </div>
-                  }
-                <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-                  <button onClick={() => this.closePreview()} style={{color: 'black'}}>Close Preview</button>
-                  {this.state.fileNames.map((name, i) => {
-                    return <span key={i} onClick={(e) => this.changePreview(e, i)} style={{margin: '0 20px 0 20px', color: 'black'}}>{name}</span>
-                  })}
-                </div>
-              </div>
-            }
-          </div>
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileNames={this.state.fileNames} thumbnailMouseEnter={(event, i) => this.thumbnailMouseEnter(event, i)} thumbnailMouseLeave={event => this.thumbnailMouseLeave(event)} openPreview={(e, i) => this.openPreview(e, i)} removeUpload={i => this.removeUpload(i)} hoveringOver={this.state.hoveringOver} thumbnail={this.state.thumbnail} thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} preview={this.state.preview} previewUrl={this.state.previewUrl} setBackground={url => this.setBackground(url)} closePreview={() => this.closePreview()} changePreview={(e, i) => this.changePreview(e, i)} />
         </div>
+
       </div>
     )
   }
