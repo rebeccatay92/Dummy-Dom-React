@@ -8,6 +8,7 @@ import LocationSelection from './LocationSelection'
 import DateTimePicker from './DateTimePicker'
 import BookingNotes from './BookingNotes'
 import Attachments from './Attachments'
+import SubmitCancelForm from './SubmitCancelForm'
 
 import { createActivity } from '../apollo/activity'
 import { queryItinerary } from '../apollo/itinerary'
@@ -307,11 +308,7 @@ class CreateActivityForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
             <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
-              {/* SUBMIT/CANCEL BUTTONS */}
-              <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
-                <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
-                <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
-              </div>
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
               <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
             </div>
           </div>
