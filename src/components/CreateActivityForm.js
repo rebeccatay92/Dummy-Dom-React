@@ -10,6 +10,7 @@ import BookingNotes from './BookingNotes'
 import Attachments from './Attachments'
 
 import { createActivity } from '../apollo/activity'
+import { queryItinerary } from '../apollo/itinerary'
 
 import retrieveToken from '../helpers/cloudstorage.js'
 
@@ -347,7 +348,6 @@ class CreateActivityForm extends Component {
   }
 
   changePreview (event, i) {
-    console.log('change preview to', this.state.attachments[i])
     var fileName = this.state.attachments[i]
     var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
     if (fileName.match('.pdf')) {
@@ -363,7 +363,6 @@ class CreateActivityForm extends Component {
   }
 
   setBackground (previewUrl) {
-    console.log(previewUrl)
     previewUrl = previewUrl.replace(/ /gi, '%20')
     this.setState({backgroundImage: `${previewUrl}`})
   }
@@ -388,6 +387,8 @@ class CreateActivityForm extends Component {
   render () {
     return (
       <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
+
+        {/* BOX SHADOW WRAPS LEFT AND RIGHT PANEL ONLY */}
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
 
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
