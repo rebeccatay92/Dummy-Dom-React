@@ -44,7 +44,6 @@ class CreateActivityForm extends Component {
   }
 
   updateDayTime (field, value) {
-    console.log('field', field, 'value', value)
     this.setState({
       [field]: value
     })
@@ -119,8 +118,6 @@ class CreateActivityForm extends Component {
     this.setState({
       startDay: this.props.startDay,
       endDay: this.props.endDay,
-      startDate: (new Date(this.props.date)).toISOString().substring(0, 10),
-      endDate: (new Date(this.props.date)).toISOString().substring(0, 10),
       googlePlaceData: {},
       name: '',
       notes: '',
@@ -128,7 +125,6 @@ class CreateActivityForm extends Component {
       endTime: '', // should be Int
       cost: 0,
       currency: this.state.currencyList[0],
-      bookingStatus: false,
       bookedThrough: '',
       bookingConfirmation: '',
       fileNames: [],
