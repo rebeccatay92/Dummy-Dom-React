@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class PlannerDatePicker extends Component {
+class CustomDatePicker extends Component {
   render () {
     return (
       <span
@@ -12,4 +12,4 @@ class PlannerDatePicker extends Component {
   }
 }
 
-export default PlannerDatePicker
+export default CustomDatePicker

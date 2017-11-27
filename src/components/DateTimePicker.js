@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 // package css
-import PlannerDatePicker from './PlannerDatePicker'
+import CustomDatePicker from './CustomDatePicker'
 // custom input style
 
 import moment from 'moment'
@@ -112,7 +112,7 @@ class DateTimePicker extends Component {
               return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
             })}
           </select>
-          <DatePicker customInput={<PlannerDatePicker />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
+          <DatePicker customInput={<CustomDatePicker />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
         </div>
         <div className='planner-time-picker'>
           <input style={timeStyle} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} />
@@ -127,7 +127,7 @@ class DateTimePicker extends Component {
               }
             })}
           </select>
-          <DatePicker customInput={<PlannerDatePicker />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
+          <DatePicker customInput={<CustomDatePicker />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
         </div>
       </div>
     )
