@@ -123,7 +123,7 @@ class Attachments extends Component {
           return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
             <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
             <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
-            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            <i className='material-icons' value={i} onClick={() => { this.setState({thumbnail: false, thumbnailUrl: null, hoveringOver: null}); this.props.removeUpload(i) }} style={{color: '#EDB5BF', cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
           </div>
         })}
 

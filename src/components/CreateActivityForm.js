@@ -199,9 +199,7 @@ class CreateActivityForm extends Component {
 
       this.setState({attachments: newAttachmentsArr})
       this.setState({fileNames: newFilesArr})
-      this.setState({thumbnail: false})
-      this.setState({thumbnailUrl: null})
-      this.setState({hoveringOver: null})
+      this.setState({backgroundImage: ''})
     })
     .catch(err => {
       console.log(err)
