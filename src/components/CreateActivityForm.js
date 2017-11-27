@@ -25,19 +25,13 @@ class CreateActivityForm extends Component {
     let apiToken
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      dates: this.props.dates.map(e => {
-        return moment(e).unix()
-      }),
-      date: (new Date(this.props.date)).toISOString().substring(0, 10),
       startDay: this.props.day,
       endDay: this.props.day,
-      startDate: moment(new Date(this.props.date)),
-      endDate: moment(new Date(this.props.date)),
       googlePlaceData: {},
       name: '',
       notes: '',
-      startTime: '', // should be Int
-      endTime: '', // should be Int
+      startTime: '', // if setstate, will change to unix
+      endTime: '', // if setstate, will change to unix
       cost: 0,
       currency: '',
       currencyList: [],
@@ -49,79 +43,28 @@ class CreateActivityForm extends Component {
     }
   }
 
-  handleDateTimeChange (field, value) {
-    console.log(field, value)
+  updateDayTime (field, value) {
+    console.log('field', field, 'value', value)
+    this.setState({
+      [field]: value
+    })
   }
 
   handleChange (e, field) {
-    if (field !== 'startDate' && field !== 'endDate') {
-      this.setState({
-        [field]: e.target.value
-      })
-    }
-
-    if (field === 'startDay' || field === 'endDay') {
-      var newUnix = this.state.dates[e.target.value - 1]
-      var newDate = moment.unix(newUnix)
-
-      if (field === 'startDay') {
-        this.setState({startDate: newDate})
-        if (e.target.value > this.state.endDay) {
-          this.setState({endDay: e.target.value})
-          this.setState({endDate: newDate})
-        }
-      }
-      if (field === 'endDay') {
-        this.setState({endDate: newDate})
-      }
-    }
-
-    if (field === 'startDate' || field === 'endDate') {
-      // set the new start/end date
-      this.setState({
-        [field]: moment(e._d)
-      })
-
-      var selectedUnix = moment(e._d).unix()
-      var newDay = this.state.dates.indexOf(selectedUnix) + 1
-
-      if (field === 'startDate') {
-        this.setState({startDay: newDay})
-        if (selectedUnix > this.state.endDate.unix()) {
-          this.setState({endDate: moment(e._d)})
-          this.setState({endDay: newDay})
-        }
-      } else if (field === 'endDate') {
-        this.setState({endDay: newDay})
-      }
-    }
+    this.setState({
+      [field]: e.target.value
+    })
   }
 
   handleSubmit () {
-    // time is relative to 1970 1st jan
-    var startTimeStr = this.state.startTime
-    var endTimeStr = this.state.endTime
-
-    if (startTimeStr) {
-      var startHours = startTimeStr.split(':')[0]
-      var startMins = startTimeStr.split(':')[1]
-      var startUnix = (startHours * 60 * 60) + (startMins * 60)
-    }
-    if (endTimeStr) {
-      if (endTimeStr === '00:00') {
-        endTimeStr = '24:00'
-      }
-      var endHours = endTimeStr.split(':')[0]
-      var endMins = endTimeStr.split(':')[1]
-      var endUnix = (endHours * 60 * 60) + (endMins * 60)
-    }
-
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newActivity = {
       ItineraryId: parseInt(this.state.ItineraryId),
       startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startTime: this.state.startTime,
+      endTime: this.state.endTime,
       loadSequence: this.props.highestLoadSequence + 1,
       name: this.state.name,
       currency: this.state.currency,
@@ -133,8 +76,6 @@ class CreateActivityForm extends Component {
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (startUnix) newActivity.startTime = startUnix
-    if (endUnix) newActivity.endTime = endUnix
     if (this.state.googlePlaceData.placeId) newActivity.googlePlaceData = this.state.googlePlaceData
     console.log('newActivity', newActivity)
 
@@ -306,7 +247,8 @@ class CreateActivityForm extends Component {
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
             <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { outline: '0.3px solid white' }}} />
 
-            <DateTimePicker handleChange={(e, field) => this.handleChange(e, field)} dates={this.state.dates} startDay={this.state.startDay} startDate={this.state.startDate} endDay={this.state.endDay} endDate={this.state.endDate} startTime={this.state.startTime} endTime={this.state.endTime} />
+            {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
+            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
