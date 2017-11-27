@@ -34,9 +34,15 @@ class Attachments extends Component {
               </div>
               }
             <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-              <button onClick={() => this.props.closePreview()} style={{color: 'black'}}>Close Preview</button>
+              <i className='material-icons' onClick={() => this.props.closePreview()} style={{color: 'black', cursor: 'pointer'}}>arrow_back</i>
+
               {this.props.fileNames.map((name, i) => {
-                return <span key={i} onClick={(e) => this.props.changePreview(e, i)} style={{margin: '0 20px 0 20px', color: 'black'}}>{name}</span>
+                return (
+                  <div key={i} style={{display: 'inline'}}>
+                    <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
+                    <span key={i} onClick={(e) => this.props.changePreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
+                  </div>
+                )
               })}
             </div>
           </div>
