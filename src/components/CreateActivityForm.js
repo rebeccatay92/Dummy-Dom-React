@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
-import DatePicker from 'react-datepicker'
-import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import { FormGroup, InputGroup } from 'react-bootstrap'
+import moment from 'moment'
 
 import LocationSelection from './LocationSelection'
 import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
-import PlannerDatePicker from './PlannerDatePicker'
+
+import DateTimePicker from './DateTimePicker'
 
 import { queryItinerary } from '../apollo/itinerary'
 import { createActivity } from '../apollo/activity'
@@ -17,6 +17,7 @@ import { createActivity } from '../apollo/activity'
 import retrieveToken from '../helpers/cloudstorage.js'
 
 var countries = require('country-data').countries
+
 
 // const PDFJS = require('pdfjs-dist')
 
@@ -396,30 +397,8 @@ class CreateActivityForm extends Component {
             <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
             <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { outline: '0.3px solid white' }}} />
-            <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px', position: 'relative'}}>
-              <div className='planner-date-picker'>
-                <select key={12345} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.state.startDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
-                  {this.state.dates.map((indiv, i) => {
-                    return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
-                  })}
-                </select>
-                <DatePicker customInput={<PlannerDatePicker backgroundImage={this.state.backgroundImage} />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
-              </div>
-              <div className='planner-time-picker'>
-                <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} /> <span>to</span>
-                <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
-              </div>
-              <div className='planner-date-picker'>
-                <select key={12346} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.state.endDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
-                  {this.state.dates.map((indiv, i) => {
-                    if (i + 1 >= this.state.startDay) {
-                      return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
-                    }
-                  })}
-                </select>
-                <DatePicker customInput={<PlannerDatePicker backgroundImage={this.state.backgroundImage} />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
-              </div>
-            </div>
+
+            <DateTimePicker handleChange={(e, field) => this.handleChange(e, field)} dates={this.state.dates} startDay={this.state.startDay} startDate={this.state.startDate} endDay={this.state.endDay} endDate={this.state.endDate} backgroundImage={this.state.backgroundImage} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
 
           <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
