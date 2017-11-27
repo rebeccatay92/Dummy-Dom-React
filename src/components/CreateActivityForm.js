@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
-import DatePicker from 'react-datepicker'
+// import { FormGroup, InputGroup } from 'react-bootstrap'
 import moment from 'moment'
-import 'react-datepicker/dist/react-datepicker.css'
-import { FormGroup, InputGroup } from 'react-bootstrap'
 
 import LocationSelection from './LocationSelection'
-import ImagePreview from './ImagePreview'
-import Thumbnail from './Thumbnail'
-import PlannerDatePicker from './PlannerDatePicker'
+import DateTimePicker from './DateTimePicker'
+import BookingNotes from './BookingNotes'
+import Attachments from './Attachments'
+import SubmitCancelForm from './SubmitCancelForm'
 
-import { queryItinerary } from '../apollo/itinerary'
 import { createActivity } from '../apollo/activity'
+import { queryItinerary } from '../apollo/itinerary'
 
-const jwt = require('jsonwebtoken')
+import retrieveToken from '../helpers/cloudstorage.js'
+
 var countries = require('country-data').countries
 
-const PDFJS = require('pdfjs-dist')
+// const PDFJS = require('pdfjs-dist')
 
 class CreateActivityForm extends Component {
   constructor (props) {
@@ -45,11 +45,6 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      thumbnail: false,
-      thumbnailUrl: null,
-      offset: null,
-      preview: false,
-      previewUrl: null,
       backgroundImage: ''
     }
   }
@@ -131,7 +126,8 @@ class CreateActivityForm extends Component {
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
       notes: this.state.notes,
-      attachments: this.state.attachments
+      attachments: this.state.attachments,
+      backgroundImage: this.state.backgroundImage
     }
     if (startUnix) newActivity.startTime = startUnix
     if (endUnix) newActivity.endTime = endUnix
@@ -192,11 +188,6 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      thumbnail: false,
-      thumbnailUrl: null,
-      offset: null,
-      preview: false,
-      previewUrl: null,
       backgroundImage: ''
     })
     this.apiToken = null
@@ -276,100 +267,17 @@ class CreateActivityForm extends Component {
     })
   }
 
-  thumbnailMouseEnter (event, i) {
-    var fileName = this.state.attachments[i]
-    var offset = `${100 * i}px` // need to check element position
-    this.setState({offset: offset})
-    this.setState({hoveringOver: i})
-
-    if (fileName.match('.pdf')) {
-      var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
-    } else {
-      url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-    }
-    this.setState({thumbnailUrl: url})
-    this.setState({thumbnail: true})
-  }
-
-  thumbnailMouseLeave (event) {
-    this.setState({thumbnail: false})
-    this.setState({thumbnailUrl: null})
-    this.setState({hoveringOver: null})
-  }
-
-  openPreview (event, i) {
-    var fileName = this.state.attachments[i]
-    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-
-    // fileName = fileName.replace('/', '%2F')
-    //
-    // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Authorization': `Bearer ${this.apiToken}`
-    //   }
-    // })
-    // .then(response => {
-    //   let result
-    //   const reader = response.body.getReader()
-    //   reader.read().then(function processText ({ done, value }) {
-    //     if (done) {
-    //       console.log('Stream complete')
-    //       // console.log('complete result', result)
-    //       // console.log('typeof', typeof (result))
-    //       var scrub = result.substring(9)
-    //       scrub = scrub.split(',')
-    //       var array = JSON.parse('[' + scrub + ']')
-    //       // console.log(array)
-    //       var int8arr = Uint8Array.from(array)
-    //       console.log(int8arr)
-    //       PDFJS.getDocument(int8arr).then(function (pdf) {
-    //         pdf.getPage(1).then(function (page) {
-    //           console.log(page.toDataURL())
-    //         })
-    //       })
-    //       return
-    //     }
-    //     result += value
-    //
-    //     return reader.read().then(processText)
-    //   })
-    // })
-    // .catch(err => {
-    //   console.log(err)
-    // })
-
-    if (fileName.match('.pdf')) {
-      window.open(url)
-    } else {
-      this.setState({preview: true})
-      this.setState({previewUrl: url})
-    }
-  }
-
-  changePreview (event, i) {
-    console.log('change preview to', this.state.attachments[i])
-    var fileName = this.state.attachments[i]
-    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-    if (fileName.match('.pdf')) {
-      window.open(url)
-    } else {
-      this.setState({previewUrl: url})
-    }
-  }
-
-  closePreview () {
-    this.setState({previewUrl: null})
-    this.setState({preview: false})
-  }
-
   setBackground (previewUrl) {
-    console.log(previewUrl)
     previewUrl = previewUrl.replace(/ /gi, '%20')
     this.setState({backgroundImage: `${previewUrl}`})
   }
 
   componentDidMount () {
+    retrieveToken()
+    .then(retrieved => {
+      this.apiToken = retrieved
+    })
+
     var currencyList = []
     this.props.countries.forEach(e => {
       var currencyCode = countries[e.code].currencies[0]
@@ -379,149 +287,36 @@ class CreateActivityForm extends Component {
     })
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
-
-    // start api token generation
-    var payload = {
-      'iss': 'domatodevs@neon-rex-186905.iam.gserviceaccount.com',
-      'scope': 'https://www.googleapis.com/auth/cloud-platform',
-      'aud': 'https://www.googleapis.com/oauth2/v4/token',
-      'exp': (Date.now() / 1000) + 3600,
-      'iat': Date.now() / 1000
-    }
-
-    var token = jwt.sign(payload, process.env.REACT_APP_OAUTH_PRIVATE_KEY, {algorithm: 'RS256'})
-
-    var dataString = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${token}`
-
-    // using jwt to fetch api token from oauth endpoint
-    fetch('https://www.googleapis.com/oauth2/v4/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: dataString
-    })
-    .then(response => {
-      return response.json()
-    })
-    .then(json => {
-      this.apiToken = json.access_token
-      // console.log(json.access_token)
-    })
-    .catch(err => {
-      console.log(err)
-    })
   }
 
   render () {
     return (
       <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
+
+        {/* BOX SHADOW WRAPS LEFT AND RIGHT PANEL ONLY */}
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
-          {/* background: '#6D6A7A', */}
+
+          {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={{backgroundImage: `url(${this.state.backgroundImage})`, background: '#6D6A7A', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
             <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
             <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { outline: '0.3px solid white' }}} />
-            {/*
-              <h5>Location: {this.state.googlePlaceData.name}</h5>
-              <h5>Address: {this.state.googlePlaceData.address}</h5> */}
-              <div style={{width: '238px', margin: '45px auto 0 auto', textAlign: 'center', border: '0.3px solid white', height: '131px', position: 'relative'}}>
-                <div className='planner-date-picker'>
-                  <select key={12345} name='startDay' onChange={(e) => this.handleChange(e, 'startDay')} value={this.state.startDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
-                    {this.state.dates.map((indiv, i) => {
-                      return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
-                    })}
-                  </select>
-                  <DatePicker customInput={<PlannerDatePicker backgroundImage={this.state.backgroundImage} />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
-                </div>
-                <div className='planner-time-picker'>
-                  <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} /> <span>to</span>
-                  <input style={{background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'}} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
-                </div>
-                <div className='planner-date-picker'>
-                  <select key={12346} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.state.endDay} style={{background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }}}>
-                    {this.state.dates.map((indiv, i) => {
-                      if (i + 1 >= this.state.startDay) {
-                        return <option style={{background: '#6D6A7A'}} value={i + 1} key={i}>Day {i + 1}</option>
-                      }
-                    })}
-                  </select>
-                  <DatePicker customInput={<PlannerDatePicker backgroundImage={this.state.backgroundImage} />} selected={this.state.endDate} dateFormat={'ddd DD MMM YYYY'} minDate={this.state.startDate} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'endDate')} />
-                </div>
-              </div>
-            </div>
-            <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
-              <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
-                <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
-                  <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
-                  <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
-                </div>
-                <h4 style={{fontSize: '24px'}}>Booking Details</h4>
-                <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Service
-                </label>
-                <input style={{width: '80%'}} type='text' name='bookedThrough' value={this.state.bookedThrough} onChange={(e) => this.handleChange(e, 'bookedThrough')} />
-                <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Confirmation Number
-                </label>
-                <input style={{width: '80%'}} type='text' name='bookingConfirmation' value={this.state.bookingConfirmation} onChange={(e) => this.handleChange(e, 'bookingConfirmation')} />
-                <label style={{fontSize: '13px', display: 'block', margin: '0', lineHeight: '26px'}}>
-                  Amount:
-                </label>
-                <select style={{height: '25px', borderRight: '0', background: 'white', width: '20%'}} name='currency' value={this.state.currency} onChange={(e) => this.handleChange(e, 'currency')}>
-                  {this.state.currencyList.map((e, i) => {
-                    return <option key={i}>{e}</option>
-                  })}
-                </select>
-                <input style={{width: '60%'}} type='number' name='cost' value={this.state.cost} onChange={(e) => this.handleChange(e, 'cost')} />
-                <h4 style={{fontSize: '24px'}}>
-                  Additional Notes
-                </h4>
-                <textarea type='text' name='notes' value={this.state.notes} onChange={(e) => this.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
-                <div>
-                  {/* <button onClick={() => this.handleSubmit()}>Create New Activity</button>
-                  <button onClick={() => this.closeCreateActivity()}>Cancel</button> */}
-                </div>
-              </div>
-            </div>
-        </div>
-        <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
-          <div>
-            {(this.state.attachments.length <= 4) &&
-              <label style={{display: 'inline-block', color: 'black'}}>
-                <i style={{color: '#EDB5BF', margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
-                <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.handleFileUpload(e)} style={{display: 'none'}} />
-              </label>
-            }
-            {this.state.attachments.length > 4 &&
-              <span style={{color: 'black'}}>Upload maxed</span>
-            }
-            {this.state.fileNames.map((name, i) => {
-              return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
-                <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
-                <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
-                <i className='material-icons' value={i} onClick={() => this.removeUpload(i)} style={{color: '#EDB5BF', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
-              </div>
-            })}
-            {this.state.thumbnail &&
-              <Thumbnail thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} />
-            }
-            {this.state.preview &&
-              <div>
-                  {!this.state.previewUrl.match('.pdf') &&
-                  <div>
-                    <ImagePreview previewUrl={this.state.previewUrl} setBackground={(url) => this.setBackground(url)} />
-                  </div>
-                  }
-                <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-                  <button onClick={() => this.closePreview()} style={{color: 'black'}}>Close Preview</button>
-                  {this.state.fileNames.map((name, i) => {
-                    return <span key={i} onClick={(e) => this.changePreview(e, i)} style={{margin: '0 20px 0 20px', color: 'black'}}>{name}</span>
-                  })}
-                </div>
-              </div>
-            }
+
+            <DateTimePicker handleChange={(e, field) => this.handleChange(e, field)} dates={this.state.dates} startDay={this.state.startDay} startDate={this.state.startDate} endDay={this.state.endDay} endDate={this.state.endDate} backgroundImage={this.state.backgroundImage} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
+
+          {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
+          <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
+            <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
+              <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM PANEL --- ATTACHMENTS */}
+        <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileNames={this.state.fileNames} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )

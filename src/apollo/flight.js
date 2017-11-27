@@ -10,7 +10,8 @@ export const createFlight = gql`
     $arrivalLoadSequence: Int!,
     $ItineraryId: ID!,
     $DepartureGooglePlaceData: ID!,
-    $ArrivalGooglePlaceData: ID!
+    $ArrivalGooglePlaceData: ID!,
+    $backgroundImage: String
   ) {
     createFlight(
       name: $name,
@@ -20,7 +21,9 @@ export const createFlight = gql`
       departureLoadSequence: $departureLoadSequence,
       arrivalLoadSequence: $arrivalLoadSequence,
       DepartureGooglePlaceData: $DepartureGooglePlaceData,
-      ArrivalGooglePlaceData: $ArrivalGooglePlaceData) {
+      ArrivalGooglePlaceData: $ArrivalGooglePlaceData
+      backgroundImage: $backgroundImage
+      ) {
       id
     }
   }
