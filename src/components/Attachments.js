@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
+import Radium, { Style } from 'radium'
 
 class Attachments extends Component {
   render () {
@@ -45,4 +46,4 @@ class Attachments extends Component {
   }
 }
 
-export default Attachments
+export default Radium(Attachments)
