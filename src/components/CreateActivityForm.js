@@ -44,12 +44,6 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      // thumbnail: false,
-      // thumbnailUrl: null,
-      // hoveringOver: null,
-      // offset: null,
-      // preview: false,
-      // previewUrl: null,
       backgroundImage: ''
     }
   }
@@ -193,11 +187,6 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      thumbnail: false,
-      thumbnailUrl: null,
-      offset: null,
-      preview: false,
-      previewUrl: null,
       backgroundImage: ''
     })
     this.apiToken = null
@@ -277,95 +266,6 @@ class CreateActivityForm extends Component {
     })
   }
 
-
-  // thumbnailMouseEnter (event, i) {
-  //   var fileName = this.state.attachments[i]
-  //   var offset = `${100 * i}px` // need to check element position
-  //   this.setState({offset: offset})
-  //   //determining which file's X icon to display
-  //   this.setState({hoveringOver: i})
-  //
-  //   if (fileName.match('.pdf')) {
-  //     var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
-  //   } else {
-  //     url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-  //   }
-  //   this.setState({thumbnailUrl: url})
-  //   this.setState({thumbnail: true})
-  // }
-
-  // thumbnailMouseLeave (event) {
-  //   this.setState({thumbnail: false})
-  //   this.setState({thumbnailUrl: null})
-  //   this.setState({hoveringOver: null})
-  // }
-
-  // openPreview (event, i) {
-  //   var fileName = this.state.attachments[i]
-  //   var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-  //
-  //   // fileName = fileName.replace('/', '%2F')
-  //   //
-  //   // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
-  //   //   method: 'GET',
-  //   //   headers: {
-  //   //     'Authorization': `Bearer ${this.apiToken}`
-  //   //   }
-  //   // })
-  //   // .then(response => {
-  //   //   let result
-  //   //   const reader = response.body.getReader()
-  //   //   reader.read().then(function processText ({ done, value }) {
-  //   //     if (done) {
-  //   //       console.log('Stream complete')
-  //   //       // console.log('complete result', result)
-  //   //       // console.log('typeof', typeof (result))
-  //   //       var scrub = result.substring(9)
-  //   //       scrub = scrub.split(',')
-  //   //       var array = JSON.parse('[' + scrub + ']')
-  //   //       // console.log(array)
-  //   //       var int8arr = Uint8Array.from(array)
-  //   //       console.log(int8arr)
-  //   //       PDFJS.getDocument(int8arr).then(function (pdf) {
-  //   //         pdf.getPage(1).then(function (page) {
-  //   //           console.log(page.toDataURL())
-  //   //         })
-  //   //       })
-  //   //       return
-  //   //     }
-  //   //     result += value
-  //   //
-  //   //     return reader.read().then(processText)
-  //   //   })
-  //   // })
-  //   // .catch(err => {
-  //   //   console.log(err)
-  //   // })
-  //
-  //   if (fileName.match('.pdf')) {
-  //     window.open(url)
-  //   } else {
-  //     this.setState({preview: true})
-  //     this.setState({previewUrl: url})
-  //   }
-  // }
-
-  // changePreview (event, i) {
-  //   var fileName = this.state.attachments[i]
-  //   var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
-  //   if (fileName.match('.pdf')) {
-  //     window.open(url)
-  //   } else {
-  //     this.setState({previewUrl: url})
-  //   }
-  // }
-
-  // closePreview () {
-  //   this.setState({previewUrl: null})
-  //   this.setState({preview: false})
-  // }
-
-
   setBackground (previewUrl) {
     previewUrl = previewUrl.replace(/ /gi, '%20')
     this.setState({backgroundImage: `${previewUrl}`})
@@ -407,11 +307,12 @@ class CreateActivityForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
             <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
+              {/* SUBMIT/CANCEL BUTTONS */}
               <div style={{position: 'absolute', top: '20px', right: '20px', color: '#9FACBC'}}>
                 <i onClick={() => this.handleSubmit()} className='material-icons' style={{marginRight: '5px', cursor: 'pointer'}}>done</i>
                 <i onClick={() => this.closeCreateActivity()} className='material-icons' style={{cursor: 'pointer'}}>clear</i>
               </div>
-              <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} bookedThrough={this.state.bookedThrough} bookingConfirmation={this.state.bookingConfirmation} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} notes={this.state.notes} />
+              <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
             </div>
           </div>
         </div>

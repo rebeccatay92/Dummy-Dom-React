@@ -9,9 +9,8 @@ class Attachments extends Component {
     this.state = {
       thumbnail: false,
       thumbnailUrl: null,
-      //determining which file's X icon to display
-      hoveringOver: null,
-      offset: null,
+      hoveringOver: null, //determining which file's X icon to display
+      offset: null, // string 'no. px' for thumbnail to offset left
       preview: false,
       previewUrl: null
     }
@@ -106,25 +105,34 @@ class Attachments extends Component {
   render () {
     return (
       <div>
+        {/* UPLOAD ICON IF FILES < 5 */}
         {(this.props.attachments.length <= 4) &&
           <label style={{display: 'inline-block', color: 'black'}}>
             <i style={{color: '#EDB5BF', margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
             <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.props.handleFileUpload(e)} style={{display: 'none'}} />
           </label>
         }
+
+        {/* MAXED UPLOAD WHEN FILES > 5 */}
         {this.props.attachments.length > 4 &&
           <span style={{color: 'black'}}>Upload maxed</span>
         }
+
+        {/* UPLOADED FILE NAMES */}
         {this.props.fileNames.map((name, i) => {
           return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', ':hover': {color: '#EDB5BF'}}} key={i}>
             <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
             <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
-            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
           </div>
         })}
+
+        {/* THUMBNAIL ON HOVER */}
         {this.state.thumbnail &&
           <Thumbnail thumbnailUrl={this.state.thumbnailUrl} offset={this.state.offset} />
         }
+
+        {/* PREVIEW OVERLAY WITH ITS OWN FILE NAMES */}
         {this.state.preview &&
           <div>
               {!this.state.previewUrl.match('.pdf') &&
