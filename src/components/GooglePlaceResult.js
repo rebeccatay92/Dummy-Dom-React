@@ -57,8 +57,13 @@ class GooglePlaceResult extends Component {
 
   render () {
     return (
-      <div onClick={() => this.selectLocation()} style={{':hover': {backgroundColor: 'rgb(210, 210, 210)'}}}>
-        <h4 style={{fontSize: '1em', padding: '0', margin: '0'}}>{this.state.name} <span style={{color: 'rgb(120, 120, 120)'}}>{this.state.address}</span></h4>
+      <div onClick={() => this.selectLocation()} style={{padding: '5px 5px 10px 5px', ':hover': {backgroundColor: 'rgb(210, 210, 210)'}}}>
+        <i className='material-icons' style={{fontSize: '18px', color: '#3c3a44', verticalAlign: 'top'}}>place</i>
+        <div style={{display: 'inline-block', width: '93%'}}>
+          <h4 style={{fontSize: '1em', margin: '0', color: '#3C3A44', display: 'inline'}}>
+            {this.state.name} <span style={{color: 'rgb(120, 120, 120)'}}>{this.state.address}</span>
+          </h4>
+        </div>
       </div>
     )
   }
