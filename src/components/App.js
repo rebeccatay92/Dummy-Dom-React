@@ -24,8 +24,7 @@ class App extends Component {
         }
       })
         .then(({data}) => {
-          console.log('token', data.createToken.token)
-          window.localStorage.setItem('token', data.createToken.token)
+          window.localStorage.setItem('token', data.createToken)
           this.props.initializeUser()
         })
     } else {
