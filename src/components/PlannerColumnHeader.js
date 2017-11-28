@@ -56,7 +56,7 @@ class PlannerColumnHeader extends Component {
     } else if (this.state.dropdown) {
       return (
         <th style={tableHeadingStyle}>
-          <div style={{width: '100%', border: '1px solid #9FACBC', position: 'absolute', top: '-1px', backgroundColor: 'white'}}>
+          <div style={{width: '100%', border: '1px solid #9FACBC', position: 'absolute', top: '-1px', backgroundColor: 'white', zIndex: '1'}}>
             <span onClick={() => this.setState({dropdown: !this.state.dropdown})} style={dropdownStyle}>{this.props.column}<i className='material-icons' style={{fontSize: '24px', verticalAlign: 'middle'}}>keyboard_arrow_down</i></span>
             <div style={{width: '95%', margin: '1vh auto 0 auto'}}>
               {options.filter(option => option !== this.props.column).map((option, i) => {

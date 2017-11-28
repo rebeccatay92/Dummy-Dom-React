@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
 
 const columnValues = {
   'Price': 'cost',
@@ -10,8 +11,9 @@ const columnValues = {
 class PlannerColumnValue extends Component {
   render () {
     return (
-      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={{textAlign: this.props.column === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '12px', width: `${0.2 * 962}px`}}>
+      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={{position: 'relative', textAlign: this.props.column === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '12px', width: `${0.2 * 962}px`}}>
         {this.renderInfo()}
+        {this.props.isLast && this.props.hover && <i key='eventOptions' className='material-icons' style={{position: 'absolute', right: '0px', top: '20px', opacity: '0.6', ':hover': {opacity: '1.0'}}}>more_vert</i>}
       </td>
     )
   }
@@ -28,4 +30,4 @@ class PlannerColumnValue extends Component {
   }
 }
 
-export default PlannerColumnValue
+export default Radium(PlannerColumnValue)

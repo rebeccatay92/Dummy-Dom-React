@@ -12,15 +12,16 @@ import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
 import CreateActivityForm from './CreateActivityForm'
+import { primaryColor } from '../Styles/styles'
 
 const activityIconStyle = {
   fontSize: '24px',
   marginRight: '1vw',
-  WebkitTextStroke: '1px #EDB5BF',
+  WebkitTextStroke: '1px ' + primaryColor,
   WebkitTextFillColor: '#FAFAFA',
   cursor: 'pointer',
   ':hover': {
-    WebkitTextStroke: '2px #EDB5BF'
+    WebkitTextStroke: '2px ' + primaryColor
   }
 }
 
@@ -115,7 +116,8 @@ class PlannerActivity extends Component {
       creatingActivity: false,
       onBox: false,
       draggable: true,
-      expanded: false
+      expanded: false,
+      hover: false
       // activityName: this.props.activity.name,
       // locationName: this.props.activity.location.name,
       // Activity: this.props.activity.__typename === 'Activity' && this.props.activity,
@@ -142,14 +144,15 @@ class PlannerActivity extends Component {
         left: '50%',
         bottom: '0',
         margin: '0 auto',
-        backgroundColor: '#EDB5BF'
+        backgroundColor: primaryColor
       }} />
     )
     let activityBox = (
-      <tr onClick={() => this.setState({ expanded: !this.state.expanded })} style={{
+      <tr style={{
         cursor: this.state.draggable ? 'move' : 'default',
-        border: this.props.activity.id ? 'none' : '1px dashed black'
-      }}>
+        border: this.props.activity.id ? 'none' : '1px dashed black',
+        position: 'relative'
+      }} onMouseEnter={() => this.setState({hover: true})} onMouseLeave={() => this.setState({hover: false})}>
         <td style={{width: '89px', position: 'relative'}}>
           {this.props.timeline.events && timeline}
           {this.props.timeline.events && <PlannerActivityTimeline activity={this.props.activity} day={this.props.day} type={this.props.activity.__typename} checkout={this.props.activity.__typename === 'Lodging' && !this.props.activity.startTime} isLast={this.props.isLast} lastDay={this.props.lastDay} startTime={this.props.activity.startTime || this.props.activity.departureTime} endTime={this.props.activity.endTime || this.props.activity.arrivalTime} id={this.props.activity.id} draggingItem={getItem} />}
@@ -161,10 +164,10 @@ class PlannerActivity extends Component {
         </td>
         {
           !this.state.expanded && this.props.columns && this.props.columns.includes('Notes') &&
-          <PlannerColumnValue column='Notes' activity={this.props.activity} />
+          <PlannerColumnValue column='Notes' activity={this.props.activity} isLast hover={this.state.hover} />
         }
         {!this.state.expanded && this.props.columns && !this.props.columns.includes('Notes') && this.props.columns.map((column, i) => {
-          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} />
+          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} isLast={i === 2} hover={this.state.hover} />
         })}
       </tr>
     )
@@ -172,7 +175,7 @@ class PlannerActivity extends Component {
       <div style={{
         cursor: 'pointer'
       }}>
-        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingActivity ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Activity</p>
+        <p style={{marginTop: 0, fontSize: '16px', color: primaryColor, display: 'inline-block', ':hover': {backgroundColor: this.state.creatingActivity ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Activity</p>
       </div>
     )
     if (this.state.creatingActivity) {
@@ -186,7 +189,7 @@ class PlannerActivity extends Component {
                 <i key={i} onClick={() => this.handleCreateActivityClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
-            <span style={{fontSize: '16px', color: '#EDB5BF', position: 'relative', top: '-6px'}}>Pick One</span>
+            <span style={{fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}}>Pick One</span>
           </span>
         </div>
       )
@@ -242,12 +245,16 @@ class PlannerActivity extends Component {
     }
     const nameStyle = {
       display: 'inline-block',
-      margin: '10px 0'
+      margin: '10px 0',
+      position: 'relative'
     }
     const timeStyle = {
       marginTop: 0,
       color: '#9FACBC'
     }
+    const expandButton = this.state.hover && (
+      <i key='expandButton' className='material-icons' style={{fontSize: '30px', position: 'absolute', top: '-8px', opacity: '0.6', ':hover': {opacity: '1.0'}}}>expand_more</i>
+    )
     if (!expanded) {
       switch (type) {
         case 'Activity':
@@ -258,6 +265,7 @@ class PlannerActivity extends Component {
               <p style={nameStyle}>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} /><span> - </span>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} />
+                {expandButton}
               </p>
               <p style={timeStyle}><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} />{' - '}<ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
             </div>
@@ -285,6 +293,7 @@ class PlannerActivity extends Component {
               <p style={nameStyle}>
                 <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.location.name} /><span> - </span>
                 <ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.name} />
+                {expandButton}
               </p>
               <p style={timeStyle}><ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} />{' - '}<ActivityInfo activityId={this.props.activity.id} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
             </div>

@@ -6,12 +6,13 @@ import { initializePlanner } from '../actions/plannerActions'
 import { queryItinerary } from '../apollo/itinerary'
 import { Image } from 'react-bootstrap'
 import { Scrollbars } from 'react-custom-scrollbars'
+import { primaryColor } from '../Styles/styles'
 import DateBox from './Date'
 
 const iconStyle = {
   fontSize: '24px',
   marginLeft: '2vh',
-  color: '#EDB5BF',
+  color: primaryColor,
   opacity: '0.6',
   cursor: 'pointer',
   ':hover': {
@@ -54,7 +55,7 @@ class Planner extends Component {
         borderRight: '1px solid rgba(159, 172, 188, 0.5)'
       }}>
         <Scrollbars renderThumbVertical={({ style }) =>
-          <div style={{ ...style, backgroundColor: '#EDB5BF', right: '-4px' }} />
+          <div style={{ ...style, backgroundColor: primaryColor, right: '-4px' }} />
         } renderThumbHorizontal={({ style }) =>
           <div style={{ ...style, display: 'none' }} />
         }
@@ -73,7 +74,7 @@ class Planner extends Component {
                   <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/14225571_677406772406900_4575646425482055747_n.jpg?oh=935665cd290c11b5c698a4b91772fe91&oe=5AACAA18' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
                   <Image src='https://scontent-sin6-2.xx.fbcdn.net/v/t1.0-9/13335715_630881200392791_5149958966299133966_n.jpg?oh=c360bd9cf2063d1daf86cd294e3e231f&oe=5A9CF157' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
                   <Image src='https://media.licdn.com/media/AAEAAQAAAAAAAAqQAAAAJDhmZmZhOTg2LWE1YmYtNDQ2OC1iMzhiLWU0Y2RiZTBmNGRkMw.jpg' circle style={{height: '30px', width: '30px', margin: '0 0 10px 10px'}} />
-                  <i className='material-icons' style={{...iconStyle, ...{verticalAlign: 'middle', marginLeft: '10px'}}}>add</i>
+                  <i className='material-icons' style={{...iconStyle, ...{verticalAlign: 'middle', margin: '0 0 10px 10px'}}}>person_add</i>
                 </div>
                 <div style={{position: 'absolute', right: '0', bottom: '0'}}>
                   <i className='material-icons' style={iconStyle} key={1}>line_weight</i>

@@ -19,13 +19,13 @@ class App extends Component {
       console.log('logging in')
       this.props.createToken({
         variables: {
-          email: 'Jerrold_Hettinger@gmail.com',
+          email: 'Tara_Schowalter@gmail.com',
           password: 'password1'
         }
       })
         .then(({data}) => {
-          console.log('token', data.createToken.token)
-          window.localStorage.setItem('token', data.createToken.token)
+          console.log('token', data.createToken)
+          window.localStorage.setItem('token', data.createToken)
           this.props.initializeUser()
         })
     } else {

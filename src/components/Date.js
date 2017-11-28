@@ -9,6 +9,7 @@ import { dropActivity, deleteActivity, plannerActivityHoverOverActivity, hoverOu
 import { addActivityToBucket, deleteActivityFromBucket } from '../actions/bucketActions'
 import { toggleTimeline } from '../actions/plannerTimelineActions'
 import PlannerColumnHeader from './PlannerColumnHeader'
+import { primaryColor } from '../Styles/styles'
 
 // import CreateActivityForm from './CreateActivityForm'
 
@@ -47,7 +48,7 @@ class DateBox extends Component {
         left: '50%',
         bottom: '0',
         margin: '0 auto',
-        backgroundColor: '#EDB5BF'
+        backgroundColor: primaryColor
       }} />
     )
     // if (this.props.activities.length > 0) console.log(this.props.activities)
@@ -61,11 +62,11 @@ class DateBox extends Component {
               <th id='timeline-top' style={{width: '89px', position: 'relative'}}>
                 {this.props.firstDay && (
                 <div style={{position: headerSticky ? 'fixed' : 'absolute', top: headerSticky ? '60px' : '0px', textAlign: 'center', width: 'inherit', zIndex: 10, backgroundColor: '#FAFAFA'}}>
-                  <span style={{fontSize: '24px', color: '#EDB5BF', display: 'inline-block'}}>
+                  <span style={{fontSize: '24px', color: primaryColor, display: 'inline-block'}}>
                     <i onClick={() => this.handleClick()} className='material-icons' style={{marginRight: '-10px', cursor: 'pointer'}}>keyboard_arrow_left</i>
                     <i onClick={() => this.handleClick()} className='material-icons' style={{cursor: 'pointer'}}>keyboard_arrow_right</i>
                   </span>
-                  <span style={{fontSize: '16px', display: 'block', color: '#EDB5BF'}}>{this.props.timeline.events ? 'Duration' : 'Days'}</span>
+                  <span style={{fontSize: '16px', display: 'block', color: primaryColor}}>{this.props.timeline.events ? 'Duration' : 'Days'}</span>
                 </div>
                 )}
                 {this.props.firstDay && this.props.timeline.days && !this.props.getItem && (
@@ -75,8 +76,8 @@ class DateBox extends Component {
                     return (
                       <div key={i}>
                         <a href={'#day-' + (i + 1)}>
-                          <div style={{padding: '2px', display: 'inline-block', backgroundColor: isDateOnScreen ? '#EDB5BF' : '#FAFAFA', borderRadius: isDateOnScreen ? '5px' : 0}}>
-                            <span style={{fontSize: '16px', color: isDateOnScreen ? '#FAFAFA' : '#EDB5BF', display: 'inline-block'}}>Day {i + 1}</span>
+                          <div style={{padding: '2px', display: 'inline-block', backgroundColor: isDateOnScreen ? primaryColor : '#FAFAFA', borderRadius: isDateOnScreen ? '5px' : 0}}>
+                            <span style={{fontSize: '16px', color: isDateOnScreen ? '#FAFAFA' : primaryColor, display: 'inline-block'}}>Day {i + 1}</span>
                           </div>
                         </a>
                         {i < this.props.dates.length - 1 && <div style={{height: '10px', position: 'relative'}}>
@@ -86,7 +87,7 @@ class DateBox extends Component {
                     )
                   })}
                   <div onClick={() => this.addDay()} style={{padding: '1px 3px', backgroundColor: 'white', border: '1px solid #EDB5BF', display: 'inline-block', marginTop: '20px', cursor: 'pointer'}}>
-                    <span style={{fontSize: '16px', color: '#EDB5BF', display: 'inline-block'}}>+ Day</span>
+                    <span style={{fontSize: '16px', color: primaryColor, display: 'inline-block'}}>+ Day</span>
                   </div>
                 </div>
                 )}
@@ -118,7 +119,7 @@ class DateBox extends Component {
                 {!this.props.firstDay && this.props.timeline.events && timeline}
               </td>
               <td colSpan='4'>
-                <hr style={{marginBottom: '2vh', marginTop: this.props.firstDay ? '0' : '1vh', width: '100%', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
+                <hr style={{marginBottom: '2vh', marginTop: this.props.firstDay ? '0' : '1vh', width: '962px', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}} />
               </td>
             </tr>
           </thead>

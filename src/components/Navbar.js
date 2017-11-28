@@ -1,12 +1,13 @@
 import { Navbar, FormGroup, FormControl, InputGroup, Button } from 'react-bootstrap'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { primaryColor } from '../Styles/styles'
 
 const dropdownIconStyle = {
   lineHeight: '54px',
   left: '2vw',
   position: 'absolute',
-  color: '#EDB5BF'
+  color: primaryColor
 }
 
 const searchIconStyle = {
@@ -17,7 +18,7 @@ const bucketLogoStyle = {
   lineHeight: '54px',
   fontSize: '36px',
   // marginLeft: '1vw',
-  color: '#EDB5BF'
+  color: primaryColor
 }
 
 const navbarInstance = (
