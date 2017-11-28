@@ -3,15 +3,15 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
 
-import { createToken } from 'apollo/user'
+import { createToken } from '../apollo/user'
 
-import { initializeUser, logoutUser } from 'actions/userActions'
+import { initializeUser, logoutUser } from '../actions/userActions'
 
-import HomePage from 'components/HomePage'
-import ItineraryPage from 'components/ItineraryPage'
-import PlannerPage from 'components/PlannerPage'
-import Navbar from 'components/Navbar'
-import CustomMap from 'components/GoogleMapHOC'
+import HomePage from './HomePage'
+import ItineraryPage from './ItineraryPage'
+import PlannerPage from './PlannerPage'
+import Navbar from './Navbar'
+import CustomMap from './GoogleMapHOC'
 
 class App extends Component {
   toggleLoginLogout () {
