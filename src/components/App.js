@@ -8,7 +8,7 @@ import { createToken } from '../apollo/user'
 import { initializeUser, logoutUser } from '../actions/userActions'
 
 import HomePage from './HomePage'
-import ItineraryPage from './ItineraryPage'
+import ItineraryPage from './itinerary/ItineraryPage'
 import PlannerPage from './PlannerPage'
 import Navbar from './Navbar'
 import CustomMap from './GoogleMapHOC'

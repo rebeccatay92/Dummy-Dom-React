@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
-import { updateItineraryDetails, itinerariesByUser } from '../apollo/itinerary'
+import { updateItineraryDetails, itinerariesByUser } from '../../apollo/itinerary'
 
 class UpdateItineraryDetails extends Component {
   constructor (props) {

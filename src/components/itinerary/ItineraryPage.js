@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { graphql } from 'react-apollo'
-import { itinerariesByUser } from '../apollo/itinerary'
+import { itinerariesByUser } from '../../apollo/itinerary'
 
 import CreateItineraryForm from './CreateItineraryForm'
 import Itinerary from './Itinerary'

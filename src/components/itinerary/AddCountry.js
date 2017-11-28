@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
-import { createCountriesItineraries, itinerariesByUser } from '../apollo/itinerary'
+import { createCountriesItineraries, itinerariesByUser } from '../../apollo/itinerary'
 
 class AddCountry extends Component {
   constructor (props) {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 
-import { createItinerary, itinerariesByUser } from '../apollo/itinerary'
+import { createItinerary, itinerariesByUser } from '../../apollo/itinerary'
 
 class CreateItineraryForm extends Component {
   constructor () {
