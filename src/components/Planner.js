@@ -130,6 +130,7 @@ class Planner extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    console.log('willreceiveprops', nextProps.data.findItinerary)
     if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
       let lodgingCheckout = nextProps.data.findItinerary.lodgings.map(lodging => {
         return {

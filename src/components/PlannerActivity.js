@@ -116,7 +116,7 @@ class PlannerActivity extends Component {
     super(props)
 
     this.state = {
-      creatingActivity: false,
+      creatingEvent: false,
       onBox: false,
       draggable: true,
       expanded: false
@@ -172,22 +172,22 @@ class PlannerActivity extends Component {
         })}
       </tr>
     )
-    let createActivityBox = (
+    let createEventBox = (
       <div style={{
         cursor: 'pointer'
       }}>
-        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingActivity ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Activity</p>
+        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingEvent ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Event</p>
       </div>
     )
-    if (this.state.creatingActivity) {
+    if (this.state.creatingEvent) {
       const types = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
-      const eventTypes = ['activity', 'food', 'lodging', 'flight', 'train', 'car', 'ferry']
-      createActivityBox = (
+      const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
+      createEventBox = (
         <div style={{position: 'absolute', top: '-1vh'}}>
           <span>
             {types.map((type, i) => {
               return (
-                <i key={i} onClick={() => this.handleCreateActivityClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
+                <i key={i} onClick={() => this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
             <span style={{fontSize: '16px', color: '#EDB5BF', position: 'relative', top: '-6px'}}>Pick One</span>
@@ -203,16 +203,16 @@ class PlannerActivity extends Component {
           </td>
           <td colSpan='4'>
             <div onClick={() => this.setState({
-              creatingActivity: true
+              creatingEvent: true
             })} style={{
               margin: '1vh 0 3vh 1vw',
               height: '40px',
               position: 'relative'
             }}>
-              {createActivityBox}
+              {createEventBox}
             </div>
 
-            {this.state.createEventForm && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateActivityClick()} />}
+            {this.state.createEventForm && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateEventClick()} />}
           </td>
           {this.state.createEventForm && <td style={{position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.7)', zIndex: 555}} />}
         </tr>
@@ -228,12 +228,12 @@ class PlannerActivity extends Component {
   handleClickOutside (event) {
     if (!this.props.empty) return
     this.setState({
-      creatingActivity: false,
+      creatingEvent: false,
       _radiumStyleState: {}
     })
   }
 
-  handleCreateActivityClick (eventType = null) {
+  handleCreateEventClick (eventType = null) {
     this.setState({
       createEventForm: eventType
     })

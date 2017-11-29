@@ -3,8 +3,10 @@ import { gql } from 'react-apollo'
 export const queryItinerary = gql`
   query queryItinerary($id: ID!) {
     findItinerary(id: $id){
+      id
       name
       countries {
+        id
         name
         code
       }
@@ -127,36 +129,125 @@ export const queryItinerary = gql`
         }
       }
       events {
+        modelId
         type
-        id
         loadSequence
         start
-        data {
-          ... on Activity {
-            id
-            name
-            location {
-              name
-              country {
-                name
-              }
-            }
-          }
-          ... on Food {
+        day
+        activity {
+          id
+          name
+          startTime
+          endTime
+          location {
             id
             name
           }
-          ... on Flight {
+          startDay
+          endDay
+          loadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        flight {
+          id
+          name
+          departureLocation {
             id
             name
           }
-          ... on Transport {
+          arrivalLocation {
             id
             name
           }
-          ... on Lodging {
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        lodging {
+          id
+          name
+          location {
             id
             name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        food {
+          id
+          name
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          loadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        transport {
+          id
+          name
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
           }
         }
       }

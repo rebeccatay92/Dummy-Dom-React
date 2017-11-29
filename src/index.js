@@ -13,6 +13,14 @@ import { plannerTimelineReducer } from './reducers/plannerTimelineReducer'
 
 import { ApolloClient, ApolloProvider, createNetworkInterface } from 'react-apollo'
 
+// import ApolloProvider from 'react-apollo'
+// import ApolloClient from 'apollo-client'
+// import { HttpLink } from 'apollo-link-http'
+// import { ApolloLink, concat } from 'apollo-link'
+
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
+import introspectionQueryResultData from './fragmentTypes.json'
+
 const networkInterface = createNetworkInterface({
   uri: 'http://localhost:3001/graphql'
 })
@@ -28,8 +36,28 @@ networkInterface.use([{
   }
 }])
 
+// const authMiddleware = new ApolloLink((operation, forward) => {
+//   // add the authorization to the headers
+//   operation.setContext({
+//     headers: {
+//       authorization: 'Bearer 12345'
+//     }
+//   })
+//
+//   return forward(operation)
+// })
+
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData: introspectionQueryResultData
+})
+
+// console.log('introspection', introspectionQueryResultData)
+// const cache = new InMemoryCache({ fragmentMatcher })
+
 const client = new ApolloClient({
   networkInterface: networkInterface
+  // fragmentMatcher: fragmentMatcher,
+  // addTypeName: true
 })
 
 const store = createStore(combineReducers({

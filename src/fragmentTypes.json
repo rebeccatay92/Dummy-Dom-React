@@ -1,0 +1,1 @@
+{"__schema":{"types":[{"kind":"UNION","name":"EventUnion","possibleTypes":[{"name":"Activity"},{"name":"Food"},{"name":"Flight"},{"name":"Transport"},{"name":"Lodging"}]}]}}
