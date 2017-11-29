@@ -134,7 +134,7 @@ export const queryItinerary = gql`
         loadSequence
         start
         day
-        activity {
+        Activity {
           id
           name
           startTime
@@ -155,7 +155,7 @@ export const queryItinerary = gql`
             fileName
           }
         }
-        flight {
+        Flight {
           id
           name
           departureLocation {
@@ -181,7 +181,7 @@ export const queryItinerary = gql`
             fileName
           }
         }
-        lodging {
+        Lodging {
           id
           name
           location {
@@ -203,7 +203,7 @@ export const queryItinerary = gql`
             fileName
           }
         }
-        food {
+        Food {
           id
           name
           location {
@@ -224,7 +224,7 @@ export const queryItinerary = gql`
             fileName
           }
         }
-        transport {
+        Transport {
           id
           name
           departureLocation {

@@ -15,7 +15,9 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
+
 import CreateActivityForm from './CreateActivityForm'
+import CreateFoodForm from './CreateFoodForm'
 
 const activityIconStyle = {
   fontSize: '24px',
@@ -215,7 +217,10 @@ class PlannerActivity extends Component {
             {this.state.createEventForm &&
               <div>
                 {this.state.createEventForm === 'Activity' &&
-                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateEventClick()} />
+                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventForm={() => this.handleCreateEventClick()} />
+                }
+                {this.state.createEventForm === 'Food' &&
+                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventForm={() => this.handleCreateEventClick()} />
                 }
               </div>
             }

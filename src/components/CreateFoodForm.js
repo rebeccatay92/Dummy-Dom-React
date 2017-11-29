@@ -10,18 +10,16 @@ import BookingNotes from './BookingNotes'
 import Attachments from './Attachments'
 import SubmitCancelForm from './SubmitCancelForm'
 
-import { createActivity } from '../apollo/activity'
+import { createFood } from '../apollo/food'
 import { queryItinerary } from '../apollo/itinerary'
 
 import retrieveToken from '../helpers/cloudstorage.js'
 
 var countries = require('country-data').countries
 
-const defaultBackground = `https://storage.googleapis.com/domatodevs/activityDefaultBackground.jpg`
+const defaultBackground = 'https://storage.googleapis.com/domatodevs/foodDefaultBackground.jpg'
 
-// const PDFJS = require('pdfjs-dist')
-
-class CreateActivityForm extends Component {
+class CreateFoodForm extends Component {
   constructor (props) {
     super(props)
     let apiToken
@@ -60,7 +58,7 @@ class CreateActivityForm extends Component {
   handleSubmit () {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
-    var newActivity = {
+    var newFood = {
       ItineraryId: parseInt(this.state.ItineraryId),
       startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
@@ -77,11 +75,11 @@ class CreateActivityForm extends Component {
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (this.state.googlePlaceData.placeId) newActivity.googlePlaceData = this.state.googlePlaceData
-    console.log('newActivity', newActivity)
+    if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
+    console.log('newFood', newFood)
 
-    this.props.createActivity({
-      variables: newActivity,
+    this.props.createFood({
+      variables: newFood,
       refetchQueries: [{
         query: queryItinerary,
         variables: { id: this.props.ItineraryId }
@@ -92,7 +90,7 @@ class CreateActivityForm extends Component {
     this.props.toggleCreateEventForm()
   }
 
-  closeCreateActivity () {
+  closeCreateFood () {
     this.state.attachments.forEach(uri => {
       uri = uri.replace('/', '%2F')
       var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
@@ -240,11 +238,10 @@ class CreateActivityForm extends Component {
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
 
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
-          {/* backgroundImage: `url(${this.state.backgroundImage})` */}
           <div style={{backgroundImage: `url(${this.state.backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
             <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
             <LocationSelection selectLocation={location => this.selectLocation(location)} />
-            <input placeholder='Input Activity' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}} />
+            <input placeholder='Input Cuisine' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '335px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}} />
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
@@ -253,7 +250,7 @@ class CreateActivityForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
             <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFood()} />
               <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
             </div>
           </div>
@@ -268,4 +265,4 @@ class CreateActivityForm extends Component {
   }
 }
 
-export default graphql(createActivity, {name: 'createActivity'})(Radium(CreateActivityForm))
+export default graphql(createFood, {name: 'createFood'})(Radium(CreateFoodForm))
