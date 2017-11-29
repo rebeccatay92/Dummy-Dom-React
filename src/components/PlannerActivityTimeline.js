@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { primaryColor } from '../Styles/styles'
 
 const timelineIconStyle = {
   fontSize: '24px',
-  WebkitTextStroke: '1px #EDB5BF',
+  WebkitTextStroke: '1px ' + primaryColor,
   WebkitTextFillColor: '#FAFAFA'
 }
 
 const endStyle = {
-  WebkitTextStroke: '1px #EDB5BF',
-  WebkitTextFillColor: '#EDB5BF'
+  WebkitTextStroke: '1px ' + primaryColor,
+  WebkitTextFillColor: primaryColor
 }
 
 class PlannerActivityTimeline extends Component {

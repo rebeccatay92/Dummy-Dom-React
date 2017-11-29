@@ -19,7 +19,7 @@ class App extends Component {
       console.log('logging in')
       this.props.createToken({
         variables: {
-          email: 'Jerrold_Hettinger@gmail.com',
+          email: 'Tara_Schowalter@gmail.com',
           password: 'password1'
         }
       })

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
 import Radium, { Style } from 'radium'
+import { primaryColor } from '../Styles/styles'
 
 class Attachments extends Component {
   constructor(props) {
@@ -105,7 +106,7 @@ class Attachments extends Component {
         {/* UPLOAD ICON IF FILES < 5 */}
         {(this.props.attachments.length <= 4) &&
           <label style={{display: 'inline-block', color: 'black'}}>
-            <i style={{color: '#EDB5BF', margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
+            <i style={{color: primaryColor, margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
             <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.props.handleFileUpload(e)} style={{display: 'none'}} />
           </label>
         }
@@ -117,10 +118,10 @@ class Attachments extends Component {
 
         {/* UPLOADED FILE NAMES */}
         {this.props.fileNames.map((name, i) => {
-          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: '#EDB5BF'}}} key={i}>
-            <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
-            <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
-            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: '#EDB5BF', cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}}} key={i}>
+            <i className='material-icons' style={{color: primaryColor}}>folder</i>
+            <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: primaryColor, fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
+            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: primaryColor, cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
             {/* THUMBNAIL ON HOVER */}
             {this.state.thumbnail && this.state.hoveringOver === i &&
               <Thumbnail thumbnailUrl={this.state.thumbnailUrl} />
@@ -142,8 +143,8 @@ class Attachments extends Component {
               {this.props.fileNames.map((name, i) => {
                 return (
                   <div key={i} style={{display: 'inline'}}>
-                    <i className='material-icons' style={{color: '#EDB5BF'}}>folder</i>
-                    <span key={i} onClick={(e) => this.changePreview(e, i)} style={{fontSize: '14px', color: '#EDB5BF', fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
+                    <i className='material-icons' style={{color: primaryColor}}>folder</i>
+                    <span key={i} onClick={(e) => this.changePreview(e, i)} style={{fontSize: '14px', color: primaryColor, fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{name}</span>
                   </div>
                 )
               })}

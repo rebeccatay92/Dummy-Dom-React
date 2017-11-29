@@ -9,11 +9,11 @@ import moment from 'moment'
 import Radium, { Style } from 'radium'
 
 const dayStyle = {
-  background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': { outline: '0.3px solid white' }
+  background: 'inherit', border: 'none', outline: 'none', fontSize: '24px', fontWeight: 100, margin: '10px 5px 10px 0px', ':hover': {boxShadow: '0 1px 0 #FFF'}
 }
 
 const timeStyle = {
-  background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center'
+  background: 'inherit', fontSize: '16px', outline: 'none', border: 'none', textAlign: 'center', ':hover': {boxShadow: '0 1px 0 #FFF'}
 }
 
 class DateTimePicker extends Component {
@@ -115,9 +115,9 @@ class DateTimePicker extends Component {
           <DatePicker customInput={<CustomDatePicker />} selected={this.state.startDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment.unix(this.state.dates[0])} maxDate={moment.unix(this.state.dates[this.state.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'startDate')} />
         </div>
         <div className='planner-time-picker'>
-          <input style={timeStyle} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} />
-          <span>to</span>
-          <input style={timeStyle} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
+          <input key='startTime' style={timeStyle} type='time' name='startTime' value={this.state.startTime} onChange={(e) => this.handleChange(e, 'startTime')} />
+          <span style={{padding: '0 10px'}}>to</span>
+          <input key='endTime' style={timeStyle} type='time' name='endTime' value={this.state.endTime} onChange={(e) => this.handleChange(e, 'endTime')} />
         </div>
         <div className='planner-date-picker'>
           <select key={'endDaySelect'} name='endDay' onChange={(e) => this.handleChange(e, 'endDay')} value={this.props.endDay} style={dayStyle}>
