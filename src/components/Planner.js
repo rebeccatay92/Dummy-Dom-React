@@ -30,8 +30,8 @@ class Planner extends Component {
 
   render () {
     if (this.props.data.loading) return (<h1>Loading</h1>)
-
-    console.log('apollo', this.props.data.findItinerary)
+    //
+    // console.log('apollo', this.props.data.findItinerary)
 
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
     const days = this.props.data.findItinerary.days
@@ -130,7 +130,6 @@ class Planner extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('willreceiveprops', nextProps.data.findItinerary)
     if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
       let lodgingCheckout = nextProps.data.findItinerary.lodgings.map(lodging => {
         return {
