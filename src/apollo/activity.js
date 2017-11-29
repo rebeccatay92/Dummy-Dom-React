@@ -68,8 +68,6 @@ export const updateActivity = gql`
 
 export const deleteActivity = gql`
   mutation deleteActivity($id: ID!) {
-    deleteActivity(id: $id) {
-      status
-    }
+    deleteActivity(id: $id)
   }
 `

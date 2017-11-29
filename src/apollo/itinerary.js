@@ -42,12 +42,12 @@ export const queryItinerary = gql`
           id
           name
         }
-        departureDay
-        arrivalDay
-        departureTime
-        arrivalTime
-        departureLoadSequence
-        arrivalLoadSequence
+        startDay
+        endDay
+        startTime
+        endTime
+        startLoadSequence
+        endLoadSequence
         cost
         bookedThrough
         bookingStatus
@@ -111,10 +111,10 @@ export const queryItinerary = gql`
           id
           name
         }
-        departureDay
-        departureTime
-        arrivalDay
-        arrivalTime
+        startDay
+        startTime
+        endDay
+        endTime
         startLoadSequence
         endLoadSequence
         cost
@@ -124,6 +124,40 @@ export const queryItinerary = gql`
         attachments {
           id
           fileName
+        }
+      }
+      events {
+        type
+        id
+        loadSequence
+        start
+        data {
+          ... on Activity {
+            id
+            name
+            location {
+              name
+              country {
+                name
+              }
+            }
+          }
+          ... on Food {
+            id
+            name
+          }
+          ... on Flight {
+            id
+            name
+          }
+          ... on Transport {
+            id
+            name
+          }
+          ... on Lodging {
+            id
+            name
+          }
         }
       }
     }

@@ -6,7 +6,11 @@ import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } fro
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
-import { createActivity, createFlight, createFood, createLodging, createTransport, deleteActivity, deleteFlight, deleteFood, deleteLodging, deleteTransport } from '../apollo/activity'
+import { createActivity, deleteActivity } from '../apollo/activity'
+import { createFood, deleteFood } from '../apollo/food'
+import { createFlight, deleteFlight } from '../apollo/flight'
+import { createTransport, deleteTransport } from '../apollo/transport'
+import { createLodging, deleteLodging } from '../apollo/lodging'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
@@ -176,8 +180,8 @@ class PlannerActivity extends Component {
       </div>
     )
     if (this.state.creatingActivity) {
-      const types = ['directions_run', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'restaurant', 'directions_boat']
-      const eventTypes = ['activity', 'lodging', 'flight', 'train', 'car', 'food', 'ferry']
+      const types = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
+      const eventTypes = ['activity', 'food', 'lodging', 'flight', 'train', 'car', 'ferry']
       createActivityBox = (
         <div style={{position: 'absolute', top: '-1vh'}}>
           <span>
@@ -207,6 +211,7 @@ class PlannerActivity extends Component {
             }}>
               {createActivityBox}
             </div>
+
             {this.state.createEventForm && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateActivityClick()} />}
           </td>
           {this.state.createEventForm && <td style={{position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.7)', zIndex: 555}} />}
@@ -332,32 +337,6 @@ class PlannerActivity extends Component {
       draggable: !this.state.draggable
     })
   }
-
-  // handleSubmit (e) {
-  //   e.preventDefault()
-  //   this.setState({
-  //     creatingActivity: false
-  //   })
-  //   this.props.createActivity({
-  //     variables: {
-  //       name: this.state.activityName,
-  //       date: this.props.activity.date,
-  //       LocationId: this.state.locationName,
-  //       ItineraryId: this.props.itineraryId,
-  //       loadSequence: this.props.highestLoadSequence + 1
-  //     },
-  //     refetchQueries: [{
-  //       query: queryItinerary,
-  //       variables: { id: this.props.itineraryId }
-  //     }]
-  //   })
-  // }
-
-  // handleChange (e) {
-  //   this.setState({
-  //     [e.target.name]: e.target.value
-  //   })
-  // }
 
   handleDelete () {
     this.props.deleteActivity({
