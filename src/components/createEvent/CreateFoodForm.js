@@ -4,16 +4,16 @@ import Radium, { Style } from 'radium'
 // import { FormGroup, InputGroup } from 'react-bootstrap'
 import moment from 'moment'
 
-import LocationSelection from './LocationSelection'
-import DateTimePicker from './DateTimePicker'
-import BookingNotes from './BookingNotes'
-import Attachments from './Attachments'
-import SubmitCancelForm from './SubmitCancelForm'
+import LocationSelection from '../LocationSelection'
+import DateTimePicker from '../DateTimePicker'
+import BookingNotes from '../BookingNotes'
+import Attachments from '../Attachments'
+import SubmitCancelForm from '../SubmitCancelForm'
 
-import { createFood } from '../apollo/food'
-import { queryItinerary } from '../apollo/itinerary'
+import { createFood } from '../../apollo/food'
+import { queryItinerary } from '../../apollo/itinerary'
 
-import retrieveToken from '../helpers/cloudstorage.js'
+import retrieveToken from '../../helpers/cloudstorage.js'
 
 var countries = require('country-data').countries
 

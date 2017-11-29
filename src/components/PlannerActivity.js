@@ -16,8 +16,8 @@ import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
 
-import CreateActivityForm from './CreateActivityForm'
-import CreateFoodForm from './CreateFoodForm'
+import CreateActivityForm from './createEvent/CreateActivityForm'
+import CreateFoodForm from './createEvent/CreateFoodForm'
 import { primaryColor } from '../Styles/styles'
 
 const activityIconStyle = {
