@@ -32,8 +32,8 @@ class CreateActivityForm extends Component {
       googlePlaceData: {},
       name: '',
       notes: '',
-      startTime: '', // if setstate, will change to unix
-      endTime: '', // if setstate, will change to unix
+      startTime: null, // if setstate, will change to unix
+      endTime: null, // if setstate, will change to unix
       cost: 0,
       currency: '',
       currencyList: [],
@@ -123,15 +123,15 @@ class CreateActivityForm extends Component {
       googlePlaceData: {},
       name: '',
       notes: '',
-      startTime: '', // should be Int
-      endTime: '', // should be Int
+      startTime: null, // should be Int
+      endTime: null, // should be Int
       cost: 0,
       currency: this.state.currencyList[0],
       bookedThrough: '',
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      backgroundImage: ''
+      backgroundImage: defaultBackground
     })
     this.apiToken = null
   }

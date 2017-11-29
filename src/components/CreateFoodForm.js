@@ -30,8 +30,9 @@ class CreateFoodForm extends Component {
       googlePlaceData: {},
       name: '',
       notes: '',
-      startTime: '', // if setstate, will change to unix
-      endTime: '', // if setstate, will change to unix
+      type: '',
+      startTime: null, // if setstate, will change to unix
+      endTime: null, // if setstate, will change to unix
       cost: 0,
       currency: '',
       currencyList: [],
@@ -66,12 +67,13 @@ class CreateFoodForm extends Component {
       endTime: this.state.endTime,
       loadSequence: this.props.highestLoadSequence + 1,
       name: this.state.name,
+      notes: this.state.notes,
+      type: this.state.type,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
-      notes: this.state.notes,
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
@@ -121,15 +123,16 @@ class CreateFoodForm extends Component {
       googlePlaceData: {},
       name: '',
       notes: '',
-      startTime: '', // should be Int
-      endTime: '', // should be Int
+      type: '',
+      startTime: null, // should be Int
+      endTime: null, // should be Int
       cost: 0,
       currency: this.state.currencyList[0],
       bookedThrough: '',
       bookingConfirmation: '',
       fileNames: [],
       attachments: [],
-      backgroundImage: ''
+      backgroundImage: defaultBackground
     })
     this.apiToken = null
   }
