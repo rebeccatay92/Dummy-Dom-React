@@ -3,127 +3,136 @@ import { gql } from 'react-apollo'
 export const queryItinerary = gql`
   query queryItinerary($id: ID!) {
     findItinerary(id: $id){
+      id
       name
       countries {
+        id
         name
         code
       }
       days
       startDate
-      activities {
-        id
-        name
-        startTime
-        endTime
-        location {
-          id
-          name
-        }
-        startDay
-        endDay
+      events {
+        modelId
+        type
         loadSequence
-        cost
-        bookedThrough
-        bookingStatus
-        notes
-        attachments {
-          id
-          fileName
-        }
-      }
-      flights {
-        id
-        name
-        departureLocation {
+        start
+        day
+        Activity {
           id
           name
+          startTime
+          endTime
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          loadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
         }
-        arrivalLocation {
+        Flight {
           id
           name
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
         }
-        departureDay
-        arrivalDay
-        departureTime
-        arrivalTime
-        departureLoadSequence
-        arrivalLoadSequence
-        cost
-        bookedThrough
-        bookingStatus
-        notes
-        attachments {
-          id
-          fileName
-        }
-      }
-      lodgings {
-        id
-        name
-        location {
-          id
-          name
-        }
-        startDay
-        endDay
-        startTime
-        endTime
-        startLoadSequence
-        endLoadSequence
-        cost
-        bookedThrough
-        bookingStatus
-        notes
-        attachments {
-          id
-          fileName
-        }
-      }
-      food {
-        id
-        name
-        location {
+        Lodging {
           id
           name
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
         }
-        startDay
-        endDay
-        startTime
-        endTime
-        loadSequence
-        cost
-        bookedThrough
-        bookingStatus
-        notes
-        attachments {
-          id
-          fileName
-        }
-      }
-      transports {
-        id
-        name
-        departureLocation {
-          id
-          name
-        }
-        arrivalLocation {
+        Food {
           id
           name
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          loadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
         }
-        departureDay
-        departureTime
-        arrivalDay
-        arrivalTime
-        startLoadSequence
-        endLoadSequence
-        cost
-        bookedThrough
-        bookingStatus
-        notes
-        attachments {
+        Transport {
           id
-          fileName
+          name
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
         }
       }
     }
@@ -185,6 +194,7 @@ export const itinerariesByUser = gql`
     }
   }
 `
+
 // include country code. coutnryIdArr
 export const createItinerary = gql`
   mutation createItinerary($UserId: Int!, $countryCode: String, $name: String!, $days: Int!, $startDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {

@@ -52,12 +52,9 @@ class PlannerActivityTimeline extends Component {
     if (this.props.draggingItem) {
       indexOfNextActivity = 0
     } else {
-      indexOfNextActivity = this.props.activities.sort(
+      indexOfNextActivity = this.props.activities.concat().sort(
         (a, b) => {
-          const day = activity => {
-            return activity.startDay || activity.endDay || activity.departureDay
-          }
-          return day(a) - day(b)
+          return a.day - b.day
         }
       ).findIndex(activity => {
         return activity === this.props.activity
@@ -70,8 +67,9 @@ class PlannerActivityTimeline extends Component {
       dayAdjustedTime = this.props.endTime
     } else {
       const nextActivity = this.props.activities[indexOfNextActivity]
-      timeOfNextActivity = nextActivity['startTime'] || nextActivity['departureTime'] || nextActivity['endTime']
-      const dayOfNextActivity = nextActivity['startDay'] || nextActivity['departureDay'] || nextActivity['endDay']
+      console.log(nextActivity);
+      timeOfNextActivity = nextActivity.start ? nextActivity[nextActivity.type]['startTime'] : nextActivity[nextActivity.type]['endTime']
+      const dayOfNextActivity = nextActivity['day']
       dayAdjustedTime = timeOfNextActivity + (dayOfNextActivity - this.props.day) * 86400
     }
     switch (type) {
@@ -99,19 +97,19 @@ class PlannerActivityTimeline extends Component {
       case 'Flight':
         return (
           <div>
-            {this.renderIcon('flight_takeoff')}
-            {this.renderDuration(this.props.endTime - this.props.startTime)}
-            {this.renderIcon('flight_land')}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.props.start && this.renderIcon('flight_takeoff')}
+            {this.props.start && this.renderDuration(this.props.endTime - this.props.startTime)}
+            {!this.props.start && this.renderIcon('flight_land')}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Transport':
         return (
           <div>
-            {this.renderIcon('directions_subway')}
-            {this.renderDuration(this.props.endTime - this.props.startTime)}
-            {this.renderIcon('directions_subway', endStyle)}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.props.start && this.renderIcon('directions_subway')}
+            {this.props.start && this.renderDuration(this.props.endTime - this.props.startTime)}
+            {!this.props.start && this.renderIcon('directions_subway', endStyle)}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       default:
