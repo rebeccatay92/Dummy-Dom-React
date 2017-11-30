@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { Link } from 'react-router-dom'
 
-import { deleteItinerary, deleteCountriesItineraries, itinerariesByUser } from '../apollo/itinerary'
+import { deleteItinerary, deleteCountriesItineraries, itinerariesByUser } from '../../apollo/itinerary'
 
 import AddCountry from './AddCountry'
 import UpdateItineraryDetails from './UpdateItineraryDetails'

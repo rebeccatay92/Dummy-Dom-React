@@ -6,12 +6,17 @@ import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } fro
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
-import { createActivity, createFlight, createFood, createLodging, createTransport, deleteActivity, deleteFlight, deleteFood, deleteLodging, deleteTransport } from '../apollo/activity'
+import { createActivity, deleteActivity } from '../apollo/activity'
+import { createFood, deleteFood } from '../apollo/food'
+import { createFlight, deleteFlight } from '../apollo/flight'
+import { createTransport, deleteTransport } from '../apollo/transport'
+import { createLodging, deleteLodging } from '../apollo/lodging'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
-import CreateActivityForm from './CreateActivityForm'
+import CreateActivityForm from './createEvent/CreateActivityForm'
+import CreateFoodForm from './createEvent/CreateFoodForm'
 import { primaryColor, timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle } from '../Styles/styles'
 
 const activityIconStyle = {
@@ -87,7 +92,7 @@ class PlannerActivity extends Component {
     super(props)
 
     this.state = {
-      creatingActivity: false,
+      creatingEvent: false,
       onBox: false,
       draggable: true,
       expanded: false,
@@ -138,22 +143,22 @@ class PlannerActivity extends Component {
         })}
       </tr>
     )
-    let createActivityBox = (
+    let createEventBox = (
       <div style={{
         cursor: 'pointer'
       }}>
-        <p style={{marginTop: 0, fontSize: '16px', color: primaryColor, display: 'inline-block', ':hover': {backgroundColor: this.state.creatingActivity ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Activity</p>
+        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingEvent ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Event</p>
       </div>
     )
-    if (this.state.creatingActivity) {
-      const types = ['directions_run', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'restaurant', 'directions_boat']
-      const eventTypes = ['activity', 'lodging', 'flight', 'train', 'car', 'food', 'ferry']
-      createActivityBox = (
+    if (this.state.creatingEvent) {
+      const types = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
+      const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
+      createEventBox = (
         <div style={{position: 'absolute', top: '-1vh'}}>
           <span>
             {types.map((type, i) => {
               return (
-                <i key={i} onClick={() => this.handleCreateActivityClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
+                <i key={i} onClick={() => this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
             <span style={{fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}}>Pick One</span>
@@ -169,15 +174,25 @@ class PlannerActivity extends Component {
           </td>
           <td colSpan='4'>
             <div onClick={() => this.setState({
-              creatingActivity: true
+              creatingEvent: true
             })} style={{
               margin: '1vh 0 3vh 1vw',
               height: '40px',
               position: 'relative'
             }}>
-              {createActivityBox}
+              {createEventBox}
             </div>
-            {this.state.createEventForm && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateActivityForm={() => this.handleCreateActivityClick()} />}
+
+            {this.state.createEventForm &&
+              <div>
+                {this.state.createEventForm === 'Activity' &&
+                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventForm={() => this.handleCreateEventClick()} />
+                }
+                {this.state.createEventForm === 'Food' &&
+                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventForm={() => this.handleCreateEventClick()} />
+                }
+              </div>
+            }
           </td>
           {this.state.createEventForm && <td style={{position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.7)', zIndex: 555}} />}
         </tr>
@@ -193,12 +208,12 @@ class PlannerActivity extends Component {
   handleClickOutside (event) {
     if (!this.props.empty) return
     this.setState({
-      creatingActivity: false,
+      creatingEvent: false,
       _radiumStyleState: {}
     })
   }
 
-  handleCreateActivityClick (eventType = null) {
+  handleCreateEventClick (eventType = null) {
     this.setState({
       createEventForm: eventType
     })
@@ -316,32 +331,6 @@ class PlannerActivity extends Component {
       draggable: !this.state.draggable
     })
   }
-
-  // handleSubmit (e) {
-  //   e.preventDefault()
-  //   this.setState({
-  //     creatingActivity: false
-  //   })
-  //   this.props.createActivity({
-  //     variables: {
-  //       name: this.state.activityName,
-  //       date: this.props.activity.date,
-  //       LocationId: this.state.locationName,
-  //       ItineraryId: this.props.itineraryId,
-  //       loadSequence: this.props.highestLoadSequence + 1
-  //     },
-  //     refetchQueries: [{
-  //       query: queryItinerary,
-  //       variables: { id: this.props.itineraryId }
-  //     }]
-  //   })
-  // }
-
-  // handleChange (e) {
-  //   this.setState({
-  //     [e.target.name]: e.target.value
-  //   })
-  // }
 
   handleDelete () {
     this.props.deleteActivity({

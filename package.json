@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "babel-preset-react": "^6.24.1",
     "country-data": "^0.0.31",
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",

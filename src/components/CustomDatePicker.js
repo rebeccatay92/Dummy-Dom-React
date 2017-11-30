@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
 
-class PlannerDatePicker extends Component {
+class CustomDatePicker extends Component {
   render () {
     return (
       <span
@@ -14,4 +14,4 @@ class PlannerDatePicker extends Component {
   }
 }
 
-export default Radium(PlannerDatePicker)
+export default Radium(CustomDatePicker)

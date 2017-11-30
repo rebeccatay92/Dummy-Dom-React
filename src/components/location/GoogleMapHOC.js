@@ -24,6 +24,7 @@ const MyMapComponent = compose(
         markers: [],
         infoOpen: false,
         markerIndex: null,
+        testing: null,
         googlePlaceData: {
           placeId: null,
           name: null,
@@ -48,9 +49,10 @@ const MyMapComponent = compose(
         onMarkerMounted: ref => {
           refs.marker = ref
         },
+        onInfoWindowMounted: ref => {
+          refs.infoWindow = ref
+        },
         handleMarkerClick: (index) => {
-          var marker = this.state.markers[index]
-          console.log('place', marker.place)
           if (!this.state.infoOpen || this.state.markerIndex !== index) {
             this.setState({infoOpen: true})
             this.setState({markerIndex: index})
@@ -59,30 +61,50 @@ const MyMapComponent = compose(
             this.setState({markerIndex: null})
           }
         },
-        selectLocation: (place) => {
-          var addressArr = place.address_components
-          var countryCode = null
-          addressArr.forEach(e => {
-            if (e.types.includes('country')) {
-              countryCode = e.short_name
-            }
-          })
+        selectLocation (placeId) {
+          console.log(placeId)
 
-          var openingHours = null
-          if (place.opening_hours && place.opening_hours.periods) {
-            openingHours = place.opening_hours.periods
-            console.log('openinghours arr', openingHours)
+          // this.setState({testing: 'hello'})
+          console.log('this', this)
+
+          var request = {placeId: placeId}
+
+          if (refs.map) {
+            var service = new window.google.maps.places.PlacesService(refs.map.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED)
           }
 
-          this.setState({googlePlaceData: {
-            placeId: place.place_id,
-            countryCode: countryCode,
-            name: place.name,
-            address: place.formatted_address,
-            openingHours: openingHours,
-            latitude: place.geometry.location.lat(),
-            longitude: place.geometry.location.lng()
-          }})
+          // bind callback (place, status) scope to lifecycle
+          service.getDetails(request, (place, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+              console.log('placeDetails', place)
+
+              if (place.address_components) {
+                var addressArr = place.address_components
+                var countryCode = null
+                addressArr.forEach(e => {
+                  if (e.types.includes('country')) {
+                    countryCode = e.short_name
+                  }
+                })
+              }
+
+              var openingHours = null
+              if (place.opening_hours && place.opening_hours.periods) {
+                openingHours = place.opening_hours.periods
+              }
+
+              // this.setState({testing: 'hello'})
+              // this.setState({googlePlaceData: {
+              //   placeId: place.place_id,
+              //   countryCode: countryCode,
+              //   name: place.name,
+              //   address: place.formatted_address,
+              //   openingHours: openingHours,
+              //   latitude: place.geometry.location.lat(),
+              //   longitude: place.geometry.location.lng()
+              // }})
+            }
+          })
         },
         closeInfoWindow: () => {
           this.setState({infoOpen: false})
@@ -130,7 +152,6 @@ const MyMapComponent = compose(
         <h5>name: {props.googlePlaceData.name}</h5>
         <h5>address: {props.googlePlaceData.address}</h5>
         <h5>lat/lng: {props.googlePlaceData.latitude}, {props.googlePlaceData.longitude}</h5>
-        {/* <h5>openingHours: {this.state.openingHours}</h5> */}
       </div>
     </CustomControl>
     <SearchBox ref={props.onSearchBoxMounted} bounds={props.bounds} controlPosition={window.google.maps.ControlPosition.TOP_LEFT} onPlacesChanged={props.onPlacesChanged}>
@@ -151,13 +172,13 @@ const MyMapComponent = compose(
       />
     </SearchBox>
     {props.markers.map((marker, index) =>
-      <Marker key={index} position={marker.position} onClick={() => props.handleMarkerClick(index)}>
-        {props.infoOpen && props.markerIndex === index && <InfoWindow key={index} onCloseClick={props.closeInfoWindow}>
+      <Marker ref={props.onMarkerMounted} key={index} position={marker.position} onClick={() => props.handleMarkerClick(index)}>
+        {props.infoOpen && props.markerIndex === index && <InfoWindow ref={props.onInfoWindowMounted} key={index} onCloseClick={props.closeInfoWindow}>
           <div>
             <h5>Name: {marker.place.name}</h5>
             <h5>Address: {marker.place.formatted_address}</h5>
             <h5>place_id: {marker.place.place_id}</h5>
-            <button onClick={() => props.selectLocation(marker.place)}>Select this location</button>
+            <button onClick={() => props.selectLocation(marker.place.place_id)}>Select this location</button>
           </div>
         </InfoWindow>}
       </Marker>

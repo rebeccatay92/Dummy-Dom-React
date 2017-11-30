@@ -8,10 +8,10 @@ import { createToken } from '../apollo/user'
 import { initializeUser, logoutUser } from '../actions/userActions'
 
 import HomePage from './HomePage'
-import ItineraryPage from './ItineraryPage'
+import ItineraryPage from './itinerary/ItineraryPage'
 import PlannerPage from './PlannerPage'
 import Navbar from './Navbar'
-import CustomMap from './GoogleMapHOC'
+import CustomMap from './location/GoogleMapHOC'
 
 class App extends Component {
   toggleLoginLogout () {
@@ -24,7 +24,6 @@ class App extends Component {
         }
       })
         .then(({data}) => {
-          console.log('token', data.createToken)
           window.localStorage.setItem('token', data.createToken)
           this.props.initializeUser()
         })

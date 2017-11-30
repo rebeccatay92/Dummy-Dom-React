@@ -135,6 +135,129 @@ export const queryItinerary = gql`
           }
         }
       }
+      events {
+        modelId
+        type
+        loadSequence
+        start
+        day
+        Activity {
+          id
+          name
+          startTime
+          endTime
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          loadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        Flight {
+          id
+          name
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        Lodging {
+          id
+          name
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        Food {
+          id
+          name
+          location {
+            id
+            name
+          }
+          startDay
+          endDay
+          startTime
+          endTime
+          loadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+        Transport {
+          id
+          name
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          cost
+          bookedThrough
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+          }
+        }
+      }
     }
   }`
 
