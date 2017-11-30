@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { render } from 'react-dom';
-import { MAP } from 'react-google-maps/lib/constants';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { render } from 'react-dom'
+import { MAP } from 'react-google-maps/lib/constants'
 
 class CustomControl extends React.Component {
 	static contextTypes = {
