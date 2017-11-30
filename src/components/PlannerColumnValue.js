@@ -19,13 +19,21 @@ class PlannerColumnValue extends Component {
   }
 
   renderInfo () {
+    const start = this.props.activity.start || typeof this.props.activity.start !== 'boolean'
+    const value = this.props.activity[this.props.activity.type][columnValues[this.props.column]]
     switch (this.props.column) {
+      case 'Price':
+        if (start) return value
+        else return ''
       case 'Booking Status':
-        if (this.props.activity[columnValues[this.props.column]]) return 'Booked'
-        else if (this.props.activity[columnValues[this.props.column]] === false) return 'Not Booked'
+        if (value && start) return 'Booked'
+        else if (value === false && start) return 'Not Booked'
+        else return ''
+      case 'Booking Platform':
+        if (start) return value
         else return ''
       default:
-        return this.props.activity[columnValues[this.props.column]]
+        return value
     }
   }
 }

@@ -48,18 +48,16 @@ class PlannerActivityTimeline extends Component {
   }
 
   renderTimeline (type) {
+    const daySortedActivities = this.props.activities.concat().sort(
+      (a, b) => {
+        return a.day - b.day
+      }
+    )
     let timeOfNextActivity, indexOfNextActivity
     if (this.props.draggingItem) {
       indexOfNextActivity = 0
     } else {
-      indexOfNextActivity = this.props.activities.sort(
-        (a, b) => {
-          const day = activity => {
-            return activity.startDay || activity.endDay || activity.departureDay
-          }
-          return day(a) - day(b)
-        }
-      ).findIndex(activity => {
+      indexOfNextActivity = daySortedActivities.findIndex(activity => {
         return activity === this.props.activity
       }) + 1
     }
@@ -69,11 +67,12 @@ class PlannerActivityTimeline extends Component {
     } else if (indexOfNextActivity >= this.props.activities.length) {
       dayAdjustedTime = this.props.endTime
     } else {
-      const nextActivity = this.props.activities[indexOfNextActivity]
-      timeOfNextActivity = nextActivity['startTime'] || nextActivity['departureTime'] || nextActivity['endTime']
-      const dayOfNextActivity = nextActivity['startDay'] || nextActivity['departureDay'] || nextActivity['endDay']
+      const nextActivity = daySortedActivities[indexOfNextActivity]
+      timeOfNextActivity = nextActivity.start || typeof nextActivity.start !== 'boolean' ? nextActivity[nextActivity.type]['startTime'] : nextActivity[nextActivity.type]['endTime']
+      const dayOfNextActivity = nextActivity.day
       dayAdjustedTime = timeOfNextActivity + (dayOfNextActivity - this.props.day) * 86400
     }
+    const endTime = this.props.start ? this.props.startTime : this.props.endTime
     switch (type) {
       case 'Activity':
         return (
@@ -92,26 +91,26 @@ class PlannerActivityTimeline extends Component {
       case 'Lodging':
         return (
           <div>
-            {this.renderIcon('hotel', this.props.checkout && endStyle)}
-            {this.renderDuration(dayAdjustedTime - (this.props.startTime || this.props.endTime), this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderIcon('hotel', !this.props.start && endStyle)}
+            {this.renderDuration(dayAdjustedTime - endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Flight':
         return (
           <div>
-            {this.renderIcon('flight_takeoff')}
-            {this.renderDuration(this.props.endTime - this.props.startTime)}
-            {this.renderIcon('flight_land')}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.props.start && this.renderIcon('flight_takeoff')}
+            {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime)}
+            {!this.props.start && this.renderIcon('flight_land')}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       case 'Transport':
         return (
           <div>
-            {this.renderIcon('directions_subway')}
-            {this.renderDuration(this.props.endTime - this.props.startTime)}
-            {this.renderIcon('directions_subway', endStyle)}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.props.start && this.renderIcon('directions_subway')}
+            {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime)}
+            {!this.props.start && this.renderIcon('directions_subway', endStyle)}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
           </div>
         )
       default:
