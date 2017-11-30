@@ -88,3 +88,5 @@ export const eventBoxStyle = (draggable, activityId) => {
 export const eventBoxFirstColumnStyle = (activityId, minHeight) => {
   return { lineHeight: '100%', padding: '1vh 0', minHeight: '12vh' }
 }
+export const expandedEventPropStyle = {color: secondaryFontColor, fontWeight: 'bold'}
+export const expandedEventValueStyle = {color: secondaryFontColor}

@@ -30,6 +30,7 @@ export const queryItinerary = gql`
           startDay
           endDay
           loadSequence
+          currency
           cost
           bookedThrough
           bookingStatus
@@ -38,6 +39,7 @@ export const queryItinerary = gql`
             id
             fileName
           }
+          backgroundImage
         }
         Flight {
           id
