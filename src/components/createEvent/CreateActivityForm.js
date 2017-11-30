@@ -4,7 +4,7 @@ import Radium, { Style } from 'radium'
 // import { FormGroup, InputGroup } from 'react-bootstrap'
 import moment from 'moment'
 
-import LocationSelection from '../LocationSelection'
+import LocationSelection from '../location/LocationSelection'
 import DateTimePicker from '../DateTimePicker'
 import BookingNotes from '../BookingNotes'
 import Attachments from '../Attachments'
@@ -240,7 +240,6 @@ class CreateActivityForm extends Component {
         <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
 
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
-          {/* backgroundImage: `url(${this.state.backgroundImage})` */}
           <div style={{backgroundImage: `url(${this.state.backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
             <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
             <LocationSelection selectLocation={location => this.selectLocation(location)} />

@@ -11,7 +11,7 @@ import HomePage from './HomePage'
 import ItineraryPage from './itinerary/ItineraryPage'
 import PlannerPage from './PlannerPage'
 import Navbar from './Navbar'
-import CustomMap from './GoogleMapHOC'
+import CustomMap from './location/GoogleMapHOC'
 
 class App extends Component {
   toggleLoginLogout () {
