@@ -42,54 +42,28 @@ const plannerActivitySource = {
 
 const plannerActivityTarget = {
   hover (props, monitor, component) {
-    let day = props.activity.startDay || props.activity.departureDay || props.activity.endDay
+    let day = props.activity.day
     if (monitor.getItemType() === 'activity') props.hoverOverActivity(props.index, day)
     else if (monitor.getItemType() === 'plannerActivity') props.plannerActivityHoverOverActivity(props.index, monitor.getItem(), day)
   },
   drop (props, monitor) {
-    let day = props.activity.startDay
-    const typeOfDays = {
-      Activity: 'startDay',
-      Food: 'startDay',
-      Lodging: monitor.getItem().startDay ? 'startDay' : 'endDay',
-      Transport: 'departureDay',
-      Flight: 'departureDay'
-    }
-    // const typeOfTimes = {
-    //   Activity: {
-    //     start: 'startTime',
-    //     end: 'endTime'
-    //   },
-    //   Food: {
-    //     start: 'startTime',
-    //     end: 'endTime'
-    //   },
-    //   Lodging: {
-    //     start: monitor.getItem().startTime ? 'startTime' : 'endTime',
-    //     end: monitor.getItem().startTime ? 'startTime' : 'endTime'
-    //   },
-    //   Transport: {
-    //     start: 'departureTime',
-    //     end: 'arrivalTime'
-    //   },
-    //   Flight: {
-    //     start: 'departureTime',
-    //     end: 'arrivalTime'
-    //   }
+    let day = props.activity.day
+    // const typeOfDays = {
+    //   Activity: 'startDay',
+    //   Food: 'startDay',
+    //   Lodging: monitor.getItem().start ? 'startDay' : 'endDay',
+    //   Transport: monitor.getItem().start ? 'startDay' : 'endDay',
+    //   Flight: monitor.getItem().start ? 'startDay' : 'endDay'
     // }
-    // const timeDiff = day - monitor.getItem()[typeOfDays[monitor.getItem().__typename]]
-    // console.log(timeDiff)
     let newActivity = {...monitor.getItem(),
       ...{
-        [typeOfDays[monitor.getItem().__typename]]: day
-        // [typeOfTimes[monitor.getItem().__typename]['start']]: monitor.getItem()[typeOfTimes[monitor.getItem().__typename]['start']] + timeDiff,
-        // [typeOfTimes[monitor.getItem().__typename]['end']]: monitor.getItem()[typeOfTimes[monitor.getItem().__typename]['end']] + timeDiff
+        day: day
       }
     }
     props.dropActivity(newActivity, props.index)
-    if (monitor.getItemType() === 'activity') {
-      props.deleteActivityFromBucket(monitor.getItem())
-    }
+    // if (monitor.getItemType() === 'activity') {
+    //   props.deleteActivityFromBucket(monitor.getItem())
+    // }
   }
 }
 
@@ -136,7 +110,6 @@ class PlannerActivity extends Component {
     }
     let type
     if (this.props.activity.type) type = this.props.activity.type
-    console.log(this.props.activity);
     const timeline = (
       <div style={{...timelineStyle,
         ...{
@@ -317,7 +290,7 @@ class PlannerActivity extends Component {
           break
         case 'Lodging':
           let time, name
-          if (this.props.activity.startTime) {
+          if (this.props.activity.start) {
             time = new Date(this.props.activity[type].startTime * 1000).toGMTString().substring(17, 22)
             name = 'startTime'
           } else {

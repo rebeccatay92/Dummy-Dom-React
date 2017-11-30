@@ -174,29 +174,23 @@ class DateBox extends Component {
     const checkIfNoBlankBoxes = array => {
       let result = true
       array.forEach(activity => {
-        if (!activity.id) result = false
+        if (!activity.modelId) result = false
       })
       return result
     }
 
     if (!checkIfNoBlankBoxes(this.props.activities) && checkIfNoBlankBoxes(nextProps.activities) && nextProps.isOver) {
       const loadSequenceArr = nextProps.activities.map((activity, i) => {
-        const day = activity.startDay || activity.departureDay || activity.endDay
-        const types = {
-          Activity: 'Activity',
-          Flight: 'Flight',
-          Food: 'Food',
-          Transport: 'Transport',
-          Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
-        }
+        const day = activity.day
         return {
-          id: activity.id,
-          type: types[activity.__typename],
+          id: activity.modelId,
+          type: activity.type,
           loadSequence: i + 1,
-          day: day
+          day: day,
+          start: activity.start
         }
       })
-      // console.log(loadSequenceArr)
+      console.log(loadSequenceArr)
       this.props.changingLoadSequence({
         variables: {
           input: loadSequenceArr

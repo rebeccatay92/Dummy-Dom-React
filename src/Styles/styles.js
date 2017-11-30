@@ -31,7 +31,7 @@ export const userIconsContainerStyle = {position: 'absolute', left: '0', top: '0
 export const userIconStyle = {height: '30px', width: '30px', margin: '0 0 10px 10px'}
 export const plannerIconStyle = {
   fontSize: '24px',
-  marginLeft: '2vh',
+  margin: '0 0 0 2vh',
   color: primaryColor,
   opacity: '0.6',
   cursor: 'pointer',
@@ -86,5 +86,5 @@ export const eventBoxStyle = (draggable, activityId) => {
   }
 }
 export const eventBoxFirstColumnStyle = (activityId, minHeight) => {
-  return { lineHeight: '100%', padding: '1vh 0', minHeight: activityId ? '12vh' : minHeight }
+  return { lineHeight: '100%', padding: '1vh 0', minHeight: '12vh' }
 }

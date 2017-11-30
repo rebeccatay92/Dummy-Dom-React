@@ -6,16 +6,16 @@ export const plannerReducer = (state = [], action) => {
       if (action.index === 'none') {
         return [
           ...state.filter(activity => {
-            return activity.id
+            return activity.modelId
           }),
           action.activity
         ]
       } else {
         let stateWithoutActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && (activity.day || activity.startDay || activity.endDay || activity.departureDay) !== (action.activity.day || action.activity.startDay || action.activity.endDay || action.activity.departureDay)
+          return activity.modelId && activity.day !== action.activity.day
         })
         let newStateWithActivitiesWithThatDate = state.filter(activity => {
-          return activity.id && (activity.day || activity.startDay || activity.endDay || activity.departureDay) === (action.activity.day || action.activity.startDay || action.activity.endDay || action.activity.departureDay)
+          return activity.modelId && activity.day === action.activity.day
         })
         return [
           ...stateWithoutActivitiesWithThatDate,
@@ -47,67 +47,45 @@ export const plannerReducer = (state = [], action) => {
         ...[
           ...newStateWithActivitiesWithThatDate.slice(0, action.index),
           ...[{
-            id: '',
-            name: '',
-            location: '',
-            startDay: action.day
+            modelId: '',
+            day: action.day
           }],
           ...newStateWithActivitiesWithThatDate.slice(action.index, newStateWithActivitiesWithThatDate.length)
         ]
       ]
     case 'PLANNERACTIVITY_HOVER_OVER_ACTIVITY':
-      // console.log(state, action.activity)
+      // console.log(state)
       if (!(action.index + 1)) {
         return state.filter(activity => {
-          const types = {
-            Activity: 'Activity',
-            Flight: 'Flight',
-            Food: 'Food',
-            Transport: 'Transport',
-            Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
-          }
-          const draggedtypes = {...types, ...{ Lodging: action.activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout' }}
-          return activity.id && (activity.id !== action.activity.id || types[activity.type] !== draggedtypes[action.activity.type])
+          return activity.modelId && (activity.modelId !== action.activity.modelId || activity.type !== action.activity.type || activity.start !== action.activity.start)
         })
       }
       let stateWithoutPlannerActivitiesWithThatDate = state.filter(activity => {
-        const types = {
-          Activity: 'Activity',
-          Flight: 'Flight',
-          Food: 'Food',
-          Transport: 'Transport',
-          Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
-        }
-        const draggedtypes = {...types, ...{ Lodging: action.activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout' }}
-        return activity.id && (activity.startDay || activity.departureDay || activity.endDay) !== (action.day || action.startDay || action.departureDay || action.endDay) && (activity.id !== action.activity.id || types[activity.type] !== draggedtypes[action.activity.type])
+        return activity.modelId && activity.day !== action.day && (activity.modelId !== action.activity.modelId || activity.type !== action.activity.type || activity.start !== action.activity.start)
       })
       let newStateWithPlannerActivitiesWithThatDate = state.filter(activity => {
-        const types = {
-          Activity: 'Activity',
-          Flight: 'Flight',
-          Food: 'Food',
-          Transport: 'Transport',
-          Lodging: activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout'
-        }
-        const draggedtypes = {...types, ...{ Lodging: action.activity.startDay ? 'LodgingCheckin' : 'LodgingCheckout' }}
-        return activity.id && (activity.startDay || activity.departureDay || activity.endDay) === (action.day || action.startDay || activity.departureDay || action.endDay) && (activity.id !== action.activity.id || types[activity.type] !== draggedtypes[action.activity.type])
+        return activity.modelId && activity.day === action.day && (activity.modelId !== action.activity.modelId || activity.type !== action.activity.type || activity.start !== action.activity.start)
       })
+      // console.log(stateWithoutPlannerActivitiesWithThatDate);
+      // console.log(newStateWithPlannerActivitiesWithThatDate);
+      // console.log(action.day);
       return [
         ...stateWithoutPlannerActivitiesWithThatDate,
         ...[
           ...newStateWithPlannerActivitiesWithThatDate.slice(0, action.index),
           ...[{
-            id: '',
-            name: '',
-            location: '',
-            startDay: action.day
+            modelId: '',
+            day: action.day,
+            type: 'empty',
+            empty: {},
+            fromReducer: true
           }],
           ...newStateWithPlannerActivitiesWithThatDate.slice(action.index, newStateWithPlannerActivitiesWithThatDate.length)
         ]
       ]
     case 'HOVER_OUTSIDE_PLANNER':
       return state.filter(activity => {
-        return activity.id
+        return activity.modelId
       })
     default:
       return state
