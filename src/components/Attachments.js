@@ -105,14 +105,17 @@ class Attachments extends Component {
       <div>
         {/* UPLOADED FILE NAMES */}
         {this.props.fileInfo.map((info, i) => {
-          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}}} key={i}>
-            {info.type === 'application/pdf' &&
-              <i className='material-icons' style={{color: primaryColor}}>picture_as_pdf</i>
-            }
-            {info.type !== 'application/pdf' &&
-              <i className='material-icons' style={{color: primaryColor}}>photo</i>
-            }
-            <span onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: primaryColor, fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{info.name} {info.size}</span>
+          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={i}>
+            <div style={{display: 'inline-block', cursor: 'pointer'}}>
+              {info.type === 'application/pdf' &&
+              <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
+              {info.type !== 'application/pdf' &&
+              <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>photo</i>}
+            </div>
+            <div style={{display: 'inline-block', cursor: 'pointer'}}>
+              <h4 onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.name}</h4>
+              <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.size}</h4>
+            </div>
             <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: primaryColor, cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
 
             {/* THUMBNAIL ON HOVER */}
@@ -125,7 +128,7 @@ class Attachments extends Component {
         {/* UPLOAD ICON IF FILES < 6 */}
         {(this.props.attachments.length <= 5) &&
           <label style={{display: 'inline-block', color: 'black'}}>
-            <i style={{color: primaryColor, margin: '2px 5px 0 0', cursor: 'pointer'}} className='material-icons'>add_circle_outline</i>
+            <i style={{color: 'black', margin: '2px 5px 0 0', cursor: 'pointer', fontSize: '30px'}} className='material-icons'>add_circle_outline</i>
             <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.props.handleFileUpload(e)} style={{display: 'none'}} />
           </label>
         }

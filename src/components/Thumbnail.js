@@ -6,7 +6,7 @@ class Thumbnail extends Component {
       display: 'block',
       position: 'absolute',
       left: 0,
-      top: '30px',
+      bottom: '50px',
       zIndex: 1
     }
     return (
