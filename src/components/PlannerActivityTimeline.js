@@ -31,7 +31,7 @@ class PlannerActivityTimeline extends Component {
   renderDuration (duration, style) {
     if (this.props.draggingItem || (!Math.floor(duration / 3600) && !Math.floor((duration % 3600) / 60))) {
       return (
-        <div style={{...{textAlign: 'center', position: 'relative', color: '#9FACBC', top: '3px', fontWeight: 'bold', padding: '2px 0'}, ...style}}>
+        <div style={{...{textAlign: 'center', position: 'relative', color: '#9FACBC', top: this.props.expanded ? '110px' : '3px', fontWeight: 'bold', padding: '2px 0'}, ...style}}>
           <span style={{opacity: '0'}}>empty string</span>
         </div>
       )
@@ -41,7 +41,7 @@ class PlannerActivityTimeline extends Component {
       minutes: Math.floor((duration % 3600) / 60) + ' min'
     }
     return (
-      <div style={{...{textAlign: 'center', backgroundColor: '#FAFAFA', position: 'relative', color: '#9FACBC', top: '3px', fontWeight: 'bold', padding: '2px 0'}, ...style}}>
+      <div style={{...{textAlign: 'center', backgroundColor: '#FAFAFA', position: 'relative', color: '#9FACBC', top: this.props.expanded ? '110px' : '3px', fontWeight: 'bold', padding: '2px 0', zIndex: 1}, ...style}}>
         <span style={{color: this.props.isLast && this.props.lastDay ? '#FAFAFA' : '#9FACBC'}}>{time.hours}{time.minutes}</span>
       </div>
     )
@@ -77,40 +77,40 @@ class PlannerActivityTimeline extends Component {
       case 'Activity':
         return (
           <div>
-            {this.renderIcon('directions_run')}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderIcon('directions_run', this.props.expanded && {fontSize: '48px'})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
           </div>
         )
       case 'Food':
         return (
           <div>
-            {this.renderIcon('restaurant')}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderIcon('restaurant', this.props.expanded && {fontSize: '48px'})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
           </div>
         )
       case 'Lodging':
         return (
           <div>
-            {this.renderIcon('hotel', !this.props.start && endStyle)}
-            {this.renderDuration(dayAdjustedTime - endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {this.renderIcon('hotel', {...!this.props.start && endStyle, ...this.props.expanded && {fontSize: '48px'}})}
+            {this.renderDuration(dayAdjustedTime - endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
           </div>
         )
       case 'Flight':
         return (
           <div>
-            {this.props.start && this.renderIcon('flight_takeoff')}
+            {this.props.start && this.renderIcon('flight_takeoff', this.props.expanded && {fontSize: '48px'})}
             {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime)}
-            {!this.props.start && this.renderIcon('flight_land')}
-            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {!this.props.start && this.renderIcon('flight_land', {...endStyle, ...this.props.expanded && {fontSize: '48px'}})}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
           </div>
         )
       case 'Transport':
         return (
           <div>
-            {this.props.start && this.renderIcon('directions_subway')}
+            {this.props.start && this.renderIcon('directions_subway', this.props.expanded && {fontSize: '48px'})}
             {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime)}
-            {!this.props.start && this.renderIcon('directions_subway', endStyle)}
-            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: '60px', zIndex: 1})}
+            {!this.props.start && this.renderIcon('directions_subway', {...endStyle, ...this.props.expanded && {fontSize: '48px'}})}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
           </div>
         )
       default:

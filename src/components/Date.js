@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
 import PlannerActivity from './PlannerActivity'
 import { graphql, compose } from 'react-apollo'
 import { changingLoadSequence } from '../apollo/changingLoadSequence'
@@ -53,8 +54,8 @@ class DateBox extends Component {
                 {this.props.firstDay && (
                 <div style={timelineTitleStyle(headerSticky)}>
                   <span style={{fontSize: '24px', color: primaryColor, display: 'inline-block'}}>
-                    <i onClick={() => this.handleClick()} className='material-icons' style={{marginRight: '-10px', cursor: 'pointer'}}>keyboard_arrow_left</i>
-                    <i onClick={() => this.handleClick()} className='material-icons' style={{cursor: 'pointer'}}>keyboard_arrow_right</i>
+                    <i key='leftArrowTimeline' onClick={() => this.handleClick()} className='material-icons' style={{width: '15px', overflow: 'hidden', cursor: 'pointer', opacity: '0.6', ':hover': {opacity: '1'}}}>keyboard_arrow_left</i>
+                    <i key='righttArrowTimeline' onClick={() => this.handleClick()} className='material-icons' style={{cursor: 'pointer', opacity: '0.6', ':hover': {opacity: '1'}}}>keyboard_arrow_right</i>
                   </span>
                   <span style={timelineTitleWordStyle}>{this.props.timeline.events ? 'Duration' : 'Days'}</span>
                 </div>
@@ -236,4 +237,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
   graphql(changingLoadSequence, { name: 'changingLoadSequence' }),
   graphql(updateItineraryDetails, { name: 'updateItineraryDetails' })
-)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(DateBox)))
+)(DropTarget(['activity', 'plannerActivity'], dateTarget, collect)(Radium(DateBox))))
