@@ -30,6 +30,9 @@ class ActivityInfo extends Component {
         </form>
       )
     }
+    if (!this.props.value) return (
+      <span style={{opacity: '0', fontSize: '1px'}}>a</span>
+    )
     return (
       <span onClick={() => this.handleClick()}>{this.state.value}</span>
     )
