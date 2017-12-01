@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
-// import { FormGroup, InputGroup } from 'react-bootstrap'
 import moment from 'moment'
 
 import LocationSelection from '../location/LocationSelection'
@@ -13,11 +12,10 @@ import SubmitCancelForm from '../SubmitCancelForm'
 import { createFood } from '../../apollo/food'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import retrieveToken from '../../helpers/cloudstorage.js'
+import retrieveToken from '../../helpers/cloudstorage'
+import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 
-var countries = require('country-data').countries
-
-const defaultBackground = 'https://storage.googleapis.com/domatodevs/foodDefaultBackground.jpg'
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
 class CreateFoodForm extends Component {
   constructor (props) {
@@ -38,7 +36,6 @@ class CreateFoodForm extends Component {
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      fileNames: [],
       attachments: [],
       backgroundImage: defaultBackground
     }
@@ -93,9 +90,9 @@ class CreateFoodForm extends Component {
   }
 
   closeCreateFood () {
-    this.state.attachments.forEach(uri => {
-      uri = uri.replace('/', '%2F')
-      var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
+    this.state.attachments.forEach(info => {
+      var uri = info.fileName.replace('/', '%2F')
+      var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
       var uriFull = uriBase + uri
 
       fetch(uriFull, {
@@ -130,7 +127,6 @@ class CreateFoodForm extends Component {
       currency: this.state.currencyList[0],
       bookedThrough: '',
       bookingConfirmation: '',
-      fileNames: [],
       attachments: [],
       backgroundImage: defaultBackground
     })
@@ -148,7 +144,7 @@ class CreateFoodForm extends Component {
     if (file) {
       var ItineraryId = this.state.ItineraryId
       var timestamp = Date.now()
-      var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatodevs/o?uploadType=media&name='
+      var uriBase = process.env.REACT_APP_CLOUD_UPLOAD_URI
       var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
       fetch(uriFull,
         {
@@ -168,8 +164,25 @@ class CreateFoodForm extends Component {
       .then(json => {
         console.log('json', json)
         if (json.name) {
-          this.setState({attachments: this.state.attachments.concat([json.name])})
-          this.setState({fileNames: this.state.fileNames.concat([file.name])})
+          var kilobytes = json.size / 1000
+          if (kilobytes >= 1000) {
+            var megabytes = kilobytes / 1000
+            megabytes = Math.round(megabytes * 10) / 10
+            var fileSizeStr = megabytes + 'MB'
+          } else {
+            kilobytes = Math.round(kilobytes)
+            fileSizeStr = kilobytes + 'KB'
+          }
+          this.setState({
+            attachments: this.state.attachments.concat([
+              {
+                fileName: json.name,
+                fileAlias: file.name,
+                fileSize: fileSizeStr,
+                fileType: file.type
+              }
+            ])
+          })
         }
       })
       .catch(err => {
@@ -179,9 +192,9 @@ class CreateFoodForm extends Component {
   }
 
   removeUpload (index) {
-    var objectName = this.state.attachments[index]
+    var objectName = this.state.attachments[index].fileName
     objectName = objectName.replace('/', '%2F')
-    var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
+    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
     var uriFull = uriBase + objectName
 
     fetch(uriFull, {
@@ -197,13 +210,10 @@ class CreateFoodForm extends Component {
       }
     })
     .then(() => {
-      var attach = this.state.attachments
-      var files = this.state.fileNames
-      var newAttachmentsArr = (attach.slice(0, index)).concat(attach.slice(index + 1))
+      var files = this.state.attachments
       var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
-      this.setState({attachments: newAttachmentsArr})
-      this.setState({fileNames: newFilesArr})
+      this.setState({attachments: newFilesArr})
       this.setState({backgroundImage: defaultBackground})
     })
     .catch(err => {
@@ -218,17 +228,11 @@ class CreateFoodForm extends Component {
 
   componentDidMount () {
     retrieveToken()
-    .then(retrieved => {
-      this.apiToken = retrieved
-    })
+      .then(retrieved => {
+        this.apiToken = retrieved
+      })
 
-    var currencyList = []
-    this.props.countries.forEach(e => {
-      var currencyCode = countries[e.code].currencies[0]
-      if (!currencyList.includes(currencyCode)) {
-        currencyList.push(currencyCode)
-      }
-    })
+    var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
   }
@@ -262,7 +266,7 @@ class CreateFoodForm extends Component {
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
-          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileNames={this.state.fileNames} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )
