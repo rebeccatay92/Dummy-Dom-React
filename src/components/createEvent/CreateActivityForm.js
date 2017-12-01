@@ -39,7 +39,6 @@ class CreateActivityForm extends Component {
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      fileInfo: [],
       attachments: [],
       backgroundImage: defaultBackground
     }
@@ -93,8 +92,8 @@ class CreateActivityForm extends Component {
   }
 
   closeCreateActivity () {
-    this.state.attachments.forEach(uri => {
-      uri = uri.replace('/', '%2F')
+    this.state.attachments.forEach(info => {
+      var uri = info.fileName.replace('/', '%2F')
       var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
       var uriFull = uriBase + uri
 
@@ -129,7 +128,6 @@ class CreateActivityForm extends Component {
       currency: this.state.currencyList[0],
       bookedThrough: '',
       bookingConfirmation: '',
-      fileInfo: [],
       attachments: [],
       backgroundImage: defaultBackground
     })
@@ -175,13 +173,14 @@ class CreateActivityForm extends Component {
             kilobytes = Math.round(kilobytes)
             fileSizeStr = kilobytes + 'KB'
           }
-          this.setState({attachments: this.state.attachments.concat([json.name])})
+          // this.setState({attachments: this.state.attachments.concat([json.name])})
           this.setState({
-            fileInfo: this.state.fileInfo.concat([
+            attachments: this.state.attachments.concat([
               {
-                name: file.name,
-                size: fileSizeStr,
-                type: file.type
+                fileName: json.name,
+                fileAlias: file.name,
+                fileSize: fileSizeStr,
+                fileType: file.type
               }
             ])
           })
@@ -194,7 +193,7 @@ class CreateActivityForm extends Component {
   }
 
   removeUpload (index) {
-    var objectName = this.state.attachments[index]
+    var objectName = this.state.attachments[index].fileName
     objectName = objectName.replace('/', '%2F')
     var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
     var uriFull = uriBase + objectName
@@ -212,13 +211,10 @@ class CreateActivityForm extends Component {
       }
     })
     .then(() => {
-      var attach = this.state.attachments
-      var files = this.state.fileInfo
-      var newAttachmentsArr = (attach.slice(0, index)).concat(attach.slice(index + 1))
+      var files = this.state.attachments
       var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
-      this.setState({attachments: newAttachmentsArr})
-      this.setState({fileInfo: newFilesArr})
+      this.setState({attachments: newFilesArr})
       this.setState({backgroundImage: defaultBackground})
     })
     .catch(err => {
@@ -276,7 +272,7 @@ class CreateActivityForm extends Component {
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
-          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileInfo={this.state.fileInfo} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )

@@ -17,7 +17,7 @@ class Attachments extends Component {
   }
 
   thumbnailMouseEnter (event, i) {
-    var fileName = this.props.attachments[i]
+    var fileName = this.props.attachments[i].fileName
     this.setState({hoveringOver: i})
 
     if (fileName.match('.pdf')) {
@@ -36,7 +36,7 @@ class Attachments extends Component {
   }
 
   openPreview (event, i) {
-    var fileName = this.props.attachments[i]
+    var fileName = this.props.attachments[i].fileName
     var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
 
     // fileName = fileName.replace('/', '%2F')
@@ -86,7 +86,7 @@ class Attachments extends Component {
   }
 
   changePreview (event, i) {
-    var fileName = this.props.attachments[i]
+    var fileName = this.props.attachments[i].fileName
     var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
     if (fileName.match('.pdf')) {
       window.open(url)
@@ -104,19 +104,21 @@ class Attachments extends Component {
     return (
       <div>
         {/* UPLOADED FILE NAMES */}
-        {this.props.fileInfo.map((info, i) => {
+        {this.props.attachments.map((info, i) => {
           return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={i}>
             <div style={{display: 'inline-block', cursor: 'pointer'}}>
-              {info.type === 'application/pdf' &&
+              {info.fileType === 'application/pdf' &&
               <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
-              {info.type !== 'application/pdf' &&
+              {info.fileType !== 'application/pdf' &&
               <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>photo</i>}
             </div>
             <div style={{display: 'inline-block', cursor: 'pointer'}}>
-              <h4 onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.name}</h4>
-              <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.size}</h4>
+              <h4 onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.fileAlias}</h4>
+              <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.fileSize}</h4>
             </div>
-            <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: primaryColor, cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            <div style={{display: 'inline-block', cursor: 'pointer'}}>
+              <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: primaryColor, cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            </div>
 
             {/* THUMBNAIL ON HOVER */}
             {this.state.thumbnail && this.state.hoveringOver === i &&
@@ -128,7 +130,7 @@ class Attachments extends Component {
         {/* UPLOAD ICON IF FILES < 6 */}
         {(this.props.attachments.length <= 5) &&
           <label style={{display: 'inline-block', color: 'black'}}>
-            <i style={{color: 'black', margin: '2px 5px 0 0', cursor: 'pointer', fontSize: '30px'}} className='material-icons'>add_circle_outline</i>
+            <i style={{color: 'black', margin: '2px 5px 0 0', cursor: 'pointer', fontSize: '30px'}} className='material-icons'>add</i>
             <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.props.handleFileUpload(e)} style={{display: 'none'}} />
           </label>
         }
@@ -149,16 +151,20 @@ class Attachments extends Component {
             <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
               <i className='material-icons' onClick={() => this.closePreview()} style={{color: 'black', cursor: 'pointer'}}>arrow_back</i>
 
-              {this.props.fileInfo.map((info, i) => {
+              {/* SIMILAR TO ABOVE BUT NO DELETE UPLOAD, OPENPREVIEW BECOMES CHANGE PREVIEW */}
+              {this.props.attachments.map((info, i) => {
                 return (
-                  <div key={i} style={{display: 'inline'}}>
-                    {info.type === 'application/pdf' &&
-                      <i className='material-icons' style={{color: primaryColor}}>picture_as_pdf</i>
-                    }
-                    {info.type !== 'application/pdf' &&
-                      <i className='material-icons' style={{color: primaryColor}}>photo</i>
-                    }
-                    <span key={i} onClick={(e) => this.changePreview(e, i)} style={{fontSize: '14px', color: primaryColor, fontWeight: 'bold', cursor: 'pointer', position: 'relative', top: '-6px'}}>{info.name} {info.size}</span>
+                  <div style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={'preview' + i}>
+                    <div style={{display: 'inline-block', cursor: 'pointer'}}>
+                      {info.fileType === 'application/pdf' &&
+                      <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
+                      {info.fileType !== 'application/pdf' &&
+                      <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>photo</i>}
+                    </div>
+                    <div style={{display: 'inline-block', cursor: 'pointer'}}>
+                      <h4 onClick={(e) => this.changePreview(e, i)} style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.fileAlias}</h4>
+                      <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.fileSize}</h4>
+                    </div>
                   </div>
                 )
               })}
