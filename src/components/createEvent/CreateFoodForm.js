@@ -38,7 +38,7 @@ class CreateFoodForm extends Component {
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      fileNames: [],
+      fileInfo: [],
       attachments: [],
       backgroundImage: defaultBackground
     }
@@ -130,7 +130,7 @@ class CreateFoodForm extends Component {
       currency: this.state.currencyList[0],
       bookedThrough: '',
       bookingConfirmation: '',
-      fileNames: [],
+      fileInfo: [],
       attachments: [],
       backgroundImage: defaultBackground
     })
@@ -168,8 +168,25 @@ class CreateFoodForm extends Component {
       .then(json => {
         console.log('json', json)
         if (json.name) {
+          var kilobytes = json.size / 1000
+          if (kilobytes >= 1000) {
+            var megabytes = kilobytes / 1000
+            megabytes = Math.round(megabytes * 10) / 10
+            var fileSizeStr = megabytes + 'MB'
+          } else {
+            kilobytes = Math.round(kilobytes)
+            fileSizeStr = kilobytes + 'KB'
+          }
           this.setState({attachments: this.state.attachments.concat([json.name])})
-          this.setState({fileNames: this.state.fileNames.concat([file.name])})
+          this.setState({
+            fileInfo: this.state.fileInfo.concat([
+              {
+                name: file.name,
+                size: fileSizeStr,
+                type: file.type
+              }
+            ])
+          })
         }
       })
       .catch(err => {
@@ -198,12 +215,12 @@ class CreateFoodForm extends Component {
     })
     .then(() => {
       var attach = this.state.attachments
-      var files = this.state.fileNames
+      var files = this.state.fileInfo
       var newAttachmentsArr = (attach.slice(0, index)).concat(attach.slice(index + 1))
       var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
       this.setState({attachments: newAttachmentsArr})
-      this.setState({fileNames: newFilesArr})
+      this.setState({fileInfo: newFilesArr})
       this.setState({backgroundImage: defaultBackground})
     })
     .catch(err => {
@@ -262,7 +279,7 @@ class CreateFoodForm extends Component {
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
-          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileNames={this.state.fileNames} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} fileInfo={this.state.fileInfo} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )
