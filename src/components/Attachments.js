@@ -105,7 +105,7 @@ class Attachments extends Component {
       <div>
         {/* UPLOADED FILE NAMES */}
         {this.props.attachments.map((info, i) => {
-          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={i}>
+          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={'thumbnail' + i}>
             <div style={{display: 'inline-block', cursor: 'pointer'}}>
               {info.fileType === 'application/pdf' &&
               <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
@@ -149,7 +149,7 @@ class Attachments extends Component {
               </div>
               }
             <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-              <i className='material-icons' onClick={() => this.closePreview()} style={{color: 'black', cursor: 'pointer'}}>arrow_back</i>
+              <i className='material-icons' onClick={() => this.closePreview()} style={{color: 'black', cursor: 'pointer', fontSize: '30px'}}>arrow_back</i>
 
               {/* SIMILAR TO ABOVE BUT NO DELETE UPLOAD, OPENPREVIEW BECOMES CHANGE PREVIEW */}
               {this.props.attachments.map((info, i) => {

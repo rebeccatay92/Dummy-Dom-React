@@ -18,7 +18,7 @@ export const createFood = gql`
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $attachments: [String],
+    $attachments: [attachmentInfo],
     $backgroundImage: String
   ) {
     createFood(

@@ -17,7 +17,7 @@ export const createActivity = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $notes: String,
-    $attachments: [String],
+    $attachments: [attachmentInfo],
     $backgroundImage: String
   ) {
     createActivity(
