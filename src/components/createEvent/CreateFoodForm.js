@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
-// import { FormGroup, InputGroup } from 'react-bootstrap'
 import moment from 'moment'
 
 import LocationSelection from '../location/LocationSelection'
@@ -13,11 +12,10 @@ import SubmitCancelForm from '../SubmitCancelForm'
 import { createFood } from '../../apollo/food'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import retrieveToken from '../../helpers/cloudstorage.js'
+import retrieveToken from '../../helpers/cloudstorage'
+import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 
-var countries = require('country-data').countries
-
-const defaultBackground = 'https://storage.googleapis.com/domatodevs/foodDefaultBackground.jpg'
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
 class CreateFoodForm extends Component {
   constructor (props) {
@@ -94,7 +92,7 @@ class CreateFoodForm extends Component {
   closeCreateFood () {
     this.state.attachments.forEach(info => {
       var uri = info.fileName.replace('/', '%2F')
-      var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
+      var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
       var uriFull = uriBase + uri
 
       fetch(uriFull, {
@@ -146,7 +144,7 @@ class CreateFoodForm extends Component {
     if (file) {
       var ItineraryId = this.state.ItineraryId
       var timestamp = Date.now()
-      var uriBase = ' https://www.googleapis.com/upload/storage/v1/b/domatodevs/o?uploadType=media&name='
+      var uriBase = process.env.REACT_APP_CLOUD_UPLOAD_URI
       var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
       fetch(uriFull,
         {
@@ -196,7 +194,7 @@ class CreateFoodForm extends Component {
   removeUpload (index) {
     var objectName = this.state.attachments[index].fileName
     objectName = objectName.replace('/', '%2F')
-    var uriBase = 'https://www.googleapis.com/storage/v1/b/domatodevs/o/'
+    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
     var uriFull = uriBase + objectName
 
     fetch(uriFull, {
@@ -212,7 +210,7 @@ class CreateFoodForm extends Component {
       }
     })
     .then(() => {
-      var files = this.state.fileInfo
+      var files = this.state.attachments
       var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
       this.setState({attachments: newFilesArr})
@@ -230,17 +228,11 @@ class CreateFoodForm extends Component {
 
   componentDidMount () {
     retrieveToken()
-    .then(retrieved => {
-      this.apiToken = retrieved
-    })
+      .then(retrieved => {
+        this.apiToken = retrieved
+      })
 
-    var currencyList = []
-    this.props.countries.forEach(e => {
-      var currencyCode = countries[e.code].currencies[0]
-      if (!currencyList.includes(currencyCode)) {
-        currencyList.push(currencyCode)
-      }
-    })
+    var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
   }

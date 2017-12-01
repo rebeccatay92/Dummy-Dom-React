@@ -23,7 +23,7 @@ class Attachments extends Component {
     if (fileName.match('.pdf')) {
       var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
     } else {
-      url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+      url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
     }
     this.setState({thumbnailUrl: url})
     this.setState({thumbnail: true})
@@ -37,7 +37,7 @@ class Attachments extends Component {
 
   openPreview (event, i) {
     var fileName = this.props.attachments[i].fileName
-    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+    var url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
 
     // fileName = fileName.replace('/', '%2F')
     //
@@ -87,7 +87,7 @@ class Attachments extends Component {
 
   changePreview (event, i) {
     var fileName = this.props.attachments[i].fileName
-    var url = `https://storage.cloud.google.com/domatodevs/${fileName}`
+    var url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
     if (fileName.match('.pdf')) {
       window.open(url)
     } else {
