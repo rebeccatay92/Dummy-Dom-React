@@ -86,7 +86,7 @@ class CreateActivityForm extends Component {
     })
 
     this.resetState()
-    this.props.toggleCreateEventForm()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateActivity () {
@@ -110,7 +110,7 @@ class CreateActivityForm extends Component {
       .catch(err => console.log(err))
     })
     this.resetState()
-    this.props.toggleCreateEventForm()
+    this.props.toggleCreateEventType()
   }
 
   resetState () {

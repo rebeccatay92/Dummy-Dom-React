@@ -86,7 +86,7 @@ class CreateFoodForm extends Component {
     })
 
     this.resetState()
-    this.props.toggleCreateEventForm()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateFood () {
@@ -110,7 +110,7 @@ class CreateFoodForm extends Component {
       .catch(err => console.log(err))
     })
     this.resetState()
-    this.props.toggleCreateEventForm()
+    this.props.toggleCreateEventType()
   }
 
   resetState () {
