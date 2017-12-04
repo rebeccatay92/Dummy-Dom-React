@@ -47,19 +47,35 @@ export const createActivity = gql`
 export const updateActivity = gql`
   mutation updateActivity(
     $id: ID!,
-    $name: String,
-    $startDay: Int,
-    $endDay: Int,
+    $startDay: Int!,
+    $endDay: Int!,
+    $startTime: Int,
+    $endTime: Int,
     $googlePlaceData: googlePlaceData,
-    $loadSequence: Int
+    $name: String,
+    $currency: String,
+    $cost: Int,
+    $bookingStatus: Boolean,
+    $bookedThrough: String,
+    $bookingConfirmation: String,
+    $notes: String,
+    $backgroundImage: String
   ) {
     updateActivity(
       id: $id,
-      name: $name,
       startDay: $startDay,
       endDay: $endDay,
+      startTime: $startTime,
+      endTime: $endTime,
       googlePlaceData: $googlePlaceData,
-      loadSequence: $loadSequence
+      name: $name,
+      currency: $currency,
+      cost: $cost,
+      bookingStatus: $bookingStatus,
+      bookedThrough: $bookedThrough,
+      bookingConfirmation: $bookingConfirmation,
+      notes: $notes,
+      backgroundImage: $backgroundImage
     ) {
       id
     }
