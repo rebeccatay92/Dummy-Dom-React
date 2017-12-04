@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
-import Radium, { Style } from 'radium'
+import Radium from 'radium'
 import moment from 'moment'
 
 import LocationSelection from '../location/LocationSelection'

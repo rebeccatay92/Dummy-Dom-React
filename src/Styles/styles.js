@@ -90,3 +90,57 @@ export const eventBoxFirstColumnStyle = (activityId, minHeight) => {
 }
 export const expandedEventPropStyle = {color: secondaryFontColor, fontWeight: 'bold'}
 export const expandedEventValueStyle = {color: secondaryFontColor}
+export const createEventTextStyle = {marginTop: 0, fontSize: '16px', color: primaryColor, display: 'inline-block', ':hover': {backgroundColor: '#f0f0f0'}}
+export const activityIconStyle = {
+  fontSize: '24px',
+  marginRight: '1vw',
+  WebkitTextStroke: '1px ' + primaryColor,
+  WebkitTextFillColor: '#FAFAFA',
+  cursor: 'pointer',
+  ':hover': {
+    WebkitTextStroke: '2px ' + primaryColor
+  }
+}
+export const createEventBoxStyle = {position: 'absolute', top: '-1vh'}
+export const createEventPickOneStyle = {fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}
+export const createEventBoxContainerStyle = {
+  margin: '1vh 0 3vh 1vw',
+  height: '40px',
+  position: 'relative'
+}
+export const plannerBlurredBackgroundStyle = {position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.8)', zIndex: 555}
+// Expanded Event Styles
+export const expandedEventIconsBoxStyle = {position: 'absolute', display: 'inline-block', right: '0', top: '0', margin: '10px 10px 0 0', color: secondaryFontColor}
+export const expandedEventIconsStyle = {cursor: 'pointer', ':hover': {color: primaryColor}}
+export const expandedEventBoxStyle = {width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}
+export const expandedEventBoxImageContainerStyle = {display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}
+export const expandedEventBoxImageStyle = {maxHeight: '100%', maxWidth: '100%'}
+export const expandedEventBoxTextBoxStyle = {display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}
+
+// PlannerColumnHeader.js styles
+export const tableDropdownStyle = {
+  display: 'inline-block',
+  fontSize: '16px',
+  color: secondaryFontColor,
+  cursor: 'pointer',
+  padding: '1vh'
+}
+
+export const tableOptionStyle = {
+  display: 'block',
+  fontSize: '16px',
+  textAlign: 'left',
+  color: secondaryFontColor,
+  margin: '1vh 0',
+  cursor: 'pointer'
+}
+
+export const tableHeadingStyle = {
+  width: `${0.2 * 962}px`,
+  textAlign: 'center',
+  position: 'relative',
+  backgroundColor: backgroundColor,
+  ':hover': {
+    backgroundColor: '#f0f0f0'
+  }
+}

@@ -18,18 +18,7 @@ import PlannerActivityTimeline from './PlannerActivityTimeline'
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
 import PlannerEventExpandedInfo from './PlannerEventExpandedInfo'
-import { primaryColor, timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, expandedEventPropStyle, expandedEventValueStyle } from '../Styles/styles'
-
-const activityIconStyle = {
-  fontSize: '24px',
-  marginRight: '1vw',
-  WebkitTextStroke: '1px ' + primaryColor,
-  WebkitTextFillColor: '#FAFAFA',
-  cursor: 'pointer',
-  ':hover': {
-    WebkitTextStroke: '2px ' + primaryColor
-  }
-}
+import { timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, createEventTextStyle, activityIconStyle, createEventBoxStyle, createEventPickOneStyle, createEventBoxContainerStyle, plannerBlurredBackgroundStyle, expandedEventIconsBoxStyle, expandedEventIconsStyle, expandedEventBoxStyle, expandedEventBoxImageContainerStyle, expandedEventBoxImageStyle, expandedEventBoxTextBoxStyle } from '../Styles/styles'
 
 const plannerActivitySource = {
   beginDrag (props) {
@@ -148,21 +137,21 @@ class PlannerActivity extends Component {
       <div style={{
         cursor: 'pointer'
       }}>
-        <p style={{marginTop: 0, fontSize: '16px', color: '#EDB5BF', display: 'inline-block', ':hover': {backgroundColor: this.state.creatingEvent ? '#FAFAFA' : '#f0f0f0'}}}>+ Add Event</p>
+        <p style={createEventTextStyle}>+ Add Event</p>
       </div>
     )
     if (this.state.creatingEvent) {
       const types = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
       const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
       createEventBox = (
-        <div style={{position: 'absolute', top: '-1vh'}}>
+        <div style={createEventBoxStyle}>
           <span>
             {types.map((type, i) => {
               return (
                 <i key={i} onClick={() => this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
-            <span style={{fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}}>Pick One</span>
+            <span style={createEventPickOneStyle}>Pick One</span>
           </span>
         </div>
       )
@@ -176,11 +165,7 @@ class PlannerActivity extends Component {
           <td colSpan='4'>
             <div onClick={() => this.setState({
               creatingEvent: true
-            })} style={{
-              margin: '1vh 0 3vh 1vw',
-              height: '40px',
-              position: 'relative'
-            }}>
+            })} style={createEventBoxContainerStyle}>
               {createEventBox}
             </div>
 
@@ -195,7 +180,7 @@ class PlannerActivity extends Component {
               </div>
             }
           </td>
-          {this.state.createEventForm && <td style={{position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.8)', zIndex: 555}} />}
+          {this.state.createEventForm && <td style={plannerBlurredBackgroundStyle} />}
         </tr>
       )
     }
@@ -236,7 +221,7 @@ class PlannerActivity extends Component {
       color: '#9FACBC'
     }
     const expandButton = this.state.hover && (
-      <i key='expandButton' className='material-icons' style={{fontSize: '30px', position: 'absolute', top: '-8px', opacity: '0.6', ':hover': {opacity: '1.0'}}} onClick={() => this.setState({expanded: !this.state.expanded})}>{this.state.expanded ? 'expand_less' : 'expand_more'}</i>
+      <i key='expandButton' className='material-icons' style={{fontSize: '30px', position: 'absolute', top: '-8px', ':hover': {color: '#ed9fad'}}} onClick={() => this.setState({expanded: !this.state.expanded})}>{this.state.expanded ? 'expand_less' : 'expand_more'}</i>
     )
     const startTime = new Date(this.props.activity[type].startTime * 1000).toGMTString().substring(17, 22)
     const endTime = new Date(this.props.activity[type].endTime * 1000).toGMTString().substring(17, 22)
@@ -324,10 +309,10 @@ class PlannerActivity extends Component {
       }
     } else if (expanded) {
       const expandedEventIcons = (
-        <div style={{position: 'absolute', display: 'inline-block', right: '0', top: '0', margin: '10px 10px 0 0', color: '#9FACBC'}}>
-          <i key='expandedActivityEdit' className='material-icons' style={{marginRight: '5px', opacity: '0.6', ':hover': {opacity: '1.0'}}}>mode_edit</i>
-          <i key='expandedActivityMap' className='material-icons' style={{marginRight: '5px', opacity: '0.6', ':hover': {opacity: '1.0'}}}>map</i>
-          <i key='expandedActivityMore' className='material-icons' style={{opacity: '0.6', ':hover': {opacity: '1.0'}}}>more_vert</i>
+        <div style={expandedEventIconsBoxStyle}>
+          <i key='expandedActivityEdit' className='material-icons' style={{...expandedEventIconsStyle, ...{marginRight: '5px'}}}>mode_edit</i>
+          <i key='expandedActivityMap' className='material-icons' style={{...expandedEventIconsStyle, ...{marginRight: '5px'}}}>map</i>
+          <i key='expandedActivityMore' className='material-icons' style={expandedEventIconsStyle}>more_vert</i>
         </div>
       )
       switch (type) {
@@ -339,12 +324,12 @@ class PlannerActivity extends Component {
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].name} />
                 {expandButton}
               </p>
-              <div style={{width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}}>
+              <div style={expandedEventBoxStyle}>
                 {expandedEventIcons}
-                <div style={{display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}}>
-                  <img src={this.props.activity[type].backgroundImage} style={{maxHeight: '100%', maxWidth: '100%'}} />
+                <div style={expandedEventBoxImageContainerStyle}>
+                  <img src={this.props.activity[type].backgroundImage} style={expandedEventBoxImageStyle} />
                 </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}}>
+                <div style={expandedEventBoxTextBoxStyle}>
                   <PlannerEventExpandedInfo name='Time:' value={`${startTime} to ${endTime}`} />
                   <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
                   <PlannerEventExpandedInfo name='Booking Platform:' value={this.props.activity[type].bookedThrough} />
@@ -362,12 +347,12 @@ class PlannerActivity extends Component {
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].name} />
                 {expandButton}
               </p>
-              <div style={{width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}}>
+              <div style={expandedEventBoxStyle}>
                 {expandedEventIcons}
-                <div style={{display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}}>
-                  <img src={this.props.activity[type].backgroundImage} style={{maxHeight: '100%', maxWidth: '100%'}} />
+                <div style={expandedEventBoxImageContainerStyle}>
+                  <img src={this.props.activity[type].backgroundImage} style={expandedEventBoxImageStyle} />
                 </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}}>
+                <div style={expandedEventBoxTextBoxStyle}>
                   <PlannerEventExpandedInfo name='Time:' value={`${startTime} to ${endTime}`} />
                   <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
                   <PlannerEventExpandedInfo name='Type:' value={this.props.activity[type].type} />
@@ -386,12 +371,12 @@ class PlannerActivity extends Component {
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.start ? 'Departure' : 'Arrival'} />
                 {expandButton}
               </p>
-              <div style={{width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}}>
+              <div style={expandedEventBoxStyle}>
                 {expandedEventIcons}
-                <div style={{display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}}>
-                  <img src={this.props.activity[type].backgroundImage} style={{maxHeight: '100%', maxWidth: '100%'}} />
+                <div style={expandedEventBoxImageContainerStyle}>
+                  <img src={this.props.activity[type].backgroundImage} style={expandedEventBoxImageStyle} />
                 </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}}>
+                <div style={expandedEventBoxTextBoxStyle}>
                   <PlannerEventExpandedInfo name={this.props.activity.start ? 'Departure Time:' : 'Arrival Time:'} value={this.props.activity.start ? startTime : endTime} />
                   <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
                   <PlannerEventExpandedInfo name='Booking Platform:' value={this.props.activity[type].bookedThrough} />
@@ -409,12 +394,12 @@ class PlannerActivity extends Component {
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.start ? 'Check In' : 'Check Out'} />
                 {expandButton}
               </p>
-              <div style={{width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}}>
+              <div style={expandedEventBoxStyle}>
                 {expandedEventIcons}
-                <div style={{display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}}>
-                  <img src={this.props.activity[type].backgroundImage} style={{maxHeight: '100%', maxWidth: '100%'}} />
+                <div style={expandedEventBoxImageContainerStyle}>
+                  <img src={this.props.activity[type].backgroundImage} style={expandedEventBoxImageStyle} />
                 </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}}>
+                <div style={expandedEventBoxTextBoxStyle}>
                   <PlannerEventExpandedInfo name={this.props.activity.start ? 'Check In Time:' : 'Check Out Time:'} value={this.props.activity.start ? startTime : endTime} />
                   <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
                   <PlannerEventExpandedInfo name='Booking Platform:' value={this.props.activity[type].bookedThrough} />
@@ -432,12 +417,12 @@ class PlannerActivity extends Component {
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.start ? 'Flight Departure' : 'Flight Arrival'} />
                 {expandButton}
               </p>
-              <div style={{width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}}>
+              <div style={expandedEventBoxStyle}>
                 {expandedEventIcons}
-                <div style={{display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}}>
-                  <img src={this.props.activity[type].backgroundImage} style={{maxHeight: '100%', maxWidth: '100%'}} />
+                <div style={expandedEventBoxImageContainerStyle}>
+                  <img src={this.props.activity[type].backgroundImage} style={expandedEventBoxImageStyle} />
                 </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}}>
+                <div style={expandedEventBoxTextBoxStyle}>
                   <PlannerEventExpandedInfo name={this.props.activity.start ? 'Departure Time:' : 'Arrival Time:'} value={this.props.activity.start ? startTime : endTime} />
                   <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
                   <PlannerEventExpandedInfo name='Booking Platform:' value={this.props.activity[type].bookedThrough} />

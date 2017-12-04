@@ -128,7 +128,7 @@ class LocationSelection extends Component {
               color: 'transparent'
             }
           }} />
-          <textarea id='locationInput' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{fontSize: '36px', textAlign: 'center', width: '335px', background: 'inherit', border: 'none', borderBottom: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: this.state.marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}} value={this.state.search} />
+          <textarea id='locationInput' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{fontSize: '36px', textAlign: 'center', width: '335px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: this.state.marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}} value={this.state.search} />
         </form>
 
         {this.state.selecting &&
