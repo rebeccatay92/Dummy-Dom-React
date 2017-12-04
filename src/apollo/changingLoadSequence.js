@@ -4,8 +4,6 @@ export const changingLoadSequence = gql`
   mutation changingLoadSequence(
     $input: [LoadSequence]
   ) {
-    changingLoadSequence(
-      input: $input
-    )
+    changingLoadSequence(input: $input)
   }
 `
