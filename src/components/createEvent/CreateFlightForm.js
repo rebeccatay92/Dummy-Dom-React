@@ -12,6 +12,8 @@ import { queryItinerary } from '../../apollo/itinerary'
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 
+import airports from 'airport-codes/airports.json'
+
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
 
@@ -225,6 +227,8 @@ class CreateFlightForm extends Component {
   }
 
   componentDidMount () {
+    console.log('airports', airports)
+
     retrieveToken()
       .then(retrieved => {
         this.apiToken = retrieved
