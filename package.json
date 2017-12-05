@@ -20,7 +20,6 @@
     "react-dom": "^16.0.0",
     "react-google-maps": "^9.2.2",
     "react-onclickoutside": "^6.6.3",
-    "react-places-autocomplete": "^5.4.3",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
