@@ -55,6 +55,8 @@ const MyMapComponent = compose(
           refs.button = ref
         },
         handleMarkerClick: (index) => {
+          var marker = this.state.markers[index]
+          console.log('marker place', marker.place)
           if (!this.state.infoOpen || this.state.markerIndex !== index) {
             this.setState({infoOpen: true})
             this.setState({markerIndex: index})
@@ -65,6 +67,16 @@ const MyMapComponent = compose(
         },
         handleButtonClick: (placeId) => {
           var request = {placeId: placeId}
+
+          // REVERSE GEOCODING: PALCEID TO IATA CODE
+          // var geocoder = new window.google.maps.Geocoder
+          // geocoder.geocode({placeId: placeId}, function(results, status) {
+          //   if (status === 'OK') {
+          //     console.log('results', results)
+          //   } else {
+          //     console.log('fail')
+          //   }
+          // })
 
           if (refs.map) {
             var service = new window.google.maps.places.PlacesService(refs.map.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED)

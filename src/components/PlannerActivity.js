@@ -17,6 +17,7 @@ import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
+import CreateFlightForm from './createEvent/CreateFlightForm'
 import PlannerEventExpandedInfo from './PlannerEventExpandedInfo'
 import { primaryColor, timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, expandedEventPropStyle, expandedEventValueStyle } from '../Styles/styles'
 
@@ -192,6 +193,9 @@ class PlannerActivity extends Component {
                 }
                 {this.state.createEventType === 'Food' &&
                 <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                }
+                {this.state.createEventType === 'Flight' &&
+                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
               </div>
             }
