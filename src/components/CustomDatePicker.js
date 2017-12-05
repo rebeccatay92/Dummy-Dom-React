@@ -7,7 +7,7 @@ class CustomDatePicker extends Component {
       <span
         key='datePicker'
         onClick={this.props.onClick}
-        style={{fontSize: '16px', background: 'transparent', position: 'relative', top: '-3px', textTransform: 'uppercase', ':hover': {boxShadow: '0 1px 0 #FFF'}}}>
+        style={{fontSize: '24px', background: 'transparent', textTransform: 'uppercase', ':hover': {boxShadow: '0 1px 0 #FFF'}}}>
         {this.props.value}
       </span>
     )

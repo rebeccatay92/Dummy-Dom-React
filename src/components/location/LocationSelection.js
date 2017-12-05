@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
-import Radium, { Style } from 'radium'
+import Radium from 'radium'
 import GooglePlaceResult from './GooglePlaceResult'
+
+import { locationSelectionInputStyle, locationDropdownStyle } from '../../Styles/styles'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
 var key = 'key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU'
@@ -17,7 +19,7 @@ class LocationSelection extends Component {
       results: [],
       selecting: false,
       selectedLocation: {},
-      marginTop: 160
+      marginTop: 240
     }
   }
 
@@ -102,37 +104,12 @@ class LocationSelection extends Component {
     return (
       <div style={{position: 'relative'}}>
         <form>
-          <Style scopeSelector='*' rules={{
-            '::-webkit-input-placeholder': {
-              color: 'white'
-            },
-            ':-moz-placeholder': {
-              color: 'white'
-            },
-            '::-moz-placeholder': {
-              color: 'white'
-            },
-            ':ms-input-placeholder': {
-              color: 'white'
-            },
-            ':focus::-webkit-input-placeholder': {
-              color: 'transparent'
-            },
-            ':focus:-moz-placeholder': {
-              color: 'transparent'
-            },
-            ':focus::-moz-placeholder': {
-              color: 'transparent'
-            },
-            ':focus:ms-input-placeholder': {
-              color: 'transparent'
-            }
-          }} />
-          <textarea id='locationInput' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={{fontSize: '36px', textAlign: 'center', width: '335px', background: 'inherit', border: 'none', borderBottom: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: this.state.marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}} value={this.state.search} />
+          <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(this.state.marginTop)} value={this.state.search} />
+          <i className='material-icons'>place</i>
         </form>
 
         {this.state.selecting &&
-        <div style={{width: '300px', maxHeight: '150px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: 'calc(50% - 150px)'}}>
+        <div style={locationDropdownStyle}>
           {this.state.results.map((indiv, i) => {
             return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
           })}

@@ -3,6 +3,15 @@ const mainFontColor = '#3C3A44'
 const secondaryFontColor = '#9FACBC'
 const backgroundColor = '#FAFAFA'
 
+// Planner Table dimensions
+const tableWidth = 962
+
+// Create event form dimensions
+const totalWidth = 1221
+const totalHeight = 755
+const leftPanelWidth = 755
+const rightPanelWidth = totalWidth - leftPanelWidth
+
 // PlannerPage.js styles
 export const plannerPageStyles = {
   fontFamily: '\'Roboto\', sans-serif',
@@ -69,12 +78,12 @@ export const dayTimelineWordStyle = isDateOnScreen => {
 }
 export const addDayButtonStyle = {padding: '1px 3px', backgroundColor: 'white', border: '1px solid #EDB5BF', display: 'inline-block', marginTop: '20px', cursor: 'pointer'}
 export const addDayWordStyle = {fontSize: '16px', color: primaryColor, display: 'inline-block'}
-export const dateTableFirstHeaderStyle = {width: `${0.4 * 962}px`}
+export const dateTableFirstHeaderStyle = {width: `${0.4 * tableWidth}px`}
 export const headerDayStyle = {display: 'inline-block', margin: '0 0 0 1vw', fontSize: '24px', fontWeight: '300'}
 export const headerDateStyle = {fontSize: '16px', display: 'inline-block', position: 'relative', top: '-2px', marginLeft: '0.5vw', fontWeight: '100'}
-export const dateTableOtherHeaderStyle = {width: `${0.2 * 962}px`}
+export const dateTableOtherHeaderStyle = {width: `${0.2 * tableWidth}px`}
 export const dateTableHorizontalLineStyle = isFirstDay => {
-  return {marginBottom: '2vh', marginTop: isFirstDay ? '0' : '1vh', width: '962px', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}
+  return {marginBottom: '2vh', marginTop: isFirstDay ? '0' : '1vh', width: tableWidth + 'px', height: '8px', boxShadow: '0 8px 10px -10px #86919f inset'}
 }
 
 // PlannerActivity.js styles
@@ -90,3 +99,93 @@ export const eventBoxFirstColumnStyle = (activityId, minHeight) => {
 }
 export const expandedEventPropStyle = {color: secondaryFontColor, fontWeight: 'bold'}
 export const expandedEventValueStyle = {color: secondaryFontColor}
+export const createEventTextStyle = {marginTop: 0, fontSize: '16px', color: primaryColor, display: 'inline-block', ':hover': {backgroundColor: '#f0f0f0'}}
+export const activityIconStyle = {
+  fontSize: '24px',
+  marginRight: '1vw',
+  WebkitTextStroke: '1px ' + primaryColor,
+  WebkitTextFillColor: '#FAFAFA',
+  cursor: 'pointer',
+  ':hover': {
+    WebkitTextStroke: '2px ' + primaryColor
+  }
+}
+export const createEventBoxStyle = {position: 'absolute', top: '-1vh'}
+export const createEventPickOneStyle = {fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}
+export const createEventBoxContainerStyle = {
+  margin: '1vh 0 3vh 1vw',
+  height: '40px',
+  position: 'relative'
+}
+export const plannerBlurredBackgroundStyle = {position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.8)', zIndex: 555}
+// Expanded Event Styles
+export const expandedEventIconsBoxStyle = {position: 'absolute', display: 'inline-block', right: '0', top: '0', margin: '10px 10px 0 0', color: secondaryFontColor}
+export const expandedEventIconsStyle = {cursor: 'pointer', ':hover': {color: primaryColor}}
+export const expandedEventBoxStyle = {width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}
+export const expandedEventBoxImageContainerStyle = {display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}
+export const expandedEventBoxImageStyle = {maxHeight: '100%', maxWidth: '100%'}
+export const expandedEventBoxTextBoxStyle = {display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}
+
+// PlannerColumnHeader.js styles
+export const tableDropdownStyle = {
+  display: 'inline-block',
+  fontSize: '16px',
+  color: secondaryFontColor,
+  cursor: 'pointer',
+  padding: '1vh'
+}
+
+export const tableOptionStyle = {
+  display: 'block',
+  fontSize: '16px',
+  textAlign: 'left',
+  color: secondaryFontColor,
+  margin: '1vh 0',
+  cursor: 'pointer'
+}
+
+export const tableHeadingStyle = {
+  width: `${0.2 * 962}px`,
+  textAlign: 'center',
+  position: 'relative',
+  backgroundColor: backgroundColor,
+  ':hover': {
+    backgroundColor: '#f0f0f0'
+  }
+}
+
+// PlannerColumnValue.js styles
+export const columnValueContainerStyle = (columnType) => {
+  return {position: 'relative', textAlign: columnType === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '12px', width: `${0.2 * 962}px`}
+}
+
+export const eventDropdownStyle = {position: 'absolute', right: '0px', top: '20px', ':hover': {color: primaryColor}}
+
+// Create Event Form Styles
+export const createEventFormContainerStyle = {backgroundColor: 'transparent', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: totalWidth + 'px', height: totalHeight + 'px', zIndex: 999, color: 'white'}
+export const createEventFormBoxShadow = {boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}
+export const createEventFormLeftPanelStyle = (url) => {
+  return {backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: leftPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}
+}
+export const createEventFormRightPanelStyle = {width: rightPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: mainFontColor}
+export const greyTintStyle = {position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}
+export const eventDescriptionStyle = (bgImage) => {
+  return {background: bgImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '24px', fontWeight: '300', width: 'fit-content', minWidth: '100px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}
+}
+export const foodTypeStyle = (bgImage) => {
+  return {background: bgImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '24px', fontWeight: '300', width: '150px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}
+}
+export const eventDescContainerStyle = {margin: '0 auto', width: 'fit-content'}
+export const foodTypeContainerStyle = {width: '150px', margin: '0 auto'}
+export const attachmentsStyle = {minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}
+
+export const bookingNotesContainerStyle = {width: '100%', height: '100%', background: 'white', padding: '5%'}
+
+// LocationSelection.js styles
+export const locationSelectionInputStyle = (marginTop) => {
+  return {fontSize: '48px', textAlign: 'center', width: leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
+}
+export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: `calc(50% - ${(leftPanelWidth / 2) / 2}px)`}
+
+// DateTimePicker.js styles
+export const dateTimePickerContainerStyle = {width: '370px', margin: '45px auto 0 auto', textAlign: 'center', height: '131px', position: 'relative', whiteSpace: 'noWrap'}
