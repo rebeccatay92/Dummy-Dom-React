@@ -25,7 +25,7 @@ class LocationSelection extends Component {
 
   selectLocation (location) {
     this.props.selectLocation(location) // pass it up to createActivityForm googlePlaceData
-    this.setState({selectedLocation: location}) //set intermediate state here as well
+    this.setState({selectedLocation: location}) // set intermediate state here as well
     this.setState({search: location.name}) // set search string
     this.setState({selecting: false}) // close results
   }

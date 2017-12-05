@@ -3,6 +3,9 @@ import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
 
+import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+
+import FlightSearchParameters from '../FlightSearchParameters'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
@@ -11,8 +14,6 @@ import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
-
-import airports from 'airport-codes/airports.json'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
@@ -227,8 +228,6 @@ class CreateFlightForm extends Component {
   }
 
   componentDidMount () {
-    console.log('airports', airports)
-
     retrieveToken()
       .then(retrieved => {
         this.apiToken = retrieved
@@ -241,26 +240,29 @@ class CreateFlightForm extends Component {
 
   render () {
     return (
-      <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
+      <div style={createEventFormContainerStyle}>
         {/* BOX SHADOW WRAPS LEFT AND RIGHT PANEL ONLY */}
-        <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
+        <div style={createEventFormBoxShadow}>
 
           {/* LEFT PANEL --- LOCATIONX2, DATE DAY X 2, PAX, SELECTED FLIGHT */}
-          <div style={{backgroundImage: `url(${this.state.backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
-            <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
+          <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
+            <div style={greyTintStyle} />
+            <div style={eventDescContainerStyle}>
+              <FlightSearchParameters />
+            </div>
           </div>
-          {/* RESULTS COLUMN */}
+          {/* RESULTS PANEL */}
 
-          {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
-          <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
-            <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
+          {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
+          <div style={createEventFormRightPanelStyle}>
+            <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
             </div>
           </div>
 
         </div>
         {/* BOTTOM PANEL --- ATTACHMENTS */}
-        <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
+        <div style={attachmentsStyle}>
           <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
