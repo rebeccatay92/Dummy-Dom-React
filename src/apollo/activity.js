@@ -10,6 +10,7 @@ export const createActivity = gql`
     $endTime: Int,
     $googlePlaceData: googlePlaceData,
     $LocationId: ID,
+    $locationAlias: String,
     $name: String,
     $currency: String,
     $cost: Int,
@@ -29,6 +30,7 @@ export const createActivity = gql`
       endTime: $endTime,
       googlePlaceData: $googlePlaceData,
       LocationId: $LocationId,
+      locationAlias: $locationAlias
       name: $name,
       currency: $currency,
       cost: $cost,
@@ -52,6 +54,7 @@ export const updateActivity = gql`
     $startTime: Int,
     $endTime: Int,
     $googlePlaceData: googlePlaceData,
+    $locationAlias: String,
     $name: String,
     $currency: String,
     $cost: Int,
@@ -68,6 +71,7 @@ export const updateActivity = gql`
       startTime: $startTime,
       endTime: $endTime,
       googlePlaceData: $googlePlaceData,
+      locationAlias: $locationAlias
       name: $name,
       currency: $currency,
       cost: $cost,

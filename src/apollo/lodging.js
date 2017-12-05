@@ -5,6 +5,7 @@ export const createLodging = gql`
     $ItineraryId: ID!,
     $googlePlaceData: googlePlaceData,
     $LocationId: ID,
+    $locationAlias: String,
     $startLoadSequence: Int,
     $endLoadSequence:Int,
     $name: String,
@@ -26,6 +27,7 @@ export const createLodging = gql`
       ItineraryId: $ItineraryId,
       googlePlaceData: $googlePlaceData,
       LocationId: $LocationId,
+      locationAlias: $locationAlias,
       startLoadSequence: $startLoadSequence,
       endLoadSequence: $endLoadSequence,
       name: $name,
@@ -52,6 +54,7 @@ export const updateLodging = gql`
   mutation updateLodging(
     $id: ID!,
     $googlePlaceData: googlePlaceData,
+    $locationAlias: String,
     $name: String,
     $notes: String,
     $startDay: Int,
@@ -69,6 +72,7 @@ export const updateLodging = gql`
     updateLodging(
       id: $id,
       googlePlaceData: $googlePlaceData,
+      locationAlias: $locationAlias,
       name: $name,
       notes: $notes,
       startDay: $startDay,

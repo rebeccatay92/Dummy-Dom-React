@@ -72,7 +72,7 @@ class LocationSelection extends Component {
       .then(response => {
         return response.json()
       }).then(json => {
-        console.log(json)
+        console.log('results', json.results)
         this.setState({results: json.results})
       }).catch(err => {
         console.log('err', err)

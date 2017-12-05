@@ -28,6 +28,7 @@ class CreateActivityForm extends Component {
       startDay: this.props.day,
       endDay: this.props.day,
       googlePlaceData: {},
+      locationAlias: '',
       name: '',
       notes: '',
       startTime: null, // if setstate, will change to unix
@@ -59,6 +60,7 @@ class CreateActivityForm extends Component {
 
     var newActivity = {
       ItineraryId: parseInt(this.state.ItineraryId),
+      locationAlias: this.state.locationAlias,
       startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
@@ -118,6 +120,7 @@ class CreateActivityForm extends Component {
       startDay: this.props.startDay,
       endDay: this.props.endDay,
       googlePlaceData: {},
+      locationAlias: '',
       name: '',
       notes: '',
       startTime: null, // should be Int
