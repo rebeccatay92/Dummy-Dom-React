@@ -3,6 +3,8 @@ import { graphql } from 'react-apollo'
 import Radium from 'radium'
 import moment from 'moment'
 
+import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, foodTypeStyle, foodTypeContainerStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+
 import LocationSelection from '../location/LocationSelection'
 import DateTimePicker from '../DateTimePicker'
 import BookingNotes from '../BookingNotes'
@@ -239,25 +241,30 @@ class CreateFoodForm extends Component {
 
   render () {
     return (
-      <div style={{backgroundColor: 'transparent', position: 'fixed', left: 'calc(50% - 414px)', top: 'calc(50% - 283px)', width: '828px', height: '567px', zIndex: 999, color: 'white'}}>
+      <div style={createEventFormContainerStyle}>
 
         {/* BOX SHADOW WRAPS LEFT AND RIGHT PANEL ONLY */}
-        <div style={{boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}}>
+        <div style={createEventFormBoxShadow}>
 
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
-          <div style={{backgroundImage: `url(${this.state.backgroundImage})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: '335px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}}>
-            <div style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}} />
-            <LocationSelection selectLocation={location => this.selectLocation(location)} />
-            <input placeholder='Input Title' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '235px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}} key='foodname' />
-            <input placeholder='Input Type' type='text' name='type' value={this.state.type} onChange={(e) => this.handleChange(e, 'type')} autoComplete='off' style={{background: this.state.backgroundImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '16px', fontWeight: '300', width: '100px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}} key='foodtype'/>
-
+          <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
+            <div style={greyTintStyle} />
+            <div style={eventDescContainerStyle}>
+              <LocationSelection selectLocation={location => this.selectLocation(location)} />
+            </div>
+            <div style={eventDescContainerStyle}>
+              <input placeholder='Input Title' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='foodname' />
+            </div>
+            <div style={foodTypeContainerStyle}>
+              <input placeholder='Input Type' type='text' name='type' value={this.state.type} onChange={(e) => this.handleChange(e, 'type')} autoComplete='off' style={foodTypeStyle(this.state.backgroundImage)} key='foodtype' />
+            </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
-          <div style={{width: '493px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: '#3c3a44'}}>
-            <div style={{width: '100%', height: '100%', background: 'white', padding: '65px 2% 2% 77px'}}>
+          <div style={createEventFormRightPanelStyle}>
+            <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFood()} />
               <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
             </div>
@@ -265,7 +272,7 @@ class CreateFoodForm extends Component {
         </div>
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
-        <div style={{minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}}>
+        <div style={attachmentsStyle}>
           <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>

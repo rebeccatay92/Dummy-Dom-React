@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
-import { primaryColor } from '../Styles/styles'
+import { columnValueContainerStyle, eventDropdownStyle } from '../Styles/styles'
 
 const columnValues = {
   'Price': 'cost',
@@ -12,9 +12,9 @@ const columnValues = {
 class PlannerColumnValue extends Component {
   render () {
     return (
-      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={{position: 'relative', textAlign: this.props.column === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '12px', width: `${0.2 * 962}px`}}>
+      <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={columnValueContainerStyle(this.props.column)}>
         {this.renderInfo()}
-        {this.props.isLast && this.props.hover && <i key='eventOptions' className='material-icons' style={{position: 'absolute', right: '0px', top: '20px', ':hover': {color: primaryColor}}}>more_vert</i>}
+        {this.props.isLast && this.props.hover && <i key='eventOptions' className='material-icons' style={eventDropdownStyle}>more_vert</i>}
       </td>
     )
   }
