@@ -253,10 +253,10 @@ class CreateFoodForm extends Component {
               <LocationSelection selectLocation={location => this.selectLocation(location)} />
             </div>
             <div style={eventDescContainerStyle}>
-              <input placeholder='Input Title' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='foodname' />
+              <input className='left-panel-input' placeholder='Input Title' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='foodname' />
             </div>
             <div style={foodTypeContainerStyle}>
-              <input placeholder='Input Type' type='text' name='type' value={this.state.type} onChange={(e) => this.handleChange(e, 'type')} autoComplete='off' style={foodTypeStyle(this.state.backgroundImage)} key='foodtype' />
+              <input className='left-panel-input' placeholder='Input Type' type='text' name='type' value={this.state.type} onChange={(e) => this.handleChange(e, 'type')} autoComplete='off' style={foodTypeStyle(this.state.backgroundImage)} key='foodtype' />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
