@@ -52,8 +52,6 @@ export const updateLodging = gql`
   mutation updateLodging(
     $id: ID!,
     $googlePlaceData: googlePlaceData,
-    $startLoadSequence: Int,
-    $endLoadSequence:Int,
     $name: String,
     $notes: String,
     $startDay: Int,
@@ -71,8 +69,6 @@ export const updateLodging = gql`
     updateLodging(
       id: $id,
       googlePlaceData: $googlePlaceData,
-      startLoadSequence: $startLoadSequence,
-      endLoadSequence: $endLoadSequence,
       name: $name,
       notes: $notes,
       startDay: $startDay,
