@@ -7,11 +7,10 @@ const labelStyle = {
   lineHeight: '26px'
 }
 
-class BookingNotes extends Component {
+class BookingDetails extends Component {
   render () {
     return (
       <div>
-        <h4 style={{fontSize: '24px'}}>Booking Details</h4>
         <label style={labelStyle}>
             Booking Service
           </label>
@@ -29,20 +28,9 @@ class BookingNotes extends Component {
           })}
         </select>
         <input style={{width: '80%'}} type='number' name='cost' value={this.props.cost} onChange={(e) => this.props.handleChange(e, 'cost')} />
-        <h4 style={{fontSize: '24px', marginTop: '50px'}}>
-            Additional Notes
-        </h4>
-        <label style={labelStyle}>
-            Detailed Location
-        </label>
-        <input className='form-input' style={{width: '100%'}} type='text' placeholder='(Optional)' />
-        <label style={labelStyle}>
-            Notes:
-        </label>
-        <textarea type='text' name='notes' onChange={(e) => this.props.handleChange(e, 'notes')} style={{width: '200px', height: '100px', display: 'block'}} />
       </div>
     )
   }
 }
 
-export default BookingNotes
+export default BookingDetails

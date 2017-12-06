@@ -7,7 +7,9 @@ import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFor
 
 import LocationSelection from '../location/LocationSelection'
 import DateTimePicker from '../DateTimePicker'
-import BookingNotes from '../BookingNotes'
+import BookingDetails from '../BookingDetails'
+import LocationAlias from '../LocationAlias'
+import Notes from '../Notes'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
@@ -269,7 +271,13 @@ class CreateFoodForm extends Component {
           <div style={createEventFormRightPanelStyle}>
             <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFood()} />
-              <BookingNotes handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
+              <h4 style={{fontSize: '24px'}}>Booking Details</h4>
+              <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
+              <h4 style={{fontSize: '24px', marginTop: '50px'}}>
+                  Additional Notes
+              </h4>
+              <LocationAlias handleChange={(e, field) => this.handleChange(e, field)} />
+              <Notes handleChange={(e, field) => this.handleChange(e, field)} />
             </div>
           </div>
         </div>

@@ -31,7 +31,7 @@ class CreateFlightForm extends Component {
       arrivalTerminal: '',
       departureGate: '',
       arrivalGate: '',
-      startDay: null, //POPULATED BY FLIGHT RESULTS
+      startDay: null, // POPULATED BY FLIGHT RESULTS
       endDay: null,
       startTime: null,
       endTime: null,
@@ -244,14 +244,14 @@ class CreateFlightForm extends Component {
         {/* BOX SHADOW WRAPS LEFT AND RIGHT PANEL ONLY */}
         <div style={createEventFormBoxShadow}>
 
-          {/* LEFT PANEL --- LOCATIONX2, DATE DAY X 2, PAX, SELECTED FLIGHT */}
+          {/* LEFT PANEL --- LOCATION X 2, DATE DAY X 2, PAX, SELECTED FLIGHT */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
               <FlightSearchParameters />
             </div>
           </div>
-          {/* RESULTS PANEL */}
+          {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle}>

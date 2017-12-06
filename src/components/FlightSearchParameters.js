@@ -16,7 +16,7 @@ class FlightSearchParameters extends Component {
       results: [], // iata airport/city results, not flights
       pax: null
       // start date, end date, start/end day
-      // selected departure/arrival city/airport. what to pass to form to search airhob?
+      // selected departure/arrival city/airport. what query to pass to airhob, and what props to pass to FlightResults?
     }
   }
   handleSubmit () {
@@ -49,15 +49,17 @@ class FlightSearchParameters extends Component {
     }, 250)
   }
   searchAirports () {
-    console.log('search airports')
-    this.setState({results: [1, 2, 3, 4, 5]})
     // need to handle both departure/arrival
+    console.log('queryStr', this.state.departureSearch)
+    this.setState({results: [1, 2, 3, 4, 5]})
   }
   handleClickOutside () {
-    //HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED
+    // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED
+  }
+  componentDidMount () {
+    console.log('airports', airports)
   }
   render () {
-    // console.log('airports', airports)
     // DEBOUNCE CITY/AIRPORT INPUT AND RETURN IATA DATA.
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
     // SEARCH BUTTON
@@ -70,11 +72,11 @@ class FlightSearchParameters extends Component {
         </form>
 
         {this.state.selectingDeparture &&
-        <div style={locationDropdownStyle}>
+        <div>
           {/* CHANGE DROPDOWN STYLE TO FIT DEPARTURE/ARRIVAL */}
           {this.state.results.map((indiv, i) => {
             // return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
-            return <span>Airport results</span>
+            return <span style={{display: 'block'}} key={'airport'+i}>Airport results</span>
              // REPLACE WITH MAPPED AIRPORT RESULTS
           })}
         </div>
