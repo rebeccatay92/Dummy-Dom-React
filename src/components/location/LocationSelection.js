@@ -25,7 +25,7 @@ class LocationSelection extends Component {
 
   selectLocation (location) {
     this.props.selectLocation(location) // pass it up to createActivityForm googlePlaceData
-    this.setState({selectedLocation: location}) //set intermediate state here as well
+    this.setState({selectedLocation: location}) // set intermediate state here as well
     this.setState({search: location.name}) // set search string
     this.setState({selecting: false}) // close results
   }
@@ -74,7 +74,7 @@ class LocationSelection extends Component {
       .then(response => {
         return response.json()
       }).then(json => {
-        console.log(json)
+        console.log('results', json.results)
         this.setState({results: json.results})
       }).catch(err => {
         console.log('err', err)

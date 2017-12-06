@@ -10,6 +10,7 @@ export const createFood = gql`
     $endTime: Int,
     $googlePlaceData: googlePlaceData,
     $LocationId: ID,
+    $locationAlias: String,
     $name: String,
     $notes: String,
     $type: String,
@@ -30,6 +31,7 @@ export const createFood = gql`
       endTime: $endTime,
       googlePlaceData: $googlePlaceData,
       LocationId: $LocationId,
+      locationAlias: $locationAlias,
       name: $name,
       notes: $notes,
       type: $type,
@@ -49,20 +51,38 @@ export const createFood = gql`
 export const updateFood = gql`
   mutation updateFood(
     $id: ID!,
+    $startDay: Int!,
+    $endDay: Int!,
+    $startTime: Int,
+    $endTime: Int,
+    $googlePlaceData: googlePlaceData,
+    $locationAlias: String,
     $name: String,
-    $startDay: Int,
-    $endDay: Int,
-    $googlePlaceData: ID,
-    $loadSequence: Int,
+    $notes: String,
+    $type: String,
+    $currency: String,
+    $cost: Int,
+    $bookingStatus: Boolean,
+    $bookedThrough: String,
+    $bookingConfirmation: String,
     $backgroundImage: String
   ) {
     updateFood(
       id: $id,
-      name: $name,
       startDay: $startDay,
       endDay: $endDay,
+      startTime: $startTime,
+      endTime: $endTime,
       googlePlaceData: $googlePlaceData,
-      loadSequence: $loadSequence
+      locationAlias: $locationAlias,
+      name: $name,
+      notes: $notes,
+      type: $type,
+      currency: $currency,
+      cost: $cost,
+      bookingStatus: $bookingStatus,
+      bookedThrough: $bookedThrough,
+      bookingConfirmation: $bookingConfirmation,
       backgroundImage: $backgroundImage
     ) {
       id

@@ -26,6 +26,7 @@ class GooglePlaceResult extends Component {
           return response.json()
         })
         .then(json => {
+          console.log('details', json)
           if (json.result.opening_hours) {
             this.setState({openingHours: json.result.opening_hours.periods})
           }

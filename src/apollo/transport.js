@@ -2,25 +2,49 @@ import { gql } from 'react-apollo'
 
 export const createTransport = gql`
   mutation createTransport(
-    $name: String!,
-    $departureDay: Int!,
-    $arrivalDay: Int!,
-    $DepartureGooglePlaceData: ID!,
-    $ArrivalGooglePlaceData: ID!,
     $ItineraryId: ID!,
-    $departureLoadSequence: Int!,
-    $arrivalLoadSequence: Int!,
+    $departureGooglePlaceData: googlePlaceData,
+    $arrivalGooglePlaceData: googlePlaceData,
+    $departureLocationAlias: String,
+    $arrivalLocationAlias: String,
+    $startLoadSequence: Int,
+    $endLoadSequence: Int,
+    $startDay: Int,
+    $endDay: Int,
+    $startTime: Int,
+    $endTime: Int,
+    $name: String,
+    $notes: String,
+    $cost: Int,
+    $currency: String,
+    $bookingStatus: Boolean,
+    $bookedThrough: String,
+    $bookingConfirmation: String,
+    $type: String,
+    $attachments: [attachmentInfo],
     $backgroundImage: String
   ) {
     createTransport(
-      name: $name,
-      departureDay: $departureDay,
-      arrivalDay: $arrivalDay,
-      DepartureGooglePlaceData: $DepartureGooglePlaceData,
-      ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
       ItineraryId: $ItineraryId,
-      departureLoadSequence: $departureLoadSequence,
-      arrivalLoadSequence: $arrivalLoadSequence,
+      departureGooglePlaceData: $departureGooglePlaceData,
+      arrivalGooglePlaceData: $arrivalGooglePlaceData,
+      departureLocationAlias: $departureLocationAlias,
+      arrivalLocationAlias: $arrivalLocationAlias,
+      startLoadSequence: $startLoadSequence,
+      endLoadSequence: $endLoadSequence,
+      startDay: $startDay,
+      endDay: $endDay,
+      startTime: $startTime,
+      endTime: $endTime,
+      name: $name,
+      notes: $notes,
+      cost: $cost,
+      currency: $currency,
+      bookingStatus: $bookingStatus,
+      bookedThrough: $bookedThrough,
+      bookingConfirmation: $bookingConfirmation,
+      type: $type,
+      attachments: $attachments,
       backgroundImage: $backgroundImage
     ) {
       id
@@ -31,24 +55,42 @@ export const createTransport = gql`
 export const updateTransport = gql`
   mutation updateTransport(
     $id: ID!,
+    $departureGooglePlaceData: googlePlaceData,
+    $arrivalGooglePlaceData: googlePlaceData,
+    $departureLocationAlias: String,
+    $arrivalLocationAlias: String,
+    $startDay: Int,
+    $endDay: Int,
+    $startTime: Int,
+    $endTime: Int,
     $name: String,
-    $departureDay: Int,
-    $arrivalDay: Int,
-    $DepartureGooglePlaceData: ID,
-    $ArrivalGooglePlaceData: ID,
-    $departureLoadSequence: Int,
-    $arrivalLoadSequence: Int,
+    $notes: String,
+    $cost: Int,
+    $currency: String,
+    $bookingStatus: Boolean,
+    $bookedThrough: String,
+    $bookingConfirmation: String,
+    $type: String,
     $backgroundImage: String
   ) {
     updateTransport(
       id: $id,
+      departureGooglePlaceData: $departureGooglePlaceData,
+      arrivalGooglePlaceData: $arrivalGooglePlaceData,
+      departureLocationAlias: $departureLocationAlias,
+      arrivalLocationAlias: $arrivalLocationAlias,
+      startDay: $startDay,
+      endDay: $endDay,
+      startTime: $startTime,
+      endTime: $endTime,
       name: $name,
-      departureDay: $departureDay,
-      arrivalDay: $arrivalDay,
-      DepartureGooglePlaceData: $DepartureGooglePlaceData,
-      ArrivalGooglePlaceData: $ArrivalGooglePlaceData,
-      departureLoadSequence: $departureLoadSequence,
-      arrivalLoadSequence: $arrivalLoadSequence,
+      notes: $notes,
+      cost: $cost,
+      currency: $currency,
+      bookingStatus: $bookingStatus,
+      bookedThrough: $bookedThrough,
+      bookingConfirmation: $bookingConfirmation,
+      type: $type,
       backgroundImage: $backgroundImage
     ) {
       id
@@ -58,8 +100,6 @@ export const updateTransport = gql`
 
 export const deleteTransport = gql`
   mutation deleteTransport($id: ID!) {
-    deleteTransport(id: $id) {
-      status
-    }
+    deleteTransport(id: $id)
   }
 `

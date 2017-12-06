@@ -5,38 +5,37 @@ import moment from 'moment'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
-import LocationSelection from '../location/LocationSelection'
-import DateTimePicker from '../DateTimePicker'
-import BookingDetails from '../BookingDetails'
-import LocationAlias from '../LocationAlias'
-import Notes from '../Notes'
+import FlightSearchParameters from '../FlightSearchParameters'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
-import { createActivity } from '../../apollo/activity'
+import { createFlight } from '../../apollo/flight'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 
-const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
-// const PDFJS = require('pdfjs-dist')
 
-class CreateActivityForm extends Component {
-  constructor (props) {
+class CreateFlightForm extends Component {
+  constructor(props) {
     super(props)
-    let apiToken
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      startDay: this.props.day,
-      endDay: this.props.day,
-      googlePlaceData: {},
-      locationAlias: '',
+      departureGooglePlaceData: {},
+      arrivalGooglePlaceData: {},
       name: '',
       notes: '',
-      startTime: null, // if setstate, will change to unix
-      endTime: null, // if setstate, will change to unix
+      departureTerminal: '',
+      arrivalTerminal: '',
+      departureGate: '',
+      arrivalGate: '',
+      startDay: null, // POPULATED BY FLIGHT RESULTS
+      endDay: null,
+      startTime: null,
+      endTime: null,
+      boardingTime: null,
       cost: 0,
       currency: '',
       currencyList: [],
@@ -47,55 +46,50 @@ class CreateActivityForm extends Component {
     }
   }
 
-  updateDayTime (field, value) {
-    this.setState({
-      [field]: value
-    })
-  }
-
-  handleChange (e, field) {
-    this.setState({
-      [field]: e.target.value
-    })
-  }
-
   handleSubmit () {
+    console.log('handle submit flight')
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
-    var newActivity = {
+    var newFlight = {
       ItineraryId: parseInt(this.state.ItineraryId),
-      locationAlias: this.state.locationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      departureGooglePlaceData: this.state.departureGooglePlaceData,
+      arrivalGooglePlaceData: this.state.arrivalGooglePlaceData,
+      name: this.state.name,
+      notes: this.state.notes,
+      departureTerminal: this.state.departureTerminal,
+      arrivalTerminal: this.state.arrivalTerminal,
+      departureGate: this.state.departureGate,
+      arrivalGate: this.state.arrivalGate,
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      loadSequence: this.props.highestLoadSequence + 1,
-      name: this.state.name,
+      // startLoadSequence: ???
+      // endLoadSequence: ???
+      boardingTime: this.state.boardingTime,
+      cost: this.state.cost,
       currency: this.state.currency,
-      cost: parseInt(this.state.cost),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
-      notes: this.state.notes,
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (this.state.googlePlaceData.placeId) newActivity.googlePlaceData = this.state.googlePlaceData
-    console.log('newActivity', newActivity)
 
-    this.props.createActivity({
-      variables: newActivity,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
-    })
-
-    this.resetState()
-    this.props.toggleCreateEventType()
+    console.log('newFlight', newFlight)
+    // this.props.createFlight({
+    //   variables: newFlight,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+    //
+    // this.resetState()
+    // this.props.toggleCreateEventType()
   }
 
-  closeCreateActivity () {
+  closeCreateFlight () {
     this.state.attachments.forEach(info => {
       var uri = info.fileName.replace('/', '%2F')
       var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
@@ -121,26 +115,27 @@ class CreateActivityForm extends Component {
 
   resetState () {
     this.setState({
-      startDay: this.props.startDay,
-      endDay: this.props.endDay,
-      googlePlaceData: {},
-      locationAlias: '',
+      departureGooglePlaceData: {},
+      arrivalGooglePlaceData: {},
       name: '',
       notes: '',
-      startTime: null, // should be Int
-      endTime: null, // should be Int
+      departureTerminal: '',
+      arrivalTerminal: '',
+      departureGate: '',
+      arrivalGate: '',
+      startDay: null,
+      endDay: null,
+      startTime: null,
+      endTime: null,
+      boardingTime: null,
       cost: 0,
-      currency: this.state.currencyList[0],
+      currency: '',
+      currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground
     })
-    this.apiToken = null
-  }
-
-  selectLocation (location) {
-    this.setState({googlePlaceData: location})
   }
 
   handleFileUpload (e) {
@@ -246,38 +241,26 @@ class CreateActivityForm extends Component {
   render () {
     return (
       <div style={createEventFormContainerStyle}>
-
         {/* BOX SHADOW WRAPS LEFT AND RIGHT PANEL ONLY */}
         <div style={createEventFormBoxShadow}>
 
-          {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
+          {/* LEFT PANEL --- LOCATION X 2, DATE DAY X 2, PAX, SELECTED FLIGHT */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} />
+              <FlightSearchParameters />
             </div>
-            <div style={eventDescContainerStyle}>
-              <input className='left-panel-input' placeholder='Activity Description' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
-            </div>
-            {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
-            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
+          {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
 
-          {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
+          {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
-              <h4 style={{fontSize: '24px'}}>Booking Details</h4>
-              <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
-              <h4 style={{fontSize: '24px', marginTop: '50px'}}>
-                  Additional Notes
-              </h4>
-              <LocationAlias handleChange={(e, field) => this.handleChange(e, field)} />
-              <Notes handleChange={(e, field) => this.handleChange(e, field)} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
             </div>
           </div>
-        </div>
 
+        </div>
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={attachmentsStyle}>
           <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
@@ -287,4 +270,4 @@ class CreateActivityForm extends Component {
   }
 }
 
-export default graphql(createActivity, {name: 'createActivity'})(Radium(CreateActivityForm))
+export default graphql(createFlight, {name: 'createFlight'})(Radium(CreateFlightForm))

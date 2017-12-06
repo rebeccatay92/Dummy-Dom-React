@@ -17,6 +17,7 @@ import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
+import CreateFlightForm from './createEvent/CreateFlightForm'
 import PlannerEventExpandedInfo from './PlannerEventExpandedInfo'
 import { timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, createEventTextStyle, activityIconStyle, createEventBoxStyle, createEventPickOneStyle, createEventBoxContainerStyle, plannerBlurredBackgroundStyle, expandedEventIconsBoxStyle, expandedEventIconsStyle, expandedEventBoxStyle, expandedEventBoxImageContainerStyle, expandedEventBoxImageStyle, expandedEventBoxTextBoxStyle } from '../Styles/styles'
 
@@ -83,6 +84,7 @@ class PlannerActivity extends Component {
 
     this.state = {
       creatingEvent: false,
+      createEventType: null,
       onBox: false,
       draggable: true,
       expanded: false,
@@ -141,12 +143,12 @@ class PlannerActivity extends Component {
       </div>
     )
     if (this.state.creatingEvent) {
-      const types = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
+      const iconTypes = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
       const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
       createEventBox = (
         <div style={createEventBoxStyle}>
           <span>
-            {types.map((type, i) => {
+            {iconTypes.map((type, i) => {
               return (
                 <i key={i} onClick={() => this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
@@ -169,13 +171,16 @@ class PlannerActivity extends Component {
               {createEventBox}
             </div>
 
-            {this.state.createEventForm &&
+            {this.state.createEventType &&
               <div>
-                {this.state.createEventForm === 'Activity' &&
-                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventForm={() => this.handleCreateEventClick()} />
+                {this.state.createEventType === 'Activity' &&
+                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
-                {this.state.createEventForm === 'Food' &&
-                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventForm={() => this.handleCreateEventClick()} />
+                {this.state.createEventType === 'Food' &&
+                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                }
+                {this.state.createEventType === 'Flight' &&
+                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
               </div>
             }
@@ -201,7 +206,7 @@ class PlannerActivity extends Component {
 
   handleCreateEventClick (eventType = null) {
     this.setState({
-      createEventForm: eventType
+      createEventType: eventType
     })
   }
 

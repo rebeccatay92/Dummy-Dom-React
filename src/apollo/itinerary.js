@@ -39,6 +39,9 @@ export const queryItinerary = gql`
           attachments {
             id
             fileName
+            fileAlias
+            fileType
+            fileSize
           }
           backgroundImage
         }
@@ -68,6 +71,9 @@ export const queryItinerary = gql`
           attachments {
             id
             fileName
+            fileAlias
+            fileType
+            fileSize
           }
           backgroundImage
         }
@@ -93,6 +99,9 @@ export const queryItinerary = gql`
           attachments {
             id
             fileName
+            fileAlias
+            fileType
+            fileSize
           }
           backgroundImage
         }
@@ -118,6 +127,9 @@ export const queryItinerary = gql`
           attachments {
             id
             fileName
+            fileAlias
+            fileType
+            fileSize
           }
           backgroundImage
         }
@@ -147,6 +159,9 @@ export const queryItinerary = gql`
           attachments {
             id
             fileName
+            fileAlias
+            fileType
+            fileSize
           }
           backgroundImage
         }
@@ -213,8 +228,26 @@ export const itinerariesByUser = gql`
 
 // include country code. coutnryIdArr
 export const createItinerary = gql`
-  mutation createItinerary($UserId: Int!, $countryCode: String, $name: String!, $days: Int!, $startDate: Int, $pax: Int, $travelInsurance: String, $budget: Int) {
-    createItinerary(UserId:$UserId, countryCode: $countryCode, name: $name, days: $days, startDate: $startDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget) {
+  mutation createItinerary(
+    $UserId: Int!,
+    $countryCode: String,
+    $name: String!,
+    $days: Int!,
+    $startDate: Int,
+    $pax: Int,
+    $travelInsurance: String,
+    $budget: Int
+  ) {
+    createItinerary(
+      UserId:$UserId,
+      countryCode: $countryCode,
+      name: $name,
+      days: $days,
+      startDate: $startDate,
+      pax: $pax,
+      travelInsurance: $travelInsurance,
+      budget: $budget
+    ) {
       id
       name
       days
@@ -226,8 +259,24 @@ export const createItinerary = gql`
   }`
 
 export const updateItineraryDetails = gql`
-  mutation updateItineraryDetails($id: ID!, $name: String, $startDate: Int, $pax: Int, $travelInsurance: String, $budget: Int, $days: Int) {
-    updateItineraryDetails(id: $id, name: $name, startDate: $startDate, pax: $pax, travelInsurance: $travelInsurance, budget: $budget, days: $days) {
+  mutation updateItineraryDetails(
+    $id: ID!,
+    $name: String,
+    $startDate: Int,
+    $pax: Int,
+    $travelInsurance: String,
+    $budget: Int,
+    $days: Int
+  ) {
+    updateItineraryDetails(
+      id: $id,
+      name: $name,
+      startDate: $startDate,
+      pax: $pax,
+      travelInsurance: $travelInsurance,
+      budget: $budget,
+      days: $days
+    ) {
       id
       name
       days
@@ -245,8 +294,14 @@ export const deleteItinerary = gql`
   }
 `
 export const createCountriesItineraries = gql`
-    mutation createCountriesItineraries($ItineraryId: Int!, $countryCode: String!) {
-      createCountriesItineraries(ItineraryId: $ItineraryId, countryCode: $countryCode) {
+    mutation createCountriesItineraries(
+      $ItineraryId: Int!,
+      $countryCode: String!
+    ) {
+      createCountriesItineraries(
+        ItineraryId: $ItineraryId,
+        countryCode: $countryCode
+      ) {
         ItineraryId
         CountryId
       }
@@ -254,7 +309,13 @@ export const createCountriesItineraries = gql`
   `
 
 export const deleteCountriesItineraries = gql`
-      mutation deleteCountriesItineraries($ItineraryId: Int!, $CountryId: Int!) {
-        deleteCountriesItineraries(ItineraryId: $ItineraryId, CountryId: $CountryId)
+      mutation deleteCountriesItineraries(
+        $ItineraryId: Int!,
+        $CountryId: Int!
+      ) {
+        deleteCountriesItineraries(
+          ItineraryId: $ItineraryId,
+          CountryId: $CountryId
+        )
       }
     `

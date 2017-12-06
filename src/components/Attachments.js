@@ -18,9 +18,11 @@ class Attachments extends Component {
 
   thumbnailMouseEnter (event, i) {
     var fileName = this.props.attachments[i].fileName
+    var fileType = this.props.attachments[i].fileType
+
     this.setState({hoveringOver: i})
 
-    if (fileName.match('.pdf')) {
+    if (fileType === 'application/pdf') {
       var url = 'http://media.idownloadblog.com/wp-content/uploads/2016/04/52ff0e80b07d28b590bbc4b30befde52.png'
     } else {
       url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
@@ -37,6 +39,7 @@ class Attachments extends Component {
 
   openPreview (event, i) {
     var fileName = this.props.attachments[i].fileName
+    var fileType = this.props.attachments[i].fileType
     var url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
 
     // fileName = fileName.replace('/', '%2F')
@@ -77,7 +80,7 @@ class Attachments extends Component {
     //   console.log(err)
     // })
 
-    if (fileName.match('.pdf')) {
+    if (fileType === 'application/pdf') {
       window.open(url)
     } else {
       this.setState({preview: true})
@@ -87,8 +90,9 @@ class Attachments extends Component {
 
   changePreview (event, i) {
     var fileName = this.props.attachments[i].fileName
+    var fileType = this.props.attachments[i].fileType
     var url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
-    if (fileName.match('.pdf')) {
+    if (fileType === 'application/pdf') {
       window.open(url)
     } else {
       this.setState({previewUrl: url})
@@ -106,14 +110,14 @@ class Attachments extends Component {
         {/* UPLOADED FILE NAMES */}
         {this.props.attachments.map((info, i) => {
           return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={'thumbnail' + i}>
-            <div style={{display: 'inline-block', cursor: 'pointer'}}>
+            <div onClick={(e) => this.openPreview(e, i)} style={{display: 'inline-block', cursor: 'pointer'}}>
               {info.fileType === 'application/pdf' &&
               <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
               {info.fileType !== 'application/pdf' &&
               <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>photo</i>}
             </div>
-            <div style={{display: 'inline-block', cursor: 'pointer'}}>
-              <h4 onClick={(e) => this.openPreview(e, i)} style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.fileAlias}</h4>
+            <div onClick={(e) => this.openPreview(e, i)} style={{display: 'inline-block', cursor: 'pointer'}}>
+              <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.fileAlias}</h4>
               <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.fileSize}</h4>
             </div>
             <div style={{display: 'inline-block', cursor: 'pointer'}}>
