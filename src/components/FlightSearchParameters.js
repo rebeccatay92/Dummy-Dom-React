@@ -7,6 +7,7 @@ class FlightSearchParameters extends Component {
   constructor (props) {
     super(props)
     let timeout
+    let airportData
     this.state = {
       marginTop: 240, // styling
       departureSearch: '',
@@ -57,7 +58,10 @@ class FlightSearchParameters extends Component {
     // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED
   }
   componentDidMount () {
-    console.log('airports', airports)
+    // console.log('airports', airports)
+    this.airportData = airports.filter(row => row.iata !== '')
+    console.log('airportData', this.airportData)
+
   }
   render () {
     // DEBOUNCE CITY/AIRPORT INPUT AND RETURN IATA DATA.
