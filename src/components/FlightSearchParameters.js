@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import { locationSelectionInputStyle, locationDropdownStyle } from '../Styles/styles'
+import AirportResults from './AirportResults'
 
-import airports from 'airport-codes/airports.json'
+import { locationSelectionInputStyle } from '../Styles/styles'
+
+// import airports from 'airport-codes/airports.json'
+import airports from '../data/airports.json'
 
 class FlightSearchParameters extends Component {
   constructor (props) {
     super(props)
     let timeout
-    let airportData
     this.state = {
       marginTop: 240, // styling
       departureSearch: '',
@@ -65,12 +67,15 @@ class FlightSearchParameters extends Component {
 
     airports.forEach(e => {
       e.matchCount = 0
-      if (e.city.match(regex)) {
-        e.matchCount ++
-      }
+      // if (!e.city) {
+      //   console.log(e)
+      // }
       // if (e.country.match(regex)) {
       //   e.matchCount ++
       // }
+      if (e.city && e.city.match(regex)) {
+        e.matchCount ++
+      }
       if (e.name.match(regex)) {
         e.matchCount ++
       }
@@ -82,14 +87,15 @@ class FlightSearchParameters extends Component {
       return b.matchCount - a.matchCount
     })
     console.log('sorted matches', results)
-    // this.setState({results: [1, 2, 3, 4, 5]})
+    this.setState({results: results})
   }
+
   handleClickOutside () {
-    // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED
+    // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED. RESETS RESULTS ARRAY TO EMPTY
   }
-  // componentDidMount () {
-  //   console.log('airports', airports)
-  // }
+  componentDidMount () {
+    console.log('airports', airports)
+  }
   render () {
     // DEBOUNCE CITY/AIRPORT INPUT AND RETURN IATA DATA.
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
@@ -103,14 +109,7 @@ class FlightSearchParameters extends Component {
         </form>
 
         {this.state.selectingDeparture &&
-        <div>
-          {/* CHANGE DROPDOWN STYLE TO FIT DEPARTURE/ARRIVAL */}
-          {this.state.results.map((indiv, i) => {
-            // return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
-            return <span style={{display: 'block'}} key={'airport' + i}>Airport results</span>
-             // REPLACE WITH MAPPED AIRPORT RESULTS
-          })}
-        </div>
+          <AirportResults results={this.state.results} />
         }
       </div>
     )
