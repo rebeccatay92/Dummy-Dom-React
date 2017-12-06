@@ -117,7 +117,7 @@ export const createEventBoxContainerStyle = {
   height: '40px',
   position: 'relative'
 }
-export const plannerBlurredBackgroundStyle = {position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 0.8)', zIndex: 555}
+export const plannerBlurredBackgroundStyle = {position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 1)', zIndex: 555}
 // Expanded Event Styles
 export const expandedEventIconsBoxStyle = {position: 'absolute', display: 'inline-block', right: '0', top: '0', margin: '10px 10px 0 0', color: secondaryFontColor}
 export const expandedEventIconsStyle = {cursor: 'pointer', ':hover': {color: primaryColor}}
@@ -177,7 +177,7 @@ export const foodTypeStyle = (bgImage) => {
 }
 export const eventDescContainerStyle = {margin: '0 auto', width: 'fit-content'}
 export const foodTypeContainerStyle = {width: '150px', margin: '0 auto'}
-export const attachmentsStyle = {minWidth: '20%', background: 'transparent', marginLeft: '20px', display: 'inline-block'}
+export const attachmentsStyle = {width: '100%', background: 'transparent', display: 'inline-block', marginTop: '5px'}
 
 export const bookingNotesContainerStyle = {width: '100%', height: '100%', background: 'white', padding: '5%'}
 
@@ -189,3 +189,14 @@ export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeigh
 
 // DateTimePicker.js styles
 export const dateTimePickerContainerStyle = {width: '370px', margin: '45px auto 0 auto', textAlign: 'center', height: '131px', position: 'relative', whiteSpace: 'noWrap'}
+
+// Attachments.js styles
+export const attachmentStyle = {margin: '1px 6px 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid ' + secondaryFontColor, height: '50px', cursor: 'pointer', borderRadius: '5px', width: '15%', backgroundColor: backgroundColor}
+export const addAttachmentBtnStyle = {color: secondaryFontColor, margin: '10px 5px 0 0', cursor: 'pointer', fontSize: '30px', ':hover': {color: primaryColor}}
+export const attachmentNameStyle = {fontSize: '13px', color: secondaryFontColor, fontWeight: 'bold', position: 'relative', top: '-6px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}
+export const attachmentSizeStyle = {fontSize: '13px', color: secondaryFontColor, fontWeight: 'bold', position: 'relative', top: '-10px'}
+export const attachmentDeleteBtnStyle = (hovering, i) => {
+  return {color: secondaryFontColor, cursor: 'pointer', opacity: hovering === i ? '1.0' : 0, ':hover': {color: primaryColor}}
+}
+export const pdfLogoStyle = {color: 'rgb(237, 15, 135)', fontSize: '50px', marginRight: '2px'}
+export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}

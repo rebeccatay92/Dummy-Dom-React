@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
-import Radium, { Style } from 'radium'
-import { primaryColor } from '../Styles/styles'
+import Radium from 'radium'
+import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../Styles/styles'
 
 class Attachments extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       thumbnail: false,
@@ -100,28 +100,33 @@ class Attachments extends Component {
   }
 
   closePreview () {
-    this.setState({previewUrl: null})
-    this.setState({preview: false})
+    this.setState({
+      previewUrl: null,
+      preview: false
+    })
   }
 
   render () {
     return (
       <div>
         {/* UPLOADED FILE NAMES */}
-        {this.props.attachments.map((info, i) => {
-          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={'thumbnail' + i}>
+        {!this.state.preview && this.props.attachments.map((info, i) => {
+          return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={attachmentStyle} key={'thumbnail' + i}>
             <div onClick={(e) => this.openPreview(e, i)} style={{display: 'inline-block', cursor: 'pointer'}}>
               {info.fileType === 'application/pdf' &&
-              <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
+              <i className='material-icons' style={pdfLogoStyle}>picture_as_pdf</i>}
               {info.fileType !== 'application/pdf' &&
-              <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>photo</i>}
+              <i className='material-icons' style={imageLogoStyle}>photo</i>}
             </div>
-            <div onClick={(e) => this.openPreview(e, i)} style={{display: 'inline-block', cursor: 'pointer'}}>
-              <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.fileAlias}</h4>
-              <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.fileSize}</h4>
+            <div onClick={(e) => this.openPreview(e, i)} style={{display: 'inline-block', cursor: 'pointer', maxWidth: '70%'}}>
+              <h4 style={attachmentNameStyle}>{info.fileAlias}</h4>
+              <h4 style={attachmentSizeStyle}>{info.fileSize}</h4>
             </div>
-            <div style={{display: 'inline-block', cursor: 'pointer'}}>
-              <i className='material-icons' value={i} onClick={() => this.props.removeUpload(i)} style={{color: primaryColor, cursor: 'pointer', opacity: this.state.hoveringOver === i ? '1.0' : 0}}>clear</i>
+            <div style={{display: 'inline-block', cursor: 'pointer', position: 'absolute', bottom: '0', right: '0'}}>
+              <i key={'attachmentDelete' + i} className='material-icons' value={i} onClick={() => {
+                this.setState({hoveringOver: null})
+                this.props.removeUpload(i)
+              }} style={attachmentDeleteBtnStyle(this.state.hoveringOver, i)}>clear</i>
             </div>
 
             {/* THUMBNAIL ON HOVER */}
@@ -134,40 +139,46 @@ class Attachments extends Component {
         {/* UPLOAD ICON IF FILES < 6 */}
         {(this.props.attachments.length <= 5) &&
           <label style={{display: 'inline-block', color: 'black'}}>
-            <i style={{color: 'black', margin: '2px 5px 0 0', cursor: 'pointer', fontSize: '30px'}} className='material-icons'>add</i>
-            <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => this.props.handleFileUpload(e)} style={{display: 'none'}} />
+            <i key='attachmentAdd' style={addAttachmentBtnStyle} className='material-icons'>add</i>
+            <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => {
+              this.setState({_radiumStyleState: {}})
+              this.props.handleFileUpload(e)
+            }} style={{display: 'none'}} />
           </label>
         }
 
         {/* MAXED UPLOAD WHEN FILES > 6 */}
         {this.props.attachments.length > 5 &&
-          <span style={{color: 'black'}}>Upload maxed</span>
+          <div style={{width: '50px'}}>
+            <span style={{color: 'black'}}>Upload maxed</span>
+          </div>
         }
 
         {/* PREVIEW OVERLAY WITH ITS OWN FILE NAMES */}
         {this.state.preview &&
           <div>
+            <div style={{position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(0, 0, 0, 0.8)', zIndex: 5555}} />
               {!this.state.previewUrl.match('.pdf') &&
               <div>
                 <ImagePreview previewUrl={this.state.previewUrl} setBackground={(url) => this.props.setBackground(url)} />
               </div>
               }
-            <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: '9999', height: '5%', width: '80%'}}>
-              <i className='material-icons' onClick={() => this.closePreview()} style={{color: 'black', cursor: 'pointer', fontSize: '30px'}}>arrow_back</i>
+            <div style={{position: 'fixed', left: '10%', top: '90%', zIndex: 9999, height: '5%', width: '80%', marginTop: '5px'}}>
+              <i key='exitImgPreview' id='exitImgPreview' className='material-icons' onClick={() => this.closePreview()} style={{cursor: 'pointer', fontSize: '30px'}}>arrow_back</i>
 
               {/* SIMILAR TO ABOVE BUT NO DELETE UPLOAD, OPENPREVIEW BECOMES CHANGE PREVIEW */}
               {this.props.attachments.map((info, i) => {
                 return (
-                  <div style={{margin: '1px 0 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid black', height: '50px', cursor: 'pointer'}} key={'preview' + i}>
+                  <div style={{...attachmentStyle, ...{backgroundColor: 'grey'}}} key={'preview' + i}>
                     <div style={{display: 'inline-block', cursor: 'pointer'}}>
                       {info.fileType === 'application/pdf' &&
-                      <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>picture_as_pdf</i>}
+                      <i className='material-icons' style={pdfLogoStyle}>picture_as_pdf</i>}
                       {info.fileType !== 'application/pdf' &&
-                      <i className='material-icons' style={{color: primaryColor, fontSize: '50px'}}>photo</i>}
+                      <i className='material-icons' style={imageLogoStyle}>photo</i>}
                     </div>
-                    <div style={{display: 'inline-block', cursor: 'pointer'}}>
-                      <h4 onClick={(e) => this.changePreview(e, i)} style={{fontSize: '14px', color: 'black', fontWeight: 'bold', position: 'relative', top: '-6px'}}>{info.fileAlias}</h4>
-                      <h4 style={{fontSize: '14px', color: 'black', fontWeight: 'bold'}}>{info.fileSize}</h4>
+                    <div style={{display: 'inline-block', cursor: 'pointer', maxWidth: '70%'}}>
+                      <h4 onClick={(e) => this.changePreview(e, i)} style={{...attachmentNameStyle, ...{color: 'white'}}}>{info.fileAlias}</h4>
+                      <h4 style={{...attachmentSizeStyle, ...{color: 'white'}}}>{info.fileSize}</h4>
                     </div>
                   </div>
                 )
