@@ -22,8 +22,8 @@ class FlightSearchParameters extends Component {
       selectingDeparture: false,
       selectingArrival: false,
       results: [], // iata airport/city results, not flights
-      departureLocation: null
-      arrivalLocation: null
+      departureLocation: null,
+      arrivalLocation: null,
       // start date, end date, start/end day
       departureDate: null,
       startDay: null
