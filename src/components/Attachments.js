@@ -122,7 +122,7 @@ class Attachments extends Component {
               <h4 style={attachmentNameStyle}>{info.fileAlias}</h4>
               <h4 style={attachmentSizeStyle}>{info.fileSize}</h4>
             </div>
-            <div style={{display: 'inline-block', cursor: 'pointer', position: 'absolute', bottom: '0', right: '0'}}>
+            <div style={{display: 'inline-block', cursor: 'pointer', position: 'absolute', bottom: '-5px', right: '0'}}>
               <i key={'attachmentDelete' + i} className='material-icons' value={i} onClick={() => {
                 this.setState({hoveringOver: null})
                 this.props.removeUpload(i)
@@ -141,7 +141,6 @@ class Attachments extends Component {
           <label style={{display: 'inline-block', color: 'black'}}>
             <i key='attachmentAdd' style={addAttachmentBtnStyle} className='material-icons'>add</i>
             <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => {
-              this.setState({_radiumStyleState: {}})
               this.props.handleFileUpload(e)
             }} style={{display: 'none'}} />
           </label>
