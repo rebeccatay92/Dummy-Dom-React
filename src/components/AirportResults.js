@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import airports from '../data/airports.json'
 
 class AirportResults extends Component {
   constructor (props) {
@@ -37,11 +38,22 @@ class AirportResults extends Component {
     var cityCodes = []
     var cities = []
 
+    // extract all possible cities
     this.props.results.forEach(e => {
       if (e.cityCode && !cityCodes.includes(e.cityCode)) {
         cityCodes.push(e.cityCode)
         cities.push({name: e.city, cityCode: e.cityCode, country: e.country})
       }
+    })
+
+    var airportsInCities = airports.filter(row => {
+      if (cityCodes.includes(row.cityCode)) {
+        return row
+      }
+    })
+
+    var airportsWithoutCities = this.props.results.filter(row => {
+      if (!row.cityCode) return row
     })
 
     return (
@@ -51,19 +63,16 @@ class AirportResults extends Component {
           return <div key={`city${i}`}>
             <h5 key={`cityrow${i}`} onClick={() => this.handleClick(city)}>City: {city.name}, {city.cityCode}, {city.country}</h5>
 
-            {this.props.results.map((airport, i) => {
+            {airportsInCities.map((airport, i) => {
               console.log('city airport', airport)
               if (airport.cityCode === cityCode) {
                 return <h5 key={`cityairportrow${i}`} onClick={() => this.handleClick(airport)}>--> Airport: {airport.name}, {airport.city}, {airport.iata}</h5>
               }
             })}
-
           </div>
         })}
-        {this.props.results.map((result, i) => {
-          if (!result.cityCode) {
-            return <h5 key={`airportrow${i}`} onClick={() => this.handleClick(result)}>Airport: {result.name}, {result.city}, {result.iata}</h5>
-          }
+        {airportsWithoutCities.map((result, i) => {
+          return <h5 key={`airportrow${i}`} onClick={() => this.handleClick(result)}>Airport: {result.name}, {result.city}, {result.iata}</h5>
         })}
       </div>
     )
