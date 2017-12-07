@@ -22,8 +22,8 @@ class FlightSearchParameters extends Component {
       selectingDeparture: false,
       selectingArrival: false,
       results: [], // iata airport/city results, not flights
-      departureLocation: null,
-      arrivalLocation: null,
+      departureLocation: null
+      arrivalLocation: null
       // start date, end date, start/end day
       departureDate: null,
       startDay: null
@@ -125,7 +125,6 @@ class FlightSearchParameters extends Component {
   }
   render () {
     console.log('state', this.state)
-    // DEBOUNCE CITY/AIRPORT INPUT AND RETURN IATA DATA.
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
     // SEARCH BUTTON
     // AIRPORT INPUT NEED RESIZETEXTBOX
@@ -138,10 +137,10 @@ class FlightSearchParameters extends Component {
 
         {/* PROBABLY SHOULD COMBINE LOL */}
         {this.state.selectingDeparture &&
-          <AirportResults results={this.state.results} selectAirport={(details) => this.selectLocation('departure', details)} />
+          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('departure', details)} />
         }
         {this.state.selectingArrival &&
-          <AirportResults results={this.state.results} selectAirport={(details) => this.selectLocation('arrival', details)} />
+          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('arrival', details)} />
         }
 
         {/* WHY CANNOT SEE DATEBOX T.T */}
