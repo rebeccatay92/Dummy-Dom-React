@@ -53,12 +53,12 @@ class FlightSearchParameters extends Component {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.searchAirports(type, queryStr)
-    }, 250)
+    }, 500)
   }
 
   searchAirports (type, queryStr) {
     queryStr = queryStr.trim()
-    if (!queryStr.length) {
+    if (!queryStr.length || queryStr.length < 3) {
       this.setState({results: []})
       return
     }
@@ -79,7 +79,6 @@ class FlightSearchParameters extends Component {
     // console.log('regex', regex)
 
     var results = []
-
     airports.forEach(e => {
       e.matchCount = 0
       // if (!e.city) {
@@ -101,7 +100,6 @@ class FlightSearchParameters extends Component {
     results.sort(function (a, b) {
       return b.matchCount - a.matchCount
     })
-    console.log('sorted matches', results)
     this.setState({results: results})
   }
 
@@ -119,6 +117,7 @@ class FlightSearchParameters extends Component {
   handleClickOutside () {
     // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED. RESETS RESULTS ARRAY TO EMPTY
   }
+
   componentDidMount () {
     // console.log('airports', airports)
     console.log('dates', this.props.dates)
