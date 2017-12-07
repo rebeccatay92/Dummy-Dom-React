@@ -185,7 +185,7 @@ class PlannerActivity extends Component {
               </div>
             }
           </td>
-          {this.state.createEventForm && <td style={plannerBlurredBackgroundStyle} />}
+          {this.state.createEventType && <td style={plannerBlurredBackgroundStyle} />}
         </tr>
       )
     }
