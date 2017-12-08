@@ -8,7 +8,6 @@ import moment from 'moment'
 
 import { dateTimePickerContainerStyle, locationSelectionInputStyle } from '../Styles/styles'
 
-// import airports from 'airport-codes/airports.json'
 import airports from '../data/airports.json'
 
 class FlightSearchParameters extends Component {
@@ -123,7 +122,6 @@ class FlightSearchParameters extends Component {
     console.log('dates', this.props.dates)
   }
   render () {
-    console.log('state', this.state)
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
     // SEARCH BUTTON
     // AIRPORT INPUT NEED RESIZETEXTBOX
