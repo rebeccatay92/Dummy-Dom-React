@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import airports from '../data/airports.json'
 
 class AirportResults extends Component {
   constructor (props) {
@@ -34,8 +35,10 @@ class AirportResults extends Component {
   }
   // NEEDS CITY/AIRPORT LISTING, SELECT AIRPORT, CLICK OUTSIDE, HOVER LOGIC
   render () {
-    var cities = []
     var cityCodes = []
+    var cities = []
+
+    // extract all possible cities
     this.props.results.forEach(e => {
       if (e.cityCode && !cityCodes.includes(e.cityCode)) {
         cityCodes.push(e.cityCode)
@@ -43,13 +46,33 @@ class AirportResults extends Component {
       }
     })
 
+    var airportsInCities = airports.filter(row => {
+      if (cityCodes.includes(row.cityCode)) {
+        return row
+      }
+    })
+
+    var airportsWithoutCities = this.props.results.filter(row => {
+      if (!row.cityCode) return row
+    })
+
     return (
       <div>
-        {cities.map((e, i) => {
-          return <h5 key={'airportcity' + i} onClick={() => this.handleClick(e)}>City: {e.name}, {e.cityCode}, {e.country}</h5>
+        {cities.map((city, i) => {
+          var cityCode = city.cityCode
+          return <div key={`city${i}`}>
+            <h5 key={`cityrow${i}`} onClick={() => this.handleClick(city)}>City: {city.name}, {city.cityCode}, {city.country}</h5>
+
+            {airportsInCities.map((airport, i) => {
+              console.log('city airport', airport)
+              if (airport.cityCode === cityCode) {
+                return <h5 key={`cityairportrow${i}`} onClick={() => this.handleClick(airport)}>--> Airport: {airport.name}, {airport.city}, {airport.iata}</h5>
+              }
+            })}
+          </div>
         })}
-        {this.props.results.map((e, i) => {
-          return <h5 key={'airport' + i} onClick={() => this.handleClick(e)}>Airport: {e.name}, {e.city}, {e.iata}</h5>
+        {airportsWithoutCities.map((result, i) => {
+          return <h5 key={`airportrow${i}`} onClick={() => this.handleClick(result)}>Airport: {result.name}, {result.city}, {result.iata}</h5>
         })}
       </div>
     )

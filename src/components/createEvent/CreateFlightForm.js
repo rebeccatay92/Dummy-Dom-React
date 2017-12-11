@@ -10,7 +10,7 @@ import FlightSearchResults from '../FlightSearchResults'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
-import { createFlight } from '../../apollo/flight'
+import { createFlightBooking } from '../../apollo/flight'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
@@ -23,28 +23,48 @@ class CreateFlightForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      currencyList: [], // not submitted
       ItineraryId: this.props.ItineraryId,
-      departureGooglePlaceData: {},
-      arrivalGooglePlaceData: {},
-      name: '',
-      notes: '',
-      departureTerminal: '',
-      arrivalTerminal: '',
-      departureGate: '',
-      arrivalGate: '',
-      startDay: null, // POPULATED BY FLIGHT RESULTS
-      endDay: null,
-      startTime: null,
-      endTime: null,
-      boardingTime: null,
+      paxAdults: null,
+      paxChildren: null,
+      paxInfants: null,
       cost: 0,
       currency: '',
-      currencyList: [],
+      classCode: '',
       bookedThrough: '',
       bookingConfirmation: '',
+      backgroundImage: defaultBackground,
       attachments: [],
-      flights: [],
-      backgroundImage: defaultBackground
+      // ARR OF ATTACHMENT INPUT
+      // input attachmentInput {
+      //   fileName: String
+      //   fileAlias: String
+      //   fileType: String
+      //   fileSize: String
+      // }
+      flightInstances: []
+      // ARR OF FLIGHTINSTANCE INPUT
+      // input flightInstanceInput {
+      //   flightNumber: Int
+      //   airlineCode: String
+      //   airlineName: String
+      //   departureIATA: String
+      //   arrivalIATA: String
+      //   departureTerminal: String
+      //   arrivalTerminal: String
+      //   departureGate: String
+      //   arrivalGate: String
+      //   startDate: Int
+      //   endDate: Int
+      //   startDay: Int
+      //   endDay: Int
+      //   startTime: Int
+      //   endTime: Int
+      //   startLoadSequence: Int
+      //   endLoadSequence: Int
+      //   notes: String
+      // }
+      flights: []
     }
   }
 
@@ -57,36 +77,29 @@ class CreateFlightForm extends Component {
 
   handleSubmit () {
     console.log('handle submit flight')
+    // NEEDS TESTING AGAINST CREATEFLIGHTBOOKING MUTATION
+
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newFlight = {
       ItineraryId: parseInt(this.state.ItineraryId),
-      departureGooglePlaceData: this.state.departureGooglePlaceData,
-      arrivalGooglePlaceData: this.state.arrivalGooglePlaceData,
-      name: this.state.name,
-      notes: this.state.notes,
-      departureTerminal: this.state.departureTerminal,
-      arrivalTerminal: this.state.arrivalTerminal,
-      departureGate: this.state.departureGate,
-      arrivalGate: this.state.arrivalGate,
-      startDay: this.state.startDay,
-      endDay: this.state.endDay,
-      startTime: this.state.startTime,
-      endTime: this.state.endTime,
-      // startLoadSequence: ???
-      // endLoadSequence: ???
-      boardingTime: this.state.boardingTime,
+      paxAdults: this.state.paxAdults,
+      paxChildren: this.state.paxChildren,
+      paxInfants: this.state.paxInfants,
       cost: this.state.cost,
       currency: this.state.currency,
+      classCode: this.state.classCode,
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
+      backgroundImage: this.state.backgroundImage,
       attachments: this.state.attachments,
-      backgroundImage: this.state.backgroundImage
+      flightInstances: this.state.flightInstances
     }
 
     console.log('newFlight', newFlight)
-    // this.props.createFlight({
+
+    // this.props.createFlightBooking({
     //   variables: newFlight,
     //   refetchQueries: [{
     //     query: queryItinerary,
@@ -124,26 +137,17 @@ class CreateFlightForm extends Component {
 
   resetState () {
     this.setState({
-      departureGooglePlaceData: {},
-      arrivalGooglePlaceData: {},
-      name: '',
-      notes: '',
-      departureTerminal: '',
-      arrivalTerminal: '',
-      departureGate: '',
-      arrivalGate: '',
-      startDay: null,
-      endDay: null,
-      startTime: null,
-      endTime: null,
-      boardingTime: null,
+      paxAdults: null,
+      paxChildren: null,
+      paxInfants: null,
       cost: 0,
       currency: '',
-      currencyList: [],
+      classCode: '',
       bookedThrough: '',
       bookingConfirmation: '',
+      backgroundImage: defaultBackground,
       attachments: [],
-      backgroundImage: defaultBackground
+      flightInstances: []
     })
   }
 
@@ -280,4 +284,4 @@ class CreateFlightForm extends Component {
   }
 }
 
-export default graphql(createFlight, {name: 'createFlight'})(Radium(CreateFlightForm))
+export default graphql(createFlightBooking, {name: 'createFlightBooking'})(Radium(CreateFlightForm))

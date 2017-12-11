@@ -33,7 +33,7 @@ class Itinerary extends Component {
   deleteItinerary (ItineraryId) {
     this.props.deleteItinerary({
       variables: {
-        ItineraryId: ItineraryId
+        id: ItineraryId
       },
       refetchQueries: [{
         query: itinerariesByUser
