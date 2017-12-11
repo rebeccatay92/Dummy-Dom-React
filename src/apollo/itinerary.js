@@ -46,36 +46,55 @@ export const queryItinerary = gql`
           backgroundImage
         }
         Flight {
-          id
-          name
-          departureLocation {
+          FlightInstance {
             id
-            name
+            FlightBookingId
+            flightNumber
+            airlineCode
+            airlineName
+            departureLocation {
+              id
+              name
+            }
+            arrivalLocation {
+              id
+              name
+            }
+            departureTerminal
+            arrivalTerminal
+            departureGate
+            arrivalGate
+            startDate
+            endDate
+            startDay
+            endDay
+            startTime
+            endTime
+            startLoadSequence
+            endLoadSequence
+            notes
           }
-          arrivalLocation {
+          FlightBooking {
             id
-            name
+            ItineraryId
+            paxAdults
+            paxChildren
+            paxInfants
+            cost
+            currency
+            classCode
+            bookingStatus
+            bookedThrough
+            bookingConfirmation
+            backgroundImage
+            attachments {
+              id
+              fileName
+              fileAlias
+              fileType
+              fileSize
+            }
           }
-          startDay
-          endDay
-          startTime
-          endTime
-          startLoadSequence
-          endLoadSequence
-          currency
-          cost
-          bookedThrough
-          bookingConfirmation
-          bookingStatus
-          notes
-          attachments {
-            id
-            fileName
-            fileAlias
-            fileType
-            fileSize
-          }
-          backgroundImage
         }
         Lodging {
           id
