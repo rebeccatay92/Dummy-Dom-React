@@ -164,10 +164,12 @@ export const eventDropdownStyle = {position: 'absolute', right: '0px', top: '20p
 // Create Event Form Styles
 export const createEventFormContainerStyle = {backgroundColor: 'transparent', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: totalWidth + 'px', height: totalHeight + 'px', zIndex: 999, color: 'white'}
 export const createEventFormBoxShadow = {boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}
-export const createEventFormLeftPanelStyle = (url) => {
-  return {backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: leftPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}
+export const createEventFormLeftPanelStyle = (url, type) => {
+  return {backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: type === 'flight' ? rightPanelWidth + 'px' : leftPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}
 }
-export const createEventFormRightPanelStyle = {width: rightPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: mainFontColor}
+export const createEventFormRightPanelStyle = (type) => {
+  return {width: type === 'flight' ? leftPanelWidth + 'px' : rightPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative', color: mainFontColor}
+}
 export const greyTintStyle = {position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, background: '#6D6A7A', opacity: '0.75'}
 export const eventDescriptionStyle = (bgImage) => {
   return {background: bgImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '24px', fontWeight: '300', width: 'fit-content', minWidth: '100px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}
@@ -182,8 +184,8 @@ export const attachmentsStyle = {width: '100%', background: 'transparent', displ
 export const bookingNotesContainerStyle = {width: '100%', height: '100%', background: 'white', padding: '5%'}
 
 // LocationSelection.js styles
-export const locationSelectionInputStyle = (marginTop) => {
-  return {fontSize: '48px', textAlign: 'center', width: leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
+export const locationSelectionInputStyle = (marginTop, type) => {
+  return {fontSize: '48px', textAlign: 'center', width: type === 'flight' ? rightPanelWidth / 2 + 'px' : leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
 }
 export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: `calc(50% - ${(leftPanelWidth / 2) / 2}px)`}
 
@@ -200,3 +202,6 @@ export const attachmentDeleteBtnStyle = (hovering, i) => {
 }
 export const pdfLogoStyle = {color: 'rgb(237, 15, 135)', fontSize: '50px', marginRight: '2px'}
 export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
+
+// FlightSearchResults.js styles
+export const searchResultsTableStyle = {width: '100%', marginTop: '20px', color: secondaryFontColor, fontSize: '16px'}
