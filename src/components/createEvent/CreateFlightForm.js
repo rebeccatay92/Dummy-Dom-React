@@ -18,7 +18,6 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
-
 class CreateFlightForm extends Component {
   constructor(props) {
     super(props)
@@ -42,7 +41,7 @@ class CreateFlightForm extends Component {
       //   fileType: String
       //   fileSize: String
       // }
-      flightInstances: []
+      flightInstances: [],
       // ARR OF FLIGHTINSTANCE INPUT
       // input flightInstanceInput {
       //   flightNumber: Int
@@ -147,7 +146,8 @@ class CreateFlightForm extends Component {
       bookingConfirmation: '',
       backgroundImage: defaultBackground,
       attachments: [],
-      flightInstances: []
+      flightInstances: [],
+      flights: [] // clear flight search results
     })
   }
 
