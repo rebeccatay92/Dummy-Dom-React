@@ -1,101 +1,52 @@
 import { gql } from 'react-apollo'
 
-export const createFlight = gql`
-  mutation createFlight(
+export const createFlightBooking = gql`
+  mutation createFlightBooking(
     $ItineraryId: ID!,
-    $departureGooglePlaceData: googlePlaceData,
-    $arrivalGooglePlaceData: googlePlaceData,
-    $departureTerminal: String,
-    $departureGate: String,
-    $arrivalTerminal: String,
-    $arrivalGate: String,
-    $startLoadSequence: Int,
-    $endLoadSequence: Int,
-    $startDay: Int,
-    $endDay: Int,
-    $startTime: Int,
-    $endTime: Int,
-    $boardingTime: Int,
-    $name: String,
-    $notes: String,
+    $paxAdults: Int,
+    $paxChildren: Int,
+    $paxInfants: Int,
     $cost: Int,
     $currency: String,
+    $classCode: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $attachments: [attachmentInfo],
-    $backgroundImage: String
+    $backgroundImage: String,
+    $attachments: [attachmentInput],
+    $flightInstances: [flightInstanceInput]
   ) {
-    createFlight(
+    createFlightBooking(
       ItineraryId: $ItineraryId,
-      departureGooglePlaceData: $departureGooglePlaceData,
-      arrivalGooglePlaceData: $arrivalGooglePlaceData,
-      departureTerminal: $departureTerminal,
-      arrivalTerminal: $arrivalTerminal,
-      departureGate: $departureGate,
-      arrivalGate: $arrivalGate,
-      startLoadSequence: $startLoadSequence,
-      endLoadSequence: $endLoadSequence,
-      startDay: $startDay,
-      endDay: $endDay,
-      startTime: $startTime,
-      endTime: $endTime,
-      boardingTime: $boardingTime,
-      name: $name,
-      notes: $notes,
+      paxAdults: $paxAdults,
+      paxChildren: $paxChildren,
+      paxInfants: $paxInfants,
       cost: $cost,
       currency: $currency,
+      classCode: $classCode,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
+      backgroundImage: $backgroundImage,
       attachments: $attachments,
-      backgroundImage: $backgroundImage
+      flightInstances: $flightInstances
       ) {
       id
     }
   }
 `
 
-export const updateFlight = gql`
-  mutation updateFlight(
+// UPDATE FLIGHT NOT YET DONE
+export const updateFlightBooking = gql`
+  mutation updateFlightBooking(
     $id: ID!,
-    $departureGooglePlaceData: googlePlaceData,
-    $arrivalGooglePlaceData: googlePlaceData,
-    $departureTerminal: String,
-    $departureGate: String,
-    $arrivalTerminal: String,
-    $arrivalGate: String,
-    $startDay: Int,
-    $endDay: Int,
-    $startTime: Int,
-    $endTime: Int,
-    $boardingTime: Int,
-    $name: String,
-    $notes: String,
-    $cost: Int,
-    $currency: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
     $backgroundImage: String
   ) {
-    updateFlight(
+    updateFlightBooking(
       id: $id,
-      departureGooglePlaceData: $departureGooglePlaceData,
-      arrivalGooglePlaceData: $arrivalGooglePlaceData,
-      departureTerminal: $departureTerminal,
-      arrivalTerminal: $arrivalTerminal,
-      departureGate: $departureGate,
-      arrivalGate: $arrivalGate,
-      startDay: $startDay,
-      endDay: $endDay,
-      startTime: $startTime,
-      endTime: $endTime,
-      boardingTime: $boardingTime,
-      name: $name,
-      notes: $notes,
-      cost: $cost,
-      currency: $currency,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
@@ -106,8 +57,8 @@ export const updateFlight = gql`
   }
 `
 
-export const deleteFlight = gql`
-  mutation deleteFlight($id: ID!) {
-    deleteFlight(id: $id)
+export const deleteFlightBooking = gql`
+  mutation deleteFlightBooking($id: ID!) {
+    deleteFlightBooking(id: $id)
   }
 `
