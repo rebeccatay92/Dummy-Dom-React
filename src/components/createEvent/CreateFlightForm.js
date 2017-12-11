@@ -9,7 +9,7 @@ import FlightSearchParameters from '../FlightSearchParameters'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
-import { createFlight } from '../../apollo/flight'
+import { createFlightBooking } from '../../apollo/flight'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
@@ -274,4 +274,4 @@ class CreateFlightForm extends Component {
   }
 }
 
-export default graphql(createFlight, {name: 'createFlight'})(Radium(CreateFlightForm))
+export default graphql(createFlightBooking, {name: 'createFlightBooking'})(Radium(CreateFlightForm))
