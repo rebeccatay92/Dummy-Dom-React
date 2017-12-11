@@ -6,6 +6,7 @@ import moment from 'moment'
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import FlightSearchParameters from '../FlightSearchParameters'
+import FlightSearchResults from '../FlightSearchResults'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
@@ -63,7 +64,15 @@ class CreateFlightForm extends Component {
       //   endLoadSequence: Int
       //   notes: String
       // }
+      flights: []
     }
+  }
+
+  handleSearch (flights) {
+    this.setState({
+      flights
+    })
+    console.log(this.state)
   }
 
   handleSubmit () {
@@ -249,18 +258,19 @@ class CreateFlightForm extends Component {
         <div style={createEventFormBoxShadow}>
 
           {/* LEFT PANEL --- LOCATION X 2, DATE DAY X 2, PAX, SELECTED FLIGHT */}
-          <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
+          <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters dates={this.props.dates} />
+              <FlightSearchParameters dates={this.props.dates} date={this.props.date} handleSearch={(flights) => this.handleSearch(flights)} />
             </div>
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
-          <div style={createEventFormRightPanelStyle}>
-            <div style={bookingNotesContainerStyle}>
+          <div style={createEventFormRightPanelStyle('flight')}>
+            <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
+              <FlightSearchResults flights={this.state.flights} />
             </div>
           </div>
 

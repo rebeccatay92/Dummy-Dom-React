@@ -264,7 +264,7 @@ class CreateActivityForm extends Component {
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
-          <div style={createEventFormRightPanelStyle}>
+          <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
