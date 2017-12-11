@@ -10,7 +10,7 @@ class UpdateItineraryDetails extends Component {
       name: this.props.itinerary.name,
       days: this.props.itinerary.days,
       startDate: this.props.itinerary.startDate,
-      endDate: this.props.itinerary.endDate,
+      // endDate: this.props.itinerary.endDate,
       pax: this.props.itinerary.pax,
       travelInsurance: this.props.itinerary.travelInsurance,
       budget: this.props.itinerary.budget
@@ -33,12 +33,13 @@ class UpdateItineraryDetails extends Component {
     } else {
       startUnix = this.state.startDate
     }
-    if (typeof (this.state.endDate) !== 'number') {
-      var endDate = new Date(this.state.endDate)
-      var endUnix = endDate.getTime() / 1000
-    } else {
-      endUnix = this.state.endDate
-    }
+
+    // if (typeof (this.state.endDate) !== 'number') {
+    //   var endDate = new Date(this.state.endDate)
+    //   var endUnix = endDate.getTime() / 1000
+    // } else {
+    //   endUnix = this.state.endDate
+    // }
 
     this.props.updateItineraryDetails({
       variables: {
@@ -46,7 +47,7 @@ class UpdateItineraryDetails extends Component {
         name: this.state.name,
         days: this.state.days,
         startDate: startUnix,
-        endDate: endUnix,
+        // endDate: endUnix,
         pax: this.state.pax,
         travelInsurance: this.state.travelInsurance,
         budget: this.state.budget
@@ -59,10 +60,10 @@ class UpdateItineraryDetails extends Component {
   }
   render () {
     var startDate = (new Date(this.props.itinerary.startDate * 1000).toISOString()).substring(0, 10)
-    var endDate = (new Date(this.props.itinerary.endDate * 1000).toISOString()).substring(0, 10)
+    // var endDate = (new Date(this.props.itinerary.endDate * 1000).toISOString()).substring(0, 10)
     return (
       <div>
-        <h3>update itinerary form</h3>
+        <h3>Update itinerary form (WARNING: DATE/DAYS IS BROKEN 11TH DEC)</h3>
         <form onSubmit={(e) => this.updateItineraryDetails(e)}>
           <label>
             Name:
@@ -72,10 +73,10 @@ class UpdateItineraryDetails extends Component {
             startDate:
             <input type='date' defaultValue={startDate} onChange={(e) => this.handleChange(e, 'startDate')} />
           </label>
-          <label>
+          {/* <label>
             endDate:
             <input type='date' defaultValue={endDate} onChange={(e) => this.handleChange(e, 'endDate')} />
-          </label>
+          </label> */}
           <label>
             pax:
             <input type='number' defaultValue={this.state.pax} onChange={(e) => this.handleChange(e, 'pax')} />

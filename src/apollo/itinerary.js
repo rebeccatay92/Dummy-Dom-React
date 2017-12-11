@@ -242,14 +242,12 @@ export const itinerariesByUser = gql`
         email
       }
     }
-  }
-`
+  }`
 
-// include country code. coutnryIdArr
 export const createItinerary = gql`
   mutation createItinerary(
-    $UserId: Int!,
-    $countryCode: String,
+    $UserId: ID!,
+    $CountryId: ID,
     $name: String!,
     $days: Int!,
     $startDate: Int,
@@ -259,7 +257,7 @@ export const createItinerary = gql`
   ) {
     createItinerary(
       UserId:$UserId,
-      countryCode: $countryCode,
+      CountryId: $CountryId,
       name: $name,
       days: $days,
       startDate: $startDate,
@@ -305,36 +303,34 @@ export const updateItineraryDetails = gql`
       travelInsurance
       budget
     }
-  }
-`
+  }`
+
 export const deleteItinerary = gql`
-  mutation deleteItinerary($ItineraryId: ID!) {
-    deleteItinerary(id:$ItineraryId)
-  }
-`
+  mutation deleteItinerary($id: ID!) {
+    deleteItinerary(id: $id)
+  }`
+
 export const createCountriesItineraries = gql`
-    mutation createCountriesItineraries(
-      $ItineraryId: Int!,
-      $countryCode: String!
+  mutation createCountriesItineraries(
+    $ItineraryId: Int!,
+    $countryCode: String!
+  ) {
+    createCountriesItineraries(
+      ItineraryId: $ItineraryId,
+      countryCode: $countryCode
     ) {
-      createCountriesItineraries(
-        ItineraryId: $ItineraryId,
-        countryCode: $countryCode
-      ) {
-        ItineraryId
-        CountryId
-      }
+      ItineraryId
+      CountryId
     }
-  `
+  }`
 
 export const deleteCountriesItineraries = gql`
-      mutation deleteCountriesItineraries(
-        $ItineraryId: Int!,
-        $CountryId: Int!
-      ) {
-        deleteCountriesItineraries(
-          ItineraryId: $ItineraryId,
-          CountryId: $CountryId
-        )
-      }
-    `
+    mutation deleteCountriesItineraries(
+      $ItineraryId: Int!,
+      $CountryId: Int!
+    ) {
+      deleteCountriesItineraries(
+        ItineraryId: $ItineraryId,
+        CountryId: $CountryId
+      )
+    }`
