@@ -246,8 +246,8 @@ export const itinerariesByUser = gql`
 
 export const createItinerary = gql`
   mutation createItinerary(
-    $UserId: ID!,
-    $CountryId: ID,
+    $UserId: Int!,
+    $CountryId: Int,
     $name: String!,
     $days: Int!,
     $startDate: Int,
