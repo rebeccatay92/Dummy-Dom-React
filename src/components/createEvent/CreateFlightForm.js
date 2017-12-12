@@ -43,7 +43,7 @@ class CreateFlightForm extends Component {
       // }
       flightInstances: [],
       // ARR OF FLIGHTINSTANCE INPUT
-      // input flightInstanceInput {
+      // input createFlightInstanceInput {
       //   flightNumber: Int
       //   airlineCode: String
       //   airlineName: String
