@@ -115,11 +115,13 @@ class PlannerActivity extends Component {
         }
       }} />
     )
+    const startTime = this.props.activity.type === 'Flight' ? this.props.activity[type].FlightInstance.startTime : this.props.activity[type].startTime
+    const endTime = this.props.activity.type === 'Flight' ? this.props.activity[type].FlightInstance.endTime : this.props.activity[type].endTime
     let activityBox = (
       <tr style={eventBoxStyle(this.state.draggable && !this.state.expanded, this.props.activity.modelId)} onMouseEnter={() => this.setState({hover: true})} onMouseLeave={() => this.setState({hover: false})}>
         <td style={timelineColumnStyle}>
           {this.props.timeline.events && timeline}
-          {this.props.timeline.events && <PlannerActivityTimeline activity={this.props.activity} day={this.props.day} start={this.props.activity.start} type={this.props.activity.type} checkout={this.props.activity.type === 'Lodging' && !this.props.activity.start} isLast={this.props.isLast} lastDay={this.props.lastDay} startTime={this.props.activity[type].startTime} endTime={this.props.activity[type].endTime} id={this.props.activity.modelId} draggingItem={getItem} expanded={this.state.expanded} />}
+          {this.props.timeline.events && <PlannerActivityTimeline activity={this.props.activity} day={this.props.day} start={this.props.activity.start} type={this.props.activity.type} checkout={this.props.activity.type === 'Lodging' && !this.props.activity.start} isLast={this.props.isLast} lastDay={this.props.lastDay} startTime={startTime} endTime={endTime} id={this.props.activity.modelId} draggingItem={getItem} expanded={this.state.expanded} />}
         </td>
         <td colSpan={this.state.expanded ? '4' : '1'} style={dateTableFirstHeaderStyle}>
           <div style={eventBoxFirstColumnStyle(this.props.activity.modelId, minHeight)} key={this.props.activity.modelId}>
@@ -228,8 +230,10 @@ class PlannerActivity extends Component {
     const expandButton = this.state.hover && (
       <i key='expandButton' className='material-icons' style={{fontSize: '30px', position: 'absolute', top: '-8px', ':hover': {color: '#ed9fad'}}} onClick={() => this.setState({expanded: !this.state.expanded})}>{this.state.expanded ? 'expand_less' : 'expand_more'}</i>
     )
-    const startTime = new Date(this.props.activity[type].startTime * 1000).toGMTString().substring(17, 22)
-    const endTime = new Date(this.props.activity[type].endTime * 1000).toGMTString().substring(17, 22)
+    let startTime = new Date(this.props.activity[type].startTime * 1000).toGMTString().substring(17, 22)
+    if (type === 'Flight') startTime = new Date(this.props.activity[type].FlightInstance.startTime * 1000).toGMTString().substring(17, 22)
+    let endTime = new Date(this.props.activity[type].endTime * 1000).toGMTString().substring(17, 22)
+    if (type === 'Flight') endTime = new Date(this.props.activity[type].FlightInstance.endTime * 1000).toGMTString().substring(17, 22)
     if (!expanded) {
       switch (type) {
         case 'Activity':
@@ -247,7 +251,7 @@ class PlannerActivity extends Component {
           if (this.props.activity.start) {
             return (
               <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
-                <p style={nameStyle}><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity[type].departureLocation.name} /> - Flight Departure
+                <p style={nameStyle}><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='departureLocation' value={this.props.activity[type].FlightInstance.departureLocation.name} /> - Flight Departure
               {expandButton}</p>
                 <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={startTime} /></p>
               </div>
@@ -255,7 +259,7 @@ class PlannerActivity extends Component {
           } else if (!this.props.activity.start) {
             return (
               <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
-                <p style={nameStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity[type].arrivalLocation.name} /> - Flight Arrival
+                <p style={nameStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalLocation' value={this.props.activity[type].FlightInstance.arrivalLocation.name} /> - Flight Arrival
               {expandButton}</p>
                 <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={endTime} /></p>
               </div>
@@ -418,21 +422,21 @@ class PlannerActivity extends Component {
           return (
             <div style={{...activityBoxStyle, ...{height: 'auto', marginBottom: '20px'}}}>
               <p style={nameStyle}>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.start ? this.props.activity[type].departureLocation.name : this.props.activity[type].arrivalLocation.name} /><span> - </span>
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity.start ? this.props.activity[type].FlightInstance.departureLocation.name : this.props.activity[type].FlightInstance.arrivalLocation.name} /><span> - </span>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity.start ? 'Flight Departure' : 'Flight Arrival'} />
                 {expandButton}
               </p>
               <div style={expandedEventBoxStyle}>
                 {expandedEventIcons}
                 <div style={expandedEventBoxImageContainerStyle}>
-                  <img src={this.props.activity[type].backgroundImage} style={expandedEventBoxImageStyle} />
+                  <img src={this.props.activity[type].FlightBooking.backgroundImage} style={expandedEventBoxImageStyle} />
                 </div>
                 <div style={expandedEventBoxTextBoxStyle}>
                   <PlannerEventExpandedInfo name={this.props.activity.start ? 'Departure Time:' : 'Arrival Time:'} value={this.props.activity.start ? startTime : endTime} />
-                  <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
-                  <PlannerEventExpandedInfo name='Booking Platform:' value={this.props.activity[type].bookedThrough} />
-                  <PlannerEventExpandedInfo name='Booking Number:' value={this.props.activity[type].bookingConfirmation} />
-                  <PlannerEventExpandedInfo name='Notes:' value={this.props.activity[type].notes} />
+                  <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].FlightBooking.currency} ${this.props.activity[type].FlightBooking.cost}`} />
+                  <PlannerEventExpandedInfo name='Booking Platform:' value={this.props.activity[type].FlightBooking.bookedThrough} />
+                  <PlannerEventExpandedInfo name='Booking Number:' value={this.props.activity[type].FlightBooking.bookingConfirmation} />
+                  <PlannerEventExpandedInfo name='Notes:' value={this.props.activity[type].FlightInstance.notes} />
                 </div>
               </div>
             </div>

@@ -21,14 +21,23 @@ class PlannerColumnValue extends Component {
 
   renderInfo () {
     const start = this.props.activity.start || typeof this.props.activity.start !== 'boolean'
-    const value = this.props.activity[this.props.activity.type][columnValues[this.props.column]]
+    const flightBookingOrInstance = {
+      Price: 'FlightBooking',
+      'Booking Status': 'FlightBooking',
+      'Booking Platform': 'FlightBooking',
+      Notes: 'FlightInstance'
+    }
+    let value = this.props.activity[this.props.activity.type][columnValues[this.props.column]]
+    if (this.props.activity.type === 'Flight') value = this.props.activity[this.props.activity.type][flightBookingOrInstance[this.props.column]][columnValues[this.props.column]]
     switch (this.props.column) {
+      case 'Notes':
+        if (start) return value || ''
+        else return ''
       case 'Price':
         if (start) return value || ''
         else return ''
       case 'Booking Status':
-        if (value && start) return 'Booked'
-        else if (value === false && start) return 'Not Booked'
+        if (start) return value === false ? 'Not Booked' : 'Booked'
         else return ''
       case 'Booking Platform':
         if (start) return value
