@@ -42,7 +42,7 @@ class CreateFlightForm extends Component {
       //   fileType: String
       //   fileSize: String
       // }
-      flightInstances: []
+      flightInstances: [],
       // ARR OF FLIGHTINSTANCE INPUT
       // input flightInstanceInput {
       //   flightNumber: Int

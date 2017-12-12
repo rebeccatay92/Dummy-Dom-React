@@ -69,6 +69,7 @@ class PlannerActivityTimeline extends Component {
     } else {
       const nextActivity = daySortedActivities[indexOfNextActivity]
       timeOfNextActivity = nextActivity.start || typeof nextActivity.start !== 'boolean' ? nextActivity[nextActivity.type]['startTime'] : nextActivity[nextActivity.type]['endTime']
+      if (nextActivity.type === 'Flight') timeOfNextActivity = nextActivity.start || typeof nextActivity.start !== 'boolean' ? nextActivity[nextActivity.type].FlightInstance['startTime'] : nextActivity[nextActivity.type].FlightInstance['endTime']
       const dayOfNextActivity = nextActivity.day
       dayAdjustedTime = timeOfNextActivity + (dayOfNextActivity - this.props.day) * 86400
     }
