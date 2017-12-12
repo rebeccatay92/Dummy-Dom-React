@@ -64,13 +64,15 @@ class CreateFlightForm extends Component {
       //   endLoadSequence: Int
       //   notes: String
       // }
-      flights: []
+      flights: [],
+      searching: false
     }
   }
 
   handleSearch (flights) {
     this.setState({
-      flights
+      flights,
+      searching: true
     })
     console.log(this.state)
   }
@@ -268,9 +270,11 @@ class CreateFlightForm extends Component {
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle('flight')}>
-            <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
+            <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
-              <FlightSearchResults flights={this.state.flights} />
+              <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
+                <FlightSearchResults flights={this.state.flights} searching={this.state.searching} />
+              </div>
             </div>
           </div>
 

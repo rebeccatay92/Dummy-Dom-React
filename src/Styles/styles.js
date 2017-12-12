@@ -185,7 +185,7 @@ export const bookingNotesContainerStyle = {width: '100%', height: '100%', backgr
 
 // LocationSelection.js styles
 export const locationSelectionInputStyle = (marginTop, type) => {
-  return {fontSize: '48px', textAlign: 'center', width: type === 'flight' ? rightPanelWidth / 2 + 'px' : leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
+  return {fontSize: '48px', textAlign: 'center', width: type === 'flight' ? '' : leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
 }
 export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: `calc(50% - ${(leftPanelWidth / 2) / 2}px)`}
 
