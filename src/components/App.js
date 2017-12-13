@@ -11,7 +11,7 @@ import HomePage from './HomePage'
 import ItineraryPage from './itinerary/ItineraryPage'
 import PlannerPage from './PlannerPage'
 import Navbar from './Navbar'
-import LocationMapHOC from './location/LocationMapHOC'
+import FlightMapHOC from './location/FlightMapHOC'
 
 class App extends Component {
   toggleLoginLogout () {
@@ -54,7 +54,7 @@ class App extends Component {
             <ItineraryPage />
           )} />
           <Route path='/planner/:itineraryId' component={PlannerPage} />
-          <Route path='/maps' component={LocationMapHOC} />
+          <Route path='/maps' component={FlightMapHOC} />
         </div>
       </Router>
     )

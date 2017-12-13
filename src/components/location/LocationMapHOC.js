@@ -3,7 +3,7 @@ import { compose, withProps, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
 import SearchBox from 'react-google-maps/lib/components/places/SearchBox'
 import { MAP } from 'react-google-maps/lib/constants'
-import CustomControlBackToForm from './CustomControlBackToForm'
+import CustomControl from './CustomControl'
 const _ = require('lodash')
 
 const LocationMap = compose(
@@ -144,9 +144,9 @@ const LocationMap = compose(
   withGoogleMap
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={15} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false}}>
-    <CustomControlBackToForm controlPosition={window.google.maps.ControlPosition.RIGHT_TOP}>
+    <CustomControl controlPosition={window.google.maps.ControlPosition.RIGHT_TOP}>
       <button onClick={() => props.toggleMap()} style={{width: '50px', height: '50px'}}>BACK</button>
-    </CustomControlBackToForm>
+    </CustomControl>
     <SearchBox ref={props.onSearchBoxMounted} bounds={props.bounds} controlPosition={window.google.maps.ControlPosition.TOP_LEFT} onPlacesChanged={props.onPlacesChanged}>
       <input type='text' placeholder='Search for location'
         style={{
@@ -184,9 +184,7 @@ const LocationMap = compose(
 class LocationMapHOC extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      selectedLocation: null
-    }
+    this.state = {}
   }
 
   render () {

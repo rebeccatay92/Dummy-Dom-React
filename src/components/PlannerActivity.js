@@ -464,10 +464,10 @@ class PlannerActivity extends Component {
   }
 
   // AUTOMATICALLY OPENS UP ACTIVITY FORM FOR TESTING BY DEFAULT. OPENS FOR EACH PLANNERACTIVITY COMPONENT >.<
-  componentDidMount () {
-    this.setState({creatingEvent: true})
-    this.setState({createEventType: 'Activity'})
-  }
+  // componentDidMount () {
+  //   this.setState({creatingEvent: true})
+  //   this.setState({createEventType: 'Activity'})
+  // }
 }
 
 const mapDispatchToProps = (dispatch) => {
