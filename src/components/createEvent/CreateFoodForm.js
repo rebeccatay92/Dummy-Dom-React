@@ -142,6 +142,7 @@ class CreateFoodForm extends Component {
 
   selectLocation (location) {
     this.setState({googlePlaceData: location})
+    console.log('selected location', location)
   }
 
   handleFileUpload (e) {

@@ -17,8 +17,8 @@ const FlightMap = compose(
         center: {
           lat: 0, lng: 0
         },
-        departureMarker: true,
-        arrivalMarker: true,
+        departurePosition: {lat: 1.3521, lng: 103.8198},
+        arrivalPosition: {lat: 46.2276, lng: 2.2137},
         onMapMounted: ref => {
           refs.map = ref
         },
@@ -35,13 +35,13 @@ const FlightMap = compose(
   withGoogleMap
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={2} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false}}>
-    {props.departureMarker &&
-    <Marker position={{lat: 1.3521, lng: 103.8198}} />
+    {props.departurePosition &&
+    <Marker position={props.departurePosition} />
     }
-    {props.arrivalMarker &&
-    <Marker position={{lat: 37.7749, lng: -122.4194}} />
+    {props.arrivalPosition &&
+    <Marker position={props.arrivalPosition} />
     }
-    <Polyline path={[{lat: 1.3521, lng: 103.8198},{lat: 37.7749, lng: -122.4194}]} options={{geodesic: true}} />
+    <Polyline path={[props.departurePosition, props.arrivalPosition]} options={{geodesic: true}} />
   </GoogleMap>
 )
 

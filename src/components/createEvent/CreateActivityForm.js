@@ -80,7 +80,10 @@ class CreateActivityForm extends Component {
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (this.state.googlePlaceData.placeId) newActivity.googlePlaceData = this.state.googlePlaceData
+    if (this.state.googlePlaceData.placeId) {
+      newActivity.googlePlaceData = this.state.googlePlaceData
+    }
+
     console.log('newActivity', newActivity)
 
     this.props.createActivity({
@@ -141,9 +144,9 @@ class CreateActivityForm extends Component {
 
   selectLocation (location) {
     this.setState({googlePlaceData: location})
-    console.log('selected location', location.name)
+    console.log('selected location', location)
   }
-  
+
   handleFileUpload (e) {
     e.preventDefault()
     var file = e.target.files[0]
@@ -179,7 +182,6 @@ class CreateActivityForm extends Component {
             kilobytes = Math.round(kilobytes)
             fileSizeStr = kilobytes + 'KB'
           }
-          // this.setState({attachments: this.state.attachments.concat([json.name])})
           this.setState({
             attachments: this.state.attachments.concat([
               {

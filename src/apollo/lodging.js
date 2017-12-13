@@ -20,7 +20,7 @@ export const createLodging = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $roomType: String,
-    $attachments: [attachmentInfo],
+    $attachments: [attachmentInput],
     $backgroundImage: String
   ) {
     createLodging(

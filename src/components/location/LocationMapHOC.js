@@ -128,7 +128,6 @@ const LocationMap = compose(
                 latitude: place.geometry.location.lat(),
                 longitude: place.geometry.location.lng()
               }})
-              // this.props.passLocationtoHOC(this.state.googlePlaceData)
               this.props.selectLocation(this.state.googlePlaceData)
             }
           })

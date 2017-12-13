@@ -18,15 +18,17 @@ class LocationSelection extends Component {
       search: '',
       results: [],
       selecting: false,
-      // selectedLocation: {},
       marginTop: 240,
       mapIsOpen: false
     }
   }
 
   selectLocation (location) {
+    //stringify opening hours here
+    if (location.openingHours) {
+      location.openingHours = JSON.stringify(location.openingHours)
+    }
     this.props.selectLocation(location) // pass it up to createActivityForm googlePlaceData
-    // this.setState({selectedLocation: location}) // set intermediate state here as well
     this.setState({search: location.name}) // set search string
     this.setState({selecting: false}) // close results if text search is used
     this.setState({mapIsOpen: false}) // close map if map search was used
