@@ -27,9 +27,14 @@ class FlightSearchParameters extends Component {
       // start date, end date, start/end day
       departureDate: moment(new Date(this.props.date)),
       returnDate: moment(new Date(this.props.date)),
-      startDay: null
+      startDay: null,
 
       // pax, class
+      classState: 'Economy',
+      adultsState: 1,
+      '2-11yState': 0,
+      '<2yState': 0
+
       // selected departure/arrival city/airport. what query to pass to airhob, and what props to pass to FlightResults?
     }
   }
@@ -51,17 +56,17 @@ class FlightSearchParameters extends Component {
       },
       body: JSON.stringify({
         TripType: 'O',
-        NoOfAdults: 1,
-        NoOfChilds: 0,
-        NoOfInfants: 0,
-        ClassType: 'Economy',
+        NoOfAdults: this.state.adultsState,
+        NoOfChilds: this.state['2-11yState'],
+        NoOfInfants: this.state['<2yState'],
+        ClassType: this.state.classState,
         OriginDestination: [
           {
             // 'Origin': origin,
             // 'Destination': destination,
             // 'TravelDate': travelDate
             'Origin': 'SIN',
-            'Destination': 'KUL',
+            'Destination': 'BJS',
             'TravelDate': travelDate
           }
         ],
@@ -89,9 +94,11 @@ class FlightSearchParameters extends Component {
               arrivalDateTime: flightDetails.ArrivalDateTime,
               duration: flightDetails.Duration,
               departureLocation: flightDetails.OriginAirportName,
+              departureCityCountry: flightDetails.OriginAirportCity + ', ' + flightDetails.OriginAirportCountry,
               departureAirportCode: flightDetails.Origin,
               departureTerminal: flightDetails.OrgTerminal,
               arrivalLocation: flightDetails.DestinationAirportName,
+              arrivalCityCountry: flightDetails.DestinationAirportCity + ', ' + flightDetails.DestinationAirportCountry,
               arrivalAirportCode: flightDetails.Destination,
               arrivalTerminal: flightDetails.DesTerminal,
               carrierCode: flightDetails.CarrierCode,
@@ -105,7 +112,7 @@ class FlightSearchParameters extends Component {
     })
   }
   handleChange (e, field) {
-    if (field === 'departureDate') {
+    if (field === 'departureDate' || field === 'returnDate') {
       this.setState({
         [field]: moment(e._d)
       })
@@ -194,9 +201,27 @@ class FlightSearchParameters extends Component {
     // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED. RESETS RESULTS ARRAY TO EMPTY
   }
 
+  handleDropdownSelect (e, type) {
+    const types = {
+      class: 'classState',
+      adults: 'adultsState',
+      '2-11y': '2-11yState',
+      '<2y': '<2yState'
+    }
+    this.setState({
+      [types[type]]: e.target.value
+    })
+  }
+
   componentDidMount () {
     // console.log('airports', airports)
     console.log('dates', this.props.dates)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      marginTop: nextProps.searching ? '55' : '180'
+    })
   }
   render () {
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
@@ -223,39 +248,46 @@ class FlightSearchParameters extends Component {
         }
 
         {/* WHY CANNOT SEE DATEBOX T.T */}
-        <div>
+        <div style={{textAlign: 'center'}}>
           <div style={{display: 'inline-block', width: '25%'}}>
-            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />
           </div>
           <div style={{display: 'inline-block', width: '25%'}}>
             <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
           </div>
-          <select style={{backgroundColor: 'transparent', marginRight: '5px'}}>
-            <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
+          <select value={this.state.classState} onChange={(e) => this.handleDropdownSelect(e, 'class')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
             <option style={{color: 'black'}} value='Economy'>E</option>
+            <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
+            <option style={{color: 'black'}} value='Business'>B</option>
+            <option style={{color: 'black'}} value='First'>F</option>
           </select>
-          <select style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
-            {[1,2,3,4,5,6,7,8,9,10].map((num) => {
-              return <option style={{color: 'black'}}>{num}</option>
+          <select value={this.state.adultsState} onChange={(e) => this.handleDropdownSelect(e, 'adults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+            {[1,2,3,4,5,6].map((num) => {
+              return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
-            {[1,2,3,4,5,6,7,8,9,10].map((num) => {
-              return <option style={{color: 'black'}}>{num}</option>
+          <select value={this.state['2-11yState']} onChange={(e) => this.handleDropdownSelect(e, '2-11y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+            {[0,1,2,3,4,5,6].map((num) => {
+              return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
-            {[1,2,3,4,5,6,7,8,9,10].map((num) => {
-              return <option style={{color: 'black'}}>{num}</option>
+          <select value={this.state['<2yState']} onChange={(e) => this.handleDropdownSelect(e, '<2y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+            {[0,1,2,3,4,5,6].map((num) => {
+              return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
         </div>
-        <div style={{marginBottom: '10px'}}>
+        <div style={{marginBottom: '10px', textAlign: 'center'}}>
           <span style={{width: '25%', display: 'inline-block', textAlign: 'center'}}>Departing</span>
           <span style={{width: '25%', display: 'inline-block', textAlign: 'center'}}>Returning</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>Class</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>Adults</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>2-11y</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>{'<2y'}</span>
         </div>
         <div style={{textAlign: 'center'}}>
-          <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>
+          <hr style={{opacity: 0.5}} />
+          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>}
         </div>
       </div>
     )

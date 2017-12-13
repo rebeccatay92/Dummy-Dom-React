@@ -7,6 +7,7 @@ import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFor
 
 import FlightSearchParameters from '../FlightSearchParameters'
 import FlightSearchResults from '../FlightSearchResults'
+import FlightSearchDetails from '../FlightSearchDetails'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
@@ -65,7 +66,8 @@ class CreateFlightForm extends Component {
       //   notes: String
       // }
       flights: [],
-      searching: false
+      searching: false,
+      selected: 0
     }
   }
 
@@ -263,7 +265,12 @@ class CreateFlightForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters dates={this.props.dates} date={this.props.date} handleSearch={(flights) => this.handleSearch(flights)} />
+              <FlightSearchParameters searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights) => this.handleSearch(flights)} />
+              {this.state.searching && this.state.flights[this.state.selected].flights.map((flight, i) => {
+                return (
+                  <FlightSearchDetails key={i} first={i === 0} flight={this.state.flights[this.state.selected]} index={i} />
+                )
+              })}
             </div>
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
