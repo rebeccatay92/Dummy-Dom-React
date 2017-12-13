@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AirportResults from './AirportResults'
+import Radium from 'radium'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -15,7 +16,7 @@ class FlightSearchParameters extends Component {
     super(props)
     let timeout
     this.state = {
-      marginTop: 240, // styling
+      marginTop: 180, // styling
       departureSearch: '',
       arrivalSearch: '',
       selectingDeparture: false,
@@ -25,9 +26,15 @@ class FlightSearchParameters extends Component {
       arrivalLocation: null,
       // start date, end date, start/end day
       departureDate: moment(new Date(this.props.date)),
-      startDay: null
+      returnDate: moment(new Date(this.props.date)),
+      startDay: null,
 
       // pax, class
+      classState: 'Economy',
+      adultsState: 1,
+      '2-11yState': 0,
+      '<2yState': 0
+
       // selected departure/arrival city/airport. what query to pass to airhob, and what props to pass to FlightResults?
     }
   }
@@ -35,10 +42,11 @@ class FlightSearchParameters extends Component {
     // HANDLE CLICK OF SEARCH BUTTON. HOIST QUERY UP TO PARENT TO REQUEST AIRHOB. RESULTS PASSED TO FLIGHTRESULTS PANEL. ONLY SELECTED FLIGHT DETAILS IS HOISTED UP TO FORM
     // console.log(moment(this.state.departureDate).format('MM/DD/YYYY'));
     const uriFull = 'https://dev-sandbox-api.airhob.com/sandboxapi/flights/v1.2/search'
-    const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
-    const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
+    // const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
+    // const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
     const travelDate = this.state.departureDate.format('MM/DD/YYYY')
-    console.log(origin, destination, travelDate);
+    // console.log(origin, destination, travelDate);
+    console.log('searching...');
     fetch(uriFull, {
       method: 'POST',
       headers: {
@@ -48,14 +56,17 @@ class FlightSearchParameters extends Component {
       },
       body: JSON.stringify({
         TripType: 'O',
-        NoOfAdults: 1,
-        NoOfChilds: 0,
-        NoOfInfants: 0,
-        ClassType: 'Economy',
+        NoOfAdults: this.state.adultsState,
+        NoOfChilds: this.state['2-11yState'],
+        NoOfInfants: this.state['<2yState'],
+        ClassType: this.state.classState,
         OriginDestination: [
           {
-            'Origin': origin,
-            'Destination': destination,
+            // 'Origin': origin,
+            // 'Destination': destination,
+            // 'TravelDate': travelDate
+            'Origin': 'SIN',
+            'Destination': 'BJS',
             'TravelDate': travelDate
           }
         ],
@@ -63,23 +74,31 @@ class FlightSearchParameters extends Component {
         FlightsCount: '200ITINS'
       })
     }).then(response => {
-      // console.log(response.json())
-      return response.json()
+      const json = response.json()
+      console.log(json)
+      return json
     }).then(results => {
+      if (!results.OneWayAvailabilityResponse.ItinearyDetails.length) {
+        console.log('no results')
+        return
+      }
       const flights = results.OneWayAvailabilityResponse.ItinearyDetails[0].Items
       // console.log(flights);
       const details = flights.map(flight => {
         return {
           cost: flight.FareDescription.PaxFareDetails[0].OtherInfo.GrossAmount,
+          totalDuration: parseInt(flight.ElapsedTime),
           flights: flight.FlightDetails.map(flightDetails => {
             return {
               departureDateTime: flightDetails.DepartureDateTime,
               arrivalDateTime: flightDetails.ArrivalDateTime,
               duration: flightDetails.Duration,
               departureLocation: flightDetails.OriginAirportName,
+              departureCityCountry: flightDetails.OriginAirportCity + ', ' + flightDetails.OriginAirportCountry,
               departureAirportCode: flightDetails.Origin,
               departureTerminal: flightDetails.OrgTerminal,
               arrivalLocation: flightDetails.DestinationAirportName,
+              arrivalCityCountry: flightDetails.DestinationAirportCity + ', ' + flightDetails.DestinationAirportCountry,
               arrivalAirportCode: flightDetails.Destination,
               arrivalTerminal: flightDetails.DesTerminal,
               carrierCode: flightDetails.CarrierCode,
@@ -93,7 +112,7 @@ class FlightSearchParameters extends Component {
     })
   }
   handleChange (e, field) {
-    if (field === 'departureDate') {
+    if (field === 'departureDate' || field === 'returnDate') {
       this.setState({
         [field]: moment(e._d)
       })
@@ -182,9 +201,27 @@ class FlightSearchParameters extends Component {
     // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED. RESETS RESULTS ARRAY TO EMPTY
   }
 
+  handleDropdownSelect (e, type) {
+    const types = {
+      class: 'classState',
+      adults: 'adultsState',
+      '2-11y': '2-11yState',
+      '<2y': '<2yState'
+    }
+    this.setState({
+      [types[type]]: e.target.value
+    })
+  }
+
   componentDidMount () {
     // console.log('airports', airports)
     console.log('dates', this.props.dates)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      marginTop: nextProps.searching ? '55' : '180'
+    })
   }
   render () {
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
@@ -194,10 +231,11 @@ class FlightSearchParameters extends Component {
       <div style={{position: 'relative'}}>
         <form>
           <div style={eventDescContainerStyle}>
-            <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departureSearch')} style={locationSelectionInputStyle(this.state.marginTop, 'flight')} value={this.state.departureSearch} />
+            <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departureSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} value={this.state.departureSearch} />
           </div>
+          <p style={{textAlign: 'center'}}>to</p>
           <div style={eventDescContainerStyle}>
-            <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Arrival City/Airport' name='arrivalSearch' onChange={(e) => this.handleChange(e, 'arrivalSearch')} onKeyUp={() => this.customDebounce('arrivalSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{marginTop: '0'}}} value={this.state.arrivalSearch} />
+            <textarea key='arrivalLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Arrival City/Airport' name='arrivalSearch' onChange={(e) => this.handleChange(e, 'arrivalSearch')} onKeyUp={() => this.customDebounce('arrivalSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{marginTop: '0', fontSize: '36px'}}} value={this.state.arrivalSearch} />
           </div>
         </form>
 
@@ -210,15 +248,50 @@ class FlightSearchParameters extends Component {
         }
 
         {/* WHY CANNOT SEE DATEBOX T.T */}
-        <div style={dateTimePickerContainerStyle}>
-          <DatePicker customInput={<CustomDatePicker />} selected={this.state.departureDate} dateFormat={'ddd DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />
+        <div style={{textAlign: 'center'}}>
+          <div style={{display: 'inline-block', width: '25%'}}>
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />
+          </div>
+          <div style={{display: 'inline-block', width: '25%'}}>
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
+          </div>
+          <select value={this.state.classState} onChange={(e) => this.handleDropdownSelect(e, 'class')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
+            <option style={{color: 'black'}} value='Economy'>E</option>
+            <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
+            <option style={{color: 'black'}} value='Business'>B</option>
+            <option style={{color: 'black'}} value='First'>F</option>
+          </select>
+          <select value={this.state.adultsState} onChange={(e) => this.handleDropdownSelect(e, 'adults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+            {[1,2,3,4,5,6].map((num) => {
+              return <option key={num} style={{color: 'black'}}>{num}</option>
+            })}
+          </select>
+          <select value={this.state['2-11yState']} onChange={(e) => this.handleDropdownSelect(e, '2-11y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+            {[0,1,2,3,4,5,6].map((num) => {
+              return <option key={num} style={{color: 'black'}}>{num}</option>
+            })}
+          </select>
+          <select value={this.state['<2yState']} onChange={(e) => this.handleDropdownSelect(e, '<2y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+            {[0,1,2,3,4,5,6].map((num) => {
+              return <option key={num} style={{color: 'black'}}>{num}</option>
+            })}
+          </select>
+        </div>
+        <div style={{marginBottom: '10px', textAlign: 'center'}}>
+          <span style={{width: '25%', display: 'inline-block', textAlign: 'center'}}>Departing</span>
+          <span style={{width: '25%', display: 'inline-block', textAlign: 'center'}}>Returning</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>Class</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>Adults</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>2-11y</span>
+          <span style={{width: '10%', display: 'inline-block', textAlign: 'center', marginRight: '5px'}}>{'<2y'}</span>
         </div>
         <div style={{textAlign: 'center'}}>
-          <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>
+          <hr style={{opacity: 0.5}} />
+          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>}
         </div>
       </div>
     )
   }
 }
 
-export default FlightSearchParameters
+export default Radium(FlightSearchParameters)
