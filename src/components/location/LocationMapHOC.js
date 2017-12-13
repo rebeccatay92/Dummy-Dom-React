@@ -146,7 +146,7 @@ const LocationMap = compose(
     <CustomControl controlPosition={window.google.maps.ControlPosition.RIGHT_TOP}>
       <button onClick={() => props.toggleMap()} style={{width: '50px', height: '50px'}}>BACK</button>
     </CustomControl>
-    <SearchBox ref={props.onSearchBoxMounted} bounds={props.bounds} controlPosition={window.google.maps.ControlPosition.TOP_LEFT} onPlacesChanged={props.onPlacesChanged}>
+    <SearchBox ref={props.onSearchBoxMounted} bounds={props.bounds} controlPosition={window.google.maps.ControlPosition.TOP_LEFT} onPlacesChanged={props.onPlacesChanged} >
       <input type='text' placeholder='Search for location'
         style={{
           boxSizing: `border-box`,
@@ -177,6 +177,7 @@ const LocationMap = compose(
       }
       </Marker>
     )}
+    <Marker position={{lat: props.currentLocation.latitude, lng: props.currentLocation.longitude}}></Marker>
   </GoogleMap>
 )
 
@@ -185,11 +186,13 @@ class LocationMapHOC extends Component {
     super(props)
     this.state = {}
   }
-
+  componentDidMount () {
+    console.log('currentLocation', this.props.currentLocation)
+  }
   render () {
     return (
       <div>
-        <LocationMap selectLocation={(obj) => this.props.selectLocation(obj)} toggleMap={() => this.props.toggleMap()} />
+        <LocationMap selectLocation={(obj) => this.props.selectLocation(obj)} toggleMap={() => this.props.toggleMap()} currentLocation={this.props.currentLocation} />
       </div>
     )
   }

@@ -96,14 +96,8 @@ class LocationSelection extends Component {
 
   handleClickOutside () {
     this.setState({selecting: false})
-
-    // if (this.state.selectedLocation.name) {
-    //   this.setState({search: this.state.selectedLocation.name})
-    // } else {
-    //   this.setState({search: ''})
-    // }
-    if (this.props.currentLocationName) {
-      this.setState({search: this.props.currentLocationName})
+    if (this.props.currentLocation) {
+      this.setState({search: this.props.currentLocation.name})
     } else {
       this.setState({search: ''})
     }
@@ -133,7 +127,7 @@ class LocationSelection extends Component {
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>
-          <LocationMapHOC selectLocation={(obj) => this.selectLocation(obj)} toggleMap={() => this.toggleMap()} />
+          <LocationMapHOC selectLocation={(obj) => this.selectLocation(obj)} toggleMap={() => this.toggleMap()} currentLocation={this.props.currentLocation} />
         </div>
         }
       </div>
