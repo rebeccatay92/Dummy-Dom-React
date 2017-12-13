@@ -141,8 +141,9 @@ class CreateActivityForm extends Component {
 
   selectLocation (location) {
     this.setState({googlePlaceData: location})
+    console.log('selected location', location.name)
   }
-
+  
   handleFileUpload (e) {
     e.preventDefault()
     var file = e.target.files[0]
@@ -254,7 +255,7 @@ class CreateActivityForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} />
+              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocationName={this.state.googlePlaceData.name} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Activity Description' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />

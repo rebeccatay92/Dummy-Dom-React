@@ -163,7 +163,9 @@ export const eventDropdownStyle = {position: 'absolute', right: '0px', top: '20p
 
 // Create Event Form Styles
 export const createEventFormContainerStyle = {backgroundColor: 'transparent', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: totalWidth + 'px', height: totalHeight + 'px', zIndex: 999, color: 'white'}
+
 export const createEventFormBoxShadow = {boxShadow: '2px 2px 10px 2px rgba(0, 0, 0, .2)', height: '90%'}
+
 export const createEventFormLeftPanelStyle = (url, type) => {
   return {backgroundImage: `url(${url})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', width: type === 'flight' ? rightPanelWidth + 'px' : leftPanelWidth + 'px', height: '100%', display: 'inline-block', verticalAlign: 'top', position: 'relative'}
 }
@@ -188,6 +190,8 @@ export const locationSelectionInputStyle = (marginTop, type) => {
   return {fontSize: '48px', textAlign: 'center', width: type === 'flight' ? rightPanelWidth / 2 + 'px' : leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
 }
 export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: `calc(50% - ${(leftPanelWidth / 2) / 2}px)`}
+
+export const locationMapContainerStyle = {backgroundColor: 'white', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: leftPanelWidth + 'px', height: (0.9 * totalHeight) + 'px', zIndex: 999, color: 'black'}
 
 // DateTimePicker.js styles
 export const dateTimePickerContainerStyle = {width: '370px', margin: '45px auto 0 auto', textAlign: 'center', height: '131px', position: 'relative', whiteSpace: 'noWrap'}

@@ -10,7 +10,7 @@ const MyMapComponent = compose(
   withProps({
     googleMapURL: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU&v=3.exp&libraries=geometry,drawing,places',
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `600px` }} />,
+    containerElement: <div style={{ height: (755 * 0.9) + 'px' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
   lifecycle({
@@ -65,18 +65,8 @@ const MyMapComponent = compose(
             this.setState({markerIndex: null})
           }
         },
-        handleButtonClick: (placeId) => {
+        handleSelectLocationClick: (placeId) => {
           var request = {placeId: placeId}
-
-          // REVERSE GEOCODING: PALCEID TO IATA CODE
-          // var geocoder = new window.google.maps.Geocoder
-          // geocoder.geocode({placeId: placeId}, function(results, status) {
-          //   if (status === 'OK') {
-          //     console.log('results', results)
-          //   } else {
-          //     console.log('fail')
-          //   }
-          // })
 
           if (refs.map) {
             var service = new window.google.maps.places.PlacesService(refs.map.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED)
@@ -138,11 +128,17 @@ const MyMapComponent = compose(
             center: nextCenter,
             markers: nextMarkers
           })
-          // refs.map.fitBounds(bounds);
-          // if (places.length === 1) {
-          //   this.setState({infoOpen: true})
-          //   this.setState({markerIndex: 0})
-          // }
+          refs.map.fitBounds(bounds)
+
+          // close any info windows that were open for previous search
+          this.setState({infoOpen: false})
+          this.setState({markerIndex: null})
+
+          // infowindow auto opens if only 1 result is present
+          if (places.length === 1) {
+            this.setState({infoOpen: true})
+            this.setState({markerIndex: 0})
+          }
         }
       })
     }
@@ -186,7 +182,7 @@ const MyMapComponent = compose(
               <h5>Name: {marker.place.name}</h5>
               <h5>Address: {marker.place.formatted_address}</h5>
               <h5>place_id: {marker.place.place_id}</h5>
-              <button onClick={() => props.handleButtonClick(marker.place.place_id)} >Select this location</button>
+              <button onClick={() => props.handleSelectLocationClick(marker.place.place_id)} >Select this location</button>
             </div>
           </InfoWindow>
       }
@@ -204,9 +200,11 @@ class CustomMap extends Component {
   }
   passLocationtoHOC (obj) {
     this.setState({selectedLocation: obj})
+    this.props.selectLocation(obj)
+    // hoist up to LocationSelection, which closes map and hoists state up to form
   }
   render () {
-    console.log('HOC state', this.state)
+    // console.log('HOC state', this.state)
     return (
       <div>
         <MyMapComponent passLocationtoHOC={(obj) => this.passLocationtoHOC(obj)} />

@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Radium from 'radium'
 import GooglePlaceResult from './GooglePlaceResult'
+import CustomMap from './GoogleMapHOC'
 
-import { locationSelectionInputStyle, locationDropdownStyle } from '../../Styles/styles'
+import { locationSelectionInputStyle, locationDropdownStyle, locationMapContainerStyle } from '../../Styles/styles'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
 var key = 'key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU'
 var placeSearch = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
-
 
 class LocationSelection extends Component {
   constructor (props) {
@@ -18,16 +18,18 @@ class LocationSelection extends Component {
       search: '',
       results: [],
       selecting: false,
-      selectedLocation: {},
-      marginTop: 240
+      // selectedLocation: {},
+      marginTop: 240,
+      mapIsOpen: false
     }
   }
 
   selectLocation (location) {
     this.props.selectLocation(location) // pass it up to createActivityForm googlePlaceData
-    this.setState({selectedLocation: location}) // set intermediate state here as well
+    // this.setState({selectedLocation: location}) // set intermediate state here as well
     this.setState({search: location.name}) // set search string
-    this.setState({selecting: false}) // close results
+    this.setState({selecting: false}) // close results if text search is used
+    this.setState({mapIsOpen: false}) // close map if map search was used
   }
 
   resizeTextArea () {
@@ -92,12 +94,24 @@ class LocationSelection extends Component {
 
   handleClickOutside () {
     this.setState({selecting: false})
-    if (this.state.selectedLocation.name) {
-      this.setState({search: this.state.selectedLocation.name})
+
+    // if (this.state.selectedLocation.name) {
+    //   this.setState({search: this.state.selectedLocation.name})
+    // } else {
+    //   this.setState({search: ''})
+    // }
+    if (this.props.currentLocationName) {
+      this.setState({search: this.props.currentLocationName})
     } else {
       this.setState({search: ''})
     }
+
     this.resizeTextArea()
+  }
+
+  toggleMap () {
+    console.log('toggle map is clicked')
+    this.setState({mapIsOpen: !this.state.mapIsOpen})
   }
 
   render () {
@@ -105,7 +119,7 @@ class LocationSelection extends Component {
       <div style={{position: 'relative'}}>
         <form>
           <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(this.state.marginTop)} value={this.state.search} />
-          <i className='material-icons'>place</i>
+          <i className='material-icons' onClick={() => this.toggleMap()} style={{fontSize: '50px'}}>place</i>
         </form>
 
         {this.state.selecting &&
@@ -114,7 +128,13 @@ class LocationSelection extends Component {
             return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
           })}
         </div>
-          }
+        }
+
+        {this.state.mapIsOpen &&
+        <div style={locationMapContainerStyle}>
+          <CustomMap selectLocation={(obj) => this.selectLocation(obj)} />
+        </div>
+        }
       </div>
     )
   }
