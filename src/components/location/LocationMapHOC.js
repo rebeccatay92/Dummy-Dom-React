@@ -3,10 +3,10 @@ import { compose, withProps, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
 import SearchBox from 'react-google-maps/lib/components/places/SearchBox'
 import { MAP } from 'react-google-maps/lib/constants'
-import CustomControl from './CustomControl'
+import CustomControlBackToForm from './CustomControlBackToForm'
 const _ = require('lodash')
 
-const MyMapComponent = compose(
+const LocationMap = compose(
   withProps({
     googleMapURL: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU&v=3.exp&libraries=geometry,drawing,places',
     loadingElement: <div style={{ height: `100%` }} />,
@@ -51,8 +51,38 @@ const MyMapComponent = compose(
         onInfoWindowMounted: ref => {
           refs.infoWindow = ref
         },
-        onButtonMounted: ref => {
-          refs.button = ref
+        onPlacesChanged: () => {
+          const places = refs.searchBox.getPlaces()
+          const bounds = new window.google.maps.LatLngBounds()
+
+          places.forEach(place => {
+            if (place.geometry.viewport) {
+              bounds.union(place.geometry.viewport)
+            } else {
+              bounds.extend(place.geometry.location)
+            }
+          })
+          const nextMarkers = places.map(place => ({
+            position: place.geometry.location,
+            place: place
+          }))
+          const nextCenter = _.get(nextMarkers, '0.position', this.state.center)
+
+          this.setState({
+            center: nextCenter,
+            markers: nextMarkers
+          })
+          refs.map.fitBounds(bounds)
+
+          // close any info windows that were open for previous search
+          this.setState({infoOpen: false})
+          this.setState({markerIndex: null})
+
+          // infowindow auto opens if only 1 result is present
+          if (places.length === 1) {
+            this.setState({infoOpen: true})
+            this.setState({markerIndex: 0})
+          }
         },
         handleMarkerClick: (index) => {
           var marker = this.state.markers[index]
@@ -98,47 +128,14 @@ const MyMapComponent = compose(
                 latitude: place.geometry.location.lat(),
                 longitude: place.geometry.location.lng()
               }})
-              this.props.passLocationtoHOC(this.state.googlePlaceData)
+              // this.props.passLocationtoHOC(this.state.googlePlaceData)
+              this.props.selectLocation(this.state.googlePlaceData)
             }
           })
         },
         closeInfoWindow: () => {
-          console.log('this', this)
           this.setState({infoOpen: false})
           this.setState({markerIndex: null})
-        },
-        onPlacesChanged: () => {
-          const places = refs.searchBox.getPlaces()
-          const bounds = new window.google.maps.LatLngBounds()
-
-          places.forEach(place => {
-            if (place.geometry.viewport) {
-              bounds.union(place.geometry.viewport)
-            } else {
-              bounds.extend(place.geometry.location)
-            }
-          })
-          const nextMarkers = places.map(place => ({
-            position: place.geometry.location,
-            place: place
-          }))
-          const nextCenter = _.get(nextMarkers, '0.position', this.state.center)
-
-          this.setState({
-            center: nextCenter,
-            markers: nextMarkers
-          })
-          refs.map.fitBounds(bounds)
-
-          // close any info windows that were open for previous search
-          this.setState({infoOpen: false})
-          this.setState({markerIndex: null})
-
-          // infowindow auto opens if only 1 result is present
-          if (places.length === 1) {
-            this.setState({infoOpen: true})
-            this.setState({markerIndex: 0})
-          }
         }
       })
     }
@@ -146,17 +143,10 @@ const MyMapComponent = compose(
   withScriptjs,
   withGoogleMap
 )((props) =>
-  <GoogleMap ref={props.onMapMounted} defaultZoom={15} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}}>
-    <CustomControl controlPosition={window.google.maps.ControlPosition.LEFT_CENTER}>
-      <div style={{background: 'white', width: '200px', margin: '0'}}>
-        <h4 style={{margin: '0'}}>Selected Location</h4>
-        <h5>placeId: {props.googlePlaceData.placeId}</h5>
-        <h5>countryCode: {props.googlePlaceData.countryCode}</h5>
-        <h5>name: {props.googlePlaceData.name}</h5>
-        <h5>address: {props.googlePlaceData.address}</h5>
-        <h5>lat/lng: {props.googlePlaceData.latitude}, {props.googlePlaceData.longitude}</h5>
-      </div>
-    </CustomControl>
+  <GoogleMap ref={props.onMapMounted} defaultZoom={15} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false}}>
+    <CustomControlBackToForm controlPosition={window.google.maps.ControlPosition.RIGHT_TOP}>
+      <button onClick={() => props.toggleMap()} style={{width: '50px', height: '50px'}}>BACK</button>
+    </CustomControlBackToForm>
     <SearchBox ref={props.onSearchBoxMounted} bounds={props.bounds} controlPosition={window.google.maps.ControlPosition.TOP_LEFT} onPlacesChanged={props.onPlacesChanged}>
       <input type='text' placeholder='Search for location'
         style={{
@@ -191,26 +181,21 @@ const MyMapComponent = compose(
   </GoogleMap>
 )
 
-class CustomMap extends Component {
+class LocationMapHOC extends Component {
   constructor (props) {
     super(props)
     this.state = {
       selectedLocation: null
     }
   }
-  passLocationtoHOC (obj) {
-    this.setState({selectedLocation: obj})
-    this.props.selectLocation(obj)
-    // hoist up to LocationSelection, which closes map and hoists state up to form
-  }
+
   render () {
-    // console.log('HOC state', this.state)
     return (
       <div>
-        <MyMapComponent passLocationtoHOC={(obj) => this.passLocationtoHOC(obj)} />
+        <LocationMap selectLocation={(obj) => this.props.selectLocation(obj)} toggleMap={() => this.props.toggleMap()} />
       </div>
     )
   }
 }
 
-export default CustomMap
+export default LocationMapHOC

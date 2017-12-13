@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import Radium from 'radium'
 import GooglePlaceResult from './GooglePlaceResult'
-import CustomMap from './GoogleMapHOC'
+import LocationMapHOC from './LocationMapHOC'
 
 import { locationSelectionInputStyle, locationDropdownStyle, locationMapContainerStyle } from '../../Styles/styles'
 
@@ -110,7 +110,6 @@ class LocationSelection extends Component {
   }
 
   toggleMap () {
-    console.log('toggle map is clicked')
     this.setState({mapIsOpen: !this.state.mapIsOpen})
   }
 
@@ -119,7 +118,7 @@ class LocationSelection extends Component {
       <div style={{position: 'relative'}}>
         <form>
           <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(this.state.marginTop)} value={this.state.search} />
-          <i className='material-icons' onClick={() => this.toggleMap()} style={{fontSize: '50px'}}>place</i>
+          <i className='material-icons' onClick={() => this.toggleMap()} style={{fontSize: '50px', cursor: 'pointer'}}>place</i>
         </form>
 
         {this.state.selecting &&
@@ -132,7 +131,7 @@ class LocationSelection extends Component {
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>
-          <CustomMap selectLocation={(obj) => this.selectLocation(obj)} />
+          <LocationMapHOC selectLocation={(obj) => this.selectLocation(obj)} toggleMap={() => this.toggleMap()} />
         </div>
         }
       </div>
