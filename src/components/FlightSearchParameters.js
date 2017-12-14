@@ -29,7 +29,6 @@ class FlightSearchParameters extends Component {
       departureDate: moment(new Date(this.props.date)),
       returnDate: moment(new Date(this.props.date)),
       startDay: null,
-
       // pax, class
       classState: 'Economy',
       adultsState: 1,
