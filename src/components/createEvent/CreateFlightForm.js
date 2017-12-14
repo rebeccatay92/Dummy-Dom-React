@@ -280,7 +280,7 @@ class CreateFlightForm extends Component {
             <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
               <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
-                <FlightSearchResults flights={this.state.flights} searching={this.state.searching} />
+                {this.state.searching && <FlightSearchResults flights={this.state.flights} />}
               </div>
             </div>
           </div>

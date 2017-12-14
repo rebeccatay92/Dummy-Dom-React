@@ -53,9 +53,9 @@ class FlightMapHOC extends Component {
 
   render () {
     return (
-      <div>
-        <FlightMap selectLocation={(obj) => this.props.selectLocation(obj)} toggleMap={() => this.props.toggleMap()} />
-      </div>
+      // <div>
+      <FlightMap />
+      // </div>
     )
   }
 }

@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import AirportResults from './AirportResults'
 import Radium from 'radium'
+import moment from 'moment'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import CustomDatePicker from './CustomDatePicker'
-import moment from 'moment'
+import FlightMapHOC from './location/FlightMapHOC'
 
-import { dateTimePickerContainerStyle, locationSelectionInputStyle, eventDescContainerStyle } from '../Styles/styles'
+import { dateTimePickerContainerStyle, locationSelectionInputStyle, eventDescContainerStyle, flightMapContainerStyle } from '../Styles/styles'
 
 import airports from '../data/airports.json'
 
@@ -229,6 +230,9 @@ class FlightSearchParameters extends Component {
     // AIRPORT INPUT NEED RESIZETEXTBOX
     return (
       <div style={{position: 'relative'}}>
+        <div style={flightMapContainerStyle}>
+          <FlightMapHOC />
+        </div>
         <form>
           <div style={eventDescContainerStyle}>
             <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departureSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} value={this.state.departureSearch} />
