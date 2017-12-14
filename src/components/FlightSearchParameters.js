@@ -29,13 +29,11 @@ class FlightSearchParameters extends Component {
       departureDate: moment(new Date(this.props.date)),
       returnDate: moment(new Date(this.props.date)),
       startDay: null,
-      // pax, class
+      // paxAdults, paxChidren, paxInfants
       classState: 'Economy',
       adultsState: 1,
       '2-11yState': 0,
       '<2yState': 0
-
-      // selected departure/arrival city/airport. what query to pass to airhob, and what props to pass to FlightResults?
     }
   }
   handleSubmit () {
@@ -215,7 +213,7 @@ class FlightSearchParameters extends Component {
 
   componentDidMount () {
     // console.log('airports', airports)
-    console.log('dates', this.props.dates)
+    // console.log('dates', this.props.dates)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -224,14 +222,12 @@ class FlightSearchParameters extends Component {
     })
   }
   render () {
-    // DATE/DAY PICKER. PAX. SINGLE/RETURN
-    // SEARCH BUTTON
-    // AIRPORT INPUT NEED RESIZETEXTBOX
     return (
       <div style={{position: 'relative'}}>
         <div style={flightMapContainerStyle}>
-          <FlightMapHOC />
+          <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
         </div>
+
         <form>
           <div style={eventDescContainerStyle}>
             <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departureSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} value={this.state.departureSearch} />

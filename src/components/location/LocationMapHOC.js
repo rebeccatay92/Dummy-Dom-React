@@ -86,7 +86,7 @@ const LocationMap = compose(
         },
         handleMarkerClick: (index) => {
           var marker = this.state.markers[index]
-          console.log('marker place', marker.place)
+          // console.log('marker place', marker.place)
           if (!this.state.infoOpen || this.state.markerIndex !== index) {
             this.setState({infoOpen: true})
             this.setState({markerIndex: index})

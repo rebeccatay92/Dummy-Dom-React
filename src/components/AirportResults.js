@@ -23,7 +23,7 @@ class AirportResults extends Component {
   // }
 
   handleClick (cityOrAirport) {
-    console.log('clicked', cityOrAirport)
+    // console.log('clicked', cityOrAirport)
     // only airport rows have id
     // city obj was self created, has no id
     if (cityOrAirport.id) {
@@ -42,7 +42,7 @@ class AirportResults extends Component {
     this.props.results.forEach(e => {
       if (e.cityCode && !cityCodes.includes(e.cityCode)) {
         cityCodes.push(e.cityCode)
-        cities.push({name: e.city, cityCode: e.cityCode, country: e.country})
+        cities.push({name: e.city, country: e.country, cityCode: e.cityCode, latitude: e.cityLat, longitude: e.cityLng})
       }
     })
 
@@ -64,7 +64,7 @@ class AirportResults extends Component {
             <h5 key={`cityrow${i}`} onClick={() => this.handleClick(city)}>City: {city.name}, {city.cityCode}, {city.country}</h5>
 
             {airportsInCities.map((airport, i) => {
-              console.log('city airport', airport)
+              // console.log('city airport', airport)
               if (airport.cityCode === cityCode) {
                 return <h5 key={`cityairportrow${i}`} onClick={() => this.handleClick(airport)}>--> Airport: {airport.name}, {airport.city}, {airport.iata}</h5>
               }
