@@ -7,7 +7,6 @@ import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFor
 
 import FlightSearchParameters from '../FlightSearchParameters'
 import FlightSearchResults from '../FlightSearchResults'
-import FlightSearchDetails from '../FlightSearchDetails'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
@@ -64,16 +63,13 @@ class CreateFlightForm extends Component {
       //   endLoadSequence: Int
       //   notes: String
       // }
-      flights: [],
-      searching: false,
-      selected: 0
+      flights: []
     }
   }
 
   handleSearch (flights) {
     this.setState({
-      flights,
-      searching: true
+      flights
     })
     console.log(this.state)
   }
@@ -265,23 +261,16 @@ class CreateFlightForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights) => this.handleSearch(flights)} />
-              {this.state.searching && this.state.flights[this.state.selected].flights.map((flight, i) => {
-                return (
-                  <FlightSearchDetails key={i} first={i === 0} flight={this.state.flights[this.state.selected]} index={i} />
-                )
-              })}
+              <FlightSearchParameters dates={this.props.dates} date={this.props.date} handleSearch={(flights) => this.handleSearch(flights)} />
             </div>
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle('flight')}>
-            <div style={bookingNotesContainerStyle}>
+            <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
-              <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
-                {this.state.searching && <FlightSearchResults flights={this.state.flights} />}
-              </div>
+              <FlightSearchResults flights={this.state.flights} />
             </div>
           </div>
 
