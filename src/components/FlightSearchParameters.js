@@ -185,7 +185,7 @@ class FlightSearchParameters extends Component {
   }
 
   selectLocation (type, details) {
-    console.log('type', type, 'details', details)
+    // console.log('type', type, 'details', details)
 
     this.setState({[`${type}Location`]: details}) // set airport/city details
     this.setState({[`${type}Search`]: details.name}) // set name in input field
