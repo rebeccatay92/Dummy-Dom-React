@@ -191,9 +191,7 @@ class LocationMapHOC extends Component {
   }
   render () {
     return (
-      <div>
-        <LocationMap selectLocation={(obj) => this.props.selectLocation(obj)} toggleMap={() => this.props.toggleMap()} currentLocation={this.props.currentLocation} />
-      </div>
+      <LocationMap selectLocation={(obj) => this.props.selectLocation(obj)} toggleMap={() => this.props.toggleMap()} currentLocation={this.props.currentLocation} />
     )
   }
 }
