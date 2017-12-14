@@ -270,7 +270,9 @@ class CreateFlightForm extends Component {
           <div style={createEventFormRightPanelStyle('flight')}>
             <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
-              <FlightSearchResults flights={this.state.flights} />
+              <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
+                {this.state.searching && <FlightSearchResults flights={this.state.flights} />}
+              </div>
             </div>
           </div>
 
