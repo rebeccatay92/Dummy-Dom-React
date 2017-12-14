@@ -247,7 +247,7 @@ class FlightSearchParameters extends Component {
           <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('arrival', details)} />
         }
 
-        {/* WHY CANNOT SEE DATEBOX T.T */}
+        {/* DATEBOX */}
         <div style={{textAlign: 'center'}}>
           <div style={{display: 'inline-block', width: '25%'}}>
             <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />

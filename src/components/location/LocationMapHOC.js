@@ -177,7 +177,7 @@ const LocationMap = compose(
       }
       </Marker>
     )}
-    <Marker position={{lat: props.currentLocation.latitude, lng: props.currentLocation.longitude}}></Marker>
+    {/* <Marker position={{lat: props.currentLocation.latitude, lng: props.currentLocation.longitude}}></Marker> */}
   </GoogleMap>
 )
 
