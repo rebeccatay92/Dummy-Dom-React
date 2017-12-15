@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { compose, withProps, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polyline, InfoWindow } from 'react-google-maps'
+import { MarkerWithLabel } from 'react-google-maps/lib/components/addons/MarkerWithLabel'
+import InfoBox from 'react-google-maps/lib/components/addons/InfoBox'
 
 const FlightMap = compose(
   withProps({
@@ -29,8 +31,14 @@ const FlightMap = compose(
         onMarkerMounted: ref => {
           refs.marker = ref
           console.log('marker mounted')
-          // console.log('departure', this.props.departureLocation)
-          // console.log('arrival', this.props.arrivalLocation)
+
+          // CENTERS MAP ON FIRST MARKER
+          if (this.props.departureLocation && !this.props.arrivalLocation) {
+            this.setState({center: {lat: this.props.departureLocation.latitude, lng: this.props.departureLocation.longitude}})
+          }
+          if (!this.props.departureLocation && this.props.arrivalLocation) {
+            this.setState({center: {lat: this.props.arrivalLocation.latitude, lng: this.props.arrivalLocation.longitude}})
+          }
         },
         handleMarkerChange: () => {
           // console.log('refs', this)
@@ -40,7 +48,7 @@ const FlightMap = compose(
             const bounds = new window.google.maps.LatLngBounds()
             bounds.extend({lat: this.props.departureLocation.latitude, lng: this.props.departureLocation.longitude})
             bounds.extend({lat: this.props.arrivalLocation.latitude, lng: this.props.arrivalLocation.longitude})
-            refs.map.fitBounds(bounds)
+            refs.map.fitBounds(bounds, 100)
           }
         }
       })
@@ -61,26 +69,45 @@ const FlightMap = compose(
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={2} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false}}>
 
-    {/* <Marker ref={props.onMarkerMounted} position={props.center} /> */}
-    {/* GOOGLE ONPOSITIONCHANGED HAS NO ARGS */}
-    {props.departureLocation &&
-    <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} onChange={() => this.handleMarkerChange()}>
-      <InfoWindow>
-        <div>
-          <h5>{props.departureLocation.name}</h5>
-        </div>
-      </InfoWindow>
-    </Marker>
+    {/* {props.departureLocation &&
+      <MarkerWithLabel position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} labelAnchor={new window.google.maps.Point(50, 100)} labelStyle={{backgroundColor: 'white', fontSize: '15px', padding: '5px'}}>
+        <div>{props.departureLocation.name}</div>
+      </MarkerWithLabel>
     }
+    {props.arrivalLocation &&
+      <MarkerWithLabel position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation} labelAnchor={new window.google.maps.Point(0, 15)} labelStyle={{backgroundColor: 'white', fontSize: '15px', padding: '5px'}}>
+        <div>{props.arrivalLocation.name}</div>
+      </MarkerWithLabel>
+    } */}
+
+    {props.departureLocation &&
+      <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation}>
+        <InfoWindow>
+          <div>
+            <h5>{props.departureLocation.name}</h5>
+          </div>
+        </InfoWindow>
+      </Marker>
+    }
+    {/* <InfoBox
+      position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}}
+      options={{ closeBoxURL: ``, enableEventPropagation: true }}
+      >
+        <div style={{ backgroundColor: `yellow`, opacity: 0.75, padding: `5px` }}>
+          <div style={{ fontSize: `15px`, fontColor: `#08233B` }}>
+            Hello, Taipei!
+          </div>
+        </div>
+      </InfoBox> */}
 
     {props.arrivalLocation &&
-    <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation}>
-      <InfoWindow>
-        <div>
-          <h5>{props.arrivalLocation.name}</h5>
-        </div>
-      </InfoWindow>
-    </Marker>
+      <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation}>
+        <InfoWindow>
+          <div>
+            <h5>{props.arrivalLocation.name}</h5>
+          </div>
+        </InfoWindow>
+      </Marker>
     }
 
     {(props.departureLocation && props.arrivalLocation) &&
@@ -94,12 +121,9 @@ class FlightMapHOC extends Component {
     super(props)
     this.state = {}
   }
-  // componentDidMount () {
-  //   console.log('flight hoc mount')
-  // }
   render () {
     return (
-      <FlightMap departureLocation={this.props.departureLocation} arrivalLocation={this.props.arrivalLocation} testing={'hello'} />
+      <FlightMap departureLocation={this.props.departureLocation} arrivalLocation={this.props.arrivalLocation} />
     )
   }
 }
