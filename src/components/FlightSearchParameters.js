@@ -130,14 +130,14 @@ class FlightSearchParameters extends Component {
 
   customDebounce (type) {
     // type is 'departureSearch' or 'arrivalSearch'
-    var queryStr = this.state[type]
+    var queryStr = this.state[`${type}Search`]
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      this.searchAirports(type, queryStr)
+      this.searchAirports(queryStr)
     }, 500)
   }
 
-  searchAirports (type, queryStr) {
+  searchAirports (queryStr) {
     queryStr = queryStr.trim()
     if (!queryStr.length || queryStr.length < 3) {
       this.setState({results: []})
@@ -161,6 +161,8 @@ class FlightSearchParameters extends Component {
 
     var results = []
     airports.forEach(e => {
+      // max 10 results to prevent hanging
+      if (results.length > 9) return
       e.matchCount = 0
       // if (!e.city) {
       //   console.log(e)
@@ -228,17 +230,16 @@ class FlightSearchParameters extends Component {
           <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
         </div>
 
-        <form>
-          <div style={eventDescContainerStyle}>
-            <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departureSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} value={this.state.departureSearch} />
-          </div>
-          <p style={{textAlign: 'center'}}>to</p>
-          <div style={eventDescContainerStyle}>
-            <textarea key='arrivalLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Arrival City/Airport' name='arrivalSearch' onChange={(e) => this.handleChange(e, 'arrivalSearch')} onKeyUp={() => this.customDebounce('arrivalSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{marginTop: '0', fontSize: '36px'}}} value={this.state.arrivalSearch} />
-          </div>
-        </form>
+        <div style={eventDescContainerStyle}>
+          <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' value={this.state.departureSearch} onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departure')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
+        </div>
 
-        {/* PROBABLY SHOULD COMBINE LOL */}
+        <p style={{textAlign: 'center'}}>to</p>
+
+        <div style={eventDescContainerStyle}>
+          <textarea key='arrivalLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Arrival City/Airport' name='arrivalSearch' value={this.state.arrivalSearch} onChange={(e) => this.handleChange(e, 'arrivalSearch')} onKeyUp={() => this.customDebounce('arrival')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{marginTop: '0', fontSize: '36px'}}} />
+        </div>
+        
         {this.state.selectingDeparture &&
           <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('departure', details)} />
         }

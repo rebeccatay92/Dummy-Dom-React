@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { compose, withProps, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polyline, InfoWindow } from 'react-google-maps'
-import { MarkerWithLabel } from 'react-google-maps/lib/components/addons/MarkerWithLabel'
 import InfoBox from 'react-google-maps/lib/components/addons/InfoBox'
 
 const FlightMap = compose(
@@ -67,38 +66,25 @@ const FlightMap = compose(
   withScriptjs,
   withGoogleMap
 )((props) =>
-  <GoogleMap ref={props.onMapMounted} defaultZoom={2} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false}}>
-
-    {/* {props.departureLocation &&
-      <MarkerWithLabel position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} labelAnchor={new window.google.maps.Point(50, 100)} labelStyle={{backgroundColor: 'white', fontSize: '15px', padding: '5px'}}>
-        <div>{props.departureLocation.name}</div>
-      </MarkerWithLabel>
-    }
-    {props.arrivalLocation &&
-      <MarkerWithLabel position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation} labelAnchor={new window.google.maps.Point(0, 15)} labelStyle={{backgroundColor: 'white', fontSize: '15px', padding: '5px'}}>
-        <div>{props.arrivalLocation.name}</div>
-      </MarkerWithLabel>
-    } */}
+  <GoogleMap ref={props.onMapMounted} defaultZoom={2} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false, zoomControl: false, gestureHandling: 'none'}}>
 
     {props.departureLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation}>
-        <InfoWindow>
-          <div>
-            <h5>{props.departureLocation.name}</h5>
+        <InfoBox position={new window.google.maps.LatLng(props.departureLocation.latitude, props.departureLocation.longitude)} options={{closeBoxURL: ``, enableEventPropagation: true, pixelOffset: new window.google.maps.Size(-100, -100)}}>
+          <div style={{backgroundColor: `white`, padding: `10px`, borderRadius: '2px', width: '200px'}}>
+            <div style={{ fontSize: `15px`, fontColor: `#08233B` }}>
+              {props.departureLocation.name}
+            </div>
           </div>
-        </InfoWindow>
+        </InfoBox>
       </Marker>
     }
-    {/* <InfoBox
-      position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}}
-      options={{ closeBoxURL: ``, enableEventPropagation: true }}
-      >
-        <div style={{ backgroundColor: `yellow`, opacity: 0.75, padding: `5px` }}>
-          <div style={{ fontSize: `15px`, fontColor: `#08233B` }}>
-            Hello, Taipei!
-          </div>
-        </div>
-      </InfoBox> */}
+    {/* <InfoWindow>
+      <div>
+        <h5>{props.departureLocation.name}</h5>
+      </div>
+    </InfoWindow> */}
+
 
     {props.arrivalLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation}>

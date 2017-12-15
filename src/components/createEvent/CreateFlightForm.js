@@ -34,13 +34,6 @@ class CreateFlightForm extends Component {
       bookingConfirmation: '',
       backgroundImage: defaultBackground,
       attachments: [],
-      // ARR OF ATTACHMENT INPUT
-      // input attachmentInput {
-      //   fileName: String
-      //   fileAlias: String
-      //   fileType: String
-      //   fileSize: String
-      // }
       flightInstances: [],
       // ARR OF FLIGHTINSTANCE INPUT
       // input createFlightInstanceInput {

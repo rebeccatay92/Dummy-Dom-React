@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import airports from '../data/airports.json'
+// import { locationDropdownStyle } from '../Styles/styles'
 
 class AirportResults extends Component {
   constructor (props) {
@@ -33,7 +34,7 @@ class AirportResults extends Component {
     }
     this.props.selectLocation(cityOrAirport)
   }
-  // NEEDS CITY/AIRPORT LISTING, SELECT AIRPORT, CLICK OUTSIDE, HOVER LOGIC
+
   render () {
     var cityCodes = []
     var cities = []
@@ -64,7 +65,6 @@ class AirportResults extends Component {
             <h5 key={`cityrow${i}`} onClick={() => this.handleClick(city)}>City: {city.name}, {city.cityCode}, {city.country}</h5>
 
             {airportsInCities.map((airport, i) => {
-              // console.log('city airport', airport)
               if (airport.cityCode === cityCode) {
                 return <h5 key={`cityairportrow${i}`} onClick={() => this.handleClick(airport)}>--> Airport: {airport.name}, {airport.city}, {airport.iata}</h5>
               }
