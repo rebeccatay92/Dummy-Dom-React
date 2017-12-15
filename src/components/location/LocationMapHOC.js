@@ -24,6 +24,7 @@ const LocationMap = compose(
         markers: [],
         infoOpen: false,
         markerIndex: null,
+        currentLocationWindow: false,
         googlePlaceData: {
           placeId: null,
           name: null,
@@ -35,6 +36,12 @@ const LocationMap = compose(
         },
         onMapMounted: ref => {
           refs.map = ref
+          console.log('current location', this.props.currentLocation)
+          // even if current location doesnt exist, HOC still passes an empty obj down. check key exists
+          if (this.props.currentLocation.latitude) {
+            this.setState({center: {lat: this.props.currentLocation.latitude, lng: this.props.currentLocation.longitude}})
+            this.setState({currentLocationWindow: true})
+          }
         },
         onBoundsChanged: () => {
           this.setState({
@@ -50,6 +57,9 @@ const LocationMap = compose(
         },
         onInfoWindowMounted: ref => {
           refs.infoWindow = ref
+        },
+        onCurrentLocationMounted: ref => {
+          refs.currentLocationMarker = ref
         },
         onPlacesChanged: () => {
           const places = refs.searchBox.getPlaces()
@@ -85,7 +95,7 @@ const LocationMap = compose(
           }
         },
         handleMarkerClick: (index) => {
-          var marker = this.state.markers[index]
+          // var marker = this.state.markers[index]
           // console.log('marker place', marker.place)
           if (!this.state.infoOpen || this.state.markerIndex !== index) {
             this.setState({infoOpen: true})
@@ -94,6 +104,9 @@ const LocationMap = compose(
             this.setState({infoOpen: false})
             this.setState({markerIndex: null})
           }
+        },
+        handleCurrentLocationClick: () => {
+          this.setState({currentLocationWindow: !this.state.currentLocationWindow})
         },
         handleSelectLocationClick: (placeId) => {
           var request = {placeId: placeId}
@@ -135,6 +148,9 @@ const LocationMap = compose(
         closeInfoWindow: () => {
           this.setState({infoOpen: false})
           this.setState({markerIndex: null})
+        },
+        closeCurrentLocationWindow: () => {
+          this.setState({currentLocationWindow: false})
         }
       })
     }
@@ -177,7 +193,19 @@ const LocationMap = compose(
       }
       </Marker>
     )}
-    {/* <Marker position={{lat: props.currentLocation.latitude, lng: props.currentLocation.longitude}}></Marker> */}
+    {props.currentLocation.latitude &&
+      <Marker ref={props.onCurrentLocationMounted} position={{lat: props.currentLocation.latitude, lng: props.currentLocation.longitude}} onClick={() => props.handleCurrentLocationClick()}>
+        {props.currentLocationWindow &&
+          <InfoWindow onCloseClick={props.closeCurrentLocationWindow}>
+            <div>
+              <h5>Currently selected location</h5>
+              <h5>Name: {props.currentLocation.name}</h5>
+              <h5>Address: {props.currentLocation.address}</h5>
+            </div>
+          </InfoWindow>
+        }
+      </Marker>
+    }
   </GoogleMap>
 )
 
@@ -185,9 +213,6 @@ class LocationMapHOC extends Component {
   constructor (props) {
     super(props)
     this.state = {}
-  }
-  componentDidMount () {
-    console.log('currentLocation', this.props.currentLocation)
   }
   render () {
     return (
