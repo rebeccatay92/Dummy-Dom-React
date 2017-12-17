@@ -18,6 +18,8 @@ const FlightMap = compose(
         center: {
           lat: 0, lng: 0
         },
+        departureWindow: true,
+        arrivalWindow: true,
         onMapMounted: ref => {
           refs.map = ref
         },
@@ -50,6 +52,12 @@ const FlightMap = compose(
             bounds.extend({lat: arrival.latitude, lng: arrival.longitude})
             refs.map.fitBounds(bounds, 100)
           }
+        },
+        toggleDepartureWindow: () => {
+          this.setState({departureWindow: !this.state.departureWindow})
+        },
+        toggleArrivalWindow: () => {
+          this.setState({arrivalWindow: !this.state.arrivalWindow})
         }
       })
     },
@@ -64,36 +72,42 @@ const FlightMap = compose(
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={2} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false, zoomControl: false, gestureHandling: 'none'}}>
 
-    {props.departureLocation &&
-      <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation}>
+    {/* {props.departureLocation &&
+      <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} clickable={false}>
         <InfoBox position={new window.google.maps.LatLng(props.departureLocation.latitude, props.departureLocation.longitude)} options={{closeBoxURL: ``, enableEventPropagation: true, pixelOffset: new window.google.maps.Size(-100, -100)}}>
-          <div style={{backgroundColor: `white`, padding: `10px`, borderRadius: '2px', width: '200px'}}>
-            <div style={{ fontSize: `15px`, fontColor: `#08233B` }}>
+          <div style={{backgroundColor: `white`, padding: `10px`, borderRadius: '2px'}}>
+            <div style={{ fontSize: `14px`, fontColor: `#08233B` }}>
               {props.departureLocation.name}
             </div>
           </div>
         </InfoBox>
       </Marker>
+    } */}
+    {props.departureLocation &&
+      <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} onClick={props.toggleDepartureWindow}>
+        {props.departureWindow &&
+          <InfoWindow ref={props.onDepartureWindowMounted} onCloseClick={props.toggleDepartureWindow}>
+            <div>
+              <h5>{props.departureLocation.name}</h5>
+            </div>
+          </InfoWindow>
+        }
+      </Marker>
     }
-    {/* <InfoWindow>
-      <div>
-        <h5>{props.departureLocation.name}</h5>
-      </div>
-    </InfoWindow> */}
-
-
     {props.arrivalLocation &&
-      <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation}>
-        <InfoWindow>
-          <div>
-            <h5>{props.arrivalLocation.name}</h5>
-          </div>
-        </InfoWindow>
+      <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation} onClick={props.toggleArrivalWindow}>
+        {props.arrivalWindow &&
+          <InfoWindow onCloseClick={props.toggleArrivalWindow}>
+            <div>
+              <h5>{props.arrivalLocation.name}</h5>
+            </div>
+          </InfoWindow>
+        }
       </Marker>
     }
 
     {(props.departureLocation && props.arrivalLocation) &&
-      <Polyline path={[{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}, {lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}]} options={{geodesic: false}} />
+      <Polyline path={[{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}, {lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}]} options={{geodesic: true, icons: [{icon: {path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW}, offset: '50%'}]}} />
     }
   </GoogleMap>
 )

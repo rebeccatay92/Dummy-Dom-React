@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { compose, withProps, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
 import SearchBox from 'react-google-maps/lib/components/places/SearchBox'
-import { MAP } from 'react-google-maps/lib/constants'
 import CustomControl from './CustomControl'
 const _ = require('lodash')
 
