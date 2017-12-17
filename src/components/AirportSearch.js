@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import onClickOutside from 'react-onclickoutside'
 import AirportResults from './AirportResults'
 import airports from '../data/airports.json'
 import { locationSelectionInputStyle } from '../Styles/styles'
@@ -83,10 +84,19 @@ class AirportSearch extends Component {
     this.props.selectLocation(details)
   }
 
+  handleClickOutside () {
+    this.setState({selecting: false, results: []})
+    if (this.props.currentLocation) {
+      this.setState({search: this.props.currentLocation.name})
+    } else {
+      this.setState({search: ''})
+    }
+  }
+
   render () {
     return (
       <div>
-        <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
+        <textarea key='airportLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
 
         {this.state.selecting &&
           <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />
@@ -96,4 +106,4 @@ class AirportSearch extends Component {
   }
 }
 
-export default AirportSearch
+export default onClickOutside(AirportSearch)

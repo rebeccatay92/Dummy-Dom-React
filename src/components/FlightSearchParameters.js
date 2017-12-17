@@ -29,8 +29,7 @@ class FlightSearchParameters extends Component {
     }
   }
 
-  handleSubmit () {
-    // HANDLE CLICK OF SEARCH BUTTON. HOIST QUERY UP TO PARENT TO REQUEST AIRHOB. RESULTS PASSED TO FLIGHTRESULTS PANEL. ONLY SELECTED FLIGHT DETAILS IS HOISTED UP TO FORM
+  handleFlightSearch () {
     // console.log(moment(this.state.departureDate).format('MM/DD/YYYY'));
     const uriFull = 'https://dev-sandbox-api.airhob.com/sandboxapi/flights/v1.2/search'
     // const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
@@ -134,14 +133,13 @@ class FlightSearchParameters extends Component {
           <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
         </div>
 
+        {/* NEED TO STYLE MARGIN TOP HERE / INSIDE AIRPORTSEARCH */}
         <div style={eventDescContainerStyle}>
-          <AirportSearch location={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={(details) => this.selectLocation('departure', details)} />
-        </div>
+          <AirportSearch currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
 
-        <p style={{textAlign: 'center'}}>to</p>
+          <p style={{textAlign: 'center'}}>to</p>
 
-        <div style={eventDescContainerStyle}>
-          <AirportSearch location={this.state.arrivalLocation} placeholder={'Arrival City/Airport'} selectLocation={(details) => this.selectLocation('arrival', details)} />
+          <AirportSearch currentLocation={this.state.arrivalLocation} placeholder={'Arrival City/Airport'} selectLocation={details => this.selectLocation('arrival', details)} />
         </div>
 
         {/* DATEBOX */}
@@ -186,7 +184,7 @@ class FlightSearchParameters extends Component {
         </div>
         <div style={{textAlign: 'center'}}>
           <hr style={{opacity: 0.5}} />
-          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>}
+          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleFlightSearch()}>SEARCH</button>}
         </div>
       </div>
     )
