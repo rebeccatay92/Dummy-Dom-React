@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import AirportSearch from './AirportSearch'
-import AirportResults from './AirportResults'
 import Radium from 'radium'
 import moment from 'moment'
 
@@ -9,14 +8,11 @@ import 'react-datepicker/dist/react-datepicker.css'
 import CustomDatePicker from './CustomDatePicker'
 import FlightMapHOC from './location/FlightMapHOC'
 
-import { dateTimePickerContainerStyle, locationSelectionInputStyle, eventDescContainerStyle, flightMapContainerStyle } from '../Styles/styles'
-
-import airports from '../data/airports.json'
+import { dateTimePickerContainerStyle, eventDescContainerStyle, flightMapContainerStyle } from '../Styles/styles'
 
 class FlightSearchParameters extends Component {
   constructor (props) {
     super(props)
-    let timeout
     this.state = {
       marginTop: 180, // styling
       departureLocation: null,
@@ -25,13 +21,14 @@ class FlightSearchParameters extends Component {
       departureDate: moment(new Date(this.props.date)),
       returnDate: moment(new Date(this.props.date)),
       startDay: null,
-      // paxAdults, paxChidren, paxInfants
-      classState: 'Economy',
-      adultsState: 1,
-      '2-11yState': 0,
-      '<2yState': 0
+      // req params for airhob
+      classCode: 'Economy',
+      paxAdults: 1,
+      paxChildren: 0,
+      paxInfants: 0
     }
   }
+
   handleSubmit () {
     // HANDLE CLICK OF SEARCH BUTTON. HOIST QUERY UP TO PARENT TO REQUEST AIRHOB. RESULTS PASSED TO FLIGHTRESULTS PANEL. ONLY SELECTED FLIGHT DETAILS IS HOISTED UP TO FORM
     // console.log(moment(this.state.departureDate).format('MM/DD/YYYY'));
@@ -40,7 +37,7 @@ class FlightSearchParameters extends Component {
     // const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
     const travelDate = this.state.departureDate.format('MM/DD/YYYY')
     // console.log(origin, destination, travelDate);
-    console.log('searching...');
+    console.log('searching...')
     fetch(uriFull, {
       method: 'POST',
       headers: {
@@ -50,10 +47,10 @@ class FlightSearchParameters extends Component {
       },
       body: JSON.stringify({
         TripType: 'O',
-        NoOfAdults: this.state.adultsState,
-        NoOfChilds: this.state['2-11yState'],
-        NoOfInfants: this.state['<2yState'],
-        ClassType: this.state.classState,
+        NoOfAdults: this.state.paxAdults,
+        NoOfChilds: this.state.paxChildren,
+        NoOfInfants: this.state.paxInfants,
+        ClassType: this.state.classCode,
         OriginDestination: [
           {
             // 'Origin': origin,
@@ -124,18 +121,6 @@ class FlightSearchParameters extends Component {
     this.setState({[`${type}Location`]: details}) // set airport/city details
   }
 
-  handleDropdownSelect (e, type) {
-    const types = {
-      class: 'classState',
-      adults: 'adultsState',
-      '2-11y': '2-11yState',
-      '<2y': '<2yState'
-    }
-    this.setState({
-      [types[type]]: e.target.value
-    })
-  }
-
   componentWillReceiveProps (nextProps) {
     this.setState({
       marginTop: nextProps.searching ? '55' : '180'
@@ -167,23 +152,25 @@ class FlightSearchParameters extends Component {
           <div style={{display: 'inline-block', width: '25%'}}>
             <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
           </div>
-          <select value={this.state.classState} onChange={(e) => this.handleDropdownSelect(e, 'class')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
+
+          <select value={this.state.classCode} onChange={(e) => this.handleChange(e, 'classCode')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
             <option style={{color: 'black'}} value='Economy'>E</option>
             <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
             <option style={{color: 'black'}} value='Business'>B</option>
             <option style={{color: 'black'}} value='First'>F</option>
           </select>
-          <select value={this.state.adultsState} onChange={(e) => this.handleDropdownSelect(e, 'adults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+
+          <select value={this.state.paxAdults} onChange={(e) => this.handleChange(e, 'paxAdults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[1,2,3,4,5,6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select value={this.state['2-11yState']} onChange={(e) => this.handleDropdownSelect(e, '2-11y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.state.paxChildren} onChange={(e) => this.handleChange(e, 'paxChildren')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[0,1,2,3,4,5,6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select value={this.state['<2yState']} onChange={(e) => this.handleDropdownSelect(e, '<2y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.state.paxInfants} onChange={(e) => this.handleChange(e, 'paxInfants')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[0,1,2,3,4,5,6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
