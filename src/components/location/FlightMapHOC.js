@@ -29,37 +29,33 @@ const FlightMap = compose(
         },
         onMarkerMounted: ref => {
           refs.marker = ref
-          console.log('marker mounted')
-
-          // CENTERS MAP ON FIRST MARKER
-          if (this.props.departureLocation && !this.props.arrivalLocation) {
-            this.setState({center: {lat: this.props.departureLocation.latitude, lng: this.props.departureLocation.longitude}})
-          }
-          if (!this.props.departureLocation && this.props.arrivalLocation) {
-            this.setState({center: {lat: this.props.arrivalLocation.latitude, lng: this.props.arrivalLocation.longitude}})
-          }
+          // console.log('marker mounted')
         },
         handleMarkerChange: () => {
-          // console.log('refs', this)
-          console.log('airport/city changed')
-          // console.log('this', this)
-          if (this.props.departureLocation && this.props.arrivalLocation) {
+          var departure = this.props.departureLocation
+          var arrival = this.props.arrivalLocation
+
+          // CENTERS MAP IF ONLY 1 MARKER
+          if (departure && !arrival) {
+            this.setState({center: {lat: departure.latitude, lng: departure.longitude}})
+          }
+          if (!departure && arrival) {
+            this.setState({center: {lat: arrival.latitude, lng: arrival.longitude}})
+          }
+
+          // CHANGE BOUNDS IF 2 MARKERS
+          if (departure && arrival) {
             const bounds = new window.google.maps.LatLngBounds()
-            bounds.extend({lat: this.props.departureLocation.latitude, lng: this.props.departureLocation.longitude})
-            bounds.extend({lat: this.props.arrivalLocation.latitude, lng: this.props.arrivalLocation.longitude})
+            bounds.extend({lat: departure.latitude, lng: departure.longitude})
+            bounds.extend({lat: arrival.latitude, lng: arrival.longitude})
             refs.map.fitBounds(bounds, 100)
           }
         }
       })
     },
-    componentWillReceiveProps (nextProps) {
-      // console.log('this', this)
-      if (nextProps.departureLocation && nextProps.arrivalLocation) {
-        // console.log('departure', nextProps.departureLocation)
-        // console.log('arrival', nextProps.arrivalLocation)
-        if ((this.state.departureLocation !== nextProps.departureLocation) || (this.state.arrivalLocation !== nextProps.arrivalLocation)) {
-          this.state.handleMarkerChange()
-        }
+    componentDidUpdate (prevProps) {
+      if ((this.props.departureLocation !== prevProps.departureLocation) || (this.props.arrivalLocation !== prevProps.arrivalLocation)) {
+        this.state.handleMarkerChange()
       }
     }
   }),

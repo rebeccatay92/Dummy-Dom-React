@@ -109,6 +109,9 @@ class LocationSelection extends Component {
     this.setState({mapIsOpen: !this.state.mapIsOpen})
   }
 
+  componentDidMount () {
+    this.resizeTextArea()
+  }
   render () {
     return (
       <div style={{position: 'relative'}}>
@@ -132,10 +135,6 @@ class LocationSelection extends Component {
         }
       </div>
     )
-  }
-
-  componentDidMount () {
-    this.resizeTextArea()
   }
 }
 
