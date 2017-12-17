@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import AirportSearch from './AirportSearch'
 import AirportResults from './AirportResults'
 import Radium from 'radium'
 import moment from 'moment'
@@ -18,11 +19,6 @@ class FlightSearchParameters extends Component {
     let timeout
     this.state = {
       marginTop: 180, // styling
-      departureSearch: '',
-      arrivalSearch: '',
-      selectingDeparture: false,
-      selectingArrival: false,
-      results: [], // iata airport/city results, not flights
       departureLocation: null,
       arrivalLocation: null,
       // start date, end date, start/end day
@@ -109,6 +105,7 @@ class FlightSearchParameters extends Component {
       this.props.handleSearch(details)
     })
   }
+
   handleChange (e, field) {
     if (field === 'departureDate' || field === 'returnDate') {
       this.setState({
@@ -119,86 +116,12 @@ class FlightSearchParameters extends Component {
         [field]: e.target.value
       })
     }
-
-    if (field === 'departureSearch') {
-      this.setState({selectingDeparture: true})
-    }
-    if (field === 'arrivalSearch') {
-      this.setState({selectingArrival: true})
-    }
-  }
-
-  customDebounce (type) {
-    // type is 'departureSearch' or 'arrivalSearch'
-    var queryStr = this.state[`${type}Search`]
-    clearTimeout(this.timeout)
-    this.timeout = setTimeout(() => {
-      this.searchAirports(queryStr)
-    }, 500)
-  }
-
-  searchAirports (queryStr) {
-    queryStr = queryStr.trim()
-    if (!queryStr.length || queryStr.length < 3) {
-      this.setState({results: []})
-      return
-    }
-
-    // var regexArr = queryStr.trim().split(' ')
-    // console.log('params', regexArr)
-    //
-    // var regex = ''
-    // regexArr.forEach(term => {
-    //   regex += `(${term})|`
-    // })
-    // regex = regex.slice(0, regex.length - 1)
-    // regex = new RegExp(regex, 'gi')
-
-    // partial `[${term}]{3,}|` matches 3 chars or more?
-
-    var regex = new RegExp(queryStr.trim(), 'gi')
-    // console.log('regex', regex)
-
-    var results = []
-    airports.forEach(e => {
-      // max 10 results to prevent hanging
-      if (results.length > 9) return
-      e.matchCount = 0
-      // if (!e.city) {
-      //   console.log(e)
-      // }
-      // if (e.country.match(regex)) {
-      //   e.matchCount ++
-      // }
-      if (e.city && e.city.match(regex)) {
-        e.matchCount ++
-      }
-      if (e.name.match(regex)) {
-        e.matchCount ++
-      }
-      if (e.matchCount > 0) {
-        results.push(e)
-      }
-    })
-    results.sort(function (a, b) {
-      return b.matchCount - a.matchCount
-    })
-    this.setState({results: results})
   }
 
   selectLocation (type, details) {
     // console.log('type', type, 'details', details)
 
     this.setState({[`${type}Location`]: details}) // set airport/city details
-    this.setState({[`${type}Search`]: details.name}) // set name in input field
-
-    this.setState({selectingDeparture: false, selectingArrival: false})
-    // untoggle dropdown
-    this.setState({results: []}) // clear results
-  }
-
-  handleClickOutside () {
-    // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED. RESETS RESULTS ARRAY TO EMPTY
   }
 
   handleDropdownSelect (e, type) {
@@ -213,16 +136,12 @@ class FlightSearchParameters extends Component {
     })
   }
 
-  componentDidMount () {
-    // console.log('airports', airports)
-    // console.log('dates', this.props.dates)
-  }
-
   componentWillReceiveProps (nextProps) {
     this.setState({
       marginTop: nextProps.searching ? '55' : '180'
     })
   }
+
   render () {
     return (
       <div style={{position: 'relative'}}>
@@ -231,21 +150,14 @@ class FlightSearchParameters extends Component {
         </div>
 
         <div style={eventDescContainerStyle}>
-          <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' value={this.state.departureSearch} onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departure')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
+          <AirportSearch location={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={(details) => this.selectLocation('departure', details)} />
         </div>
 
         <p style={{textAlign: 'center'}}>to</p>
 
         <div style={eventDescContainerStyle}>
-          <textarea key='arrivalLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Arrival City/Airport' name='arrivalSearch' value={this.state.arrivalSearch} onChange={(e) => this.handleChange(e, 'arrivalSearch')} onKeyUp={() => this.customDebounce('arrival')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{marginTop: '0', fontSize: '36px'}}} />
+          <AirportSearch location={this.state.arrivalLocation} placeholder={'Arrival City/Airport'} selectLocation={(details) => this.selectLocation('arrival', details)} />
         </div>
-        
-        {this.state.selectingDeparture &&
-          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('departure', details)} />
-        }
-        {this.state.selectingArrival &&
-          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('arrival', details)} />
-        }
 
         {/* DATEBOX */}
         <div style={{textAlign: 'center'}}>

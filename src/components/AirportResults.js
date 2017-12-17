@@ -5,23 +5,7 @@ import airports from '../data/airports.json'
 class AirportResults extends Component {
   constructor (props) {
     super(props)
-    // this.state = {
-    //   cities: []
-    // }
   }
-  // componentDidMount () {
-  //   var results = this.props.results
-  //   console.log('results', results)
-  //
-  //   var cities = []
-  //
-  //   results.forEach(e => {
-  //     if (e.cityCode) {
-  //       cities.push({city: e.city, cityCode: e.cityCode, country: e.country})
-  //     }
-  //   })
-  //   this.setState({cities: cities})
-  // }
 
   handleClick (cityOrAirport) {
     // console.log('clicked', cityOrAirport)
