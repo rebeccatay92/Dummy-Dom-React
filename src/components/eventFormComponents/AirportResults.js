@@ -1,16 +1,13 @@
 import React, { Component } from 'react'
-import airports from '../data/airports.json'
-// import { locationDropdownStyle } from '../Styles/styles'
+import airports from '../../data/airports.json'
+// import { locationDropdownStyle } from '../../Styles/styles'
 
 class AirportResults extends Component {
-  constructor (props) {
-    super(props)
-  }
+  // constructor (props) {
+  //   super(props)
+  // }
 
   handleClick (cityOrAirport) {
-    // console.log('clicked', cityOrAirport)
-    // only airport rows have id
-    // city obj was self created, has no id
     if (cityOrAirport.id) {
       cityOrAirport.type = 'airport'
     } else {

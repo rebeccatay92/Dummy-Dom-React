@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import onClickOutside from 'react-onclickoutside'
 import AirportResults from './AirportResults'
-import airports from '../data/airports.json'
-import { locationSelectionInputStyle } from '../Styles/styles'
+import airports from '../../data/airports.json'
+import { locationSelectionInputStyle } from '../../Styles/styles'
 
 class AirportSearch extends Component {
   constructor (props) {

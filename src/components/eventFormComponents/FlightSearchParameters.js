@@ -6,9 +6,9 @@ import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import CustomDatePicker from './CustomDatePicker'
-import FlightMapHOC from './location/FlightMapHOC'
+import FlightMapHOC from '../location/FlightMapHOC'
 
-import { dateTimePickerContainerStyle, eventDescContainerStyle, flightMapContainerStyle } from '../Styles/styles'
+import { dateTimePickerContainerStyle, eventDescContainerStyle, flightMapContainerStyle } from '../../Styles/styles'
 
 class FlightSearchParameters extends Component {
   constructor (props) {

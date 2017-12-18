@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { searchResultsTableStyle } from '../Styles/styles'
+import { searchResultsTableStyle } from '../../Styles/styles'
 
 class FlightSearchResults extends Component {
   render () {

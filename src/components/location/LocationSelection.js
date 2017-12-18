@@ -7,13 +7,12 @@ import LocationMapHOC from './LocationMapHOC'
 import { locationSelectionInputStyle, locationDropdownStyle, locationMapContainerStyle } from '../../Styles/styles'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
-var key = 'key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU'
+var key = `key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 var placeSearch = 'https://maps.googleapis.com/maps/api/place/textsearch/json?'
 
 class LocationSelection extends Component {
   constructor (props) {
     super(props)
-    let timeout // for debounce
     this.state = {
       search: '',
       results: [],
@@ -24,14 +23,14 @@ class LocationSelection extends Component {
   }
 
   selectLocation (location) {
-    //stringify opening hours here
+    // stringify opening hours here
     if (location.openingHours) {
       location.openingHours = JSON.stringify(location.openingHours)
     }
+    this.setState({search: location.name})
+    this.setState({selecting: false})
+    this.setState({mapIsOpen: false})
     this.props.selectLocation(location) // pass it up to createActivityForm googlePlaceData
-    this.setState({search: location.name}) // set search string
-    this.setState({selecting: false}) // close results if text search is used
-    this.setState({mapIsOpen: false}) // close map if map search was used
   }
 
   resizeTextArea () {
@@ -40,7 +39,7 @@ class LocationSelection extends Component {
     locationInput.style.height = 'auto'
     // console.log(locationInput.style.height);
     // locationInput.style.height = locationInput.scrollHeight + 'px'
-    console.log(locationInput.clientHeight, locationInput.scrollHeight);
+    // console.log(locationInput.clientHeight, locationInput.scrollHeight);
     if (locationInput.clientHeight < locationInput.scrollHeight) {
       locationInput.style.height = locationInput.scrollHeight + 'px'
       if (locationInput.clientHeight < locationInput.scrollHeight) {
@@ -69,8 +68,7 @@ class LocationSelection extends Component {
   }
 
   searchPlaces (queryStr) {
-    // console.log('form submitted', this.state.search)
-    this.setState({results: []}) // resets state of search results
+    this.setState({results: []})
     var query = `&query=${queryStr}`
     var urlPlaceSearch = crossOriginUrl + placeSearch + key + query
     if (queryStr) {
@@ -96,6 +94,7 @@ class LocationSelection extends Component {
 
   handleClickOutside () {
     this.setState({selecting: false})
+    console.log('currentLocation', this.props.currentLocation)
     if (this.props.currentLocation) {
       this.setState({search: this.props.currentLocation.name})
     } else {

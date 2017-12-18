@@ -5,10 +5,10 @@ import moment from 'moment'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
-import FlightSearchParameters from '../FlightSearchParameters'
-import FlightSearchResults from '../FlightSearchResults'
-import Attachments from '../Attachments'
-import SubmitCancelForm from '../SubmitCancelForm'
+import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
+import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
+import Attachments from '../eventFormComponents/Attachments'
+import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createFlightBooking } from '../../apollo/flight'
 import { queryItinerary } from '../../apollo/itinerary'
@@ -264,7 +264,9 @@ class CreateFlightForm extends Component {
             <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
               <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
-                {this.state.searching && <FlightSearchResults flights={this.state.flights} />}
+                {this.state.searching &&
+                <FlightSearchResults flights={this.state.flights} />
+                }
               </div>
             </div>
           </div>

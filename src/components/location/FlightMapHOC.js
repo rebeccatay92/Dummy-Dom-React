@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+
 import { compose, withProps, lifecycle } from 'recompose'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polyline, InfoWindow } from 'react-google-maps'
 import InfoBox from 'react-google-maps/lib/components/addons/InfoBox'
 
 const FlightMap = compose(
   withProps({
-    googleMapURL: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU&v=3.exp&libraries=geometry,drawing,places',
+    googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: (755 * 0.9) + 'px' }} />,
     mapElement: <div style={{ height: `100%` }} />
@@ -31,7 +33,6 @@ const FlightMap = compose(
         },
         onMarkerMounted: ref => {
           refs.marker = ref
-          // console.log('marker mounted')
         },
         handleMarkerChange: () => {
           var departure = this.props.departureLocation
@@ -52,6 +53,12 @@ const FlightMap = compose(
             bounds.extend({lat: arrival.latitude, lng: arrival.longitude})
             refs.map.fitBounds(bounds, 100)
           }
+        },
+        onDepartureWindowMounted: ref => {
+          refs.departureWindow = ref
+        },
+        onArrivalWindowMounted: ref => {
+          refs.arrivalWindow = ref
         },
         toggleDepartureWindow: () => {
           this.setState({departureWindow: !this.state.departureWindow})
@@ -97,7 +104,7 @@ const FlightMap = compose(
     {props.arrivalLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation} onClick={props.toggleArrivalWindow}>
         {props.arrivalWindow &&
-          <InfoWindow onCloseClick={props.toggleArrivalWindow}>
+          <InfoWindow ref={props.onArrivalWindowMounted} onCloseClick={props.toggleArrivalWindow}>
             <div>
               <h5>{props.arrivalLocation.name}</h5>
             </div>

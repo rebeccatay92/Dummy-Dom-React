@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Radium from 'radium'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
-var key = 'key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU'
+var key = `key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 var placeDetails = `https://maps.googleapis.com/maps/api/place/details/json?`
 
 class GooglePlaceResult extends Component {

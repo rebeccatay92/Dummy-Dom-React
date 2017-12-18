@@ -7,7 +7,7 @@ const _ = require('lodash')
 
 const LocationMap = compose(
   withProps({
-    googleMapURL: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU&v=3.exp&libraries=geometry,drawing,places',
+    googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: (755 * 0.9) + 'px' }} />,
     mapElement: <div style={{ height: `100%` }} />
