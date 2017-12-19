@@ -5,11 +5,12 @@ import moment from 'moment'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
-import FlightSearchParameters from '../FlightSearchParameters'
-import FlightSearchResults from '../FlightSearchResults'
-import FlightSearchDetails from '../FlightSearchDetails'
-import Attachments from '../Attachments'
-import SubmitCancelForm from '../SubmitCancelForm'
+import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
+import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
+import FlightSearchDetails from '../eventFormComponents/FlightSearchDetails'
+
+import Attachments from '../eventFormComponents/Attachments'
+import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createFlightBooking } from '../../apollo/flight'
 import { queryItinerary } from '../../apollo/itinerary'
@@ -35,16 +36,9 @@ class CreateFlightForm extends Component {
       bookingConfirmation: '',
       backgroundImage: defaultBackground,
       attachments: [],
-      // ARR OF ATTACHMENT INPUT
-      // input attachmentInput {
-      //   fileName: String
-      //   fileAlias: String
-      //   fileType: String
-      //   fileSize: String
-      // }
       flightInstances: [],
       // ARR OF FLIGHTINSTANCE INPUT
-      // input flightInstanceInput {
+      // input createFlightInstanceInput {
       //   flightNumber: Int
       //   airlineCode: String
       //   airlineName: String
@@ -285,7 +279,7 @@ class CreateFlightForm extends Component {
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle('flight')}>
-            <div style={bookingNotesContainerStyle}>
+            <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
               <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
                 <FlightSearchResults flights={this.state.flights} searching={this.state.searching} selected={this.state.selected} handleSelectFlight={(index) => this.handleSelectFlight(index)} tripType={this.state.tripType} />

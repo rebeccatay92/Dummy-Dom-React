@@ -6,12 +6,12 @@ import moment from 'moment'
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, foodTypeStyle, foodTypeContainerStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import LocationSelection from '../location/LocationSelection'
-import DateTimePicker from '../DateTimePicker'
-import BookingDetails from '../BookingDetails'
-import LocationAlias from '../LocationAlias'
-import Notes from '../Notes'
-import Attachments from '../Attachments'
-import SubmitCancelForm from '../SubmitCancelForm'
+import DateTimePicker from '../eventFormComponents/DateTimePicker'
+import BookingDetails from '../eventFormComponents/BookingDetails'
+import LocationAlias from '../eventFormComponents/LocationAlias'
+import Notes from '../eventFormComponents/Notes'
+import Attachments from '../eventFormComponents/Attachments'
+import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createFood } from '../../apollo/food'
 import { queryItinerary } from '../../apollo/itinerary'
@@ -142,6 +142,7 @@ class CreateFoodForm extends Component {
 
   selectLocation (location) {
     this.setState({googlePlaceData: location})
+    console.log('selected location', location)
   }
 
   handleFileUpload (e) {
@@ -255,7 +256,7 @@ class CreateFoodForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} />
+              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Title' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='foodname' />

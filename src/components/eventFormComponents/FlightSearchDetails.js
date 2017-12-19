@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 
-import { timelineStyle } from '../Styles/styles'
+import { timelineStyle } from '../../Styles/styles'
 
 class FlightSearchDetails extends Component {
   render () {

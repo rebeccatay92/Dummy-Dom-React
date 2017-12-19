@@ -21,7 +21,7 @@ export const createTransport = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $type: String,
-    $attachments: [attachmentInfo],
+    $attachments: [attachmentInput],
     $backgroundImage: String
   ) {
     createTransport(

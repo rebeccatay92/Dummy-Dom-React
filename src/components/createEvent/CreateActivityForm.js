@@ -6,12 +6,12 @@ import moment from 'moment'
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import LocationSelection from '../location/LocationSelection'
-import DateTimePicker from '../DateTimePicker'
-import BookingDetails from '../BookingDetails'
-import LocationAlias from '../LocationAlias'
-import Notes from '../Notes'
-import Attachments from '../Attachments'
-import SubmitCancelForm from '../SubmitCancelForm'
+import DateTimePicker from '../eventFormComponents/DateTimePicker'
+import BookingDetails from '../eventFormComponents/BookingDetails'
+import LocationAlias from '../eventFormComponents/LocationAlias'
+import Notes from '../eventFormComponents/Notes'
+import Attachments from '../eventFormComponents/Attachments'
+import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createActivity } from '../../apollo/activity'
 import { queryItinerary } from '../../apollo/itinerary'
@@ -80,7 +80,10 @@ class CreateActivityForm extends Component {
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (this.state.googlePlaceData.placeId) newActivity.googlePlaceData = this.state.googlePlaceData
+    if (this.state.googlePlaceData.placeId) {
+      newActivity.googlePlaceData = this.state.googlePlaceData
+    }
+
     console.log('newActivity', newActivity)
 
     this.props.createActivity({
@@ -141,6 +144,7 @@ class CreateActivityForm extends Component {
 
   selectLocation (location) {
     this.setState({googlePlaceData: location})
+    console.log('selected location', location)
   }
 
   handleFileUpload (e) {
@@ -178,7 +182,6 @@ class CreateActivityForm extends Component {
             kilobytes = Math.round(kilobytes)
             fileSizeStr = kilobytes + 'KB'
           }
-          // this.setState({attachments: this.state.attachments.concat([json.name])})
           this.setState({
             attachments: this.state.attachments.concat([
               {
@@ -254,7 +257,7 @@ class CreateActivityForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} />
+              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Activity Description' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
