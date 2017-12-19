@@ -8,7 +8,7 @@ export const createLodging = gql`
     $locationAlias: String,
     $startLoadSequence: Int,
     $endLoadSequence:Int,
-    $name: String,
+    $description: String,
     $notes: String,
     $startDay: Int,
     $endDay: Int,
@@ -19,7 +19,6 @@ export const createLodging = gql`
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $roomType: String,
     $attachments: [attachmentInput],
     $backgroundImage: String
   ) {
@@ -30,7 +29,7 @@ export const createLodging = gql`
       locationAlias: $locationAlias,
       startLoadSequence: $startLoadSequence,
       endLoadSequence: $endLoadSequence,
-      name: $name,
+      description: $description,
       notes: $notes,
       startDay: $startDay,
       endDay: $endDay,
@@ -41,7 +40,6 @@ export const createLodging = gql`
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      roomType: $roomType,
       attachments: $attachments,
       backgroundImage: $backgroundImage
     ) {
@@ -55,7 +53,7 @@ export const updateLodging = gql`
     $id: ID!,
     $googlePlaceData: googlePlaceData,
     $locationAlias: String,
-    $name: String,
+    $description: String,
     $notes: String,
     $startDay: Int,
     $endDay: Int,
@@ -66,14 +64,13 @@ export const updateLodging = gql`
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $roomType: String,
     $backgroundImage: String
   ) {
     updateLodging(
       id: $id,
       googlePlaceData: $googlePlaceData,
       locationAlias: $locationAlias,
-      name: $name,
+      description: $description,
       notes: $notes,
       startDay: $startDay,
       endDay: $endDay,
@@ -84,7 +81,6 @@ export const updateLodging = gql`
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      roomType: $roomType,
       backgroundImage: $backgroundImage
     ) {
       id

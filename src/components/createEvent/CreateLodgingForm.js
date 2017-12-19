@@ -13,15 +13,15 @@ import Notes from '../eventFormComponents/Notes'
 import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
-import { createFood } from '../../apollo/food'
+import { createLodging } from '../../apollo/lodging'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 
-const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}lodgingDefaultBackground.jpg`
 
-class CreateFoodForm extends Component {
+class CreateLodgingForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -43,7 +43,6 @@ class CreateFoodForm extends Component {
       backgroundImage: defaultBackground
     }
   }
-
   updateDayTime (field, value) {
     this.setState({
       [field]: value
@@ -59,40 +58,43 @@ class CreateFoodForm extends Component {
   handleSubmit () {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
-    var newFood = {
+    var newLodging = {
       ItineraryId: parseInt(this.state.ItineraryId),
       locationAlias: this.state.locationAlias,
       startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      loadSequence: this.props.highestLoadSequence + 1,
+      // loadSequence: this.props.highestLoadSequence + 1,
       description: this.state.description,
-      notes: this.state.notes,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
+      notes: this.state.notes,
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
-    console.log('newFood', newFood)
+    if (this.state.googlePlaceData.placeId) {
+      newLodging.googlePlaceData = this.state.googlePlaceData
+    }
 
-    this.props.createFood({
-      variables: newFood,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
-    })
+    console.log('newLodging', newLodging)
+
+    // this.props.createLodging({
+    //   variables: newLodging,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
 
     this.resetState()
     this.props.toggleCreateEventType()
   }
 
-  closeCreateFood () {
+  closeCreateLodging () {
     this.state.attachments.forEach(info => {
       var uri = info.fileName.replace('/', '%2F')
       var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
@@ -124,7 +126,6 @@ class CreateFoodForm extends Component {
       locationAlias: '',
       description: '',
       notes: '',
-      type: '',
       startTime: null, // should be Int
       endTime: null, // should be Int
       cost: 0,
@@ -163,7 +164,6 @@ class CreateFoodForm extends Component {
         }
       )
       .then(response => {
-        console.log(response)
         return response.json()
       })
       .then(json => {
@@ -256,7 +256,7 @@ class CreateFoodForm extends Component {
               <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>
-              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='fooddescription' />
+              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
@@ -265,7 +265,7 @@ class CreateFoodForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFood()} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateLodging()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
               <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>
@@ -286,4 +286,4 @@ class CreateFoodForm extends Component {
   }
 }
 
-export default graphql(createFood, {name: 'createFood'})(Radium(CreateFoodForm))
+export default CreateLodgingForm
