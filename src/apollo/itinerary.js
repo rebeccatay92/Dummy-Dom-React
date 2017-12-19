@@ -20,7 +20,7 @@ export const queryItinerary = gql`
         day
         Activity {
           id
-          name
+          description
           startTime
           endTime
           location {
@@ -98,7 +98,7 @@ export const queryItinerary = gql`
         }
         Lodging {
           id
-          name
+          description
           location {
             id
             name
@@ -126,7 +126,7 @@ export const queryItinerary = gql`
         }
         Food {
           id
-          name
+          description
           location {
             id
             name
@@ -142,7 +142,6 @@ export const queryItinerary = gql`
           bookingConfirmation
           bookingStatus
           notes
-          type
           attachments {
             id
             fileName
@@ -154,7 +153,7 @@ export const queryItinerary = gql`
         }
         Transport {
           id
-          name
+          description
           departureLocation {
             id
             name

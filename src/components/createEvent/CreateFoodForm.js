@@ -31,9 +31,8 @@ class CreateFoodForm extends Component {
       endDay: this.props.day,
       googlePlaceData: {},
       locationAlias: '',
-      name: '',
+      description: '',
       notes: '',
-      type: '',
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
       cost: 0,
@@ -69,9 +68,8 @@ class CreateFoodForm extends Component {
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       loadSequence: this.props.highestLoadSequence + 1,
-      name: this.state.name,
+      description: this.state.description,
       notes: this.state.notes,
-      type: this.state.type,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
       bookingStatus: bookingStatus,
@@ -125,7 +123,7 @@ class CreateFoodForm extends Component {
       endDay: this.props.endDay,
       googlePlaceData: {},
       locationAlias: '',
-      name: '',
+      description: '',
       notes: '',
       type: '',
       startTime: null, // should be Int
@@ -259,10 +257,7 @@ class CreateFoodForm extends Component {
               <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>
-              <input className='left-panel-input' placeholder='Input Title' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='foodname' />
-            </div>
-            <div style={foodTypeContainerStyle}>
-              <input className='left-panel-input' placeholder='Input Type' type='text' name='type' value={this.state.type} onChange={(e) => this.handleChange(e, 'type')} autoComplete='off' style={foodTypeStyle(this.state.backgroundImage)} key='foodtype' />
+              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='fooddescription' />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />

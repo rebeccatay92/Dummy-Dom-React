@@ -53,33 +53,33 @@ class FlightSearchParameters extends Component {
         ClassType: this.state.classCode,
         OriginDestination: this.state.returnDate ? [
           {
-            'Origin': origin,
-            'Destination': destination,
-            'TravelDate': travelDate
-            // 'Origin': 'SIN',
-            // 'Destination': 'PEK',
+            // 'Origin': origin,
+            // 'Destination': destination,
             // 'TravelDate': travelDate
+            'Origin': 'SIN',
+            'Destination': 'PEK',
+            'TravelDate': travelDate
           },
           {
-            'Origin': destination,
-            'Destination': origin,
-            'TravelDate': returnDate
-            // 'Origin': 'PEK',
-            // 'Destination': 'SIN',
+            // 'Origin': destination,
+            // 'Destination': origin,
             // 'TravelDate': returnDate
+            'Origin': 'PEK',
+            'Destination': 'SIN',
+            'TravelDate': returnDate
           }
         ] : [
           {
-            'Origin': origin,
-            'Destination': destination,
-            'TravelDate': travelDate
-            // 'Origin': 'SIN',
-            // 'Destination': 'BJS',
+            // 'Origin': origin,
+            // 'Destination': destination,
             // 'TravelDate': travelDate
+            'Origin': 'SIN',
+            'Destination': 'BJS',
+            'TravelDate': travelDate
           }
         ],
         Currency: 'USD',
-        FlightsCount: '200ITINS'
+        FlightsCount: '50ITINS'
       })
     }).then(response => {
       const json = response.json()
@@ -148,9 +148,11 @@ class FlightSearchParameters extends Component {
   render () {
     return (
       <div style={{position: 'relative'}}>
-        <div style={flightMapContainerStyle}>
-          <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
-        </div>
+        {!this.props.searching &&
+          <div style={flightMapContainerStyle}>
+            <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
+          </div>
+        }
 
         {/* NEED TO STYLE MARGIN TOP HERE / INSIDE AIRPORTSEARCH */}
         <div style={eventDescContainerStyle}>
