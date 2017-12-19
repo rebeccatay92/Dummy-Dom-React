@@ -21,7 +21,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
 class CreateFlightForm extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       currencyList: [], // not submitted
@@ -268,6 +268,7 @@ class CreateFlightForm extends Component {
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
               <FlightSearchParameters searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
+
               {this.state.searching && this.state.flights[this.state.selected].flights.map((flight, i) => {
                 return (
                   <FlightSearchDetails key={i} first={i === 0} flight={this.state.flights[this.state.selected]} index={i} tripType={this.state.tripType} />

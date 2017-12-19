@@ -13,14 +13,13 @@ export const createTransport = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
-    $name: String,
+    $description: String,
     $notes: String,
     $cost: Int,
     $currency: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $type: String,
     $attachments: [attachmentInput],
     $backgroundImage: String
   ) {
@@ -36,14 +35,13 @@ export const createTransport = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
-      name: $name,
+      description: $description,
       notes: $notes,
       cost: $cost,
       currency: $currency,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      type: $type,
       attachments: $attachments,
       backgroundImage: $backgroundImage
     ) {
@@ -63,14 +61,13 @@ export const updateTransport = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
-    $name: String,
+    $description: String,
     $notes: String,
     $cost: Int,
     $currency: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $type: String,
     $backgroundImage: String
   ) {
     updateTransport(
@@ -83,14 +80,13 @@ export const updateTransport = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
-      name: $name,
+      description: $description,
       notes: $notes,
       cost: $cost,
       currency: $currency,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      type: $type,
       backgroundImage: $backgroundImage
     ) {
       id

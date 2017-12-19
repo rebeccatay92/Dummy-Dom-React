@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
+import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
 
@@ -26,14 +27,13 @@ const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefa
 class CreateActivityForm extends Component {
   constructor (props) {
     super(props)
-    let apiToken
     this.state = {
       ItineraryId: this.props.ItineraryId,
       startDay: this.props.day,
       endDay: this.props.day,
       googlePlaceData: {},
       locationAlias: '',
-      name: '',
+      description: '',
       notes: '',
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
@@ -70,7 +70,7 @@ class CreateActivityForm extends Component {
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       loadSequence: this.props.highestLoadSequence + 1,
-      name: this.state.name,
+      description: this.state.description,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
       bookingStatus: bookingStatus,
@@ -83,6 +83,36 @@ class CreateActivityForm extends Component {
     if (this.state.googlePlaceData.placeId) {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
+
+    // var eventsWithTime = []
+
+    // var events = JSON.parse(JSON.stringify(this.props.events))
+    //
+    // events.forEach(event => {
+    //   if (event.type === 'Flight') {
+    //     event.time = event.Flight.FlightInstance.startTime
+    //     eventsWithTime.push(event)
+    //   }
+    //   else {
+    //     event.time = event[event.type].startTime
+    //     eventsWithTime.push(event)
+    //   }
+    // })
+    // console.log(eventsWithTime)
+    // var eventsForStartDay = this.props.events.filter(e => {
+    //   return e.day === newActivity.startDay
+    // })
+    // console.log('days events', eventsForStartDay)
+    //
+    // if (newActivity.startTime) {
+    //   console.log('startTime', newActivity.startTime)
+    //   var insertBeforeRow = this.props.events.find(e => {
+    //     return e[e.type].startTime > newActivity.startTime
+    //   })
+    //   console.log(insertBeforeRow)
+    // }
+
+    // if startTime was provided, sort by time, else last in load seq
 
     console.log('newActivity', newActivity)
 
@@ -128,7 +158,7 @@ class CreateActivityForm extends Component {
       endDay: this.props.endDay,
       googlePlaceData: {},
       locationAlias: '',
-      name: '',
+      description: '',
       notes: '',
       startTime: null, // should be Int
       endTime: null, // should be Int
@@ -244,6 +274,8 @@ class CreateActivityForm extends Component {
     var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
+
+    console.log('eventsArr', this.props.events)
   }
 
   render () {
@@ -260,7 +292,7 @@ class CreateActivityForm extends Component {
               <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>
-              <input className='left-panel-input' placeholder='Activity Description' type='text' name='name' value={this.state.name} onChange={(e) => this.handleChange(e, 'name')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
+              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
@@ -290,4 +322,10 @@ class CreateActivityForm extends Component {
   }
 }
 
-export default graphql(createActivity, {name: 'createActivity'})(Radium(CreateActivityForm))
+const mapStateToProps = (state) => {
+  return {
+    events: state.plannerActivities
+  }
+}
+
+export default connect(mapStateToProps)(graphql(createActivity, {name: 'createActivity'})(Radium(CreateActivityForm)))
