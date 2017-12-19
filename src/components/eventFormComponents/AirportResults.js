@@ -8,7 +8,7 @@ class AirportResults extends Component {
   // }
 
   handleClick (cityOrAirport) {
-    if (cityOrAirport.id) {
+    if (cityOrAirport['column0']) {
       cityOrAirport.type = 'airport'
     } else {
       cityOrAirport.type = 'city'
