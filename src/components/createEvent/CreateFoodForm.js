@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo'
 import Radium from 'radium'
 import moment from 'moment'
 
-import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, foodTypeStyle, foodTypeContainerStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import LocationSelection from '../location/LocationSelection'
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
@@ -24,7 +24,6 @@ const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultB
 class CreateFoodForm extends Component {
   constructor (props) {
     super(props)
-    let apiToken
     this.state = {
       ItineraryId: this.props.ItineraryId,
       startDay: this.props.day,

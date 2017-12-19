@@ -15,9 +15,12 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
+
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
 import CreateFlightForm from './createEvent/CreateFlightForm'
+import CreateLodgingForm from './createEvent/CreateLodgingForm'
+
 import PlannerEventExpandedInfo from './PlannerEventExpandedInfo'
 import { timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, createEventTextStyle, activityIconStyle, createEventBoxStyle, createEventPickOneStyle, createEventBoxContainerStyle, plannerBlurredBackgroundStyle, expandedEventIconsBoxStyle, expandedEventIconsStyle, expandedEventBoxStyle, expandedEventBoxImageContainerStyle, expandedEventBoxImageStyle, expandedEventBoxTextBoxStyle } from '../Styles/styles'
 
@@ -183,6 +186,9 @@ class PlannerActivity extends Component {
                 }
                 {this.state.createEventType === 'Flight' &&
                 <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                }
+                {this.state.createEventType === 'Lodging' &&
+                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
               </div>
             }
@@ -463,10 +469,10 @@ class PlannerActivity extends Component {
     })
   }
 
-  // AUTOMATICALLY OPENS UP ACTIVITY FORM FOR TESTING BY DEFAULT. OPENS FOR EACH PLANNERACTIVITY COMPONENT >.<
+  // AUTOMATICALLY OPENS UP LODGING FORM FOR TESTING BY DEFAULT. OPENS FOR EACH PLANNERACTIVITY COMPONENT >.<
   // componentDidMount () {
   //   this.setState({creatingEvent: true})
-  //   this.setState({createEventType: 'Activity'})
+  //   this.setState({createEventType: 'Lodging'})
   // }
 }
 

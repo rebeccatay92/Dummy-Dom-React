@@ -21,7 +21,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
 class CreateFlightForm extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       currencyList: [], // not submitted

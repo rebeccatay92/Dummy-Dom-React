@@ -26,7 +26,6 @@ const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefa
 class CreateActivityForm extends Component {
   constructor (props) {
     super(props)
-    let apiToken
     this.state = {
       ItineraryId: this.props.ItineraryId,
       startDay: this.props.day,
