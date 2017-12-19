@@ -134,7 +134,7 @@ class FlightSearchParameters extends Component {
   }
 
   selectLocation (type, details) {
-    // console.log('type', type, 'details', details)
+    console.log('type', type, 'details', details)
 
     this.setState({[`${type}Location`]: details}) // set airport/city details
   }
@@ -146,6 +146,7 @@ class FlightSearchParameters extends Component {
   }
 
   render () {
+    console.log('departureLocation', this.state.departureLocation)
     return (
       <div style={{position: 'relative'}}>
         {!this.props.searching &&

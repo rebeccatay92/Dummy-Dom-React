@@ -96,10 +96,10 @@ class LocationSelection extends Component {
     this.setState({selecting: false})
     // even if props is empty, currentLocation still exists {}
     if (this.props.currentLocation.name) {
-      console.log('currentLocation exists', this.props.currentLocation)
+      // console.log('currentLocation exists', this.props.currentLocation)
       this.setState({search: this.props.currentLocation.name})
     } else {
-      console.log('currentLocation doesnt exist', this.props.currentLocation)
+      // console.log('currentLocation doesnt exist', this.props.currentLocation)
       this.setState({search: ''})
     }
 
