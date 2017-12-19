@@ -204,4 +204,4 @@ export const pdfLogoStyle = {color: 'rgb(237, 15, 135)', fontSize: '50px', margi
 export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
 
 // FlightSearchResults.js styles
-export const searchResultsTableStyle = {width: '100%', marginTop: '20px', color: secondaryFontColor, fontSize: '16px'}
+export const searchResultsTableStyle = {width: '100%', marginTop: '20px', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}

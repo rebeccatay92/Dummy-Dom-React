@@ -24,6 +24,12 @@ class FlightSearchDetails extends Component {
     }
     const totalHours = Math.floor(this.props.flight.flights[this.props.index].duration / 60) ? Math.floor(this.props.flight.flights[this.props.index].duration / 60) + ' h ' : null
     const totalMins = this.props.flight.flights[this.props.index].duration % 60
+    let layoverTime, layoverHours, layoverMins
+    if (this.props.flight.flights.length > 1 && this.props.index === 1) {
+      layoverTime = moment(new Date(this.props.flight.flights[this.props.index].departureDateTime) - new Date(this.props.flight.flights[this.props.index - 1].arrivalDateTime)).unix()
+      layoverHours = Math.floor(layoverTime / 3600) ? Math.floor(layoverTime / 3600) + ' h ' : null
+      layoverMins = layoverTime % 3600 / 60
+    }
     return (
       <div style={{textAlign: 'center', fontSize: '18px', color: 'white', position: 'relative'}}>
         {this.props.first ? <p>Departing Flight</p> : (
@@ -31,9 +37,9 @@ class FlightSearchDetails extends Component {
             <tbody>
               <tr>
                 <td style={{width: '100%'}}>
-                  <div style={{...timelineStyle, ...{height: '55%', backgroundColor: 'white', opacity: '0.5', top: '-22%'}}} />
-                  <p style={infoStyle}>layover 1 h 25 min</p>
-                  <div style={{...timelineStyle, ...{height: '55%', top: '67%', backgroundColor: 'white', opacity: '0.5'}}} />
+                  {this.props.flight.flights.length === 4 && this.props.tripType === 'R' && <div style={{...timelineStyle, ...{height: '55%', backgroundColor: 'white', opacity: '0.5', top: '-22%'}}} />}
+                  {this.props.flight.flights.length === 2 && this.props.tripType === 'R' ? <p>Return Flight</p> : <p style={infoStyle}>layover {layoverHours}{layoverMins} m</p>}
+                  {this.props.flight.flights.length === 4 && this.props.tripType === 'R' && <div style={{...timelineStyle, ...{height: '55%', top: '67%', backgroundColor: 'white', opacity: '0.5'}}} />}
                 </td>
               </tr>
             </tbody>
@@ -42,7 +48,7 @@ class FlightSearchDetails extends Component {
         <table style={{width: '100%', tableLayout: 'fixed'}}>
           <tbody>
             <tr>
-              <td style={{width: '40%', textAlign: 'right'}}>
+              <td style={{width: '40%', textAlign: 'right', verticalAlign: 'top'}}>
                 <p style={pStyle}>{this.props.flight.flights[this.props.index].departureAirportCode}</p>
                 <p style={infoStyle}>{this.props.flight.flights[this.props.index].departureLocation}</p>
                 <p style={cityCountryStyle}>{this.props.flight.flights[this.props.index].departureCityCountry}</p>
@@ -54,7 +60,7 @@ class FlightSearchDetails extends Component {
                 <p style={infoStyle}>{this.props.flight.flights[this.props.index].carrierCode} {this.props.flight.flights[this.props.index].flightNum}</p>
                 <p style={infoStyle}>{totalHours}{totalMins} m</p>
               </td>
-              <td style={{width: '40%', textAlign: 'left'}}>
+              <td style={{width: '40%', textAlign: 'left', verticalAlign: 'top'}}>
                 <p style={pStyle}>{this.props.flight.flights[this.props.index].arrivalAirportCode}</p>
                 <p style={infoStyle}>{this.props.flight.flights[this.props.index].arrivalLocation}</p>
                 <p style={{...cityCountryStyle, ...{width: '99%'}}}>{this.props.flight.flights[this.props.index].arrivalCityCountry}</p>

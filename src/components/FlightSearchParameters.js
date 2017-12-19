@@ -41,11 +41,12 @@ class FlightSearchParameters extends Component {
     // HANDLE CLICK OF SEARCH BUTTON. HOIST QUERY UP TO PARENT TO REQUEST AIRHOB. RESULTS PASSED TO FLIGHTRESULTS PANEL. ONLY SELECTED FLIGHT DETAILS IS HOISTED UP TO FORM
     // console.log(moment(this.state.departureDate).format('MM/DD/YYYY'));
     const uriFull = 'https://dev-sandbox-api.airhob.com/sandboxapi/flights/v1.2/search'
-    // const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
-    // const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
+    const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
+    const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
     const travelDate = this.state.departureDate.format('MM/DD/YYYY')
-    // console.log(origin, destination, travelDate);
-    console.log('searching...');
+    const returnDate = this.state.returnDate.format('MM/DD/YYYY')
+    const tripType = this.state.returnDate ? 'R' : 'O'
+    console.log('searching...')
     fetch(uriFull, {
       method: 'POST',
       headers: {
@@ -54,19 +55,36 @@ class FlightSearchParameters extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        TripType: 'O',
+        TripType: this.state.returnDate ? 'R' : 'O',
         NoOfAdults: this.state.adultsState,
         NoOfChilds: this.state['2-11yState'],
         NoOfInfants: this.state['<2yState'],
         ClassType: this.state.classState,
-        OriginDestination: [
+        OriginDestination: this.state.returnDate ? [
           {
-            // 'Origin': origin,
-            // 'Destination': destination,
-            // 'TravelDate': travelDate
-            'Origin': 'SIN',
-            'Destination': 'BJS',
+            'Origin': origin,
+            'Destination': destination,
             'TravelDate': travelDate
+            // 'Origin': 'SIN',
+            // 'Destination': 'PEK',
+            // 'TravelDate': travelDate
+          },
+          {
+            'Origin': destination,
+            'Destination': origin,
+            'TravelDate': returnDate
+            // 'Origin': 'PEK',
+            // 'Destination': 'SIN',
+            // 'TravelDate': returnDate
+          }
+        ] : [
+          {
+            'Origin': origin,
+            'Destination': destination,
+            'TravelDate': travelDate
+            // 'Origin': 'SIN',
+            // 'Destination': 'BJS',
+            // 'TravelDate': travelDate
           }
         ],
         Currency: 'USD',
@@ -86,7 +104,7 @@ class FlightSearchParameters extends Component {
       const details = flights.map(flight => {
         return {
           cost: flight.FareDescription.PaxFareDetails[0].OtherInfo.GrossAmount,
-          totalDuration: parseInt(flight.ElapsedTime),
+          totalDuration: [parseInt(flight.ElapsedTime[0]), parseInt(flight.ElapsedTime[1])],
           flights: flight.FlightDetails.map(flightDetails => {
             return {
               departureDateTime: flightDetails.DepartureDateTime,
@@ -102,12 +120,13 @@ class FlightSearchParameters extends Component {
               arrivalTerminal: flightDetails.DesTerminal,
               carrierCode: flightDetails.CarrierCode,
               flightNum: flightDetails.FlightNum,
-              airlineName: flightDetails.AirlineName
+              airlineName: flightDetails.AirlineName,
+              direction: flightDetails.JourneyType
             }
           })
         }
       })
-      this.props.handleSearch(details)
+      this.props.handleSearch(details, tripType)
     })
   }
   handleChange (e, field) {
@@ -287,6 +306,7 @@ class FlightSearchParameters extends Component {
         <div style={{textAlign: 'center'}}>
           <hr style={{opacity: 0.5}} />
           {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>}
+          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.props.closeCreateForm()}>CANCEL</button>}
         </div>
       </div>
     )
