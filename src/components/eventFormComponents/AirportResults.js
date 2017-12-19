@@ -8,7 +8,7 @@ class AirportResults extends Component {
   // }
 
   handleClick (cityOrAirport) {
-    if (cityOrAirport['column0']) {
+    if (cityOrAirport.id) {
       cityOrAirport.type = 'airport'
     } else {
       cityOrAirport.type = 'city'
@@ -29,13 +29,11 @@ class AirportResults extends Component {
     })
 
     var airportsInCities = airports.filter(row => {
-      if (cityCodes.includes(row.cityCode)) {
-        return row
-      }
+      return cityCodes.includes(row.cityCode)
     })
 
     var airportsWithoutCities = this.props.results.filter(row => {
-      if (!row.cityCode) return row
+      return !row.cityCode
     })
 
     return (

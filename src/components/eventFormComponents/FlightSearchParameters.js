@@ -53,33 +53,33 @@ class FlightSearchParameters extends Component {
         ClassType: this.state.classCode,
         OriginDestination: this.state.returnDate ? [
           {
-            // 'Origin': origin,
-            // 'Destination': destination,
-            // 'TravelDate': travelDate
-            'Origin': 'SIN',
-            'Destination': 'PEK',
+            'Origin': origin,
+            'Destination': destination,
             'TravelDate': travelDate
+            // 'Origin': 'SIN',
+            // 'Destination': 'PEK',
+            // 'TravelDate': travelDate
           },
           {
-            // 'Origin': destination,
-            // 'Destination': origin,
-            // 'TravelDate': returnDate
-            'Origin': 'PEK',
-            'Destination': 'SIN',
+            'Origin': destination,
+            'Destination': origin,
             'TravelDate': returnDate
+            // 'Origin': 'PEK',
+            // 'Destination': 'SIN',
+            // 'TravelDate': returnDate
           }
         ] : [
           {
-            // 'Origin': origin,
-            // 'Destination': destination,
-            // 'TravelDate': travelDate
-            'Origin': 'SIN',
-            'Destination': 'BJS',
+            'Origin': origin,
+            'Destination': destination,
             'TravelDate': travelDate
+            // 'Origin': 'SIN',
+            // 'Destination': 'BJS',
+            // 'TravelDate': travelDate
           }
         ],
         Currency: 'USD',
-        FlightsCount: '50ITINS'
+        FlightsCount: '200ITINS'
       })
     }).then(response => {
       const json = response.json()
@@ -141,7 +141,7 @@ class FlightSearchParameters extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.searchClicked !== this.props.searchClicked) {
-      this.handleSubmit()
+      this.handleFlightSearch()
     }
   }
 
