@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
 import Radium from 'radium'
-import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../Styles/styles'
+import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../../Styles/styles'
 
 class Attachments extends Component {
   constructor (props) {

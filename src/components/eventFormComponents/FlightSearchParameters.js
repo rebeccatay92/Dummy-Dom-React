@@ -1,44 +1,35 @@
 import React, { Component } from 'react'
-import AirportResults from './AirportResults'
+import AirportSearch from './AirportSearch'
 import Radium from 'radium'
+import moment from 'moment'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import CustomDatePicker from './CustomDatePicker'
-import moment from 'moment'
+import FlightMapHOC from '../location/FlightMapHOC'
 
-import { dateTimePickerContainerStyle, locationSelectionInputStyle, eventDescContainerStyle } from '../Styles/styles'
-
-import airports from '../data/airports.json'
+import { dateTimePickerContainerStyle, eventDescContainerStyle, flightMapContainerStyle } from '../../Styles/styles'
 
 class FlightSearchParameters extends Component {
   constructor (props) {
     super(props)
-    let timeout
     this.state = {
       marginTop: 180, // styling
-      departureSearch: '',
-      arrivalSearch: '',
-      selectingDeparture: false,
-      selectingArrival: false,
-      results: [], // iata airport/city results, not flights
       departureLocation: null,
       arrivalLocation: null,
       // start date, end date, start/end day
       departureDate: moment(new Date(this.props.date)),
       returnDate: moment(new Date(this.props.date)),
       startDay: null,
-      // pax, class
-      classState: 'Economy',
-      adultsState: 1,
-      '2-11yState': 0,
-      '<2yState': 0
-
-      // selected departure/arrival city/airport. what query to pass to airhob, and what props to pass to FlightResults?
+      // req params for airhob
+      classCode: 'Economy',
+      paxAdults: 1,
+      paxChildren: 0,
+      paxInfants: 0
     }
   }
-  handleSubmit () {
-    // HANDLE CLICK OF SEARCH BUTTON. HOIST QUERY UP TO PARENT TO REQUEST AIRHOB. RESULTS PASSED TO FLIGHTRESULTS PANEL. ONLY SELECTED FLIGHT DETAILS IS HOISTED UP TO FORM
+
+  handleFlightSearch () {
     // console.log(moment(this.state.departureDate).format('MM/DD/YYYY'));
     const uriFull = 'https://dev-sandbox-api.airhob.com/sandboxapi/flights/v1.2/search'
     const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
@@ -56,10 +47,10 @@ class FlightSearchParameters extends Component {
       },
       body: JSON.stringify({
         TripType: this.state.returnDate ? 'R' : 'O',
-        NoOfAdults: this.state.adultsState,
-        NoOfChilds: this.state['2-11yState'],
-        NoOfInfants: this.state['<2yState'],
-        ClassType: this.state.classState,
+        NoOfAdults: this.state.paxAdults,
+        NoOfChilds: this.state.paxChildren,
+        NoOfInfants: this.state.paxInfants,
+        ClassType: this.state.classCode,
         OriginDestination: this.state.returnDate ? [
           {
             'Origin': origin,
@@ -129,6 +120,7 @@ class FlightSearchParameters extends Component {
       this.props.handleSearch(details, tripType)
     })
   }
+
   handleChange (e, field) {
     if (field === 'departureDate' || field === 'returnDate') {
       this.setState({
@@ -139,101 +131,12 @@ class FlightSearchParameters extends Component {
         [field]: e.target.value
       })
     }
-
-    if (field === 'departureSearch') {
-      this.setState({selectingDeparture: true})
-    }
-    if (field === 'arrivalSearch') {
-      this.setState({selectingArrival: true})
-    }
-  }
-
-  customDebounce (type) {
-    // type is 'departureSearch' or 'arrivalSearch'
-    var queryStr = this.state[type]
-    clearTimeout(this.timeout)
-    this.timeout = setTimeout(() => {
-      this.searchAirports(type, queryStr)
-    }, 500)
-  }
-
-  searchAirports (type, queryStr) {
-    queryStr = queryStr.trim()
-    if (!queryStr.length || queryStr.length < 3) {
-      this.setState({results: []})
-      return
-    }
-
-    // var regexArr = queryStr.trim().split(' ')
-    // console.log('params', regexArr)
-    //
-    // var regex = ''
-    // regexArr.forEach(term => {
-    //   regex += `(${term})|`
-    // })
-    // regex = regex.slice(0, regex.length - 1)
-    // regex = new RegExp(regex, 'gi')
-
-    // partial `[${term}]{3,}|` matches 3 chars or more?
-
-    var regex = new RegExp(queryStr.trim(), 'gi')
-    // console.log('regex', regex)
-
-    var results = []
-    airports.forEach(e => {
-      e.matchCount = 0
-      // if (!e.city) {
-      //   console.log(e)
-      // }
-      // if (e.country.match(regex)) {
-      //   e.matchCount ++
-      // }
-      if (e.city && e.city.match(regex)) {
-        e.matchCount ++
-      }
-      if (e.name.match(regex)) {
-        e.matchCount ++
-      }
-      if (e.matchCount > 0) {
-        results.push(e)
-      }
-    })
-    results.sort(function (a, b) {
-      return b.matchCount - a.matchCount
-    })
-    this.setState({results: results})
   }
 
   selectLocation (type, details) {
-    console.log('type', type, 'details', details)
+    // console.log('type', type, 'details', details)
 
     this.setState({[`${type}Location`]: details}) // set airport/city details
-    this.setState({[`${type}Search`]: details.name}) // set name in input field
-
-    this.setState({selectingDeparture: false, selectingArrival: false})
-    // untoggle dropdown
-    this.setState({results: []}) // clear results
-  }
-
-  handleClickOutside () {
-    // HANDLE CLICKING OUT OF RESULTS, RESETS THE INPUT FIELD TO NULL OR SELECTED. RESETS RESULTS ARRAY TO EMPTY
-  }
-
-  handleDropdownSelect (e, type) {
-    const types = {
-      class: 'classState',
-      adults: 'adultsState',
-      '2-11y': '2-11yState',
-      '<2y': '<2yState'
-    }
-    this.setState({
-      [types[type]]: e.target.value
-    })
-  }
-
-  componentDidMount () {
-    // console.log('airports', airports)
-    console.log('dates', this.props.dates)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -244,31 +147,24 @@ class FlightSearchParameters extends Component {
       this.handleSubmit()
     }
   }
+
   render () {
-    // DATE/DAY PICKER. PAX. SINGLE/RETURN
-    // SEARCH BUTTON
-    // AIRPORT INPUT NEED RESIZETEXTBOX
     return (
       <div style={{position: 'relative'}}>
-        <form>
-          <div style={eventDescContainerStyle}>
-            <textarea key='departLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Departure City/Airport' name='departureSearch' onChange={(e) => this.handleChange(e, 'departureSearch')} onKeyUp={() => this.customDebounce('departureSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} value={this.state.departureSearch} />
-          </div>
+        <div style={flightMapContainerStyle}>
+          <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
+        </div>
+
+        {/* NEED TO STYLE MARGIN TOP HERE / INSIDE AIRPORTSEARCH */}
+        <div style={eventDescContainerStyle}>
+          <AirportSearch currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
+
           <p style={{textAlign: 'center'}}>to</p>
-          <div style={eventDescContainerStyle}>
-            <textarea key='arrivalLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Arrival City/Airport' name='arrivalSearch' onChange={(e) => this.handleChange(e, 'arrivalSearch')} onKeyUp={() => this.customDebounce('arrivalSearch')} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{marginTop: '0', fontSize: '36px'}}} value={this.state.arrivalSearch} />
-          </div>
-        </form>
 
-        {/* PROBABLY SHOULD COMBINE LOL */}
-        {this.state.selectingDeparture &&
-          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('departure', details)} />
-        }
-        {this.state.selectingArrival &&
-          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation('arrival', details)} />
-        }
+          <AirportSearch currentLocation={this.state.arrivalLocation} placeholder={'Arrival City/Airport'} selectLocation={details => this.selectLocation('arrival', details)} />
+        </div>
 
-        {/* WHY CANNOT SEE DATEBOX T.T */}
+        {/* DATEBOX */}
         <div style={{textAlign: 'center'}}>
           <div style={{display: 'inline-block', width: '25%'}}>
             <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />
@@ -276,23 +172,25 @@ class FlightSearchParameters extends Component {
           <div style={{display: 'inline-block', width: '25%'}}>
             <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
           </div>
-          <select value={this.state.classState} onChange={(e) => this.handleDropdownSelect(e, 'class')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
+
+          <select value={this.state.classCode} onChange={(e) => this.handleChange(e, 'classCode')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
             <option style={{color: 'black'}} value='Economy'>E</option>
             <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
             <option style={{color: 'black'}} value='Business'>B</option>
             <option style={{color: 'black'}} value='First'>F</option>
           </select>
-          <select value={this.state.adultsState} onChange={(e) => this.handleDropdownSelect(e, 'adults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+
+          <select value={this.state.paxAdults} onChange={(e) => this.handleChange(e, 'paxAdults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[1,2,3,4,5,6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select value={this.state['2-11yState']} onChange={(e) => this.handleDropdownSelect(e, '2-11y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.state.paxChildren} onChange={(e) => this.handleChange(e, 'paxChildren')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[0,1,2,3,4,5,6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select value={this.state['<2yState']} onChange={(e) => this.handleDropdownSelect(e, '<2y')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.state.paxInfants} onChange={(e) => this.handleChange(e, 'paxInfants')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[0,1,2,3,4,5,6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
@@ -308,7 +206,7 @@ class FlightSearchParameters extends Component {
         </div>
         <div style={{textAlign: 'center'}}>
           <hr style={{opacity: 0.5}} />
-          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>SEARCH</button>}
+          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleFlightSearch()}>SEARCH</button>}
           {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.props.closeCreateForm()}>CANCEL</button>}
         </div>
       </div>

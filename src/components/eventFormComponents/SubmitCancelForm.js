@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
-import { primaryColor } from '../Styles/styles'
+import { primaryColor } from '../../Styles/styles'
 // SUBMIT AND CANCEL ACTIONS ARE DEFINED DEPENDING ON THE PARENT FORM
 
 class SubmitCancelForm extends Component {

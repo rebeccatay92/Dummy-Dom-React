@@ -1,31 +1,13 @@
 import React, { Component } from 'react'
-import airports from '../data/airports.json'
+import airports from '../../data/airports.json'
+// import { locationDropdownStyle } from '../../Styles/styles'
 
 class AirportResults extends Component {
-  constructor (props) {
-    super(props)
-    // this.state = {
-    //   cities: []
-    // }
-  }
-  // componentDidMount () {
-  //   var results = this.props.results
-  //   console.log('results', results)
-  //
-  //   var cities = []
-  //
-  //   results.forEach(e => {
-  //     if (e.cityCode) {
-  //       cities.push({city: e.city, cityCode: e.cityCode, country: e.country})
-  //     }
-  //   })
-  //   this.setState({cities: cities})
+  // constructor (props) {
+  //   super(props)
   // }
 
   handleClick (cityOrAirport) {
-    console.log('clicked', cityOrAirport)
-    // only airport rows have id
-    // city obj was self created, has no id
     if (cityOrAirport.id) {
       cityOrAirport.type = 'airport'
     } else {
@@ -33,7 +15,7 @@ class AirportResults extends Component {
     }
     this.props.selectLocation(cityOrAirport)
   }
-  // NEEDS CITY/AIRPORT LISTING, SELECT AIRPORT, CLICK OUTSIDE, HOVER LOGIC
+
   render () {
     var cityCodes = []
     var cities = []
@@ -42,7 +24,7 @@ class AirportResults extends Component {
     this.props.results.forEach(e => {
       if (e.cityCode && !cityCodes.includes(e.cityCode)) {
         cityCodes.push(e.cityCode)
-        cities.push({name: e.city, cityCode: e.cityCode, country: e.country})
+        cities.push({name: e.city, country: e.country, cityCode: e.cityCode, latitude: e.cityLat, longitude: e.cityLng})
       }
     })
 
@@ -64,7 +46,6 @@ class AirportResults extends Component {
             <h5 key={`cityrow${i}`} onClick={() => this.handleClick(city)}>City: {city.name}, {city.cityCode}, {city.country}</h5>
 
             {airportsInCities.map((airport, i) => {
-              console.log('city airport', airport)
               if (airport.cityCode === cityCode) {
                 return <h5 key={`cityairportrow${i}`} onClick={() => this.handleClick(airport)}>--> Airport: {airport.name}, {airport.city}, {airport.iata}</h5>
               }

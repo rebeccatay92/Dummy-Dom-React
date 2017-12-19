@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Radium from 'radium'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
-var key = 'key=AIzaSyDwlTicqOxDlB2u3MhiEusUJyo_QQy-MZU'
+var key = `key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 var placeDetails = `https://maps.googleapis.com/maps/api/place/details/json?`
 
 class GooglePlaceResult extends Component {
@@ -15,7 +15,7 @@ class GooglePlaceResult extends Component {
       address: this.props.result.formatted_address,
       latitude: this.props.result.geometry.location.lat,
       longitude: this.props.result.geometry.location.lng,
-      openingHours: []
+      openingHours: null
     }
   }
 
@@ -44,13 +44,14 @@ class GooglePlaceResult extends Component {
           // pass location up to parent LocationSelection
           var location = {}
           Object.keys(this.state).forEach(key => {
-            if (key !== '_radiumStyleState' && key !== 'openingHours' && key !== 'place_id') {
+            if (key !== '_radiumStyleState' && key !== 'place_id') {
               location[key] = this.state[key]
             }
           })
           //stringify the openingHours array first
           location.placeId = this.state.place_id
-          location.openingHours = JSON.stringify(this.state.openingHours)
+          // pass array up to LocationSelection
+          // location.openingHours = JSON.stringify(this.state.openingHours)
 
           this.props.selectLocation(location)
         })

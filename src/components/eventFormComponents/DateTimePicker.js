@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import CustomDatePicker from './CustomDatePicker'
 // custom input style
 
-import { dateTimePickerContainerStyle } from '../Styles/styles'
+import { dateTimePickerContainerStyle } from '../../Styles/styles'
 
 import moment from 'moment'
 import Radium from 'radium'

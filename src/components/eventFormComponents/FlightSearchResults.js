@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import Radium from 'radium'
-import { searchResultsTableStyle } from '../Styles/styles'
+import { searchResultsTableStyle } from '../../Styles/styles'
 import FlightSearchResultsRow from './FlightSearchResultsRow'
 
 class FlightSearchResults extends Component {

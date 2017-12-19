@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { MAP } from 'react-google-maps/lib/constants'
 
-class CustomControl extends React.Component {
+class CustomControlSelectedLocation extends React.Component {
 	static contextTypes = {
 		[MAP]: PropTypes.object
 	}
@@ -18,8 +18,8 @@ class CustomControl extends React.Component {
 
 	componentDidMount() {
 		this.map = this.context[MAP];
-		controlPosition: window.google.maps.ControlPosition.TOP_RIGHT
-		this._render();
+		controlPosition: this.props.controlPosition
+		this._render()
 	}
 
 	componentDidUpdate() {
@@ -56,4 +56,4 @@ class CustomControl extends React.Component {
 	}
 }
 
-export default CustomControl
+export default CustomControlSelectedLocation
