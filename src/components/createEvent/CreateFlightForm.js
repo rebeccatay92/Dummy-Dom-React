@@ -7,7 +7,7 @@ import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFor
 
 import FlightSearchParameters from '../FlightSearchParameters'
 import FlightSearchResults from '../FlightSearchResults'
-import FlightSearchDetails from '../FlightSearchDetails'
+import FlightSearchDetailsContainer from '../FlightSearchDetailsContainer'
 import Attachments from '../Attachments'
 import SubmitCancelForm from '../SubmitCancelForm'
 
@@ -20,7 +20,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
 class CreateFlightForm extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       currencyList: [], // not submitted
@@ -67,7 +67,9 @@ class CreateFlightForm extends Component {
       flights: [],
       searching: false,
       selected: 0,
-      tripType: ''
+      tripType: '',
+      flightDetailsPage: 1,
+      searchClicked: 1
     }
   }
 
@@ -248,7 +250,8 @@ class CreateFlightForm extends Component {
 
   handleSelectFlight (index) {
     this.setState({
-      selected: index
+      selected: index,
+      flightDetailsPage: 1
     })
   }
 
@@ -273,12 +276,8 @@ class CreateFlightForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
-              {this.state.searching && this.state.flights[this.state.selected].flights.map((flight, i) => {
-                return (
-                  <FlightSearchDetails key={i} first={i === 0} flight={this.state.flights[this.state.selected]} index={i} tripType={this.state.tripType} />
-                )
-              })}
+              <FlightSearchParameters searchClicked={this.state.searchClicked} searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
+              {this.state.searching && <FlightSearchDetailsContainer searching={this.state.searching} flights={this.state.flights} selected={this.state.selected} tripType={this.state.tripType} />}
             </div>
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
@@ -290,6 +289,10 @@ class CreateFlightForm extends Component {
               <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
                 <FlightSearchResults flights={this.state.flights} searching={this.state.searching} selected={this.state.selected} handleSelectFlight={(index) => this.handleSelectFlight(index)} tripType={this.state.tripType} />
               </div>
+            </div>
+            <div style={{position: 'absolute', right: '0', bottom: '0', padding: '10px'}}>
+              {this.state.searching && <button style={{color: 'black'}} onClick={() => this.setState({searchClicked: this.state.searchClicked + 1})}>Search</button>}
+              {this.state.searching && <button style={{color: 'black'}}>Confirm</button>}
             </div>
           </div>
 

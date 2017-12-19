@@ -240,6 +240,9 @@ class FlightSearchParameters extends Component {
     this.setState({
       marginTop: nextProps.searching ? '55' : '180'
     })
+    if (nextProps.searchClicked !== this.props.searchClicked) {
+      this.handleSubmit()
+    }
   }
   render () {
     // DATE/DAY PICKER. PAX. SINGLE/RETURN
