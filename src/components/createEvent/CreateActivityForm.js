@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
@@ -15,6 +15,7 @@ import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createActivity } from '../../apollo/activity'
+import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
@@ -111,41 +112,92 @@ class CreateActivityForm extends Component {
 
     // assuming all events have a startTime
 
-    if (newActivity.startTime) {
+    var loadSequenceInput = []
+
+    if (!newActivity.startTime) {
+      // if startTime is not given, make it the last event
+      var lastRow = daysEvents[daysEvents.length - 1]
+      newActivity.loadSequence = lastRow.loadSequence + 1
+      console.log('lastRow', lastRow.loadSequence, 'newActivity', newActivity.loadSequence)
+    } else {
       var displacedRow = daysEvents.find(e => {
-        return (e.time > newActivity.startTime)
+        return (e.time >= newActivity.startTime)
       })
       console.log('displacedRow', displacedRow)
 
       // if startTime does not displace any row (last event)
       if (!displacedRow) {
-        console.log('no displacedrow')
-        return
+        console.log('no displacedrow, last event')
+        lastRow = daysEvents[daysEvents.length - 1]
+        newActivity.loadSequence = lastRow.loadSequence + 1
+        console.log('lastRow', lastRow.loadSequence, 'newActivity', newActivity.loadSequence)
+      } else if (displacedRow) {
+        // if startTime displaces a start:false row (not allowed)
+        if (typeof(displacedRow.start) === 'boolean' && !displacedRow.start) {
+          console.log('not allowed: attempting to slot in between start true/false rows. bump it to after the start:false event')
+          // everything from (displaced + 1 row) +1 to loadSeq
+          var eventsToUpdate = daysEvents.filter(e => {
+            return e.loadSequence >= displacedRow.loadSequence + 1
+          })
+          console.log('eventsToUpdate', eventsToUpdate)
+          eventsToUpdate.forEach(row => {
+            var inputObj = {
+              type: row.type === 'Flight' ? 'FlightInstance' : row.type,
+              id: row.type === 'Flight' ? row.Flight.FlightInstance.row.id : row.modelId,
+              loadSequence: row.loadSequence + 1,
+              day: row.day
+            }
+            if (row.type === 'Flight' || row.type === 'Transport' || row.type === 'Lodging') {
+              inputObj.start = row.start
+            }
+            loadSequenceInput.push(inputObj)
+          })
+          console.log('loadSequenceInput', loadSequenceInput)
+
+          newActivity.loadSequence = displacedRow.loadSequence + 1
+        } else {
+          console.log('allowed: slot before start:true or start:null')
+          // everything from displaced row onwards + 1 to load sequence
+          var eventsToUpdate = daysEvents.filter(e => {
+            return e.loadSequence >= displacedRow.loadSequence
+          })
+          console.log('eventsToUpdate', eventsToUpdate)
+          eventsToUpdate.forEach(row => {
+            var inputObj = {
+              type: row.type === 'Flight' ? 'FlightInstance' : row.type,
+              id: row.type === 'Flight' ? row.Flight.FlightInstance.row.id : row.modelId,
+              loadSequence: row.loadSequence + 1,
+              day: row.day
+            }
+            if (row.type === 'Flight' || row.type === 'Transport' || row.type === 'Lodging') {
+              inputObj.start = row.start
+            }
+            loadSequenceInput.push(inputObj)
+          })
+          console.log('loadSequenceInput', loadSequenceInput)
+          newActivity.loadSequence = displacedRow.loadSequence
+        }
       }
-      // if startTime displaces a start:false row (not allowed)
-      if (typeof(displacedRow.start) === 'boolean' && !displacedRow.start) {
-        console.log('attempting to slot in between start true/false rows')
-      } else {
-        console.log('attempting to slot before start:true or start:null')
-      }
-    } else {
-      // if startTime is not given, make it the last event
-      var lastRow = daysEvents[daysEvents.length - 1]
-      console.log(lastRow)
     }
 
-    // console.log('newActivity', newActivity)
-    //
-    // this.props.createActivity({
-    //   variables: newActivity,
-    //   refetchQueries: [{
-    //     query: queryItinerary,
-    //     variables: { id: this.props.ItineraryId }
-    //   }]
-    // })
-    //
-    // this.resetState()
-    // this.props.toggleCreateEventType()
+    console.log('newActivity', newActivity)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: loadSequenceInput
+      }
+    })
+
+    this.props.createActivity({
+      variables: newActivity,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateActivity () {
@@ -348,4 +400,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(graphql(createActivity, {name: 'createActivity'})(Radium(CreateActivityForm)))
+export default connect(mapStateToProps)(compose(
+  graphql(createActivity, {name: 'createActivity'}),
+  graphql(changingLoadSequence, {name: 'changingLoadSequence'})
+)(Radium(CreateActivityForm)))
