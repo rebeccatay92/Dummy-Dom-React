@@ -199,6 +199,14 @@ export const flightMapContainerStyle = {backgroundColor: 'white', position: 'fix
 // DateTimePicker.js styles
 export const dateTimePickerContainerStyle = {width: '370px', margin: '45px auto 0 auto', textAlign: 'center', height: '131px', position: 'relative', whiteSpace: 'noWrap'}
 
+// BookingDetails.js styles
+export const labelStyle = {
+  fontSize: '13px',
+  display: 'block',
+  margin: '5px',
+  lineHeight: '26px'
+}
+
 // Attachments.js styles
 export const attachmentStyle = {margin: '1px 6px 0 0', verticalAlign: 'top', display: 'inline-block', position: 'relative', ':hover': {color: primaryColor}, border: '1px solid ' + secondaryFontColor, height: '50px', cursor: 'pointer', borderRadius: '5px', width: '15%', backgroundColor: backgroundColor}
 export const addAttachmentBtnStyle = {color: secondaryFontColor, margin: '10px 5px 0 0', cursor: 'pointer', fontSize: '30px', ':hover': {color: primaryColor}}
@@ -211,4 +219,4 @@ export const pdfLogoStyle = {color: 'rgb(237, 15, 135)', fontSize: '50px', margi
 export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
 
 // FlightSearchResults.js styles
-export const searchResultsTableStyle = {width: '100%', marginTop: '20px', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}
+export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}

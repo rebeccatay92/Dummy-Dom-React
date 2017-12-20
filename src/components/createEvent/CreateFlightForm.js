@@ -3,11 +3,13 @@ import { graphql } from 'react-apollo'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
 
-import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+import { labelStyle, createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
 import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
 import FlightSearchDetailsContainer from '../eventFormComponents/FlightSearchDetailsContainer'
+import BookingDetails from '../eventFormComponents/BookingDetails'
+import Notes from '../eventFormComponents/Notes'
 
 import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
@@ -60,6 +62,7 @@ class CreateFlightForm extends Component {
       // }
       flights: [],
       searching: false,
+      bookingDetails: false,
       selected: 0,
       tripType: '',
       flightDetailsPage: 1,
@@ -245,8 +248,26 @@ class CreateFlightForm extends Component {
   handleSelectFlight (index) {
     this.setState({
       selected: index,
-      flightDetailsPage: 1
+      flightDetailsPage: 1,
+      flightInstances: this.state.flights[index].flights.map(flight => {
+        return {}
+      })
     })
+  }
+
+  handleChange (e, field, subfield, index) {
+    if (subfield) {
+      let newState = this.state[field].slice(0)
+      newState[index][subfield] = e.target.value
+      this.setState({
+        [field]: newState
+      })
+      console.log(this.state)
+    } else {
+      this.setState({
+        [field]: e.target.value
+      })
+    }
   }
 
   componentDidMount () {
@@ -270,8 +291,8 @@ class CreateFlightForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters searchClicked={this.state.searchClicked} searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
-              {this.state.searching && <FlightSearchDetailsContainer searching={this.state.searching} flights={this.state.flights} selected={this.state.selected} tripType={this.state.tripType} />}
+              <FlightSearchParameters searchClicked={this.state.searchClicked} bookingDetails={this.state.bookingDetails} searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
+              {(this.state.searching || (!this.state.searching && this.state.bookingDetails)) && <FlightSearchDetailsContainer searching={this.state.searching} flights={this.state.flights} selected={this.state.selected} tripType={this.state.tripType} page={this.state.flightDetailsPage} />}
             </div>
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
@@ -279,14 +300,48 @@ class CreateFlightForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle('flight')}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
-              <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
-                <FlightSearchResults flights={this.state.flights} searching={this.state.searching} selected={this.state.selected} handleSelectFlight={(index) => this.handleSelectFlight(index)} tripType={this.state.tripType} />
+              <SubmitCancelForm flight handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
+              {this.state.bookingDetails && (
+                <div>
+                  <h4 style={{fontSize: '24px'}}>Booking Details</h4>
+                  <BookingDetails flight handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
+                  {this.state.flights[this.state.selected].flights.map((flight, i) => {
+                    return (
+                      <div key={i}>
+                        <h4 style={{fontSize: '24px'}} key={i}>{flight.departureAirportCode} to {flight.arrivalAirportCode}</h4>
+                        <div style={{display: 'inline-block', width: '40%'}}>
+                          <label style={labelStyle}>
+                            Departure Gate
+                          </label>
+                          <input style={{width: '90%'}} type='text' name='departureGate' onChange={(e) => this.handleChange(e, 'flightInstances', 'departureGate', i)} />
+                          <label style={labelStyle}>
+                            Arrival Gate
+                          </label>
+                          <input style={{width: '90%'}} type='text' name='arrivalGate' onChange={(e) => this.handleChange(e, 'flightInstances', 'arrivalGate', i)} />
+                        </div>
+                        <div style={{display: 'inline-block', width: '50%', verticalAlign: 'top'}}>
+                          <Notes flight index={i} handleChange={(e, field, subfield, index) => this.handleChange(e, field, subfield, index)} />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+              <div style={{width: '100%', height: '91%', margin: '2% 0 6% 0', overflowY: 'auto'}}>
+                {this.state.searching && <FlightSearchResults flights={this.state.flights} searching={this.state.searching} selected={this.state.selected} handleSelectFlight={(index) => this.handleSelectFlight(index)} tripType={this.state.tripType} />}
               </div>
             </div>
             <div style={{position: 'absolute', right: '0', bottom: '0', padding: '10px'}}>
               {this.state.searching && <button style={{color: 'black'}} onClick={() => this.setState({searchClicked: this.state.searchClicked + 1})}>Search</button>}
-              {this.state.searching && <button style={{color: 'black'}}>Confirm</button>}
+              {this.state.searching && <button style={{color: 'black'}} onClick={() => {
+                this.setState({
+                  searching: false,
+                  bookingDetails: true
+                })
+              }}>Confirm</button>}
+              {this.state.bookingDetails && <button style={{color: 'black'}} onClick={() => this.setState({bookingDetails: false, searching: true})}>Back</button>}
+              {this.state.bookingDetails && <button style={{color: 'black'}} onClick={() => {
+              }}>Save</button>}
             </div>
           </div>
 

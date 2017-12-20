@@ -149,14 +149,14 @@ class FlightSearchParameters extends Component {
     console.log('departureLocation', this.state.departureLocation)
     return (
       <div style={{position: 'relative'}}>
-        {!this.props.searching &&
+        {!this.props.searching && !this.props.bookingDetails &&
           <div style={flightMapContainerStyle}>
             <FlightMapHOC departureLocation={this.state.departureLocation} arrivalLocation={this.state.arrivalLocation} />
           </div>
         }
 
         {/* NEED TO STYLE MARGIN TOP HERE / INSIDE AIRPORTSEARCH */}
-        <div style={{...eventDescContainerStyle, ...{marginTop: this.props.searching ? '55px' : '180px'}}}>
+        <div style={{...eventDescContainerStyle, ...{marginTop: this.props.searching || this.props.bookingDetails ? '55px' : '180px'}}}>
           <AirportSearch currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
 
           <p style={{textAlign: 'center'}}>to</p>
@@ -206,8 +206,8 @@ class FlightSearchParameters extends Component {
         </div>
         <div style={{textAlign: 'center'}}>
           <hr style={{opacity: 0.5}} />
-          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.handleFlightSearch()}>SEARCH</button>}
-          {!this.props.searching && <button style={{color: 'black'}} onClick={() => this.props.closeCreateForm()}>CANCEL</button>}
+          {!this.props.searching && !this.props.bookingDetails && <button style={{color: 'black'}} onClick={() => this.handleFlightSearch()}>SEARCH</button>}
+          {!this.props.searching && !this.props.bookingDetails && <button style={{color: 'black'}} onClick={() => this.props.closeCreateForm()}>CANCEL</button>}
         </div>
       </div>
     )
