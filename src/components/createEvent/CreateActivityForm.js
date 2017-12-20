@@ -70,7 +70,7 @@ class CreateActivityForm extends Component {
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      loadSequence: this.props.highestLoadSequence + 1,
+      // loadSequence: this.props.highestLoadSequence + 1,
       description: this.state.description,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
@@ -118,8 +118,8 @@ class CreateActivityForm extends Component {
       // if startTime is not given, make it the last event
       var lastRow = daysEvents[daysEvents.length - 1]
       newActivity.loadSequence = lastRow.loadSequence + 1
-      console.log('lastRow', lastRow.loadSequence, 'newActivity', newActivity.loadSequence)
     } else {
+      // if startTime is given find out the displaced row
       var displacedRow = daysEvents.find(e => {
         return (e.time >= newActivity.startTime)
       })
@@ -158,7 +158,7 @@ class CreateActivityForm extends Component {
         } else {
           console.log('allowed: slot before start:true or start:null')
           // everything from displaced row onwards + 1 to load sequence
-          var eventsToUpdate = daysEvents.filter(e => {
+          eventsToUpdate = daysEvents.filter(e => {
             return e.loadSequence >= displacedRow.loadSequence
           })
           console.log('eventsToUpdate', eventsToUpdate)
