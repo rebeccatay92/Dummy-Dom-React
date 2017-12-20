@@ -186,7 +186,6 @@ class CreateFlightForm extends Component {
             kilobytes = Math.round(kilobytes)
             fileSizeStr = kilobytes + 'KB'
           }
-          // this.setState({attachments: this.state.attachments.concat([json.name])})
           this.setState({
             attachments: this.state.attachments.concat([
               {

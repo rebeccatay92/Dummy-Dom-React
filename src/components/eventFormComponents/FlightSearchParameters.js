@@ -53,29 +53,29 @@ class FlightSearchParameters extends Component {
         ClassType: this.state.classCode,
         OriginDestination: this.state.returnDate ? [
           {
-            // 'Origin': origin,
-            // 'Destination': destination,
-            // 'TravelDate': travelDate
-            'Origin': 'SIN',
-            'Destination': 'PEK',
+            'Origin': origin,
+            'Destination': destination,
             'TravelDate': travelDate
+            // 'Origin': 'SIN',
+            // 'Destination': 'PEK',
+            // 'TravelDate': travelDate
           },
           {
-            // 'Origin': destination,
-            // 'Destination': origin,
-            // 'TravelDate': returnDate
-            'Origin': 'PEK',
-            'Destination': 'SIN',
+            'Origin': destination,
+            'Destination': origin,
             'TravelDate': returnDate
+            // 'Origin': 'PEK',
+            // 'Destination': 'SIN',
+            // 'TravelDate': returnDate
           }
         ] : [
           {
-            // 'Origin': origin,
-            // 'Destination': destination,
-            // 'TravelDate': travelDate
-            'Origin': 'SIN',
-            'Destination': 'BJS',
+            'Origin': origin,
+            'Destination': destination,
             'TravelDate': travelDate
+            // 'Origin': 'SIN',
+            // 'Destination': 'BJS',
+            // 'TravelDate': travelDate
           }
         ],
         Currency: 'USD',
@@ -146,7 +146,6 @@ class FlightSearchParameters extends Component {
   }
 
   render () {
-    console.log('departureLocation', this.state.departureLocation)
     return (
       <div style={{position: 'relative'}}>
         {!this.props.searching &&
