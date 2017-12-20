@@ -84,48 +84,68 @@ class CreateActivityForm extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
-    // var eventsWithTime = []
+    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
+    var allEventsWithTime = []
 
-    // var events = JSON.parse(JSON.stringify(this.props.events))
-    //
-    // events.forEach(event => {
-    //   if (event.type === 'Flight') {
-    //     event.time = event.Flight.FlightInstance.startTime
-    //     eventsWithTime.push(event)
-    //   }
-    //   else {
-    //     event.time = event[event.type].startTime
-    //     eventsWithTime.push(event)
-    //   }
-    // })
-    // console.log(eventsWithTime)
-    // var eventsForStartDay = this.props.events.filter(e => {
-    //   return e.day === newActivity.startDay
-    // })
-    // console.log('days events', eventsForStartDay)
-    //
-    // if (newActivity.startTime) {
-    //   console.log('startTime', newActivity.startTime)
-    //   var insertBeforeRow = this.props.events.find(e => {
-    //     return e[e.type].startTime > newActivity.startTime
-    //   })
-    //   console.log(insertBeforeRow)
-    // }
+    var events = JSON.parse(JSON.stringify(this.props.events))
 
-    // if startTime was provided, sort by time, else last in load seq
-
-    console.log('newActivity', newActivity)
-
-    this.props.createActivity({
-      variables: newActivity,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
+    events.forEach(event => {
+      // for events flight instances with 2 rows
+      if (event.type === 'Flight') {
+        event.time = event.start ? event.Flight.FlightInstance.startTime : event.Flight.FlightInstance.endTime
+      } else if (event.type === 'Transport' || event.type === 'Lodging'){
+        event.time = event.start ? event[event.type].startTime : event[event.type].endTime
+      } else {
+        event.time = event[event.type].startTime
+      }
+      allEventsWithTime.push(event)
     })
+    // console.log(allEventsWithTime)
 
-    this.resetState()
-    this.props.toggleCreateEventType()
+    console.log('startDay', newActivity.startDay, 'startTime', newActivity.startTime)
+
+    var daysEvents = allEventsWithTime.filter(e => {
+      return e.day === newActivity.startDay
+    })
+    console.log('daysEvents', daysEvents)
+
+    // assuming all events have a startTime
+
+    if (newActivity.startTime) {
+      var displacedRow = daysEvents.find(e => {
+        return (e.time > newActivity.startTime)
+      })
+      console.log('displacedRow', displacedRow)
+
+      // if startTime does not displace any row (last event)
+      if (!displacedRow) {
+        console.log('no displacedrow')
+        return
+      }
+      // if startTime displaces a start:false row (not allowed)
+      if (typeof(displacedRow.start) === 'boolean' && !displacedRow.start) {
+        console.log('attempting to slot in between start true/false rows')
+      } else {
+        console.log('attempting to slot before start:true or start:null')
+      }
+    } else {
+      // if startTime is not given, make it the last event
+      var lastRow = daysEvents[daysEvents.length - 1]
+      console.log(lastRow)
+    }
+
+    // console.log('newActivity', newActivity)
+    //
+    // this.props.createActivity({
+    //   variables: newActivity,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+    //
+    // this.resetState()
+    // this.props.toggleCreateEventType()
   }
 
   closeCreateActivity () {
