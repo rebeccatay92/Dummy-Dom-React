@@ -7,7 +7,7 @@ import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFor
 
 import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
 import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
-import FlightSearchDetails from '../eventFormComponents/FlightSearchDetails'
+import FlightSearchDetailsContainer from '../eventFormComponents/FlightSearchDetailsContainer'
 
 import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
@@ -61,7 +61,9 @@ class CreateFlightForm extends Component {
       flights: [],
       searching: false,
       selected: 0,
-      tripType: ''
+      tripType: '',
+      flightDetailsPage: 1,
+      searchClicked: 1
     }
   }
 
@@ -241,7 +243,8 @@ class CreateFlightForm extends Component {
 
   handleSelectFlight (index) {
     this.setState({
-      selected: index
+      selected: index,
+      flightDetailsPage: 1
     })
   }
 
@@ -266,24 +269,23 @@ class CreateFlightForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
-
-              {this.state.searching && this.state.flights[this.state.selected].flights.map((flight, i) => {
-                return (
-                  <FlightSearchDetails key={i} first={i === 0} flight={this.state.flights[this.state.selected]} index={i} tripType={this.state.tripType} />
-                )
-              })}
+              <FlightSearchParameters searchClicked={this.state.searchClicked} searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType) => this.handleSearch(flights, tripType)} closeCreateForm={() => this.closeCreateFlight()} />
+              {this.state.searching && <FlightSearchDetailsContainer searching={this.state.searching} flights={this.state.flights} selected={this.state.selected} tripType={this.state.tripType} />}
             </div>
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle('flight')}>
-            <div style={{...bookingNotesContainerStyle, ...{overflowY: 'scroll'}}}>
+            <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
               <div style={{width: '100%', height: '91%', margin: '3% 0 6% 0', overflowY: 'auto'}}>
                 <FlightSearchResults flights={this.state.flights} searching={this.state.searching} selected={this.state.selected} handleSelectFlight={(index) => this.handleSelectFlight(index)} tripType={this.state.tripType} />
               </div>
+            </div>
+            <div style={{position: 'absolute', right: '0', bottom: '0', padding: '10px'}}>
+              {this.state.searching && <button style={{color: 'black'}} onClick={() => this.setState({searchClicked: this.state.searchClicked + 1})}>Search</button>}
+              {this.state.searching && <button style={{color: 'black'}}>Confirm</button>}
             </div>
           </div>
 

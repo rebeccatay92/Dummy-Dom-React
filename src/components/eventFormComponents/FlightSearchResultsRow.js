@@ -76,7 +76,7 @@ class FlightSearchResultsRow extends Component {
             <td style={{textAlign: 'center'}}>
               <p style={{margin: 0, color: '#ed9fad'}}>{this.props.returnTotalHours + this.props.returnTotalMins + ' min'}</p>
               <hr style={{width: '100%', height: '1px', margin: 0}} />
-              <p style={{margin: 0}}>{this.props.flight.flights.length - 1 > returnFirstFlightIndex ? this.props.layoverHours + this.props.layoverMins + ' min ' + this.props.layoverAirport : 'no layover'}</p>
+              <p style={{margin: 0}}>{this.props.flight.flights.length - 1 > returnFirstFlightIndex ? this.props.returnLayoverHours + this.props.returnLayoverMins + ' min ' + this.props.returnLayoverAirport : 'no layover'}</p>
             </td>
             <td style={{textAlign: 'center', padding: '5px'}}>
               <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[this.props.flight.flights.length - 1].arrivalDateTime).format('HH:mm')}</p>

@@ -14,7 +14,6 @@ class FlightSearchParameters extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      marginTop: 180, // styling
       departureLocation: null,
       arrivalLocation: null,
       // start date, end date, start/end day
@@ -31,6 +30,7 @@ class FlightSearchParameters extends Component {
 
   handleFlightSearch () {
     // console.log(moment(this.state.departureDate).format('MM/DD/YYYY'));
+    console.log(this.state);
     const uriFull = 'https://dev-sandbox-api.airhob.com/sandboxapi/flights/v1.2/search'
     const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
     const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
@@ -79,7 +79,7 @@ class FlightSearchParameters extends Component {
           }
         ],
         Currency: 'USD',
-        FlightsCount: '50ITINS'
+        FlightsCount: '200ITINS'
       })
     }).then(response => {
       const json = response.json()
@@ -140,9 +140,9 @@ class FlightSearchParameters extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    this.setState({
-      marginTop: nextProps.searching ? '55' : '180'
-    })
+    if (nextProps.searchClicked !== this.props.searchClicked) {
+      this.handleFlightSearch()
+    }
   }
 
   render () {
@@ -155,7 +155,7 @@ class FlightSearchParameters extends Component {
         }
 
         {/* NEED TO STYLE MARGIN TOP HERE / INSIDE AIRPORTSEARCH */}
-        <div style={eventDescContainerStyle}>
+        <div style={{...eventDescContainerStyle, ...{marginTop: this.props.searching ? '55px' : '180px'}}}>
           <AirportSearch currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
 
           <p style={{textAlign: 'center'}}>to</p>
