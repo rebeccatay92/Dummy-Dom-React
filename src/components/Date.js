@@ -190,7 +190,7 @@ class DateBox extends Component {
           start: activity.start
         }
       })
-      console.log(loadSequenceArr)
+      // console.log(loadSequenceArr)
       this.props.changingLoadSequence({
         variables: {
           input: loadSequenceArr

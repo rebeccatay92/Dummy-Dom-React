@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
+import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
 
@@ -15,10 +16,12 @@ import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createFlightBooking } from '../../apollo/flight'
+import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
@@ -103,18 +106,29 @@ class CreateFlightForm extends Component {
       flightInstances: this.state.flightInstances
     }
 
-    console.log('newFlight', newFlight)
+    // console.log('newFlight', newFlight)
 
-    // this.props.createFlightBooking({
-    //   variables: newFlight,
-    //   refetchQueries: [{
-    //     query: queryItinerary,
-    //     variables: { id: this.props.ItineraryId }
-    //   }]
-    // })
-    //
-    // this.resetState()
-    // this.props.toggleCreateEventType()
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Flight', newFlight.flightInstances)
+    console.log('helper output', helperOutput)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    newFlight.flightInstances = helperOutput.newEvent
+
+    this.props.createFlightBooking({
+      variables: newFlight,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateFlight () {
@@ -274,7 +288,7 @@ class CreateFlightForm extends Component {
           endTime: endTime,
           // startLoadSequence: 1,
           // endLoadSequence: 2,
-          notes: String,
+          notes: 'testing load seq assignments',
           firstFlight: i === 0
         }
       })
@@ -381,4 +395,13 @@ class CreateFlightForm extends Component {
   }
 }
 
-export default graphql(createFlightBooking, {name: 'createFlightBooking'})(Radium(CreateFlightForm))
+const mapStateToProps = (state) => {
+  return {
+    events: state.plannerActivities
+  }
+}
+
+export default connect(mapStateToProps)(compose(
+  graphql(createFlightBooking, {name: 'createFlightBooking'}),
+  graphql(changingLoadSequence, {name: 'changingLoadSequence'})
+)(Radium(CreateFlightForm)))
