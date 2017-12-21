@@ -10,10 +10,8 @@ eg: newActivity {startDay: 1, startTime: 32000}
 eg: [{newFLightInstance}, {newFLightInstance}]
 */
 
-// if model is activity / food / transport / lodging, newEvent = {}
-// if model is flight, newEvent = [{flightInstance},{},{}]
 // find insertion index
-// insert newEvent into daysEvents arr, then compare index with load seq
+// insert newEvent into dayEvents arr, then compare index with load seq
 
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
@@ -28,37 +26,37 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     }
     return event
   })
-  var loadSequenceInput = []
+  var loadSequenceInput = [] //for changing load seq of existing events
 
   if (eventModel === 'Activity' || eventModel === 'Food') {
-    var daysEvents = allEventsWithTime.filter(e => {
+    var dayEvents = allEventsWithTime.filter(e => {
       return e.day === newEvent.startDay
     })
 
     if (!newEvent.startTime) {
-      newEvent.loadSequence = daysEvents.length + 1
+      newEvent.loadSequence = dayEvents.length + 1
     } else {
-      var displacedRow = daysEvents.find(e => {
+      var displacedRow = dayEvents.find(e => {
         return (e.time >= newEvent.startTime)
       })
       if (!displacedRow) {
-        newEvent.loadSequence = daysEvents.length + 1
+        newEvent.loadSequence = dayEvents.length + 1
       } else {
         // console.log('displacedRow', displacedRow)
-        var index = daysEvents.indexOf(displacedRow)
+        var index = dayEvents.indexOf(displacedRow)
         // console.log('index', index)
 
         if (typeof(displacedRow.start) === 'boolean' && !displacedRow.start) {
           console.log('displacing start: false, insert after displacedRow')
-          daysEvents.splice(index + 1, 0, newEvent)
+          dayEvents.splice(index + 1, 0, 'placeholder')
         } else {
           console.log('allowed: insert before displacedRow')
-          daysEvents.splice(index, 0, newEvent)
+          dayEvents.splice(index, 0, 'placeholder')
         }
 
-        // console.log('inserted', daysEvents)
-        daysEvents.forEach(event => {
-          var correctLoadSeq = daysEvents.indexOf(event) + 1
+        console.log('inserted', dayEvents)
+        dayEvents.forEach(event => {
+          var correctLoadSeq = dayEvents.indexOf(event) + 1
           if (event.modelId && event.loadSequence !== correctLoadSeq) {
             var inputObj = {
               type: event.type === 'Flight' ? 'FlightInstance' : event.type,
@@ -70,20 +68,75 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
               inputObj.start = event.start
             }
             loadSequenceInput.push(inputObj)
-          } else if (event.ItineraryId) {
+          } else if (event === 'placeholder') {
             newEvent.loadSequence = correctLoadSeq
           }
         })
       }
     }
-    // console.log('newEvent after assigning load seq', newEvent)
-    // console.log('loadSequenceInput', loadSequenceInput)
   } // close activity and food
+  if (eventModel === 'Flight') {
+    /*
+    console.log('flight instance arr', newEvent)
+    var flightInstanceRows = []
+    var days = []
+    newEvent.forEach(instance => {
+      // 2 rows for start/end
+      flightInstanceRows.push(
+        {day: instance.startDay, time: instance.startTime},
+        {day: instance.endDay, time: instance.endTime}
+      )
 
+      if (!days.includes(instance.startDay)) {
+        days.push(instance.startDay)
+      } else if (!days.includes(instance.endDay)) {
+        days.push(instance.endDay)
+      }
+    })
+
+    var flightInstanceLoadSeqs = [] // for assigning  start/end loadseq
+
+    days.forEach(day => {
+      var dayEvents = allEventsWithTime.filter(e => {
+        return e.day === day
+      })
+      var dayInstanceRows = flightInstanceRows.filter(e => {
+        return e.day === day
+      })
+      dayInstanceRows.forEach(row => {
+        // find displaced row index
+        var displacedRow = dayEvents.find(e => {
+          return (e.time >= row.time)
+        })
+        var index = dayEvents.indexof(displacedRow)
+      })
+    })
+    */
+    
+    // QUEUE???
+
+    /*
+    SPLICE INDEX + 1 DOES NOT WORK IF THERE ARE MULTIPLE DISPLACING ROWS!!! <event><instance1><instance2> can end up becoming <event><instance2><instance1>
+
+    flightInstances = [<instance>,<instance>,<instance>]
+    flightInstanceRows = [<start><end><start><end><start><end>]
+    split into days and assign load sequences
+    dayEvents = [<event>,<start>,<end>,<event>,<start>]
+    if <start> or <end> push correctLoadSeq into aggregated arr
+    flightInstanceLoadSeqs =[<1><2><3><1><2><3>]
+    if <event>, check and change load seq
+    after looped through all days, changingLoadSeq arr is finished,
+    now to assign start/end loadSeq for allFlightInstances
+    */
+  }
+
+  console.log('newEvent after assigning load seq', newEvent)
+  console.log('loadSequenceInput', loadSequenceInput)
   var output = {
     newEvent,
     loadSequenceInput
   }
+
   return output
 }
 
