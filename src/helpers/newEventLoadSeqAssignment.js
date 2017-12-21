@@ -28,13 +28,12 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     }
     return event
   })
+  var loadSequenceInput = []
 
   if (eventModel === 'Activity' || eventModel === 'Food') {
     var daysEvents = allEventsWithTime.filter(e => {
       return e.day === newEvent.startDay
     })
-
-    var loadSequenceInput = []
 
     if (!newEvent.startTime) {
       newEvent.loadSequence = daysEvents.length + 1

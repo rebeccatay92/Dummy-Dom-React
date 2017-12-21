@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
+import { connect } from 'react-redux'
 import Radium from 'radium'
 import moment from 'moment'
 
@@ -14,10 +15,12 @@ import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createFood } from '../../apollo/food'
+import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
@@ -66,7 +69,6 @@ class CreateFoodForm extends Component {
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      loadSequence: this.props.highestLoadSequence + 1,
       description: this.state.description,
       notes: this.state.notes,
       currency: this.state.currency,
@@ -78,10 +80,18 @@ class CreateFoodForm extends Component {
       backgroundImage: this.state.backgroundImage
     }
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
-    console.log('newFood', newFood)
+
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
+    console.log('helper output', helperOutput)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
 
     this.props.createFood({
-      variables: newFood,
+      variables: helperOutput.newEvent,
       refetchQueries: [{
         query: queryItinerary,
         variables: { id: this.props.ItineraryId }
@@ -286,4 +296,13 @@ class CreateFoodForm extends Component {
   }
 }
 
-export default graphql(createFood, {name: 'createFood'})(Radium(CreateFoodForm))
+const mapStateToProps = (state) => {
+  return {
+    events: state.plannerActivities
+  }
+}
+
+export default connect(mapStateToProps)(compose(
+  graphql(createFood, {name: 'createFood'}),
+  graphql(changingLoadSequence, {name: 'changingLoadSequence'})
+)(Radium(CreateFoodForm)))
