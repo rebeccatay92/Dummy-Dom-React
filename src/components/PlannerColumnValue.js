@@ -34,8 +34,14 @@ class PlannerColumnValue extends Component {
         if (start) return value || ''
         else return ''
       case 'Price':
-        if (start) return value || ''
-        else return ''
+        if (this.props.activity.type === 'Flight' && this.props.firstInFlightBooking && start) {
+          return value || ''
+        } else if (this.props.activity.type === 'Flight') {
+          return ''
+        } else {
+          if (start) return value || ''
+          else return ''
+        }
       case 'Booking Status':
         if (start) return value === false ? 'Not Booked' : 'Booked'
         else return ''

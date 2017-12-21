@@ -64,8 +64,6 @@ export const queryItinerary = gql`
             arrivalTerminal
             departureGate
             arrivalGate
-            startDate
-            endDate
             startDay
             endDay
             startTime
@@ -73,6 +71,7 @@ export const queryItinerary = gql`
             startLoadSequence
             endLoadSequence
             notes
+            firstFlight
           }
           FlightBooking {
             id

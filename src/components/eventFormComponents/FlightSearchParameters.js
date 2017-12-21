@@ -117,7 +117,7 @@ class FlightSearchParameters extends Component {
           })
         }
       })
-      this.props.handleSearch(details, tripType)
+      this.props.handleSearch(details, tripType, this.state.paxAdults, this.state.paxChildren, this.state.paxInfants, this.state.classCode)
     })
   }
 

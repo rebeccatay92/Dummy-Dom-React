@@ -136,7 +136,7 @@ class PlannerActivity extends Component {
           <PlannerColumnValue column='Notes' activity={this.props.activity} isLast hover={this.state.hover} />
         }
         {!this.state.expanded && this.props.columns && !this.props.columns.includes('Notes') && this.props.columns.map((column, i) => {
-          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} isLast={i === 2} hover={this.state.hover} />
+          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} isLast={i === 2} hover={this.state.hover} firstInFlightBooking={this.props.firstInFlightBooking} />
         })}
       </tr>
     )
