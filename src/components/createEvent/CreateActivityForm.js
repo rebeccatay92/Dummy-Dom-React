@@ -20,6 +20,7 @@ import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -70,7 +71,6 @@ class CreateActivityForm extends Component {
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      // loadSequence: this.props.highestLoadSequence + 1,
       description: this.state.description,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
@@ -86,110 +86,17 @@ class CreateActivityForm extends Component {
     }
 
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    var allEventsWithTime = []
-
-    var events = JSON.parse(JSON.stringify(this.props.events))
-
-    events.forEach(event => {
-      // for events flight instances with 2 rows
-      if (event.type === 'Flight') {
-        event.time = event.start ? event.Flight.FlightInstance.startTime : event.Flight.FlightInstance.endTime
-      } else if (event.type === 'Transport' || event.type === 'Lodging'){
-        event.time = event.start ? event[event.type].startTime : event[event.type].endTime
-      } else {
-        event.time = event[event.type].startTime
-      }
-      allEventsWithTime.push(event)
-    })
-    // console.log(allEventsWithTime)
-
-    console.log('startDay', newActivity.startDay, 'startTime', newActivity.startTime)
-
-    var daysEvents = allEventsWithTime.filter(e => {
-      return e.day === newActivity.startDay
-    })
-    console.log('daysEvents', daysEvents)
-
-    // assuming all events have a startTime
-
-    var loadSequenceInput = []
-
-    if (!newActivity.startTime) {
-      // if startTime is not given, make it the last event
-      var lastRow = daysEvents[daysEvents.length - 1]
-      newActivity.loadSequence = lastRow.loadSequence + 1
-    } else {
-      // if startTime is given find out the displaced row
-      var displacedRow = daysEvents.find(e => {
-        return (e.time >= newActivity.startTime)
-      })
-      console.log('displacedRow', displacedRow)
-
-      // if startTime does not displace any row (last event)
-      if (!displacedRow) {
-        console.log('no displacedrow, last event')
-        lastRow = daysEvents[daysEvents.length - 1]
-        newActivity.loadSequence = lastRow.loadSequence + 1
-        console.log('lastRow', lastRow.loadSequence, 'newActivity', newActivity.loadSequence)
-      } else if (displacedRow) {
-        // if startTime displaces a start:false row (not allowed)
-        if (typeof(displacedRow.start) === 'boolean' && !displacedRow.start) {
-          console.log('not allowed: attempting to slot in between start true/false rows. bump it to after the start:false event')
-          // everything from (displaced + 1 row) +1 to loadSeq
-          var eventsToUpdate = daysEvents.filter(e => {
-            return e.loadSequence >= displacedRow.loadSequence + 1
-          })
-          console.log('eventsToUpdate', eventsToUpdate)
-          eventsToUpdate.forEach(row => {
-            var inputObj = {
-              type: row.type === 'Flight' ? 'FlightInstance' : row.type,
-              id: row.type === 'Flight' ? row.Flight.FlightInstance.row.id : row.modelId,
-              loadSequence: row.loadSequence + 1,
-              day: row.day
-            }
-            if (row.type === 'Flight' || row.type === 'Transport' || row.type === 'Lodging') {
-              inputObj.start = row.start
-            }
-            loadSequenceInput.push(inputObj)
-          })
-          console.log('loadSequenceInput', loadSequenceInput)
-
-          newActivity.loadSequence = displacedRow.loadSequence + 1
-        } else {
-          console.log('allowed: slot before start:true or start:null')
-          // everything from displaced row onwards + 1 to load sequence
-          eventsToUpdate = daysEvents.filter(e => {
-            return e.loadSequence >= displacedRow.loadSequence
-          })
-          console.log('eventsToUpdate', eventsToUpdate)
-          eventsToUpdate.forEach(row => {
-            var inputObj = {
-              type: row.type === 'Flight' ? 'FlightInstance' : row.type,
-              id: row.type === 'Flight' ? row.Flight.FlightInstance.row.id : row.modelId,
-              loadSequence: row.loadSequence + 1,
-              day: row.day
-            }
-            if (row.type === 'Flight' || row.type === 'Transport' || row.type === 'Lodging') {
-              inputObj.start = row.start
-            }
-            loadSequenceInput.push(inputObj)
-          })
-          console.log('loadSequenceInput', loadSequenceInput)
-          newActivity.loadSequence = displacedRow.loadSequence
-        }
-      }
-    }
-
-    console.log('newActivity', newActivity)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+    console.log('helper output', helperOutput)
 
     this.props.changingLoadSequence({
       variables: {
-        input: loadSequenceInput
+        input: helperOutput.loadSequenceInput
       }
     })
 
     this.props.createActivity({
-      variables: newActivity,
+      variables: helperOutput.newEvent,
       refetchQueries: [{
         query: queryItinerary,
         variables: { id: this.props.ItineraryId }

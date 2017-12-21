@@ -101,8 +101,6 @@ class CreateFlightForm extends Component {
     console.log('newFlight', newFlight)
 
     // ASSIGNING START AND END LOAD SEQ TO EACH FLIGHT INSTANCE
-    // ENDLOADSEQUENCE = STARTLOADSEQUENCE + 1 IF SAME DAY
-    // IF FLIGHT INSTANCE IS SPLIT INTO 2 DAYS, STARTLOADSEQ MUST BE LAST, ENDLOADSEQ MUST BE 1ST ON NEXT DAY
 
     /*
     flight instances => split into days
@@ -123,6 +121,8 @@ class CreateFlightForm extends Component {
       resulting = [<1event>,<2start>,<3end>,<4event>,<5event>, <6start>]
       if startinstance <6start> displaces last event, bump later and not before
     */
+
+    /* Alternatively? ----> for each day insert flight instance row into eventsArr. then, loop through eventsArr. if element (index + 1) !== loadSeq. check if element is event or flight instance. if event => construct changingLoadSequence obj. if flight instance, load seq = index + 1  */
 
     // this.props.createFlightBooking({
     //   variables: newFlight,

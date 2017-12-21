@@ -64,8 +64,6 @@ export const queryItinerary = gql`
             arrivalTerminal
             departureGate
             arrivalGate
-            startDate
-            endDate
             startDay
             endDay
             startTime
