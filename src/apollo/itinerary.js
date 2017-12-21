@@ -71,6 +71,7 @@ export const queryItinerary = gql`
             startLoadSequence
             endLoadSequence
             notes
+            firstFlight
           }
           FlightBooking {
             id

@@ -6,11 +6,10 @@ import FlightSearchResultsRow from './FlightSearchResultsRow'
 
 class FlightSearchResults extends Component {
   render () {
-    if (!this.props.searching) return null
     return (
       <table style={searchResultsTableStyle}>
         <thead>
-          <tr>
+          <tr style={{width: '660px', position: 'fixed', top: '35px'}}>
             <th style={{width: '10%', textAlign: 'center'}}>
 
             </th>

@@ -14,7 +14,7 @@ export const createFlightBooking = gql`
     $bookingConfirmation: String,
     $backgroundImage: String,
     $attachments: [attachmentInput],
-    $flightInstances: [flightInstanceInput]
+    $flightInstances: [createFlightInstanceInput]
   ) {
     createFlightBooking(
       ItineraryId: $ItineraryId,

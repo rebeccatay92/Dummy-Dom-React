@@ -117,8 +117,13 @@ class DateBox extends Component {
           {connectDropTarget(
             <tbody>
               {this.props.activities.map((activity, i, array) => {
+                let isFirstInFlightBooking
+                if (activity.type === 'Flight') {
+                  isFirstInFlightBooking = activity.Flight.FlightInstance.firstFlight
+                  console.log(isFirstInFlightBooking)
+                }
                 return (
-                  <PlannerActivity mouseOverTimeline={this.state.mouseOverTimeline} day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} />
+                  <PlannerActivity mouseOverTimeline={this.state.mouseOverTimeline} day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} firstInFlightBooking={isFirstInFlightBooking} />
                 )
               })}
               <PlannerActivity empty itineraryId={this.props.itineraryId} activity={{day: this.props.day, type: 'empty', empty: {}, location: {name: ''}}} index={this.props.activities.length} lastDay={this.props.lastDay} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={

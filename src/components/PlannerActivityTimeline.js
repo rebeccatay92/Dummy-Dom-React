@@ -48,11 +48,12 @@ class PlannerActivityTimeline extends Component {
   }
 
   renderTimeline (type) {
-    const daySortedActivities = this.props.activities.concat().sort(
-      (a, b) => {
-        return a.day - b.day
-      }
-    )
+    const daySortedActivities = this.props.activities.concat()
+    // .sort(
+    //   (a, b) => {
+    //     return a.day - b.day
+    //   }
+    // )
     let timeOfNextActivity, indexOfNextActivity
     if (this.props.draggingItem) {
       indexOfNextActivity = 0
