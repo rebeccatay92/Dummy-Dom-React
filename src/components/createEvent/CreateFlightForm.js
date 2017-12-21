@@ -98,30 +98,6 @@ class CreateFlightForm extends Component {
 
     console.log('newFlight', newFlight)
 
-    // ASSIGNING START AND END LOAD SEQ TO EACH FLIGHT INSTANCE
-
-    /*
-    flight instances => split into days
-    for each day, filter out events for that day only
-    find instance time >= event time.
-    if last instance in that day is start:true, it has to be last load seq
-    if first instance in that day is start:false, it has to be loadSeq1
-    */
-
-
-    /* displaced row. event rows after displaced row will displace
-      by number of flight instance rows before it. flight instance that is displacing will take load seq (displaced + number of instance rows before)
-      find <start><end> pairs. these have to assign x, x+1 loadSeq tgt.
-
-      dayEventsArr = [<1event>, <2event>, <3event>]
-      flightInstanceArrForThatDay = [<start>, <end>,.... <start>]
-      displace <2event>
-      resulting = [<1event>,<2start>,<3end>,<4event>,<5event>, <6start>]
-      if startinstance <6start> displaces last event, bump later and not before
-    */
-
-    /* Alternatively? ----> for each day insert flight instance row into eventsArr. then, loop through eventsArr. if element (index + 1) !== loadSeq. check if element is event or flight instance. if event => construct changingLoadSequence obj. if flight instance, load seq = index + 1  */
-
     // this.props.createFlightBooking({
     //   variables: newFlight,
     //   refetchQueries: [{
