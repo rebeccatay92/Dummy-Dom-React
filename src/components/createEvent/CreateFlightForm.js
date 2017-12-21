@@ -105,16 +105,16 @@ class CreateFlightForm extends Component {
 
     console.log('newFlight', newFlight)
 
-    this.props.createFlightBooking({
-      variables: newFlight,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
-    })
-
-    this.resetState()
-    this.props.toggleCreateEventType()
+    // this.props.createFlightBooking({
+    //   variables: newFlight,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+    //
+    // this.resetState()
+    // this.props.toggleCreateEventType()
   }
 
   closeCreateFlight () {
@@ -272,8 +272,8 @@ class CreateFlightForm extends Component {
           endDay: datesUnix.indexOf(endDayUnix) + 1,
           startTime: startTime,
           endTime: endTime,
-          startLoadSequence: 1,
-          endLoadSequence: 2,
+          // startLoadSequence: 1,
+          // endLoadSequence: 2,
           notes: String,
           firstFlight: i === 0
         }
