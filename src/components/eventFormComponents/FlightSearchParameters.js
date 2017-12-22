@@ -146,7 +146,6 @@ class FlightSearchParameters extends Component {
   }
 
   render () {
-    console.log('departureLocation', this.state.departureLocation)
     return (
       <div style={{position: 'relative'}}>
         {!this.props.searching && !this.props.bookingDetails &&

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
@@ -15,10 +15,12 @@ import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createActivity } from '../../apollo/activity'
+import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -69,7 +71,6 @@ class CreateActivityForm extends Component {
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      loadSequence: this.props.highestLoadSequence + 1,
       description: this.state.description,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
@@ -84,40 +85,18 @@ class CreateActivityForm extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
-    // var eventsWithTime = []
+    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+    console.log('helper output', helperOutput)
 
-    // var events = JSON.parse(JSON.stringify(this.props.events))
-    //
-    // events.forEach(event => {
-    //   if (event.type === 'Flight') {
-    //     event.time = event.Flight.FlightInstance.startTime
-    //     eventsWithTime.push(event)
-    //   }
-    //   else {
-    //     event.time = event[event.type].startTime
-    //     eventsWithTime.push(event)
-    //   }
-    // })
-    // console.log(eventsWithTime)
-    // var eventsForStartDay = this.props.events.filter(e => {
-    //   return e.day === newActivity.startDay
-    // })
-    // console.log('days events', eventsForStartDay)
-    //
-    // if (newActivity.startTime) {
-    //   console.log('startTime', newActivity.startTime)
-    //   var insertBeforeRow = this.props.events.find(e => {
-    //     return e[e.type].startTime > newActivity.startTime
-    //   })
-    //   console.log(insertBeforeRow)
-    // }
-
-    // if startTime was provided, sort by time, else last in load seq
-
-    console.log('newActivity', newActivity)
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
 
     this.props.createActivity({
-      variables: newActivity,
+      variables: helperOutput.newEvent,
       refetchQueries: [{
         query: queryItinerary,
         variables: { id: this.props.ItineraryId }
@@ -328,4 +307,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(graphql(createActivity, {name: 'createActivity'})(Radium(CreateActivityForm)))
+export default connect(mapStateToProps)(compose(
+  graphql(createActivity, {name: 'createActivity'}),
+  graphql(changingLoadSequence, {name: 'changingLoadSequence'})
+)(Radium(CreateActivityForm)))

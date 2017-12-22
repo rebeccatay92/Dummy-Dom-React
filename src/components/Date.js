@@ -137,15 +137,9 @@ class DateBox extends Component {
             </tbody>
         )}
         </table>
-        {/* <button onClick={() => this.toggleCreateActivityForm()}>Add an activity popup</button> */}
-        {/* {this.state.creatingActivity && <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} />} */}
       </div>
     )
   }
-
-  // toggleCreateActivityForm () {
-  //   this.setState({creatingActivity: !this.state.creatingActivity})
-  // }
 
   handleClick () {
     this.props.toggleTimeline({
@@ -196,7 +190,7 @@ class DateBox extends Component {
           start: activity.start
         }
       })
-      console.log(loadSequenceArr)
+      // console.log(loadSequenceArr)
       this.props.changingLoadSequence({
         variables: {
           input: loadSequenceArr
