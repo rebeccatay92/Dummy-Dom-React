@@ -18,7 +18,7 @@ import { createLodging } from '../../apollo/lodging'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import { retrieveToken } from '../../helpers/cloudstorage'
+import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
@@ -109,25 +109,7 @@ class CreateLodgingForm extends Component {
   }
 
   closeCreateLodging () {
-    this.state.attachments.forEach(info => {
-      var uri = info.fileName.replace('/', '%2F')
-      var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
-      var uriFull = uriBase + uri
-
-      fetch(uriFull, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${this.apiToken}`
-        }
-      })
-      .then(response => {
-        console.log(response)
-        if (response.status === 204) {
-          console.log('delete from cloud storage succeeded')
-        }
-      })
-      .catch(err => console.log(err))
-    })
+    removeAllAttachments(this.state.attachments, this.apiToken)
     this.resetState()
     this.props.toggleCreateEventType()
   }

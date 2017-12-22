@@ -34,3 +34,25 @@ export function retrieveToken () {
     })
   })
 }
+
+export function removeAllAttachments (attachments, apiToken) {
+  attachments.forEach(info => {
+    var uri = info.fileName.replace('/', '%2F')
+    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
+    var uriFull = uriBase + uri
+
+    fetch(uriFull, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${apiToken}`
+      }
+    })
+    .then(response => {
+      // console.log(response)
+      if (response.status === 204) {
+        console.log('delete from cloud storage succeeded')
+      }
+    })
+    .catch(err => console.log(err))
+  })
+}
