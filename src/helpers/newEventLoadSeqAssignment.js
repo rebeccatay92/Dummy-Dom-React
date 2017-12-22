@@ -75,6 +75,142 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       }
     }
   } // close activity and food
+  if (eventModel === 'Lodging' || eventModel === 'Transport') {
+    // newEvent is an obj that needs both start and end load sequence
+    if (newEvent.startDay === newEvent.endDay) {
+      // same start and end day
+      dayEvents = allEventsWithTime.filter(e => {
+        return e.day === newEvent.startDay
+      })
+
+      // insert start event first
+      var displacedByStart = dayEvents.find(e => {
+        return e.time >= newEvent.startTime
+      })
+
+      if (!displacedByStart) {
+        dayEvents.push({start: true})
+      } else {
+        index = dayEvents.indexOf(displacedByStart)
+        if (typeof (displacedByStart) === 'boolean' && !displacedByStart.start) {
+          dayEvents.splice(index + 1, 0, {start: true})
+        } else {
+          dayEvents.splice(index, 0, {start: true})
+        }
+      }
+
+      // insert end event now
+      var displacedByEnd = dayEvents.find(e => {
+        return e.time >= newEvent.endTime
+      })
+
+      if (!displacedByEnd) {
+        dayEvents.push({start: false})
+      } else {
+        index = dayEvents.indexOf(displacedByEnd)
+        if (typeof (displacedByEnd) === 'boolean' && !displacedByEnd.start) {
+          dayEvents.splice(index + 1, 0, {start: false})
+        } else {
+          dayEvents.splice(index, 0, {start: false})
+        }
+      }
+      console.log('after inserting 2', dayEvents)
+
+      dayEvents.forEach(event => {
+        var correctLoadSeq = dayEvents.indexOf(event) + 1
+        if (event.modelId && event.loadSeq !== correctLoadSeq) {
+          var inputObj = {
+            type: event.type === 'Flight' ? 'FlightInstance' : event.type,
+            id: event.type === 'Flight' ? event.Flight.FlightInstance.id : event.modelId,
+            loadSequence: correctLoadSeq,
+            day: event.day
+          }
+          if (event.type === 'Flight' || event.type === 'Transport' || event.type === 'Lodging') {
+            inputObj.start = event.start
+          }
+          loadSequenceInput.push(inputObj)
+        } else if (!event.modelId && event.start) {
+          newEvent.startLoadSequence = correctLoadSeq
+        } else if (!event.modelId && !event.start) {
+          newEvent.endLoadSequence = correctLoadSeq
+        }
+      })
+    } else {
+      // different start and end day. 2 dayEvents arrs
+      var startDayEvents = allEventsWithTime.filter(e => {
+        return e.day === newEvent.startDay
+      })
+      var endDayEvents = allEventsWithTime.filter(e => {
+        return e.day === newEvent.endDay
+      })
+
+      var displacedByStart = startDayEvents.find(e => {
+        return e.time >= newEvent.startTime
+      })
+
+      if (!displacedByStart) {
+        startDayEvents.push({start: true})
+      } else {
+        index = startDayEvents.indexOf(displacedByStart)
+        if (typeof (displacedByStart) === 'boolean' && !displacedByStart.start) {
+          startDayEvents.splice(index + 1, 0, {start: true})
+        } else {
+          startDayEvents.splice(index, 0, {start: true})
+        }
+      }
+
+      var displacedByEnd = endDayEvents.find(e => {
+        return e.time >= newEvent.endTime
+      })
+
+      if (!displacedByEnd) {
+        endDayEvents.push({start: false})
+      } else {
+        index = endDayEvents.indexOf(displacedByEnd)
+        if (typeof (displacedByEnd) === 'boolean' && !displacedByEnd.start) {
+          endDayEvents.splice(index + 1, 0, {start: false})
+        } else {
+          endDayEvents.splice(index, 0, {start: false})
+        }
+      }
+
+      startDayEvents.forEach(event => {
+        var correctLoadSeq = startDayEvents.indexOf(event) + 1
+        if (event.modelId && event.loadSeq !== correctLoadSeq) {
+          var inputObj = {
+            type: event.type === 'Flight' ? 'FlightInstance' : event.type,
+            id: event.type === 'Flight' ? event.Flight.FlightInstance.id : event.modelId,
+            loadSequence: correctLoadSeq,
+            day: event.day
+          }
+          if (event.type === 'Flight' || event.type === 'Transport' || event.type === 'Lodging') {
+            inputObj.start = event.start
+          }
+          loadSequenceInput.push(inputObj)
+        } else if (!event.modelId && event.start) {
+          newEvent.startLoadSequence = correctLoadSeq
+        }
+      })
+
+      endDayEvents.forEach(event => {
+        var correctLoadSeq = endDayEvents.indexOf(event) + 1
+        if (event.modelId && event.loadSeq !== correctLoadSeq) {
+          var inputObj = {
+            type: event.type === 'Flight' ? 'FlightInstance' : event.type,
+            id: event.type === 'Flight' ? event.Flight.FlightInstance.id : event.modelId,
+            loadSequence: correctLoadSeq,
+            day: event.day
+          }
+          if (event.type === 'Flight' || event.type === 'Transport' || event.type === 'Lodging') {
+            inputObj.start = event.start
+          }
+          loadSequenceInput.push(inputObj)
+        } else if (!event.modelId && !event.start) {
+          newEvent.endLoadSequence = correctLoadSeq
+        }
+      })
+    } // close else for separate days
+  }
   if (eventModel === 'Flight') {
 
     console.log('flight instance arr', newEvent)

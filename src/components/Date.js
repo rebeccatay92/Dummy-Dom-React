@@ -120,7 +120,7 @@ class DateBox extends Component {
                 let isFirstInFlightBooking
                 if (activity.type === 'Flight') {
                   isFirstInFlightBooking = activity.Flight.FlightInstance.firstFlight
-                  console.log(isFirstInFlightBooking)
+                  // console.log(isFirstInFlightBooking)
                 }
                 return (
                   <PlannerActivity mouseOverTimeline={this.state.mouseOverTimeline} day={this.props.day} itineraryId={this.props.itineraryId} draggable={this.props.draggable} activity={activity} key={i} index={i} isLast={i === array.length - 1} columns={this.props.columns} firstDay={this.props.firstDay} lastDay={this.props.lastDay} firstInFlightBooking={isFirstInFlightBooking} />

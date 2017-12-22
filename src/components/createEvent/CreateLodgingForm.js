@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
+import { connect } from 'react-redux'
 import Radium from 'radium'
 import moment from 'moment'
 
@@ -14,10 +15,12 @@ import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createLodging } from '../../apollo/lodging'
+import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import retrieveToken from '../../helpers/cloudstorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}lodgingDefaultBackground.jpg`
 
@@ -43,6 +46,7 @@ class CreateLodgingForm extends Component {
       backgroundImage: defaultBackground
     }
   }
+
   updateDayTime (field, value) {
     this.setState({
       [field]: value
@@ -80,15 +84,25 @@ class CreateLodgingForm extends Component {
       newLodging.googlePlaceData = this.state.googlePlaceData
     }
 
-    console.log('newLodging', newLodging)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
+    console.log('helper output', helperOutput)
 
-    // this.props.createLodging({
-    //   variables: newLodging,
-    //   refetchQueries: [{
-    //     query: queryItinerary,
-    //     variables: { id: this.props.ItineraryId }
-    //   }]
-    // })
+    newLodging = helperOutput.newEvent
+    // console.log('newLodging', newLodging)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    this.props.createLodging({
+      variables: newLodging,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
 
     this.resetState()
     this.props.toggleCreateEventType()
@@ -286,4 +300,13 @@ class CreateLodgingForm extends Component {
   }
 }
 
-export default CreateLodgingForm
+const mapStateToProps = (state) => {
+  return {
+    events: state.plannerActivities
+  }
+}
+
+export default connect(mapStateToProps)(compose(
+  graphql(createLodging, {name: 'createLodging'}),
+  graphql(changingLoadSequence, {name: 'changingLoadSequence'})
+)(Radium(CreateLodgingForm)))
