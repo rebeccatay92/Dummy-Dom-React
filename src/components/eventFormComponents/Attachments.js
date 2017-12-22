@@ -3,6 +3,7 @@ import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
 import Radium from 'radium'
 import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../../Styles/styles'
+import { retrieveToken } from '../../helpers/cloudstorage'
 
 class Attachments extends Component {
   constructor (props) {
@@ -106,6 +107,86 @@ class Attachments extends Component {
     })
   }
 
+  handleFileUpload (e) {
+    e.preventDefault()
+    var file = e.target.files[0]
+
+    if (file) {
+      var ItineraryId = this.props.ItineraryId
+      var timestamp = Date.now()
+      var uriBase = process.env.REACT_APP_CLOUD_UPLOAD_URI
+      var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
+      fetch(uriFull,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.apiToken}`,
+            'Content-Type': file.type,
+            'Content-Length': file.size
+          },
+          body: file
+        }
+      )
+      .then(response => {
+        return response.json()
+      })
+      .then(json => {
+        console.log('json', json)
+        if (json.name) {
+          var kilobytes = json.size / 1000
+          if (kilobytes >= 1000) {
+            var megabytes = kilobytes / 1000
+            megabytes = Math.round(megabytes * 10) / 10
+            var fileSizeStr = megabytes + 'MB'
+          } else {
+            kilobytes = Math.round(kilobytes)
+            fileSizeStr = kilobytes + 'KB'
+          }
+          var attachmentInfo = {
+            fileName: json.name,
+            fileAlias: file.name,
+            fileSize: fileSizeStr,
+            fileType: file.type
+          }
+          this.props.handleFileUpload(attachmentInfo)
+        }
+      })
+      .catch(err => {
+        console.log('err', err)
+      })
+    }
+    // this.props.handleFileUpload(e)
+  }
+
+  removeUpload (index) {
+    var objectName = this.props.attachments[index].fileName
+    objectName = objectName.replace('/', '%2F')
+    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
+    var uriFull = uriBase + objectName
+
+    fetch(uriFull, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${this.apiToken}`
+      }
+    })
+    .then(response => {
+      if (response.status === 204) {
+        console.log('delete from cloud storage succeeded')
+        this.props.removeUpload(index)
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  componentDidMount () {
+    retrieveToken()
+      .then(retrieved => {
+        this.apiToken = retrieved
+      })
+  }
   render () {
     return (
       <div>
@@ -125,7 +206,7 @@ class Attachments extends Component {
             <div style={{display: 'inline-block', cursor: 'pointer', position: 'absolute', bottom: '-5px', right: '0'}}>
               <i key={'attachmentDelete' + i} className='material-icons' value={i} onClick={() => {
                 this.setState({hoveringOver: null})
-                this.props.removeUpload(i)
+                this.removeUpload(i)
               }} style={attachmentDeleteBtnStyle(this.state.hoveringOver, i)}>clear</i>
             </div>
 
@@ -141,7 +222,7 @@ class Attachments extends Component {
           <label style={{display: 'inline-block', color: 'black'}}>
             <i key='attachmentAdd' style={addAttachmentBtnStyle} className='material-icons'>add</i>
             <input type='file' name='file' accept='.jpeg, .jpg, .png, .pdf' onChange={(e) => {
-              this.props.handleFileUpload(e)
+              this.handleFileUpload(e)
             }} style={{display: 'none'}} />
           </label>
         }

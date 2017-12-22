@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-function retrieveToken () {
+export function retrieveToken () {
   var payload = {
     'iss': 'domatodevs@neon-rex-186905.iam.gserviceaccount.com',
     'scope': 'https://www.googleapis.com/auth/cloud-platform',
@@ -34,5 +34,3 @@ function retrieveToken () {
     })
   })
 }
-
-export default retrieveToken
