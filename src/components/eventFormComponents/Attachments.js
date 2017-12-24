@@ -3,7 +3,7 @@ import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
 import Radium from 'radium'
 import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../../Styles/styles'
-import { retrieveToken } from '../../helpers/cloudstorage'
+import { retrieveToken } from '../../helpers/cloudStorage'
 
 class Attachments extends Component {
   constructor (props) {
