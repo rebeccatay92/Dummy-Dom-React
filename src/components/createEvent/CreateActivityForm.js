@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
+import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
@@ -17,7 +18,7 @@ import { createActivity } from '../../apollo/activity'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
+import { removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
@@ -155,16 +156,15 @@ class CreateActivityForm extends Component {
   }
 
   componentDidMount () {
-    retrieveToken()
-      .then(retrieved => {
-        this.apiToken = retrieved
-      })
+    this.props.retrieveCloudStorageToken()
+
+    this.props.cloudStorageToken.then(obj => {
+      this.apiToken = obj.token
+    })
 
     var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
-
-    console.log('eventsArr', this.props.events)
   }
 
   render () {
@@ -213,11 +213,20 @@ class CreateActivityForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    events: state.plannerActivities
+    events: state.plannerActivities,
+    cloudStorageToken: state.cloudStorageToken
   }
 }
 
-export default connect(mapStateToProps)(compose(
+const mapDispatchToProps = (dispatch) => {
+  return {
+    retrieveCloudStorageToken: () => {
+      dispatch(retrieveCloudStorageToken())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(compose(
   graphql(createActivity, {name: 'createActivity'}),
   graphql(changingLoadSequence, {name: 'changingLoadSequence'})
 )(Radium(CreateActivityForm)))

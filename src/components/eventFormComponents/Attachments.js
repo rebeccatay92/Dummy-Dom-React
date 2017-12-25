@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
+
 import ImagePreview from './ImagePreview'
 import Thumbnail from './Thumbnail'
+
 import Radium from 'radium'
 import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../../Styles/styles'
-import { retrieveToken } from '../../helpers/cloudStorage'
 
 class Attachments extends Component {
   constructor (props) {
@@ -182,12 +185,15 @@ class Attachments extends Component {
   }
 
   componentDidMount () {
-    retrieveToken()
-      .then(retrieved => {
-        this.apiToken = retrieved
-      })
+    this.props.retrieveCloudStorageToken()
+
+    this.props.cloudStorageToken.then(obj => {
+      this.apiToken = obj.token
+    })
   }
+
   render () {
+    // if (this.apiToken) { console.log(this.apiToken) }
     return (
       <div>
         {/* UPLOADED FILE NAMES */}
@@ -271,4 +277,18 @@ class Attachments extends Component {
   }
 }
 
-export default Radium(Attachments)
+const mapStateToProps = (state) => {
+  return {
+    cloudStorageToken: state.cloudStorageToken
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    retrieveCloudStorageToken: () => {
+      dispatch(retrieveCloudStorageToken())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Radium(Attachments))

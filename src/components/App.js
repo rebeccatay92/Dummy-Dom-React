@@ -6,6 +6,7 @@ import { graphql, compose } from 'react-apollo'
 import { createToken } from '../apollo/user'
 
 import { initializeUser, logoutUser } from '../actions/userActions'
+import { generateCloudStorageToken } from '../actions/cloudStorageActions'
 
 import HomePage from './HomePage'
 import ItineraryPage from './itinerary/ItineraryPage'
@@ -36,6 +37,7 @@ class App extends Component {
 
   componentDidMount () {
     this.props.initializeUser()
+    this.props.generateCloudStorageToken()
   }
 
   render () {
@@ -63,7 +65,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    token: state.token
+    token: state.token,
+    cloudStorageToken: state.cloudStorageToken
   }
 }
 
@@ -74,6 +77,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     logoutUser: () => {
       dispatch(logoutUser())
+    },
+    generateCloudStorageToken: () => {
+      dispatch(generateCloudStorageToken())
     }
   }
 }

@@ -27,7 +27,10 @@ export function retrieveToken () {
     })
     .then(json => {
       var apiToken = json.access_token
-      return resolve(apiToken)
+      return resolve({
+        expiry: payload.exp,
+        token: apiToken
+      })
     })
     .catch(err => {
       console.log(err)
@@ -48,7 +51,7 @@ export function removeAllAttachments (attachments, apiToken) {
       }
     })
     .then(response => {
-      // console.log(response)
+      console.log(response)
       if (response.status === 204) {
         console.log('delete from cloud storage succeeded')
       }
