@@ -8,6 +8,7 @@ import { Image } from 'react-bootstrap'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { primaryColor, plannerContainerStyle, plannerHeaderContainerStyle, itineraryNameStyle, itineraryDescStyle, plannerHeaderIconsContainerStyle, userIconsContainerStyle, userIconStyle, plannerIconStyle } from '../Styles/styles'
 import DateBox from './Date'
+const _ = require('lodash')
 
 class Planner extends Component {
   constructor (props) {
@@ -22,6 +23,7 @@ class Planner extends Component {
     if (this.props.data.loading) return (<h1>Loading</h1>)
     //
     // console.log('apollo', this.props.data.findItinerary)
+    console.log('rendering')
 
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
     const days = this.props.data.findItinerary.days
@@ -109,6 +111,8 @@ class Planner extends Component {
         obj[`day ${i}`] = i === 1 ? true : offset(dateDiv).top < 50
       }
     }
+    // console.log(_.isEqual(obj, this.state.dateOffsets))
+    if ((divOffset.top < 0) === this.state.timelineAtTop && _.isEqual(obj, this.state.dateOffsets)) return
     this.setState({
       timelineAtTop: divOffset.top < 0,
       dateOffsets: obj
