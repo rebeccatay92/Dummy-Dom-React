@@ -15,6 +15,7 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
+import IntuitiveInput from './IntuitiveInput'
 
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
@@ -148,20 +149,24 @@ class PlannerActivity extends Component {
         <p style={createEventTextStyle}>+ Add Event</p>
       </div>
     )
-    if (this.state.creatingEvent) {
+    if (this.state.creatingEvent && !this.state.intuitiveInputType) {
       const iconTypes = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
       const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
       createEventBox = (
         <div style={createEventBoxStyle}>
-          <span>
+          <span className='createEventBox'>
             {iconTypes.map((type, i) => {
               return (
-                <i key={i} onClick={() => this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
+                <i key={i} onClick={() => type === 'flight' ? this.handleIntuitiveInput(eventTypes[i]) : this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
             <span style={createEventPickOneStyle}>Pick One</span>
           </span>
         </div>
+      )
+    } else if (this.state.intuitiveInputType) {
+      createEventBox = (
+        <IntuitiveInput handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} />
       )
     }
     if (this.props.empty) {
@@ -209,7 +214,14 @@ class PlannerActivity extends Component {
     if (!this.props.empty) return
     this.setState({
       creatingEvent: false,
+      intuitiveInputType: null,
       _radiumStyleState: {}
+    })
+  }
+
+  handleIntuitiveInput (eventType = null) {
+    this.setState({
+      intuitiveInputType: eventType
     })
   }
 
@@ -257,8 +269,8 @@ class PlannerActivity extends Component {
               <p style={nameStyle}>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
+                {expandButton}
               </p>
-              {expandButton}
               <p style={timeStyle}><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /><span style={typeStyle}> - </span><ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
             </div>
           )

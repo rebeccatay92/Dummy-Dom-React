@@ -94,15 +94,26 @@ class AirportSearch extends Component {
   }
 
   render () {
-    return (
-      <div>
-        <textarea key='airportLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
+    if (this.props.intuitiveInput) {
+      return (
+        <div>
+          <input style={{width: '90%'}} placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} />
+          {this.state.selecting &&
+            <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />
+          }
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <textarea key='airportLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
 
-        {this.state.selecting &&
-          <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />
-        }
-      </div>
-    )
+          {this.state.selecting &&
+            <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />
+          }
+        </div>
+      )
+    }
   }
 }
 

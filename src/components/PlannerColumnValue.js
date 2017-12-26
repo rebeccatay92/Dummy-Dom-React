@@ -14,13 +14,13 @@ class PlannerColumnValue extends Component {
     return (
       <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={columnValueContainerStyle(this.props.column)}>
         {this.renderInfo()}
-        {this.props.isLast && this.props.hover && <i key='eventOptions' className='material-icons' style={eventDropdownStyle}>more_vert</i>}
+        {this.props.isLast && this.props.hover && !this.props.activity.dropzone && <i key='eventOptions' className='material-icons' style={eventDropdownStyle}>more_vert</i>}
       </td>
     )
   }
 
   renderInfo () {
-    const start = this.props.activity.start || typeof this.props.activity.start !== 'boolean'
+    const start = !this.props.activity.dropzone && (this.props.activity.start || typeof this.props.activity.start !== 'boolean')
     const flightBookingOrInstance = {
       Price: 'FlightBooking',
       'Booking Status': 'FlightBooking',

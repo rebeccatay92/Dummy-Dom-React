@@ -105,10 +105,10 @@ export const activityIconStyle = {
   marginRight: '1vw',
   WebkitTextStroke: '1px ' + primaryColor,
   WebkitTextFillColor: '#FAFAFA',
-  cursor: 'pointer',
-  ':hover': {
-    WebkitTextStroke: '2px ' + primaryColor
-  }
+  cursor: 'pointer'
+  // ':hover': {
+  //   WebkitTextStroke: '2px ' + primaryColor
+  // }
 }
 export const createEventBoxStyle = {position: 'absolute', top: '-1vh'}
 export const createEventPickOneStyle = {fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}
