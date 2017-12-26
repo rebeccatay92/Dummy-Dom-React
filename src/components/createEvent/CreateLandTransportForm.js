@@ -181,12 +181,12 @@ class CreateLandTransportForm extends Component {
             <div style={greyTintStyle} />
 
             {/* CHANGE TO DEPARTURE/ARRIVAL */}
-            <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.departureGooglePlaceData} />
-            </div>
+            <div style={{...eventDescContainerStyle, ...{marginTop: '55px'}}}>
+              <LocationSelection selectLocation={location => this.selectLocation(location, 'departure')} currentLocation={this.state.departureGooglePlaceData} />
+              
+              <p style={{textAlign: 'center'}}>to</p>
 
-            <div style={eventDescContainerStyle}>
-              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
+              <LocationSelection selectLocation={location => this.selectLocation(location, 'arrival')} currentLocation={this.state.arrivalGooglePlaceData} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
@@ -203,8 +203,10 @@ class CreateLandTransportForm extends Component {
                   Additional Notes
               </h4>
 
-              {/* CHANGE TO DEPARTURE/ARRIVAL */}
-              <LocationAlias handleChange={(e, field) => this.handleChange(e, field)} />
+              {/* CHANGE TO DEPARTURE/ARRIVAL. PLACEHOLDER? */}
+              <LocationAlias handleChange={(e) => this.handleChange(e, 'departureLocationAlias')} placeholder={'Detailed Location (Departure)'} />
+
+              <LocationAlias handleChange={(e) => this.handleChange(e, 'arrivalLocationAlias')} placeholder={'Detailed Location (Arrival)'} />
 
               <Notes handleChange={(e, field) => this.handleChange(e, field)} />
             </div>

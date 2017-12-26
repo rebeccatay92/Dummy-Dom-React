@@ -197,7 +197,7 @@ class CreateLodgingForm extends Component {
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>
                   Additional Notes
               </h4>
-              <LocationAlias handleChange={(e, field) => this.handleChange(e, field)} />
+              <LocationAlias handleChange={(e) => this.handleChange(e, 'locationAlias')} />
               <Notes handleChange={(e, field) => this.handleChange(e, field)} />
             </div>
           </div>
