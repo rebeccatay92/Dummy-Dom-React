@@ -14,7 +14,7 @@ import Notes from '../eventFormComponents/Notes'
 import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
-import { createActivity } from '../../apollo/activity'
+import { createLandTransport } from '../../apollo/landtransport'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
@@ -22,20 +22,19 @@ import { removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
-const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
-// const PDFJS = require('pdfjs-dist')
-
-class CreateActivityForm extends Component {
+class CreateLandTransportForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
       startDay: this.props.day,
       endDay: this.props.day,
-      googlePlaceData: {},
-      locationAlias: '',
-      description: '',
+      departureGooglePlaceData: {},
+      arrivalGooglePlaceData: {},
+      departureLocationAlias: '',
+      arrivalLocationAlias: '',
       notes: '',
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
@@ -64,14 +63,14 @@ class CreateActivityForm extends Component {
   handleSubmit () {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
-    var newActivity = {
+    var newLandTransport = {
       ItineraryId: parseInt(this.state.ItineraryId),
-      locationAlias: this.state.locationAlias,
+      departureLocationAlias: this.state.departureLocationAlias,
+      arrivalLocationAlias: this.state.arrivalLocationAlias,
       startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
       endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      description: this.state.description,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
       bookingStatus: bookingStatus,
@@ -81,33 +80,34 @@ class CreateActivityForm extends Component {
       attachments: this.state.attachments,
       backgroundImage: this.state.backgroundImage
     }
-    if (this.state.googlePlaceData.placeId) {
-      newActivity.googlePlaceData = this.state.googlePlaceData
-    }
+
+    // if (this.state.googlePlaceData.placeId) {
+    //   newLandTransport.googlePlaceData = this.state.googlePlaceData
+    // }
 
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-    console.log('helper output', helperOutput)
-
-    this.props.changingLoadSequence({
-      variables: {
-        input: helperOutput.loadSequenceInput
-      }
-    })
-
-    this.props.createActivity({
-      variables: helperOutput.newEvent,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
-    })
-
-    this.resetState()
-    this.props.toggleCreateEventType()
+    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
+    // console.log('helper output', helperOutput)
+    //
+    // this.props.changingLoadSequence({
+    //   variables: {
+    //     input: helperOutput.loadSequenceInput
+    //   }
+    // })
+    //
+    // this.props.createLandTransport({
+    //   variables: helperOutput.newEvent,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+    //
+    // this.resetState()
+    // this.props.toggleCreateEventType()
   }
 
-  closeCreateActivity () {
+  closeCreateLandTransport () {
     removeAllAttachments(this.state.attachments, this.apiToken)
     this.resetState()
     this.props.toggleCreateEventType()
@@ -117,9 +117,10 @@ class CreateActivityForm extends Component {
     this.setState({
       startDay: this.props.startDay,
       endDay: this.props.endDay,
-      googlePlaceData: {},
-      locationAlias: '',
-      description: '',
+      departureGooglePlaceData: {},
+      arrivalGooglePlaceData: {},
+      departureLocationAlias: '',
+      arrivalLocationAlias: '',
       notes: '',
       startTime: null, // should be Int
       endTime: null, // should be Int
@@ -133,10 +134,11 @@ class CreateActivityForm extends Component {
     this.apiToken = null
   }
 
-  selectLocation (location) {
-    this.setState({googlePlaceData: location})
-    console.log('selected location', location)
-  }
+  // need to select either departure or arrival
+  // selectLocation (location) {
+  //   this.setState({googlePlaceData: location})
+  //   console.log('selected location', location)
+  // }
 
   handleFileUpload (attachmentInfo) {
     this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
@@ -177,12 +179,16 @@ class CreateActivityForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
+
+            {/* CHANGE TO DEPARTURE/ARRIVAL */}
             <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
+              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.departureGooglePlaceData} />
             </div>
+
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
+
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
           </div>
@@ -190,12 +196,14 @@ class CreateActivityForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateLandTransport()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
               <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>
                   Additional Notes
               </h4>
+
+              {/* CHANGE TO DEPARTURE/ARRIVAL */}
               <LocationAlias handleChange={(e, field) => this.handleChange(e, field)} />
 
               <Notes handleChange={(e, field) => this.handleChange(e, field)} />
@@ -228,6 +236,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
-  graphql(createActivity, {name: 'createActivity'}),
+  graphql(createLandTransport, {name: 'createLandTransport'}),
   graphql(changingLoadSequence, {name: 'changingLoadSequence'})
-)(Radium(CreateActivityForm)))
+)(Radium(CreateLandTransportForm)))
