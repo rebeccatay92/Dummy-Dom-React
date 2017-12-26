@@ -34,7 +34,7 @@ class ActivityInfo extends Component {
       <span style={{opacity: '0', fontSize: '1px'}}>a</span>
     )
     return (
-      <span onClick={() => this.handleClick()}>{this.state.value}</span>
+      <span style={{display: 'inline-block', height: '18px', maxWidth: '240px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{this.state.value}</span>
     )
   }
 

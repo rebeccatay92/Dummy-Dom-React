@@ -37,9 +37,9 @@ class FlightSearchDetails extends Component {
             <tbody>
               <tr>
                 <td style={{width: '100%'}}>
-                  {this.props.allFlights.flights.length === 4 && this.props.tripType === 'R' && <div style={{...timelineStyle, ...{height: '55%', backgroundColor: 'white', opacity: '0.5', top: '-22%'}}} />}
+                  {((this.props.allFlights.flights.length === 4 && this.props.tripType === 'R') || (this.props.allFlights.flights.length === 2 && this.props.tripType === 'O')) && <div style={{...timelineStyle, ...{height: '55%', backgroundColor: 'white', opacity: '0.5', top: '-22%'}}} />}
                   {this.props.allFlights.flights.length === 2 && this.props.tripType === 'R' ? <p>Return Flight</p> : <p style={infoStyle}>layover {layoverHours}{layoverMins} m</p>}
-                  {this.props.allFlights.flights.length === 4 && this.props.tripType === 'R' && <div style={{...timelineStyle, ...{height: '55%', top: '67%', backgroundColor: 'white', opacity: '0.5'}}} />}
+                  {((this.props.allFlights.flights.length === 4 && this.props.tripType === 'R') || (this.props.allFlights.flights.length === 2 && this.props.tripType === 'O')) && <div style={{...timelineStyle, ...{height: '55%', top: '67%', backgroundColor: 'white', opacity: '0.5'}}} />}
                 </td>
               </tr>
             </tbody>

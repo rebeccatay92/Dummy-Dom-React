@@ -19,7 +19,17 @@ class FlightSearchDetailsContainer extends Component {
 
   render () {
     const flightsArr = this.props.flights[this.props.selected].flights
-    if (flightsArr.length === 2) {
+    if (flightsArr.length === 1) {
+      return (
+        <div style={{position: 'relative'}}>
+          {flightsArr.map((flight, i) => {
+            return (
+              <FlightSearchDetails depart key={i} first={i === 0} allFlights={this.props.flights[this.props.selected]} flight={flightsArr} index={i} tripType={this.props.tripType} />
+            )
+          })}
+        </div>
+      )
+    } else if (flightsArr.length === 2) {
       return (
         <div style={{position: 'relative'}}>
           {flightsArr.map((flight, i) => {
@@ -37,7 +47,7 @@ class FlightSearchDetailsContainer extends Component {
               <FlightSearchDetails depart key={i} first={i === 0} allFlights={this.props.flights[this.props.selected]} flight={flightsArr.slice(0, 2)} index={i} tripType={this.props.tripType} />
             )
           })}
-          {this.state.flightDetailsPage === 1 && this.props.flights[this.props.selected].flights.length === 4 && <i onClick={() => this.setState({flightDetailsPage: 2})} className='material-icons' style={{cursor: 'pointer', position: 'absolute', top: '185px', right: '10px'}}>chevron_right</i>}
+          {this.state.flightDetailsPage === 1 && this.props.flights[this.props.selected].flights.length === 4 && <i onClick={() => this.setState({flightDetailsPage: 2})} className='material-icons' style={{cursor: 'pointer', position: 'absolute', top: '172px', right: '10px', fontSize: '50px'}}>chevron_right</i>}
         </div>
       )
     } else if (flightsArr.length === 4 && this.state.flightDetailsPage === 2) {
@@ -48,7 +58,7 @@ class FlightSearchDetailsContainer extends Component {
               <FlightSearchDetails key={i} first={i === 0} allFlights={this.props.flights[this.props.selected]} flight={flightsArr.slice(2)} index={i} tripType={this.props.tripType} />
             )
           })}
-          {this.state.flightDetailsPage === 2 && this.props.flights[this.props.selected].flights.length === 4 && <i onClick={() => this.setState({flightDetailsPage: 1})} className='material-icons' style={{cursor: 'pointer', position: 'absolute', top: '185px', left: '10px'}}>chevron_left</i>}
+          {this.state.flightDetailsPage === 2 && this.props.flights[this.props.selected].flights.length === 4 && <i onClick={() => this.setState({flightDetailsPage: 1})} className='material-icons' style={{cursor: 'pointer', position: 'absolute', top: '172px', left: '10px', fontSize: '50px'}}>chevron_left</i>}
         </div>
       )
     } else return null

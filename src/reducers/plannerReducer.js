@@ -48,7 +48,8 @@ export const plannerReducer = (state = [], action) => {
           ...newStateWithActivitiesWithThatDate.slice(0, action.index),
           ...[{
             modelId: '',
-            day: action.day
+            day: action.day,
+            dropzone: true
           }],
           ...newStateWithActivitiesWithThatDate.slice(action.index, newStateWithActivitiesWithThatDate.length)
         ]
@@ -78,7 +79,8 @@ export const plannerReducer = (state = [], action) => {
             day: action.day,
             type: 'empty',
             empty: {},
-            fromReducer: true
+            fromReducer: true,
+            dropzone: true
           }],
           ...newStateWithPlannerActivitiesWithThatDate.slice(action.index, newStateWithPlannerActivitiesWithThatDate.length)
         ]

@@ -18,7 +18,7 @@ import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { createFlightBooking } from '../../apollo/flight'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
-import { queryItinerary } from '../../apollo/itinerary'
+import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
 
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
@@ -107,6 +107,14 @@ class CreateFlightForm extends Component {
       flightInstances: this.state.flightInstances
     }
 
+    if (newFlight.flightInstances[newFlight.flightInstances.length - 1].endDay > this.props.dates.length) {
+      this.props.updateItineraryDetails({
+        variables: {
+          id: this.props.ItineraryId,
+          days: newFlight.flightInstances[newFlight.flightInstances.length - 1].endDay
+        }
+      })
+    }
     // console.log('newFlight', newFlight)
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Flight', newFlight.flightInstances)
@@ -194,8 +202,8 @@ class CreateFlightForm extends Component {
           arrivalIATA: flight.arrivalAirportCode,
           departureTerminal: flight.departureTerminal,
           arrivalTerminal: flight.arrivalTerminal,
-          startDay: datesUnix.indexOf(startDayUnix) + 1,
-          endDay: datesUnix.indexOf(endDayUnix) + 1,
+          startDay: datesUnix.indexOf(startDayUnix) + 1 ? datesUnix.indexOf(startDayUnix) + 1 : datesUnix.length + (startDayUnix - datesUnix[datesUnix.length - 1]) / 86400,
+          endDay: datesUnix.indexOf(endDayUnix) + 1 ? datesUnix.indexOf(endDayUnix) + 1 : datesUnix.length + (endDayUnix - datesUnix[datesUnix.length - 1]) / 86400,
           startTime: startTime,
           endTime: endTime,
           // startLoadSequence: 1,
@@ -325,5 +333,6 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
   graphql(createFlightBooking, {name: 'createFlightBooking'}),
-  graphql(changingLoadSequence, {name: 'changingLoadSequence'})
+  graphql(changingLoadSequence, {name: 'changingLoadSequence'}),
+  graphql(updateItineraryDetails, {name: 'updateItineraryDetails'})
 )(Radium(CreateFlightForm)))
