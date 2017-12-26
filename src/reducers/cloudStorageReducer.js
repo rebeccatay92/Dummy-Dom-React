@@ -8,10 +8,10 @@ export const cloudStorageReducer = (state = {}, action) => {
       var currentUnix = Date.now() /1000
       var tokenObj = state.then(obj => {
         if (currentUnix < (obj.expiry - 1800)) { // half hr buffer
-          console.log('token still valid')
+          // console.log('token still valid')
           return obj
         } else {
-          console.log('token will expire soon, refreshing it')
+          // console.log('token will expire soon, refreshing it')
           return retrieveToken()
         }
       })

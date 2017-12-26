@@ -9,7 +9,7 @@ import { graphql, compose } from 'react-apollo'
 import { createActivity, deleteActivity } from '../apollo/activity'
 import { createFood, deleteFood } from '../apollo/food'
 import { createFlight, deleteFlight } from '../apollo/flight'
-import { createTransport, deleteTransport } from '../apollo/transport'
+import { createLandTransport, deleteLandTransport } from '../apollo/landtransport'
 import { createLodging, deleteLodging } from '../apollo/lodging'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
@@ -149,7 +149,7 @@ class PlannerActivity extends Component {
     )
     if (this.state.creatingEvent) {
       const iconTypes = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
-      const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
+      const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'LandTransport', 'SeaTransport']
       createEventBox = (
         <div style={createEventBoxStyle}>
           <span>
@@ -283,7 +283,7 @@ class PlannerActivity extends Component {
               <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} />{' - '}<ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
             </div>
           )// import CreateActivityForm from './CreateActivityForm'
-        case 'Transport':
+        case 'LandTransport':
           if (this.props.activity.start) {
             return (
               <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
@@ -378,7 +378,7 @@ class PlannerActivity extends Component {
               </div>
             </div>
           )
-        case 'Transport':
+        case 'LandTransport':
           return (
             <div style={{...activityBoxStyle, ...{height: 'auto', marginBottom: '20px'}}}>
               <p style={nameStyle}>
@@ -468,12 +468,6 @@ class PlannerActivity extends Component {
       }]
     })
   }
-
-  // AUTOMATICALLY OPENS UP LODGING FORM FOR TESTING BY DEFAULT. OPENS FOR EACH PLANNERACTIVITY COMPONENT >.<
-  // componentDidMount () {
-  //   this.setState({creatingEvent: true})
-  //   this.setState({createEventType: 'Lodging'})
-  // }
 }
 
 const mapDispatchToProps = (dispatch) => {

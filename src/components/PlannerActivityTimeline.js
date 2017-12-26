@@ -106,7 +106,7 @@ class PlannerActivityTimeline extends Component {
             {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
           </div>
         )
-      case 'Transport':
+      case 'LandTransport':
         return (
           <div>
             {this.props.start && this.renderIcon('directions_subway', this.props.expanded && {fontSize: '48px'})}
