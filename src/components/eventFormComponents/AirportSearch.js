@@ -13,7 +13,6 @@ class AirportSearch extends Component {
       results: []
     }
   }
-  // NEED TO RESTYLE MARGINTOP, INPUT FIELD TEXT SIZE
 
   handleChange (e) {
     this.setState({search: e.target.value})

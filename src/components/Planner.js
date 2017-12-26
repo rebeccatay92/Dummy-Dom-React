@@ -21,9 +21,7 @@ class Planner extends Component {
 
   render () {
     if (this.props.data.loading) return (<h1>Loading</h1>)
-    //
     // console.log('apollo', this.props.data.findItinerary)
-    console.log('rendering')
 
     const startDate = new Date(this.props.data.findItinerary.startDate * 1000)
     const days = this.props.data.findItinerary.days

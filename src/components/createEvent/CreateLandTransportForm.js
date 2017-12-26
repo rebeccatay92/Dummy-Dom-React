@@ -6,7 +6,9 @@ import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
-import LocationSelection from '../location/LocationSelection'
+// import LocationSelection from '../location/LocationSelection'
+import TransportLocationSelection from '../location/TransportLocationSelection'
+
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
 import BookingDetails from '../eventFormComponents/BookingDetails'
 import LocationAlias from '../eventFormComponents/LocationAlias'
@@ -135,10 +137,10 @@ class CreateLandTransportForm extends Component {
   }
 
   // need to select either departure or arrival
-  // selectLocation (location) {
-  //   this.setState({googlePlaceData: location})
-  //   console.log('selected location', location)
-  // }
+  selectLocation (location, type) {
+    this.setState({[`${type}GooglePlaceData`]: location})
+    console.log('selected location in form', type, location)
+  }
 
   handleFileUpload (attachmentInfo) {
     this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
@@ -179,14 +181,9 @@ class CreateLandTransportForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
-
-            {/* CHANGE TO DEPARTURE/ARRIVAL */}
-            <div style={{...eventDescContainerStyle, ...{marginTop: '55px'}}}>
-              <LocationSelection selectLocation={location => this.selectLocation(location, 'departure')} currentLocation={this.state.departureGooglePlaceData} />
-              
-              <p style={{textAlign: 'center'}}>to</p>
-
-              <LocationSelection selectLocation={location => this.selectLocation(location, 'arrival')} currentLocation={this.state.arrivalGooglePlaceData} />
+            
+            <div style={eventDescContainerStyle}>
+              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
