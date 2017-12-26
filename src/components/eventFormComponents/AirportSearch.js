@@ -8,7 +8,6 @@ class AirportSearch extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      marginTop: 0,
       search: '',
       selecting: false,
       results: []
@@ -96,7 +95,7 @@ class AirportSearch extends Component {
   render () {
     return (
       <div>
-        <textarea key='airportLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...locationSelectionInputStyle(this.state.marginTop, 'flight'), ...{fontSize: '36px'}}} />
+        <textarea key='airportLocation' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...locationSelectionInputStyle(0, 'flight'), ...{fontSize: '36px'}}} />
 
         {this.state.selecting &&
           <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />

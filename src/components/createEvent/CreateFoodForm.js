@@ -173,7 +173,7 @@ class CreateFoodForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
-            <div style={eventDescContainerStyle}>
+            <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
               <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>

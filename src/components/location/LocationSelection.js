@@ -17,7 +17,6 @@ class LocationSelection extends Component {
       search: '',
       results: [],
       selecting: false,
-      marginTop: 240,
       mapIsOpen: false
     }
   }
@@ -113,13 +112,12 @@ class LocationSelection extends Component {
   componentDidMount () {
     this.resizeTextArea()
   }
+
   render () {
     return (
       <div style={{position: 'relative'}}>
-        <form>
-          <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(this.state.marginTop)} value={this.state.search} />
-          <i className='material-icons' onClick={() => this.toggleMap()} style={{fontSize: '50px', cursor: 'pointer'}}>place</i>
-        </form>
+        <textarea id='locationInput' className='left-panel-input' rows='1' autoComplete='off' placeholder='Input Location' name='search' onChange={(e) => this.handleChange(e, 'search')} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(0)} value={this.state.search} />
+        <i className='material-icons' onClick={() => this.toggleMap()} style={{fontSize: '50px', cursor: 'pointer'}}>place</i>
 
         {this.state.selecting &&
         <div style={locationDropdownStyle}>
