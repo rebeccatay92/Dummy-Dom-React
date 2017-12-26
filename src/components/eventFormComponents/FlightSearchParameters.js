@@ -18,7 +18,7 @@ class FlightSearchParameters extends Component {
       arrivalLocation: null,
       // start date, end date, start/end day
       departureDate: moment(new Date(this.props.date)),
-      returnDate: moment(new Date(this.props.date)),
+      returnDate: null,
       startDay: null,
       // req params for airhob
       classCode: 'Economy',
@@ -35,7 +35,8 @@ class FlightSearchParameters extends Component {
     const origin = this.state.departureLocation.type === 'airport' ? this.state.departureLocation.iata : this.state.departureLocation.cityCode
     const destination = this.state.arrivalLocation.type === 'airport' ? this.state.arrivalLocation.iata : this.state.arrivalLocation.cityCode
     const travelDate = this.state.departureDate.format('MM/DD/YYYY')
-    const returnDate = this.state.returnDate.format('MM/DD/YYYY')
+    let returnDate
+    if (this.state.returnDate) returnDate = this.state.returnDate.format('MM/DD/YYYY')
     const tripType = this.state.returnDate ? 'R' : 'O'
     console.log('searching...')
     fetch(uriFull, {

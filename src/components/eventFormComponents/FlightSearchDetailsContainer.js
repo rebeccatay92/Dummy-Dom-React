@@ -19,7 +19,17 @@ class FlightSearchDetailsContainer extends Component {
 
   render () {
     const flightsArr = this.props.flights[this.props.selected].flights
-    if (flightsArr.length === 2) {
+    if (flightsArr.length === 1) {
+      return (
+        <div style={{position: 'relative'}}>
+          {flightsArr.map((flight, i) => {
+            return (
+              <FlightSearchDetails depart key={i} first={i === 0} allFlights={this.props.flights[this.props.selected]} flight={flightsArr} index={i} tripType={this.props.tripType} />
+            )
+          })}
+        </div>
+      )
+    } else if (flightsArr.length === 2) {
       return (
         <div style={{position: 'relative'}}>
           {flightsArr.map((flight, i) => {
