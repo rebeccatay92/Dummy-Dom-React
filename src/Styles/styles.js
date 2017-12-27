@@ -105,10 +105,10 @@ export const activityIconStyle = {
   marginRight: '1vw',
   WebkitTextStroke: '1px ' + primaryColor,
   WebkitTextFillColor: '#FAFAFA',
-  cursor: 'pointer',
-  ':hover': {
-    WebkitTextStroke: '2px ' + primaryColor
-  }
+  cursor: 'pointer'
+  // ':hover': {
+  //   WebkitTextStroke: '2px ' + primaryColor
+  // }
 }
 export const createEventBoxStyle = {position: 'absolute', top: '-1vh'}
 export const createEventPickOneStyle = {fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}
@@ -220,3 +220,6 @@ export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
 
 // FlightSearchResults.js styles
 export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}
+
+// AirportResults.js styles
+export const intuitiveDropdownStyle = {width: '282.5px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2'}
