@@ -15,7 +15,7 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
-import IntuitiveInput from './IntuitiveInput'
+import IntuitiveFlightInput from './IntuitiveFlightInput'
 
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
@@ -166,7 +166,7 @@ class PlannerActivity extends Component {
       )
     } else if (this.state.intuitiveInputType) {
       createEventBox = (
-        <IntuitiveInput handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} />
+        <IntuitiveFlightInput departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} />
       )
     }
     if (this.props.empty) {
@@ -361,7 +361,7 @@ class PlannerActivity extends Component {
             <div style={{...activityBoxStyle, ...{height: 'auto', marginBottom: '20px'}}}>
               <p style={nameStyle}>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].name} />
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
                 {expandButton}
               </p>
               <div style={expandedEventBoxStyle}>
@@ -384,7 +384,7 @@ class PlannerActivity extends Component {
             <div style={{...activityBoxStyle, ...{height: 'auto', marginBottom: '20px'}}}>
               <p style={nameStyle}>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].name} />
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
                 {expandButton}
               </p>
               <div style={expandedEventBoxStyle}>

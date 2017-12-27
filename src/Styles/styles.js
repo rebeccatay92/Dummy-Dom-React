@@ -220,3 +220,6 @@ export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
 
 // FlightSearchResults.js styles
 export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}
+
+// AirportResults.js styles
+export const intuitiveDropdownStyle = {width: '282.5px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2'}

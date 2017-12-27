@@ -99,7 +99,7 @@ class AirportSearch extends Component {
         <div>
           <input style={{width: '90%'}} placeholder={this.props.placeholder} name='search' value={this.state.search} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} />
           {this.state.selecting &&
-            <AirportResults results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />
+            <AirportResults intuitiveInput results={this.state.results} selectLocation={(details) => this.selectLocation(details)} />
           }
         </div>
       )
