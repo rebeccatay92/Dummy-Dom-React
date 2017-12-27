@@ -6,7 +6,6 @@ import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
-// import LocationSelection from '../location/LocationSelection'
 import TransportLocationSelection from '../location/TransportLocationSelection'
 
 import DateTimePicker from '../eventFormComponents/DateTimePicker'

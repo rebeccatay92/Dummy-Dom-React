@@ -41,7 +41,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     } else if (event.type === 'Activity' || event.type === 'Food') {
       event.time = event[event.type].startTime
     } else {
-      // for transport and lodging
       event.time = event.start ? event[event.type].startTime : event[event.type].endTime
     }
     return event
@@ -84,20 +83,18 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     }
   } // close activity and food
   if (eventModel === 'Lodging') {
-    // newEvent is an obj that needs both start and end load sequence
     if (newEvent.startDay === newEvent.endDay) {
-      // same start and end day
       dayEvents = allEventsWithTime.filter(e => {
         return e.day === newEvent.startDay
       })
 
-      // REFACTOR
       var types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start') // true or false
         var displacedRow = dayEvents.find(event => {
           return isStart ? (event.time >= newEvent.startTime) : (event.time >= newEvent.endTime)
         })
+
         if (!displacedRow) {
           dayEvents.push({start: isStart})
         } else {
@@ -109,7 +106,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           }
         }
       })
-
       console.log('after inserting 2', dayEvents)
 
       dayEvents.forEach(event => {
@@ -124,7 +120,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         }
       })
     } else {
-      // REFACTOR
       types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start')
@@ -144,12 +139,14 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
             dayEvents.splice(index, 0, {start: isStart})
           }
         }
+
+        console.log('dayEvents', dayEvents)
         dayEvents.forEach(event => {
           var correctLoadSeq = dayEvents.indexOf(event) + 1
           if (event.modelId && event.loadSeq !== correctLoadSeq) {
             var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
             loadSequenceInput.push(inputObj)
-          } else if (!event.modelId && event.start) {
+          } else if (!event.modelId) {
             isStart ? (newEvent.startLoadSequence = correctLoadSeq) : (newEvent.endLoadSequence = correctLoadSeq)
           }
         })
@@ -157,10 +154,13 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     } // close else for separate days
   }
   if (eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
-    // assign load seq for transport
+    if (newEvent.startDay === newEvent.endDay) {
+      // find start and then end is start + 1
+    } else {
+      //
+    }
   }
   if (eventModel === 'Flight') {
-
     console.log('flight instance arr', newEvent)
     var flightInstanceRows = []
     var days = []
