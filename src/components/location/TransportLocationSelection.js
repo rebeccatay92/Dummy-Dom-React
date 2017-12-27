@@ -15,12 +15,11 @@ class TransportLocationSelection extends Component {
     }
   }
 
-  selectLocation (location) {
+  selectLocation (location, type) {
     if (location.openingHours) {
       location.openingHours = JSON.stringify(location.openingHours)
     }
 
-    var type = this.state.mapLocationType
     this.props.selectLocation(location, type)
 
     this.setState({mapIsOpen: false})
@@ -48,7 +47,7 @@ class TransportLocationSelection extends Component {
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>
-          <TransportMapHOC toggleMap={() => this.toggleMap()} selectLocation={(obj) => this.selectLocation(obj)} departureLocation={this.props.departureLocation} arrivalLocation={this.props.arrivalLocation} />
+          <TransportMapHOC toggleMap={() => this.toggleMap()} selectLocation={(obj) => this.selectLocation(obj, this.state.mapLocationType)} departureLocation={this.props.departureLocation} arrivalLocation={this.props.arrivalLocation} mapLocationType={this.state.mapLocationType} />
         </div>
         }
       </div>

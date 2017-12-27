@@ -105,13 +105,11 @@ const FlightMap = compose(
     } */}
     {props.arrivalLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation} onClick={props.toggleArrivalWindow}>
-        {props.arrivalWindow &&
-          <InfoWindow ref={props.onArrivalWindowMounted} onCloseClick={props.toggleArrivalWindow}>
-            <div>
-              <h5>{props.arrivalLocation.name}</h5>
-            </div>
-          </InfoWindow>
-        }
+        <InfoWindow ref={props.onArrivalWindowMounted} onCloseClick={props.toggleArrivalWindow}>
+          <div>
+            <h5>{props.arrivalLocation.name}</h5>
+          </div>
+        </InfoWindow>
       </Marker>
     }
 
