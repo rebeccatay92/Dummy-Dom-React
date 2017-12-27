@@ -87,7 +87,7 @@ class CreateActivityForm extends Component {
 
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-    console.log('helper output', helperOutput)
+    // console.log('helper output', helperOutput)
 
     this.props.changingLoadSequence({
       variables: {

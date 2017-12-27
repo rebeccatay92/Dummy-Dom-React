@@ -83,14 +83,18 @@ class CreateLandTransportForm extends Component {
       backgroundImage: this.state.backgroundImage
     }
 
-    // if (this.state.googlePlaceData.placeId) {
-    //   newLandTransport.googlePlaceData = this.state.googlePlaceData
-    // }
+    if (this.state.departureGooglePlaceData.placeId) {
+      newLandTransport.departureGooglePlaceData = this.state.departureGooglePlaceData
+    }
+    if (this.state.arrivalGooglePlaceData.placeId) {
+      newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
+    }
 
+    console.log('newLandTransport', newLandTransport)
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
     // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
     // console.log('helper output', helperOutput)
-    //
+
     // this.props.changingLoadSequence({
     //   variables: {
     //     input: helperOutput.loadSequenceInput
@@ -181,7 +185,7 @@ class CreateLandTransportForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
-            
+
             <div style={eventDescContainerStyle}>
               <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} />
             </div>

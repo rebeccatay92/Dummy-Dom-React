@@ -35,8 +35,6 @@ class TransportLocationSelection extends Component {
     }
   }
 
-  // map needs to allow select for either departure/arrival only
-
   render () {
     return (
       <div>
