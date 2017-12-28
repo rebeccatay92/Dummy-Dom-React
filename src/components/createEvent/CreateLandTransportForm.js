@@ -182,7 +182,12 @@ class CreateLandTransportForm extends Component {
     // time is at utc 0
     var defaultTime = moment.utc(defaultUnix * 1000).format('HH:mm')
     // datepicker take 'hh:mm' 24 hr format
+
+    // set default time string that datepicker uses
     this.setState({defaultTime: defaultTime})
+
+    // set default start and end unix for saving
+    this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
   render () {
@@ -214,7 +219,6 @@ class CreateLandTransportForm extends Component {
                   Additional Notes
               </h4>
 
-              {/* CHANGE TO DEPARTURE/ARRIVAL. PLACEHOLDER? */}
               <LocationAlias handleChange={(e) => this.handleChange(e, 'departureLocationAlias')} placeholder={'Detailed Location (Departure)'} />
 
               <LocationAlias handleChange={(e) => this.handleChange(e, 'arrivalLocationAlias')} placeholder={'Detailed Location (Arrival)'} />
