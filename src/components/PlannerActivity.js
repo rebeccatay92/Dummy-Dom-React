@@ -167,7 +167,7 @@ class PlannerActivity extends Component {
       )
     } else if (this.state.intuitiveInputType) {
       createEventBox = (
-        <IntuitiveFlightInput departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} />
+        <IntuitiveFlightInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
       )
     }
     if (this.props.empty) {
@@ -223,10 +223,10 @@ class PlannerActivity extends Component {
     })
   }
 
-  handleIntuitiveInput (eventType = null) {
+  handleIntuitiveInput (eventType = '') {
     this.setState({
       intuitiveInputType: eventType
-    })
+    }, () => this.setState({creatingEvent: !!this.state.intuitiveInputType}))
   }
 
   handleCreateEventClick (eventType = null) {
