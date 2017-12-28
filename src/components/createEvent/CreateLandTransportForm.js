@@ -22,6 +22,8 @@ import { queryItinerary } from '../../apollo/itinerary'
 import { removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
+import latestTime from '../../helpers/latestTime'
+import moment from 'moment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
@@ -37,6 +39,8 @@ class CreateLandTransportForm extends Component {
       departureLocationAlias: '',
       arrivalLocationAlias: '',
       notes: '',
+      defaultTime: null, // 24 hr str 'HH:mm'
+      // start and end time need to be unix
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
       cost: 0,
@@ -173,7 +177,12 @@ class CreateLandTransportForm extends Component {
     this.setState({currency: currencyList[0]})
 
     // find latest time for that day and assign to start/endTime
+    var defaultUnix = latestTime(this.props.events, this.props.day)
 
+    // time is at utc 0
+    var defaultTime = moment.utc(defaultUnix * 1000).format('HH:mm')
+    // datepicker take 'hh:mm' 24 hr format
+    this.setState({defaultTime: defaultTime})
   }
 
   render () {
@@ -192,7 +201,7 @@ class CreateLandTransportForm extends Component {
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
-            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
+            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
