@@ -27,8 +27,8 @@ class TransportLocationSelection extends Component {
       openingHours: null
     }
 
-    if (place.openingHours && place.openingHours.periods) {
-      googlePlaceData.openingHours = JSON.stringify(place.openingHours.periods)
+    if (place.opening_hours && place.opening_hours.periods) {
+      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
     }
     place.address_components.forEach(e => {
       if (e.types.includes('country')) {

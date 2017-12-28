@@ -10,7 +10,8 @@ class SingleLocationSelection extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      mapIsOpen: false
+      mapIsOpen: false,
+      locationDetails: null
     }
   }
 
@@ -26,8 +27,8 @@ class SingleLocationSelection extends Component {
       longitude: null,
       openingHours: null
     }
-    if (place.openingHours && place.openingHours.periods) {
-      googlePlaceData.openingHours = JSON.stringify(place.openingHours.periods)
+    if (place.opening_hours && place.opening_hours.periods) {
+      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
     }
     place.address_components.forEach(e => {
       if (e.types.includes('country')) {
@@ -43,8 +44,13 @@ class SingleLocationSelection extends Component {
       googlePlaceData.longitude = place.geometry.location.lng()
     }
     this.setState({mapIsOpen: false})
-    this.props.selectLocation(googlePlaceData)
     // pass it up to form
+    this.props.selectLocation(googlePlaceData)
+
+    // take out location details
+    var address = place.formatted_address
+    var telephone = place.internation_phone_number || place.formatted_phone_number
+    // var openingHours =
   }
 
   toggleMap () {
