@@ -9,7 +9,7 @@ import { graphql, compose } from 'react-apollo'
 import { createActivity, deleteActivity } from '../apollo/activity'
 import { createFood, deleteFood } from '../apollo/food'
 import { createFlight, deleteFlight } from '../apollo/flight'
-import { createTransport, deleteTransport } from '../apollo/transport'
+import { createLandTransport, deleteLandTransport } from '../apollo/landtransport'
 import { createLodging, deleteLodging } from '../apollo/lodging'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
@@ -21,6 +21,7 @@ import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
 import CreateFlightForm from './createEvent/CreateFlightForm'
 import CreateLodgingForm from './createEvent/CreateLodgingForm'
+import CreateLandTransportForm from './createEvent/CreateLandTransportForm'
 
 import PlannerEventExpandedInfo from './PlannerEventExpandedInfo'
 import { timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, createEventTextStyle, activityIconStyle, createEventBoxStyle, createEventPickOneStyle, createEventBoxContainerStyle, plannerBlurredBackgroundStyle, expandedEventIconsBoxStyle, expandedEventIconsStyle, expandedEventBoxStyle, expandedEventBoxImageContainerStyle, expandedEventBoxImageStyle, expandedEventBoxTextBoxStyle } from '../Styles/styles'
@@ -151,7 +152,7 @@ class PlannerActivity extends Component {
     )
     if (this.state.creatingEvent && !this.state.intuitiveInputType) {
       const iconTypes = ['directions_run', 'restaurant', 'hotel', 'flight', 'directions_subway', 'local_car_wash', 'directions_boat']
-      const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'Car', 'Ferry']
+      const eventTypes = ['Activity', 'Food', 'Lodging', 'Flight', 'Train', 'LandTransport', 'SeaTransport']
       createEventBox = (
         <div style={createEventBoxStyle}>
           <span className='createEventBox'>
@@ -185,16 +186,19 @@ class PlannerActivity extends Component {
             {this.state.createEventType &&
               <div>
                 {this.state.createEventType === 'Activity' &&
-                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Food' &&
-                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Flight' &&
-                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Lodging' &&
-                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} highestLoadSequence={this.props.highestLoadSequence} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                }
+                {this.state.createEventType === 'LandTransport' &&
+                <CreateLandTransportForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
               </div>
             }
@@ -306,7 +310,7 @@ class PlannerActivity extends Component {
               <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /><span style={typeStyle}> - </span><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
             </div>
           )// import CreateActivityForm from './CreateActivityForm'
-        case 'Transport':
+        case 'LandTransport':
           if (this.props.activity.start) {
             return (
               <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
@@ -403,7 +407,7 @@ class PlannerActivity extends Component {
               </div>
             </div>
           )
-        case 'Transport':
+        case 'LandTransport':
           return (
             <div style={{...activityBoxStyle, ...{height: 'auto', marginBottom: '20px'}}}>
               <p style={nameStyle}>
@@ -493,12 +497,6 @@ class PlannerActivity extends Component {
       }]
     })
   }
-
-  // AUTOMATICALLY OPENS UP LODGING FORM FOR TESTING BY DEFAULT. OPENS FOR EACH PLANNERACTIVITY COMPONENT >.<
-  // componentDidMount () {
-  //   this.setState({creatingEvent: true})
-  //   this.setState({createEventType: 'Lodging'})
-  // }
 }
 
 const mapDispatchToProps = (dispatch) => {

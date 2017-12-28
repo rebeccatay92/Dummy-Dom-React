@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import Radium from 'radium'
-import moment from 'moment'
+import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 
 import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
-import LocationSelection from '../location/LocationSelection'
+import SingleLocationSelection from '../location/SingleLocationSelection'
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
 import BookingDetails from '../eventFormComponents/BookingDetails'
 import LocationAlias from '../eventFormComponents/LocationAlias'
@@ -18,7 +18,7 @@ import { createFood } from '../../apollo/food'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import retrieveToken from '../../helpers/cloudstorage'
+import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 
@@ -103,25 +103,7 @@ class CreateFoodForm extends Component {
   }
 
   closeCreateFood () {
-    this.state.attachments.forEach(info => {
-      var uri = info.fileName.replace('/', '%2F')
-      var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
-      var uriFull = uriBase + uri
-
-      fetch(uriFull, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${this.apiToken}`
-        }
-      })
-      .then(response => {
-        console.log(response)
-        if (response.status === 204) {
-          console.log('delete from cloud storage succeeded')
-        }
-      })
-      .catch(err => console.log(err))
-    })
+    removeAllAttachments(this.state.attachments, this.apiToken)
     this.resetState()
     this.props.toggleCreateEventType()
   }
@@ -152,88 +134,16 @@ class CreateFoodForm extends Component {
     console.log('selected location', location)
   }
 
-  handleFileUpload (e) {
-    e.preventDefault()
-    var file = e.target.files[0]
-    console.log('file', file)
-    if (file) {
-      var ItineraryId = this.state.ItineraryId
-      var timestamp = Date.now()
-      var uriBase = process.env.REACT_APP_CLOUD_UPLOAD_URI
-      var uriFull = `${uriBase}Itinerary${ItineraryId}/${file.name}_${timestamp}`
-      fetch(uriFull,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${this.apiToken}`,
-            'Content-Type': file.type,
-            'Content-Length': file.size
-          },
-          body: file
-        }
-      )
-      .then(response => {
-        console.log(response)
-        return response.json()
-      })
-      .then(json => {
-        console.log('json', json)
-        if (json.name) {
-          var kilobytes = json.size / 1000
-          if (kilobytes >= 1000) {
-            var megabytes = kilobytes / 1000
-            megabytes = Math.round(megabytes * 10) / 10
-            var fileSizeStr = megabytes + 'MB'
-          } else {
-            kilobytes = Math.round(kilobytes)
-            fileSizeStr = kilobytes + 'KB'
-          }
-          this.setState({
-            attachments: this.state.attachments.concat([
-              {
-                fileName: json.name,
-                fileAlias: file.name,
-                fileSize: fileSizeStr,
-                fileType: file.type
-              }
-            ])
-          })
-        }
-      })
-      .catch(err => {
-        console.log('err', err)
-      })
-    }
+  handleFileUpload (attachmentInfo) {
+    this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
   }
 
   removeUpload (index) {
-    var objectName = this.state.attachments[index].fileName
-    objectName = objectName.replace('/', '%2F')
-    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
-    var uriFull = uriBase + objectName
+    var files = this.state.attachments
+    var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
-    fetch(uriFull, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${this.apiToken}`
-      }
-    })
-    .then(response => {
-      console.log(response)
-      if (response.status === 204) {
-        console.log('delete from cloud storage succeeded')
-      }
-    })
-    .then(() => {
-      var files = this.state.attachments
-      var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
-
-      this.setState({attachments: newFilesArr})
-      this.setState({backgroundImage: defaultBackground})
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    this.setState({attachments: newFilesArr})
+    this.setState({backgroundImage: defaultBackground})
   }
 
   setBackground (previewUrl) {
@@ -242,10 +152,11 @@ class CreateFoodForm extends Component {
   }
 
   componentDidMount () {
-    retrieveToken()
-      .then(retrieved => {
-        this.apiToken = retrieved
-      })
+    this.props.retrieveCloudStorageToken()
+
+    this.props.cloudStorageToken.then(obj => {
+      this.apiToken = obj.token
+    })
 
     var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
@@ -262,8 +173,8 @@ class CreateFoodForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
-            <div style={eventDescContainerStyle}>
-              <LocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
+            <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
+              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='fooddescription' />
@@ -281,7 +192,7 @@ class CreateFoodForm extends Component {
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>
                   Additional Notes
               </h4>
-              <LocationAlias handleChange={(e, field) => this.handleChange(e, field)} />
+              <LocationAlias handleChange={(e) => this.handleChange(e, 'locationAlias')} />
               <Notes handleChange={(e, field) => this.handleChange(e, field)} />
             </div>
           </div>
@@ -289,7 +200,7 @@ class CreateFoodForm extends Component {
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={attachmentsStyle}>
-          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} ItineraryId={this.state.ItineraryId} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )
@@ -298,11 +209,20 @@ class CreateFoodForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    events: state.plannerActivities
+    events: state.plannerActivities,
+    cloudStorageToken: state.cloudStorageToken
   }
 }
 
-export default connect(mapStateToProps)(compose(
+const mapDispatchToProps = (dispatch) => {
+  return {
+    retrieveCloudStorageToken: () => {
+      dispatch(retrieveCloudStorageToken())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(compose(
   graphql(createFood, {name: 'createFood'}),
   graphql(changingLoadSequence, {name: 'changingLoadSequence'})
 )(Radium(CreateFoodForm)))

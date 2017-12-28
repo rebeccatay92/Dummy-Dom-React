@@ -1,7 +1,7 @@
 import { gql } from 'react-apollo'
 
-export const createTransport = gql`
-  mutation createTransport(
+export const createLandTransport = gql`
+  mutation createLandTransport(
     $ItineraryId: ID!,
     $departureGooglePlaceData: googlePlaceData,
     $arrivalGooglePlaceData: googlePlaceData,
@@ -13,7 +13,6 @@ export const createTransport = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
-    $description: String,
     $notes: String,
     $cost: Int,
     $currency: String,
@@ -23,7 +22,7 @@ export const createTransport = gql`
     $attachments: [attachmentInput],
     $backgroundImage: String
   ) {
-    createTransport(
+    createLandTransport(
       ItineraryId: $ItineraryId,
       departureGooglePlaceData: $departureGooglePlaceData,
       arrivalGooglePlaceData: $arrivalGooglePlaceData,
@@ -35,7 +34,6 @@ export const createTransport = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
-      description: $description,
       notes: $notes,
       cost: $cost,
       currency: $currency,
@@ -50,8 +48,8 @@ export const createTransport = gql`
   }
 `
 
-export const updateTransport = gql`
-  mutation updateTransport(
+export const updateLandTransport = gql`
+  mutation updateLandTransport(
     $id: ID!,
     $departureGooglePlaceData: googlePlaceData,
     $arrivalGooglePlaceData: googlePlaceData,
@@ -61,7 +59,6 @@ export const updateTransport = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
-    $description: String,
     $notes: String,
     $cost: Int,
     $currency: String,
@@ -70,7 +67,7 @@ export const updateTransport = gql`
     $bookingConfirmation: String,
     $backgroundImage: String
   ) {
-    updateTransport(
+    updateLandTransport(
       id: $id,
       departureGooglePlaceData: $departureGooglePlaceData,
       arrivalGooglePlaceData: $arrivalGooglePlaceData,
@@ -80,7 +77,6 @@ export const updateTransport = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
-      description: $description,
       notes: $notes,
       cost: $cost,
       currency: $currency,
@@ -94,8 +90,8 @@ export const updateTransport = gql`
   }
 `
 
-export const deleteTransport = gql`
-  mutation deleteTransport($id: ID!) {
-    deleteTransport(id: $id)
+export const deleteLandTransport = gql`
+  mutation deleteLandTransport($id: ID!) {
+    deleteLandTransport(id: $id)
   }
 `

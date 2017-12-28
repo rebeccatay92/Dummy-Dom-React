@@ -4,7 +4,7 @@ import { graphql, compose } from 'react-apollo'
 import { updateActivity} from '../apollo/activity'
 import { updateFlightBooking } from '../apollo/flight'
 import { updateLodging } from '../apollo/lodging'
-import { updateTransport } from '../apollo/transport'
+import { updateLandTransport } from '../apollo/landtransport'
 import { updateFood } from '../apollo/food'
 
 import { queryItinerary } from '../apollo/itinerary'
@@ -81,7 +81,7 @@ class ActivityInfo extends Component {
 export default (compose(
   graphql(updateActivity, { name: 'updateActivity' }),
   graphql(updateFlightBooking, { name: 'updateFlightBooking' }),
-  graphql(updateTransport, { name: 'updateTransport' }),
+  graphql(updateLandTransport, { name: 'updateLandTransport' }),
   graphql(updateLodging, { name: 'updateLodging' }),
   graphql(updateFood, { name: 'updateFood' })
 ))(ActivityInfo)

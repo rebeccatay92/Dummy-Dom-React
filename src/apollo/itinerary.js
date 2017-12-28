@@ -150,9 +150,70 @@ export const queryItinerary = gql`
           }
           backgroundImage
         }
-        Transport {
+        LandTransport {
           id
-          description
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+        }
+        SeaTransport {
+          id
+          departureLocation {
+            id
+            name
+          }
+          arrivalLocation {
+            id
+            name
+          }
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+        }
+        Train {
+          id
           departureLocation {
             id
             name

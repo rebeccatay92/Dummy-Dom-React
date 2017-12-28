@@ -8,13 +8,11 @@ class AirportSearch extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      marginTop: 0,
       search: '',
       selecting: false,
       results: []
     }
   }
-  // NEED TO RESTYLE MARGINTOP, INPUT FIELD TEXT SIZE
 
   handleChange (e) {
     this.setState({search: e.target.value})

@@ -81,7 +81,7 @@ const FlightMap = compose(
   withGoogleMap
 )((props) =>
   <GoogleMap ref={props.onMapMounted} defaultZoom={2} center={props.center} onBoundsChanged={props.onBoundsChanged} style={{position: 'relative'}} options={{fullscreenControl: false, mapTypeControl: false, streetViewControl: false, zoomControl: false, gestureHandling: 'none'}}>
-    {props.departureLocation &&
+    {/* {props.departureLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} clickable={false}>
         <InfoBox key={`${props.departureLocation.latitude}${props.departureLocation.longitude}`} ref={props.onDepartureWindowMounted} position={new window.google.maps.LatLng(props.departureLocation.latitude, props.departureLocation.longitude)} options={{closeBoxURL: ``, enableEventPropagation: true, pixelOffset: new window.google.maps.Size(-100, -100)}}>
           <div style={{backgroundColor: `white`, padding: `10px`, borderRadius: '2px'}}>
@@ -91,8 +91,8 @@ const FlightMap = compose(
           </div>
         </InfoBox>
       </Marker>
-    }
-    {/* {props.departureLocation &&
+    } */}
+    {props.departureLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.departureLocation.latitude, lng: props.departureLocation.longitude}} location={props.departureLocation} onClick={props.toggleDepartureWindow}>
         {props.departureWindow &&
           <InfoWindow ref={props.onDepartureWindowMounted} onCloseClick={props.toggleDepartureWindow}>
@@ -102,16 +102,14 @@ const FlightMap = compose(
           </InfoWindow>
         }
       </Marker>
-    } */}
+    }
     {props.arrivalLocation &&
       <Marker ref={props.onMarkerMounted} position={{lat: props.arrivalLocation.latitude, lng: props.arrivalLocation.longitude}} location={props.arrivalLocation} onClick={props.toggleArrivalWindow}>
-        {props.arrivalWindow &&
-          <InfoWindow ref={props.onArrivalWindowMounted} onCloseClick={props.toggleArrivalWindow}>
-            <div>
-              <h5>{props.arrivalLocation.name}</h5>
-            </div>
-          </InfoWindow>
-        }
+        <InfoWindow ref={props.onArrivalWindowMounted} onCloseClick={props.toggleArrivalWindow}>
+          <div>
+            <h5>{props.arrivalLocation.name}</h5>
+          </div>
+        </InfoWindow>
       </Marker>
     }
 
