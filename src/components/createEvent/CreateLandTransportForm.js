@@ -171,6 +171,9 @@ class CreateLandTransportForm extends Component {
     var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
+
+    // find latest time for that day and assign to start/endTime
+
   }
 
   render () {

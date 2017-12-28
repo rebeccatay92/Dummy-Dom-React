@@ -33,24 +33,15 @@ function checkDisplacingEndingRow (displacedRow) {
   return (typeof (displacedRow.start) === 'boolean' && !displacedRow.start && displacedRow.type !== 'Lodging')
 }
 
+
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
-  var events = JSON.parse(JSON.stringify(eventsArr))
-  var allEventsWithTime = events.map(event => {
-    if (event.type === 'Flight') {
-      event.time = event.start ? event.Flight.FlightInstance.startTime : event.Flight.FlightInstance.endTime
-    } else if (event.type === 'Activity' || event.type === 'Food') {
-      event.time = event[event.type].startTime
-    } else {
-      event.time = event.start ? event[event.type].startTime : event[event.type].endTime
-    }
-    return event
-  })
+  var allEvents = JSON.parse(JSON.stringify(eventsArr))
   // for changing load seq of existing events
   var loadSequenceInput = []
 
   if (eventModel === 'Activity' || eventModel === 'Food') {
-    var dayEvents = allEventsWithTime.filter(e => {
+    var dayEvents = allEvents.filter(e => {
       return e.day === newEvent.startDay
     })
 
@@ -86,7 +77,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
   }
   if (eventModel === 'Lodging' || eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
     if (newEvent.startDay === newEvent.endDay) {
-      dayEvents = allEventsWithTime.filter(e => {
+      dayEvents = allEvents.filter(e => {
         return e.day === newEvent.startDay
       })
 
@@ -133,7 +124,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start')
-        dayEvents = allEventsWithTime.filter(e => {
+        dayEvents = allEvents.filter(e => {
           return isStart ? (e.day === newEvent.startDay) : (e.day === newEvent.endDay)
         })
 
@@ -198,7 +189,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
     var flightInstanceLoadSeqs = [] // for assigning  start/end loadseq
     days.forEach(day => {
-      var dayEvents = allEventsWithTime.filter(e => {
+      var dayEvents = allEvents.filter(e => {
         return e.day === day
       })
       var dayInstanceRows = flightInstanceRows.filter(e => {

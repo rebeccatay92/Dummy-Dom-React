@@ -18,6 +18,7 @@ export const queryItinerary = gql`
         loadSequence
         start
         day
+        time
         Activity {
           id
           description
