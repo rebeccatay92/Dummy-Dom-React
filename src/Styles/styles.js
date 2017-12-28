@@ -114,7 +114,7 @@ export const createEventBoxStyle = {position: 'absolute', top: '-1vh'}
 export const createEventPickOneStyle = {fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}
 export const createEventBoxContainerStyle = {
   margin: '1vh 0 3vh 1vw',
-  height: '40px',
+  height: '50px',
   position: 'relative'
 }
 export const plannerBlurredBackgroundStyle = {position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 1)', zIndex: 555}

@@ -104,14 +104,13 @@ class IntuitiveFlightInput extends Component {
         paxChildren: 0,
         paxInfants: 0,
         classCode: 'Economy'
-      })
-      console.log(this.state);
+      }, () => console.log(this.state))
     })
   }
 
   render () {
     return (
-      <div style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px'}}}>
+      <div style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{width: '33%', display: 'inline-block'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>flight_takeoff</i>
           <AirportSearch intuitiveInput currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
@@ -125,7 +124,7 @@ class IntuitiveFlightInput extends Component {
           <div style={{position: 'relative'}}>
             <input style={{width: '90%'}} onChange={(e) => this.setState({
               search: e.target.value
-            }, () => console.log(this.state))} />
+            })} />
             <i key='more' onClick={() => this.props.handleCreateEventClick('Flight')} className='material-icons' style={{position: 'absolute', right: '12%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
             {this.state.showFlights &&
               <div style={intuitiveDropdownStyle}>
@@ -149,6 +148,10 @@ class IntuitiveFlightInput extends Component {
               </div>
             }
           </div>
+        </div>
+        <div style={{marginTop: '5px'}}>
+          <button style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>
+          <button style={{backgroundColor: 'white', border: '1px solid #9FACBC'}}>Cancel</button>
         </div>
       </div>
     )
