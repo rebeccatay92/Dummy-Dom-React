@@ -89,27 +89,26 @@ class CreateLandTransportForm extends Component {
       newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
     }
 
-    console.log('newLandTransport', newLandTransport)
-    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
-    // console.log('helper output', helperOutput)
+    // console.log('newLandTransport', newLandTransport)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
+    console.log('helper output', helperOutput)
 
-    // this.props.changingLoadSequence({
-    //   variables: {
-    //     input: helperOutput.loadSequenceInput
-    //   }
-    // })
-    //
-    // this.props.createLandTransport({
-    //   variables: helperOutput.newEvent,
-    //   refetchQueries: [{
-    //     query: queryItinerary,
-    //     variables: { id: this.props.ItineraryId }
-    //   }]
-    // })
-    //
-    // this.resetState()
-    // this.props.toggleCreateEventType()
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    this.props.createLandTransport({
+      variables: helperOutput.newEvent,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateLandTransport () {
