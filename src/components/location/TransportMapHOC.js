@@ -154,30 +154,7 @@ const TransportMap = compose(
           service.getDetails(request, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
               console.log('placeDetails', place)
-              if (place.address_components) {
-                var addressArr = place.address_components
-                var countryCode = null
-                addressArr.forEach(e => {
-                  if (e.types.includes('country')) {
-                    countryCode = e.short_name
-                  }
-                })
-              }
-
-              var openingHours = null
-              if (place.opening_hours && place.opening_hours.periods) {
-                openingHours = place.opening_hours.periods
-              }
-              this.setState({googlePlaceData: {
-                placeId: place.place_id,
-                countryCode: countryCode,
-                name: place.name,
-                address: place.formatted_address,
-                openingHours: openingHours,
-                latitude: place.geometry.location.lat(),
-                longitude: place.geometry.location.lng()
-              }})
-              this.props.selectLocation(this.state.googlePlaceData)
+              this.props.selectLocation(place)
             }
           })
         },

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Radium from 'radium'
 import LocationSearch from './LocationSearch'
 import LocationMapHOC from './LocationMapHOC'
+import LocationDetails from './LocationDetails'
 
 import { locationMapContainerStyle } from '../../Styles/styles'
 
@@ -13,13 +14,37 @@ class SingleLocationSelection extends Component {
     }
   }
 
-  selectLocation (location) {
-    // stringify opening hours here
-    if (location.openingHours) {
-      location.openingHours = JSON.stringify(location.openingHours)
+  selectLocation (place) {
+    console.log('SingleLocationSelection', place)
+    // construct googlePlaceData
+    var googlePlaceData = {
+      placeId: place.place_id,
+      countryCode: null,
+      name: place.name,
+      address: place.formatted_address,
+      latitude: null,
+      longitude: null,
+      openingHours: null
+    }
+    if (place.openingHours && place.openingHours.periods) {
+      googlePlaceData.openingHours = JSON.stringify(place.openingHours.periods)
+    }
+    place.address_components.forEach(e => {
+      if (e.types.includes('country')) {
+        googlePlaceData.countryCode = e.short_name
+      }
+    })
+    // depending on whether lat/lng comes from search or map
+    if (typeof (place.geometry.location.lat) === 'number'){
+      googlePlaceData.latitude = place.geometry.location.lat
+      googlePlaceData.longitude = place.geometry.location.lng
+    } else {
+      googlePlaceData.latitude = place.geometry.location.lat()
+      googlePlaceData.longitude = place.geometry.location.lng()
     }
     this.setState({mapIsOpen: false})
-    this.props.selectLocation(location) // pass it up to createActivityForm googlePlaceData
+    this.props.selectLocation(googlePlaceData)
+    // pass it up to form
   }
 
   toggleMap () {
@@ -29,11 +54,12 @@ class SingleLocationSelection extends Component {
   render () {
     return (
       <div style={{position: 'relative'}}>
-        <LocationSearch selectLocation={location => this.selectLocation(location)} toggleMap={() => this.toggleMap()} placeholder={'Input Location'} currentLocation={this.props.currentLocation} />
+        <LocationSearch selectLocation={place => this.selectLocation(place)} toggleMap={() => this.toggleMap()} placeholder={'Input Location'} currentLocation={this.props.currentLocation} />
+        <LocationDetails />
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>
-          <LocationMapHOC selectLocation={(obj) => this.selectLocation(obj)} toggleMap={() => this.toggleMap()} currentLocation={this.props.currentLocation} />
+          <LocationMapHOC selectLocation={(place) => this.selectLocation(place)} toggleMap={() => this.toggleMap()} currentLocation={this.props.currentLocation} />
         </div>
         }
       </div>
