@@ -51,6 +51,7 @@ class TransportLocationSelection extends Component {
 
     this.setState({mapIsOpen: false})
     this.setState({mapLocationType: null})
+    this.setState({[`${type}GooglePlaceDetails`]: place})
   }
 
   toggleMap (type) {
@@ -67,11 +68,11 @@ class TransportLocationSelection extends Component {
       <div>
         <LocationSearch selectLocation={place => this.selectLocation(place, 'departure')} toggleMap={() => this.toggleMap('departure')} placeholder={'Departure Location'} currentLocation={this.props.departureLocation} />
         {/* DEPARTURE PLACEHOLDER OVERFLOW NOT SEEN */}
-        <LocationDetails dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.startDay} googlePlaceDetails={this.state.departureGooglePlaceDetails} />
 
         <p style={{textAlign: 'center'}}>to</p>
         <LocationSearch selectLocation={place => this.selectLocation(place, 'arrival')} toggleMap={() => this.toggleMap('arrival')} placeholder={'Arrival Location'} currentLocation={this.props.arrivalLocation} />
-        <LocationDetails />
+        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.endDay} googlePlaceDetails={this.state.arrivalGooglePlaceDetails} />
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>

@@ -8,27 +8,27 @@ class LocationDetails extends Component {
       address: null,
       telephone: null,
       // day of week int starts with sun 0
-      startDayOfWeekInt: null,
-      startDayOfWeekStr: null,
+      dayOfWeekInt: null,
+      dayOfWeekStr: null,
       openingHoursPeriods: null,
       openingHoursText: null
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.googlePlaceDetails !== nextProps.googlePlaceDetails || this.props.startDay !== nextProps.startDay) {
+    if (this.props.googlePlaceDetails !== nextProps.googlePlaceDetails || this.props.day !== nextProps.day) {
       // reset location details
       this.setState({
         address: null,
         telephone: null,
-        startDayOfWeekInt: null,
-        startDayOfWeekStr: null,
+        dayOfWeekInt: null,
+        dayOfWeekStr: null,
         openingHoursPeriods: null,
         openingHoursText: null
       })
-      
+
       console.log('googleplacedetails', nextProps.googlePlaceDetails)
-      console.log('startDay', nextProps.startDay)
+      console.log('startDay', nextProps.day)
 
       this.setState({
         address: nextProps.googlePlaceDetails.formatted_address,
@@ -37,18 +37,18 @@ class LocationDetails extends Component {
 
       // FIND DAY OF THE WEEK BASED ON DATES ARR AND STARTDAY
       // console.log('dates arr', nextProps.dates)
-      var dateUnix = nextProps.dates[nextProps.startDay - 1]
+      var dateUnix = nextProps.dates[nextProps.day - 1]
       // console.log('dateunix', dateUnix)
       var momentTime = moment.utc(dateUnix)
       // console.log('moment', momentTime)
 
       var momentDayStr = momentTime.format('dddd')
       // console.log('day str', momentDayStr)
-      this.setState({startDayOfWeekStr: momentDayStr})
+      this.setState({dayOfWeekStr: momentDayStr})
 
       var momentDayInt = momentTime.format('d')
       // console.log('day int', momentDayInt)
-      this.setState({startDayOfWeekInt: momentDayInt})
+      this.setState({dayOfWeekInt: momentDayInt})
 
       if (nextProps.googlePlaceDetails.opening_hours && nextProps.googlePlaceDetails.opening_hours.periods[momentDayInt]) {
         // console.log('periods', nextProps.googlePlaceDetails.opening_hours.periods[momentDayInt])
