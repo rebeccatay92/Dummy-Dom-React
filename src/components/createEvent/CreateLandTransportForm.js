@@ -202,7 +202,7 @@ class CreateLandTransportForm extends Component {
             <div style={greyTintStyle} />
 
             <div style={eventDescContainerStyle}>
-              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} />
+              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}

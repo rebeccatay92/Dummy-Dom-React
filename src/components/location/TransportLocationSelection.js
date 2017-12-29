@@ -12,7 +12,9 @@ class TransportLocationSelection extends Component {
     super(props)
     this.state = {
       mapIsOpen: false,
-      mapLocationType: null
+      mapLocationType: null,
+      departureGooglePlaceDetails: null,
+      arrivalGooglePlaceDetails: null
     }
   }
 
@@ -65,7 +67,7 @@ class TransportLocationSelection extends Component {
       <div>
         <LocationSearch selectLocation={place => this.selectLocation(place, 'departure')} toggleMap={() => this.toggleMap('departure')} placeholder={'Departure Location'} currentLocation={this.props.departureLocation} />
         {/* DEPARTURE PLACEHOLDER OVERFLOW NOT SEEN */}
-        <LocationDetails />
+        <LocationDetails dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
 
         <p style={{textAlign: 'center'}}>to</p>
         <LocationSearch selectLocation={place => this.selectLocation(place, 'arrival')} toggleMap={() => this.toggleMap('arrival')} placeholder={'Arrival Location'} currentLocation={this.props.arrivalLocation} />
