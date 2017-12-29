@@ -99,7 +99,7 @@ export const eventBoxFirstColumnStyle = (activityId, minHeight) => {
 }
 export const expandedEventPropStyle = {color: secondaryFontColor, fontWeight: 'bold'}
 export const expandedEventValueStyle = {color: secondaryFontColor}
-export const createEventTextStyle = {marginTop: 0, fontSize: '16px', color: primaryColor, display: 'inline-block', ':hover': {backgroundColor: '#f0f0f0'}}
+export const createEventTextStyle = {marginTop: 0, fontSize: '16px', color: primaryColor, display: 'inline-block'}
 export const activityIconStyle = {
   fontSize: '24px',
   marginRight: '1vw',
@@ -114,7 +114,7 @@ export const createEventBoxStyle = {position: 'absolute', top: '-1vh'}
 export const createEventPickOneStyle = {fontSize: '16px', color: primaryColor, position: 'relative', top: '-6px'}
 export const createEventBoxContainerStyle = {
   margin: '1vh 0 3vh 1vw',
-  height: '40px',
+  height: '50px',
   position: 'relative'
 }
 export const plannerBlurredBackgroundStyle = {position: 'fixed', bottom: 0, right: 0, top: 0, left: 0, backgroundColor: 'rgba(250, 250, 250, 1)', zIndex: 555}
@@ -189,7 +189,7 @@ export const bookingNotesContainerStyle = {width: '100%', height: '100%', backgr
 export const locationSelectionInputStyle = (marginTop, type) => {
   return {fontSize: '48px', textAlign: 'center', width: type === 'flight' ? '' : leftPanelWidth / 2 + 'px', background: 'inherit', border: 'none', outline: 'none', fontWeight: '100', resize: 'none', marginTop: marginTop + 'px', maxHeight: '195px', ':hover': { boxShadow: '0 1px 0 #FFF' }}
 }
-export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2', left: `calc(50% - ${(leftPanelWidth / 2) / 2}px)`}
+export const locationDropdownStyle = {width: leftPanelWidth / 2 + 'px', maxHeight: '250px', overflowY: 'auto', background: 'white', position: 'absolute', zIndex: '2', left: `calc(50% - ${(leftPanelWidth / 2) / 2}px)`}
 
 export const locationMapContainerStyle = {backgroundColor: 'white', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: leftPanelWidth + 'px', height: (0.9 * totalHeight) + 'px', zIndex: 999, color: 'black'}
 
@@ -222,4 +222,4 @@ export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
 export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}
 
 // AirportResults.js styles
-export const intuitiveDropdownStyle = {width: '282.5px', maxHeight: '250px', overflowY: 'scroll', background: 'white', position: 'absolute', zIndex: '2'}
+export const intuitiveDropdownStyle = {width: '282.5px', maxHeight: '250px', overflowY: 'auto', background: 'white', position: 'absolute', zIndex: '2'}
