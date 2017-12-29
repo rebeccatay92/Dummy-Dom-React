@@ -187,7 +187,7 @@ class CreateLodgingForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
+              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />

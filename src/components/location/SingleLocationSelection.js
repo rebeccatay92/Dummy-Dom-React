@@ -3,7 +3,7 @@ import Radium from 'radium'
 import LocationSearch from './LocationSearch'
 import LocationMapHOC from './LocationMapHOC'
 import LocationDetails from './LocationDetails'
-
+import moment from 'moment'
 import { locationMapContainerStyle } from '../../Styles/styles'
 
 class SingleLocationSelection extends Component {
@@ -11,7 +11,7 @@ class SingleLocationSelection extends Component {
     super(props)
     this.state = {
       mapIsOpen: false,
-      locationDetails: null
+      googlePlaceDetails: null
     }
   }
 
@@ -44,13 +44,10 @@ class SingleLocationSelection extends Component {
       googlePlaceData.longitude = place.geometry.location.lng()
     }
     this.setState({mapIsOpen: false})
+
+    this.setState({googlePlaceDetails: place})
     // pass it up to form
     this.props.selectLocation(googlePlaceData)
-
-    // take out location details
-    var address = place.formatted_address
-    var telephone = place.internation_phone_number || place.formatted_phone_number
-    // var openingHours =
   }
 
   toggleMap () {
@@ -61,7 +58,8 @@ class SingleLocationSelection extends Component {
     return (
       <div style={{position: 'relative'}}>
         <LocationSearch selectLocation={place => this.selectLocation(place)} toggleMap={() => this.toggleMap()} placeholder={'Input Location'} currentLocation={this.props.currentLocation} />
-        <LocationDetails />
+
+        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} googlePlaceDetails={this.state.googlePlaceDetails} />
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>
