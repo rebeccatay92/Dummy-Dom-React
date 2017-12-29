@@ -27,74 +27,75 @@ function constructLoadSeqInputObj (event, correctLoadSeq) {
   return inputObj
 }
 
-// BUG: NEED TO CHECK IF ENDING ROW IS FLIGHT OR TRANSPORT TYPE. IF LODGING, NO NEED TO BUMP +1 TO THE RIGHT
+// check displaced row is not an ending row, and if ending row is not of type lodging
 function checkDisplacingEndingRow (displacedRow) {
-  return (typeof (displacedRow.start) === 'boolean' && !displacedRow.start)
+  console.log('displacedRow', displacedRow)
+  return (typeof (displacedRow.start) === 'boolean' && !displacedRow.start && displacedRow.type !== 'Lodging')
 }
+
 
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
-  var events = JSON.parse(JSON.stringify(eventsArr))
-  var allEventsWithTime = events.map(event => {
-    if (event.type === 'Flight') {
-      event.time = event.start ? event.Flight.FlightInstance.startTime : event.Flight.FlightInstance.endTime
-    } else if (event.type === 'Activity' || event.type === 'Food') {
-      event.time = event[event.type].startTime
-    } else {
-      event.time = event.start ? event[event.type].startTime : event[event.type].endTime
-    }
-    return event
-  })
+  var allEvents = JSON.parse(JSON.stringify(eventsArr))
   // for changing load seq of existing events
   var loadSequenceInput = []
 
   if (eventModel === 'Activity' || eventModel === 'Food') {
-    var dayEvents = allEventsWithTime.filter(e => {
+    var dayEvents = allEvents.filter(e => {
       return e.day === newEvent.startDay
     })
 
-    if (!newEvent.startTime) {
+    var displacedRow = dayEvents.find(e => {
+      if (!newEvent.startTime) {
+        return null
+      } else {
+        return (e.time >= newEvent.startTime)
+      }
+    })
+
+    if (!displacedRow) {
       newEvent.loadSequence = dayEvents.length + 1
     } else {
-      var displacedRow = dayEvents.find(e => {
-        return (e.time >= newEvent.startTime)
-      })
-      if (!displacedRow) {
-        newEvent.loadSequence = dayEvents.length + 1
+      var index = dayEvents.indexOf(displacedRow)
+      if (checkDisplacingEndingRow(displacedRow)) {
+        dayEvents.splice(index + 1, 0, 'placeholder')
       } else {
-        var index = dayEvents.indexOf(displacedRow)
-        if (checkDisplacingEndingRow(displacedRow)) {
-          dayEvents.splice(index + 1, 0, 'placeholder')
-        } else {
-          dayEvents.splice(index, 0, 'placeholder')
-        }
-
-        console.log('inserted', dayEvents)
-        dayEvents.forEach(event => {
-          var correctLoadSeq = dayEvents.indexOf(event) + 1
-          if (event.modelId && event.loadSequence !== correctLoadSeq) {
-            var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
-            loadSequenceInput.push(inputObj)
-          } else if (event === 'placeholder') {
-            newEvent.loadSequence = correctLoadSeq
-          }
-        })
+        dayEvents.splice(index, 0, 'placeholder')
       }
+
+      console.log('inserted', dayEvents)
+      dayEvents.forEach(event => {
+        var correctLoadSeq = dayEvents.indexOf(event) + 1
+        if (event.modelId && event.loadSequence !== correctLoadSeq) {
+          var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
+          loadSequenceInput.push(inputObj)
+        } else if (event === 'placeholder') {
+          newEvent.loadSequence = correctLoadSeq
+        }
+      })
     }
-  } // close activity and food
-  if (eventModel === 'Lodging') {
+  }
+  if (eventModel === 'Lodging' || eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
     if (newEvent.startDay === newEvent.endDay) {
-      dayEvents = allEventsWithTime.filter(e => {
+      dayEvents = allEvents.filter(e => {
         return e.day === newEvent.startDay
       })
 
       var types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start') // true or false
+
         var displacedRow = dayEvents.find(event => {
-          return isStart ? (event.time >= newEvent.startTime) : (event.time >= newEvent.endTime)
+          if (isStart && newEvent.startTime) {
+            return (event.time >= newEvent.startTime)
+          } else if (!isStart && newEvent.endTime) {
+            return (event.time >= newEvent.endTime)
+          } else {
+            return null
+          }
         })
 
+        console.log('type', type, 'displacedRow', displacedRow)
         if (!displacedRow) {
           dayEvents.push({start: isStart})
         } else {
@@ -123,12 +124,20 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start')
-        dayEvents = allEventsWithTime.filter(e => {
+        dayEvents = allEvents.filter(e => {
           return isStart ? (e.day === newEvent.startDay) : (e.day === newEvent.endDay)
         })
+
         var displacedRow = dayEvents.find(event => {
-          return isStart ? (event.time >= newEvent.startTime) : (event.time >= newEvent.endTime)
+          if (isStart && newEvent.startTime) {
+            return (event.time >= newEvent.startTime)
+          } else if (!isStart && newEvent.endTime) {
+            return (event.time >= newEvent.endTime)
+          } else {
+            return null
+          }
         })
+
         if (!displacedRow) {
           dayEvents.push({start: isStart})
         } else {
@@ -153,13 +162,13 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       })
     } // close else for separate days
   }
-  if (eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
-    if (newEvent.startDay === newEvent.endDay) {
-      // find start and then end is start + 1
-    } else {
-      //
-    }
-  }
+  // if (eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
+  //   if (newEvent.startDay === newEvent.endDay) {
+  //     // find start and then end is start + 1
+  //   } else {
+  //     //
+  //   }
+  // }
   if (eventModel === 'Flight') {
     console.log('flight instance arr', newEvent)
     var flightInstanceRows = []
@@ -180,7 +189,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
     var flightInstanceLoadSeqs = [] // for assigning  start/end loadseq
     days.forEach(day => {
-      var dayEvents = allEventsWithTime.filter(e => {
+      var dayEvents = allEvents.filter(e => {
         return e.day === day
       })
       var dayInstanceRows = flightInstanceRows.filter(e => {

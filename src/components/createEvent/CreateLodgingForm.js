@@ -21,6 +21,8 @@ import { queryItinerary } from '../../apollo/itinerary'
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
+import latestTime from '../../helpers/latestTime'
+import moment from 'moment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}lodgingDefaultBackground.jpg`
 
@@ -35,6 +37,7 @@ class CreateLodgingForm extends Component {
       locationAlias: '',
       description: '',
       notes: '',
+      defaultTime: null,
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
       cost: 0,
@@ -166,6 +169,11 @@ class CreateLodgingForm extends Component {
     var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
+
+    var defaultUnix = latestTime(this.props.events, this.props.day)
+    var defaultTime = moment.utc(defaultUnix * 1000).format('HH:mm')
+    this.setState({defaultTime: defaultTime})
+    this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
   render () {
@@ -179,13 +187,13 @@ class CreateLodgingForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} />
+              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
-            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
+            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}

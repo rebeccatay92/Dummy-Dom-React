@@ -22,6 +22,8 @@ import { queryItinerary } from '../../apollo/itinerary'
 import { removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
+import latestTime from '../../helpers/latestTime'
+import moment from 'moment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
@@ -37,6 +39,8 @@ class CreateLandTransportForm extends Component {
       departureLocationAlias: '',
       arrivalLocationAlias: '',
       notes: '',
+      defaultTime: null, // 24 hr str 'HH:mm'
+      // start and end time need to be unix
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
       cost: 0,
@@ -89,27 +93,26 @@ class CreateLandTransportForm extends Component {
       newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
     }
 
-    console.log('newLandTransport', newLandTransport)
-    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
-    // console.log('helper output', helperOutput)
+    // console.log('newLandTransport', newLandTransport)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
+    console.log('helper output', helperOutput)
 
-    // this.props.changingLoadSequence({
-    //   variables: {
-    //     input: helperOutput.loadSequenceInput
-    //   }
-    // })
-    //
-    // this.props.createLandTransport({
-    //   variables: helperOutput.newEvent,
-    //   refetchQueries: [{
-    //     query: queryItinerary,
-    //     variables: { id: this.props.ItineraryId }
-    //   }]
-    // })
-    //
-    // this.resetState()
-    // this.props.toggleCreateEventType()
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    this.props.createLandTransport({
+      variables: helperOutput.newEvent,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateLandTransport () {
@@ -172,6 +175,19 @@ class CreateLandTransportForm extends Component {
     var currencyList = countriesToCurrencyList(this.props.countries)
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
+
+    // find latest time for that day and assign to start/endTime
+    var defaultUnix = latestTime(this.props.events, this.props.day)
+
+    // time is at utc 0
+    var defaultTime = moment.utc(defaultUnix * 1000).format('HH:mm')
+    // datepicker take 'hh:mm' 24 hr format
+
+    // set default time string that datepicker uses
+    this.setState({defaultTime: defaultTime})
+
+    // set default start and end unix for saving
+    this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
   render () {
@@ -186,11 +202,11 @@ class CreateLandTransportForm extends Component {
             <div style={greyTintStyle} />
 
             <div style={eventDescContainerStyle}>
-              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} />
+              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
-            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} startTime={this.state.startTime} endTime={this.state.endTime} />
+            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
@@ -203,7 +219,6 @@ class CreateLandTransportForm extends Component {
                   Additional Notes
               </h4>
 
-              {/* CHANGE TO DEPARTURE/ARRIVAL. PLACEHOLDER? */}
               <LocationAlias handleChange={(e) => this.handleChange(e, 'departureLocationAlias')} placeholder={'Detailed Location (Departure)'} />
 
               <LocationAlias handleChange={(e) => this.handleChange(e, 'arrivalLocationAlias')} placeholder={'Detailed Location (Arrival)'} />

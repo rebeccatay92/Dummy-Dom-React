@@ -88,7 +88,7 @@ class DateTimePicker extends Component {
 
       var selectedUnix = moment(e._d).unix()
       var newDay = this.state.dates.indexOf(selectedUnix) + 1
-      
+
       if (field === 'startDate') {
         // this.setState({startDay: newDay})
         this.props.updateDayTime('startDay', newDay)
@@ -104,6 +104,12 @@ class DateTimePicker extends Component {
     }
   }
 
+  // updating state '' for start/end time with default time props
+  componentWillReceiveProps (nextProps) {
+    if (this.props.defaultTime !== nextProps.defaultTime) {
+      this.setState({startTime: nextProps.defaultTime, endTime: nextProps.defaultTime})
+    }
+  }
 
   render () {
     return (
