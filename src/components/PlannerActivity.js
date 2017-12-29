@@ -15,7 +15,9 @@ import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
 import PlannerActivityTimeline from './PlannerActivityTimeline'
-import IntuitiveFlightInput from './IntuitiveFlightInput'
+
+import IntuitiveFlightInput from './intuitiveInput/IntuitiveFlightInput'
+import IntuitiveActivityInput from './intuitiveInput/IntuitiveActivityInput'
 
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
@@ -158,7 +160,7 @@ class PlannerActivity extends Component {
           <span className='createEventBox'>
             {iconTypes.map((type, i) => {
               return (
-                <i key={i} onClick={() => type === 'flight' ? this.handleIntuitiveInput(eventTypes[i]) : this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
+                <i key={i} onClick={() => type === 'flight' || type === 'directions_run' ? this.handleIntuitiveInput(eventTypes[i]) : this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
             <span style={createEventPickOneStyle}>Pick One</span>
@@ -166,9 +168,15 @@ class PlannerActivity extends Component {
         </div>
       )
     } else if (this.state.intuitiveInputType) {
-      createEventBox = (
-        <IntuitiveFlightInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
-      )
+      const types = {
+        Flight: (
+          <IntuitiveFlightInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+        ),
+        Activity: (
+          <IntuitiveActivityInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} activityDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+        )
+      }
+      createEventBox = types[this.state.intuitiveInputType]
     }
     if (this.props.empty) {
       return connectDropTarget(

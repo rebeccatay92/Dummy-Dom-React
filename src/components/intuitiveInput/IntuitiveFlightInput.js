@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import AirportSearch from './eventFormComponents/AirportSearch'
+import AirportSearch from '../eventFormComponents/AirportSearch'
 import { graphql, compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import Radium from 'radium'
 
-import countriesToCurrencyList from '../helpers/countriesToCurrencyList'
-import newEventLoadSeqAssignment from '../helpers/newEventLoadSeqAssignment'
-import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../Styles/styles'
-import { createFlightBooking } from '../apollo/flight'
-import { changingLoadSequence } from '../apollo/changingLoadSequence'
-import { queryItinerary, updateItineraryDetails } from '../apollo/itinerary'
+import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
+import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../../Styles/styles'
+import { createFlightBooking } from '../../apollo/flight'
+import { changingLoadSequence } from '../../apollo/changingLoadSequence'
+import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
+
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
 class IntuitiveFlightInput extends Component {
   constructor (props) {
@@ -176,6 +178,7 @@ class IntuitiveFlightInput extends Component {
       currency: this.state.currency,
       classCode: 'Economy',
       bookingStatus: false,
+      backgroundImage: defaultBackground,
       flightInstances: this.state.flightInstances
     }
 
@@ -255,7 +258,7 @@ class IntuitiveFlightInput extends Component {
             {this.state.showFlights &&
               <div style={{...intuitiveDropdownStyle, ...this.state.searching && {minHeight: '50px'}}}>
                 {this.state.searching && <h5 style={{textAlign: 'center'}}>Loading...</h5>}
-                {this.state.flights.filter(flight => (flight.flights[0].carrierCode + flight.flights[0].flightNum).includes(this.state.search.replace(/\s/g, '').toUpperCase())).map((flight, i) => {
+                {!this.state.searching && this.state.flights.filter(flight => (flight.flights[0].carrierCode + flight.flights[0].flightNum).includes(this.state.search.replace(/\s/g, '').toUpperCase())).map((flight, i) => {
                   const totalHours = Math.floor(flight.totalDuration / 60) ? Math.floor(flight.totalDuration / 60) + ' h ' : null
                   const totalMins = flight.totalDuration % 60 + ' min'
                   return (

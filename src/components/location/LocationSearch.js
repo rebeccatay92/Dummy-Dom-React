@@ -3,7 +3,7 @@ import GooglePlaceResult from './GooglePlaceResult'
 import onClickOutside from 'react-onclickoutside'
 import Radium from 'radium'
 
-import { locationSelectionInputStyle, locationDropdownStyle } from '../../Styles/styles'
+import { locationSelectionInputStyle, locationDropdownStyle, intuitiveDropdownStyle } from '../../Styles/styles'
 
 const crossOriginUrl = `https://cors-anywhere.herokuapp.com/`
 var key = `key=${process.env.REACT_APP_GOOGLE_API_KEY}`
@@ -58,9 +58,9 @@ class LocationSearch extends Component {
   handleClickOutside () {
     this.setState({selecting: false})
     // even if props is empty, currentLocation still exists {}
-    if (this.props.currentLocation.name) {
+    if (this.props.currentLocation && this.props.currentLocation.name) {
       this.setState({search: this.props.currentLocation.name})
-    } else {
+    } else if (!this.props.intuitiveInput) {
       this.setState({search: ''})
     }
     // this.resizeTextArea()
@@ -93,7 +93,7 @@ class LocationSearch extends Component {
   // componentDidMount () {
   //   this.resizeTextArea()
   // }
-  
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.currentLocation !== this.props.currentLocation) {
       this.setState({search: nextProps.currentLocation.name})
@@ -101,20 +101,36 @@ class LocationSearch extends Component {
   }
 
   render () {
-    return (
-      <div style={{position: 'relative'}}>
-        <textarea key='location' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' name='search' value={this.state.search} placeholder={this.props.placeholder} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(0)} />
-        <i className='material-icons' onClick={() => this.props.toggleMap()} style={{fontSize: '50px', cursor: 'pointer'}}>place</i>
+    if (this.props.intuitiveInput) {
+      return (
+        <div>
+          <input type='text' placeholder={this.props.placeholder} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{width: '90%'}} value={this.state.search} />
 
-        {this.state.selecting &&
-        <div style={locationDropdownStyle}>
-          {this.state.results.map((indiv, i) => {
-            return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
-          })}
+          {this.state.selecting &&
+            <div style={{...intuitiveDropdownStyle, ...{width: '299.4px'}}}>
+              {this.state.results.map((indiv, i) => {
+                return <GooglePlaceResult intuitiveInput result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
+              })}
+            </div>
+          }
         </div>
-        }
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div style={{position: 'relative'}}>
+          <textarea key='location' id='locationInput' className='left-panel-input' rows='1' autoComplete='off' name='search' value={this.state.search} placeholder={this.props.placeholder} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={locationSelectionInputStyle(0)} />
+          <i className='material-icons' onClick={() => this.props.toggleMap()} style={{fontSize: '50px', cursor: 'pointer'}}>place</i>
+
+          {this.state.selecting &&
+            <div style={locationDropdownStyle}>
+              {this.state.results.map((indiv, i) => {
+                return <GooglePlaceResult result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
+              })}
+            </div>
+          }
+        </div>
+      )
+    }
   }
 }
 
