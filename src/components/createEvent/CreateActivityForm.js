@@ -47,7 +47,9 @@ class CreateActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null
+      // for google api response, not for db
     }
   }
 
@@ -130,14 +132,43 @@ class CreateActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null
     })
     this.apiToken = null
   }
 
-  selectLocation (location) {
-    this.setState({googlePlaceData: location})
-    console.log('selected location', location)
+  selectLocation (place) {
+    // construct googlePlaceData for db
+    var googlePlaceData = {
+      placeId: place.place_id,
+      countryCode: null,
+      name: place.name,
+      address: place.formatted_address,
+      latitude: null,
+      longitude: null,
+      openingHours: null
+    }
+    if (place.opening_hours && place.opening_hours.periods) {
+      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
+    }
+    place.address_components.forEach(e => {
+      if (e.types.includes('country')) {
+        googlePlaceData.countryCode = e.short_name
+      }
+    })
+
+    // depending on whether lat/lng comes from search or map
+    if (typeof (place.geometry.location.lat) === 'number') {
+      googlePlaceData.latitude = place.geometry.location.lat
+      googlePlaceData.longitude = place.geometry.location.lng
+    } else {
+      googlePlaceData.latitude = place.geometry.location.lat()
+      googlePlaceData.longitude = place.geometry.location.lng()
+    }
+
+    this.setState({googlePlaceData: googlePlaceData})
+    this.setState({googlePlaceDetails: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -185,7 +216,7 @@ class CreateActivityForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+              <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} googlePlaceDetails={this.state.googlePlaceDetails} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />

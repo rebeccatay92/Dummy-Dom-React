@@ -13,9 +13,11 @@ class LocationDetails extends Component {
       openingHoursPeriods: null,
       openingHoursText: null
     }
-  }
+}
 
   componentWillReceiveProps (nextProps) {
+    console.log('nextProps', nextProps)
+    
     if (this.props.googlePlaceDetails !== nextProps.googlePlaceDetails || this.props.day !== nextProps.day) {
       // reset location details
       this.setState({
@@ -51,7 +53,6 @@ class LocationDetails extends Component {
       this.setState({dayOfWeekInt: momentDayInt})
 
       if (nextProps.googlePlaceDetails.opening_hours && nextProps.googlePlaceDetails.opening_hours.periods[momentDayInt]) {
-        // console.log('periods', nextProps.googlePlaceDetails.opening_hours.periods[momentDayInt])
         this.setState({openingHoursPeriods: nextProps.googlePlaceDetails.opening_hours.periods[momentDayInt]})
       }
 
@@ -59,7 +60,6 @@ class LocationDetails extends Component {
         var str = nextProps.googlePlaceDetails.opening_hours.weekday_text.filter(e => {
           return e.indexOf(momentDayStr) > -1
         })
-        // console.log('openingHoursText', str)
         this.setState({openingHoursText: str})
       }
     }

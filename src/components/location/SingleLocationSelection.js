@@ -3,51 +3,19 @@ import Radium from 'radium'
 import LocationSearch from './LocationSearch'
 import LocationMapHOC from './LocationMapHOC'
 import LocationDetails from './LocationDetails'
-import moment from 'moment'
 import { locationMapContainerStyle } from '../../Styles/styles'
 
 class SingleLocationSelection extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      mapIsOpen: false,
-      googlePlaceDetails: null
+      mapIsOpen: false
     }
   }
 
   selectLocation (place) {
-    console.log('SingleLocationSelection', place)
-    // construct googlePlaceData
-    var googlePlaceData = {
-      placeId: place.place_id,
-      countryCode: null,
-      name: place.name,
-      address: place.formatted_address,
-      latitude: null,
-      longitude: null,
-      openingHours: null
-    }
-    if (place.opening_hours && place.opening_hours.periods) {
-      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
-    }
-    place.address_components.forEach(e => {
-      if (e.types.includes('country')) {
-        googlePlaceData.countryCode = e.short_name
-      }
-    })
-    // depending on whether lat/lng comes from search or map
-    if (typeof (place.geometry.location.lat) === 'number'){
-      googlePlaceData.latitude = place.geometry.location.lat
-      googlePlaceData.longitude = place.geometry.location.lng
-    } else {
-      googlePlaceData.latitude = place.geometry.location.lat()
-      googlePlaceData.longitude = place.geometry.location.lng()
-    }
     this.setState({mapIsOpen: false})
-
-    this.setState({googlePlaceDetails: place})
-    // pass it up to form
-    this.props.selectLocation(googlePlaceData)
+    this.props.selectLocation(place)
   }
 
   toggleMap () {
@@ -59,7 +27,7 @@ class SingleLocationSelection extends Component {
       <div style={{position: 'relative'}}>
         <LocationSearch selectLocation={place => this.selectLocation(place)} toggleMap={() => this.toggleMap()} placeholder={'Input Location'} currentLocation={this.props.currentLocation} />
 
-        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.startDay} googlePlaceDetails={this.state.googlePlaceDetails} />
+        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.startDay} googlePlaceDetails={this.props.googlePlaceDetails} />
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>
