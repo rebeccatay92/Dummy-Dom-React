@@ -26,7 +26,6 @@ import moment from 'moment'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
-// const PDFJS = require('pdfjs-dist')
 
 class CreateActivityForm extends Component {
   constructor (props) {
