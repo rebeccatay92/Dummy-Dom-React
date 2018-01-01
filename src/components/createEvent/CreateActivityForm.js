@@ -190,10 +190,45 @@ class CreateActivityForm extends Component {
     if (this.state.googlePlaceDetails) {
       if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
         var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
-        this.setState({locationDetails: locationDetails})
+        this.setState({locationDetails: locationDetails}, function () {
+          this.validateOpeningHours()
+        })
       }
     }
     // if location/day/time changed, validate opening hours
+  }
+
+  validateOpeningHours () {
+    // check text if 24 hrs or closed
+    var openingHoursText = this.state.locationDetails.openingHours
+    if (!openingHoursText) {
+      console.log('no opening hours')
+      return
+    } else if (openingHoursText.indexOf('Open 24 hours') > -1) {
+      console.log('open 24 hrs')
+      return
+    } else if (openingHoursText.indexOf('Closed') > -1) {
+      console.log('closed')
+      return
+    } else {
+      console.log('opening hours present, not closed or 24hrs')
+    }
+
+    // if not missing, closed or 24hrs, find open and close hrs from periods
+    var dateUnix = this.props.dates[this.state.startDay - 1]
+    var momentTime = moment.utc(dateUnix)
+    // day ints are Sun 0 to Sat 6
+    var momentDayInt = parseInt(momentTime.format('d'))
+    console.log('dayInt', momentDayInt, typeof (momentDayInt))
+    var allPeriods = this.state.googlePlaceDetails.opening_hours.periods
+    console.log('allPeriods', allPeriods)
+    var period = allPeriods.find(e => {
+      return e.open.day === momentDayInt
+    })
+    console.log('period', period)
+
+    // if endDay = startDay, check opening n closing time
+    // if endDay > startDay, at most day + 1 && endTime < close
   }
 
   render () {
