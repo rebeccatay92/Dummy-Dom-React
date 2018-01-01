@@ -48,7 +48,12 @@ class CreateFoodForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null
+      googlePlaceDetails: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      }
     }
   }
 
@@ -175,6 +180,28 @@ class CreateFoodForm extends Component {
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.googlePlaceDetails) {
+      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
+        var locationDetails = {
+          address: this.state.googlePlaceDetails.formatted_address,
+          telephone: this.state.googlePlaceDetails.international_phone_number || this.state.googlePlaceDetails.formatted_phone_number
+        }
+        var dateUnix = this.props.dates[this.state.startDay - 1]
+        var momentTime = moment.utc(dateUnix)
+        var momentDayStr = momentTime.format('dddd')
+        if (this.state.googlePlaceDetails.opening_hours && this.state.googlePlaceDetails.opening_hours.weekday_text) {
+          var str = this.state.googlePlaceDetails.opening_hours.weekday_text.filter(e => {
+            return e.indexOf(momentDayStr) > -1
+          })
+          locationDetails.openingHours = str
+        }
+        this.setState({locationDetails: locationDetails})
+      }
+    }
+    // if location/day/time changed, validate opening hours
+  }
+
   render () {
     return (
       <div style={createEventFormContainerStyle}>
@@ -186,7 +213,7 @@ class CreateFoodForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} googlePlaceDetails={this.state.googlePlaceDetails} />
+              <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} locationDetails={this.state.locationDetails} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='fooddescription' />

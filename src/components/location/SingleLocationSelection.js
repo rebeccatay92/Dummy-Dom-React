@@ -27,7 +27,7 @@ class SingleLocationSelection extends Component {
       <div style={{position: 'relative'}}>
         <LocationSearch selectLocation={place => this.selectLocation(place)} toggleMap={() => this.toggleMap()} placeholder={'Input Location'} currentLocation={this.props.currentLocation} />
 
-        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.startDay} googlePlaceDetails={this.props.googlePlaceDetails} />
+        <LocationDetails locationDetails={this.props.locationDetails} />
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>

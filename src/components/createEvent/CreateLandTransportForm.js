@@ -53,7 +53,17 @@ class CreateLandTransportForm extends Component {
       backgroundImage: defaultBackground,
       // googlePlaceDetails is the unmodified google api response
       departureGooglePlaceDetails: null,
-      arrivalGooglePlaceDetails: null
+      arrivalGooglePlaceDetails: null,
+      departureLocationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      arrivalLocationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      }
     }
   }
 
@@ -196,6 +206,28 @@ class CreateLandTransportForm extends Component {
     // set default start and end unix for saving
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
+
+  // componentDidUpdate (prevProps, prevState) {
+  //   if (this.state.googlePlaceDetails) {
+  //     if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
+  //       var locationDetails = {
+  //         address: this.state.googlePlaceDetails.formatted_address,
+  //         telephone: this.state.googlePlaceDetails.international_phone_number || this.state.googlePlaceDetails.formatted_phone_number
+  //       }
+  //       var dateUnix = this.props.dates[this.state.startDay - 1]
+  //       var momentTime = moment.utc(dateUnix)
+  //       var momentDayStr = momentTime.format('dddd')
+  //       if (this.state.googlePlaceDetails.opening_hours && this.state.googlePlaceDetails.opening_hours.weekday_text) {
+  //         var str = this.state.googlePlaceDetails.opening_hours.weekday_text.filter(e => {
+  //           return e.indexOf(momentDayStr) > -1
+  //         })
+  //         locationDetails.openingHours = str
+  //       }
+  //       this.setState({locationDetails: locationDetails})
+  //     }
+  //   }
+  //   // if location/day/time changed, validate opening hours
+  // }
 
   render () {
     return (
