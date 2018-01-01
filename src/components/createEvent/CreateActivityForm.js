@@ -23,7 +23,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
-import constructGooglePlaceDataObj from '../../helpers/location'
+import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -189,19 +189,7 @@ class CreateActivityForm extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (this.state.googlePlaceDetails) {
       if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var locationDetails = {
-          address: this.state.googlePlaceDetails.formatted_address,
-          telephone: this.state.googlePlaceDetails.international_phone_number || this.state.googlePlaceDetails.formatted_phone_number
-        }
-        var dateUnix = this.props.dates[this.state.startDay - 1]
-        var momentTime = moment.utc(dateUnix)
-        var momentDayStr = momentTime.format('dddd')
-        if (this.state.googlePlaceDetails.opening_hours && this.state.googlePlaceDetails.opening_hours.weekday_text) {
-          var str = this.state.googlePlaceDetails.opening_hours.weekday_text.filter(e => {
-            return e.indexOf(momentDayStr) > -1
-          })
-          locationDetails.openingHours = str
-        }
+        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
     }

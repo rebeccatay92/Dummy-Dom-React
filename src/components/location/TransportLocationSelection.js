@@ -37,11 +37,11 @@ class TransportLocationSelection extends Component {
       <div>
         <LocationSearch selectLocation={place => this.selectLocation(place, 'departure')} toggleMap={() => this.toggleMap('departure')} placeholder={'Departure Location'} currentLocation={this.props.departureLocation} />
         {/* DEPARTURE PLACEHOLDER OVERFLOW NOT SEEN */}
-        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.startDay} googlePlaceDetails={this.props.departureGooglePlaceDetails} />
+        <LocationDetails locationDetails={this.props.departureLocationDetails} />
 
         <p style={{textAlign: 'center'}}>to</p>
         <LocationSearch selectLocation={place => this.selectLocation(place, 'arrival')} toggleMap={() => this.toggleMap('arrival')} placeholder={'Arrival Location'} currentLocation={this.props.arrivalLocation} />
-        <LocationDetails dates={this.props.dates} startDay={this.props.startDay} endDay={this.props.endDay} day={this.props.endDay} googlePlaceDetails={this.props.arrivalGooglePlaceDetails} />
+        <LocationDetails locationDetails={this.props.arrivalLocationDetails} />
 
         {this.state.mapIsOpen &&
         <div style={locationMapContainerStyle}>

@@ -24,7 +24,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
-import constructGooglePlaceDataObj from '../../helpers/location'
+import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
@@ -207,27 +207,21 @@ class CreateLandTransportForm extends Component {
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
-  // componentDidUpdate (prevProps, prevState) {
-  //   if (this.state.googlePlaceDetails) {
-  //     if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-  //       var locationDetails = {
-  //         address: this.state.googlePlaceDetails.formatted_address,
-  //         telephone: this.state.googlePlaceDetails.international_phone_number || this.state.googlePlaceDetails.formatted_phone_number
-  //       }
-  //       var dateUnix = this.props.dates[this.state.startDay - 1]
-  //       var momentTime = moment.utc(dateUnix)
-  //       var momentDayStr = momentTime.format('dddd')
-  //       if (this.state.googlePlaceDetails.opening_hours && this.state.googlePlaceDetails.opening_hours.weekday_text) {
-  //         var str = this.state.googlePlaceDetails.opening_hours.weekday_text.filter(e => {
-  //           return e.indexOf(momentDayStr) > -1
-  //         })
-  //         locationDetails.openingHours = str
-  //       }
-  //       this.setState({locationDetails: locationDetails})
-  //     }
-  //   }
-  //   // if location/day/time changed, validate opening hours
-  // }
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.departureGooglePlaceDetails) {
+      if (prevState.departureGooglePlaceDetails !== this.state.departureGooglePlaceDetails || prevState.startDay !== this.state.startDay) {
+        var departureLocationDetails = constructLocationDetails(this.state.departureGooglePlaceDetails, this.props.dates, this.state.startDay)
+        this.setState({departureLocationDetails: departureLocationDetails})
+      }
+    }
+    if (this.state.arrivalGooglePlaceDetails) {
+      if (prevState.arrivalGooglePlaceDetails !== this.state.arrivalGooglePlaceDetails || prevState.endDay !== this.state.endDay) {
+        var arrivalLocationDetails = constructLocationDetails(this.state.arrivalGooglePlaceDetails, this.props.dates, this.state.endDay)
+        this.setState({arrivalLocationDetails: arrivalLocationDetails})
+      }
+    }
+    // if location/day/time changed, validate opening hours
+  }
 
   render () {
     return (
@@ -241,7 +235,7 @@ class CreateLandTransportForm extends Component {
             <div style={greyTintStyle} />
 
             <div style={eventDescContainerStyle}>
-              <TransportLocationSelection selectLocation={(place, type) => this.selectLocation(place, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} departureGooglePlaceDetails={this.state.departureGooglePlaceDetails} arrivalGooglePlaceDetails={this.state.arrivalGooglePlaceDetails} />
+              <TransportLocationSelection selectLocation={(place, type) => this.selectLocation(place, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} departureLocationDetails={this.state.departureLocationDetails} arrivalLocationDetails={this.state.arrivalLocationDetails} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
