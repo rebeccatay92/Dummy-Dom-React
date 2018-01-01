@@ -49,7 +49,10 @@ class CreateLandTransportForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      // googlePlaceDetails is the unmodified google api response
+      departureGooglePlaceDetails: null,
+      arrivalGooglePlaceDetails: null
     }
   }
 
@@ -137,15 +140,45 @@ class CreateLandTransportForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      departureGooglePlaceDetails: null,
+      arrivalGooglePlaceDetails: null
     })
     this.apiToken = null
   }
 
   // need to select either departure or arrival
-  selectLocation (location, type) {
-    this.setState({[`${type}GooglePlaceData`]: location})
-    console.log('selected location in form', type, location)
+  selectLocation (place, type) {
+    var googlePlaceData = {
+      placeId: place.place_id,
+      countryCode: null,
+      name: place.name,
+      address: place.formatted_address,
+      latitude: null,
+      longitude: null,
+      openingHours: null
+    }
+
+    if (place.opening_hours && place.opening_hours.periods) {
+      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
+    }
+    place.address_components.forEach(e => {
+      if (e.types.includes('country')) {
+        googlePlaceData.countryCode = e.short_name
+      }
+    })
+
+    // depending on whether lat/lng comes from search or map
+    if (typeof (place.geometry.location.lat) === 'number'){
+      googlePlaceData.latitude = place.geometry.location.lat
+      googlePlaceData.longitude = place.geometry.location.lng
+    } else {
+      googlePlaceData.latitude = place.geometry.location.lat()
+      googlePlaceData.longitude = place.geometry.location.lng()
+    }
+
+    this.setState({[`${type}GooglePlaceData`]: googlePlaceData})
+    this.setState({[`${type}GooglePlaceDetails`]: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -202,7 +235,7 @@ class CreateLandTransportForm extends Component {
             <div style={greyTintStyle} />
 
             <div style={eventDescContainerStyle}>
-              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+              <TransportLocationSelection selectLocation={(place, type) => this.selectLocation(place, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} departureGooglePlaceDetails={this.state.departureGooglePlaceDetails} arrivalGooglePlaceDetails={this.state.arrivalGooglePlaceDetails} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
