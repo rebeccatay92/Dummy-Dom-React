@@ -24,6 +24,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
+import constructGooglePlaceDataObj from '../../helpers/location'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
@@ -149,34 +150,7 @@ class CreateLandTransportForm extends Component {
 
   // need to select either departure or arrival
   selectLocation (place, type) {
-    var googlePlaceData = {
-      placeId: place.place_id,
-      countryCode: null,
-      name: place.name,
-      address: place.formatted_address,
-      latitude: null,
-      longitude: null,
-      openingHours: null
-    }
-
-    if (place.opening_hours && place.opening_hours.periods) {
-      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
-    }
-    place.address_components.forEach(e => {
-      if (e.types.includes('country')) {
-        googlePlaceData.countryCode = e.short_name
-      }
-    })
-
-    // depending on whether lat/lng comes from search or map
-    if (typeof (place.geometry.location.lat) === 'number'){
-      googlePlaceData.latitude = place.geometry.location.lat
-      googlePlaceData.longitude = place.geometry.location.lng
-    } else {
-      googlePlaceData.latitude = place.geometry.location.lat()
-      googlePlaceData.longitude = place.geometry.location.lng()
-    }
-
+    var googlePlaceData = constructGooglePlaceDataObj(place)
     this.setState({[`${type}GooglePlaceData`]: googlePlaceData})
     this.setState({[`${type}GooglePlaceDetails`]: place})
   }

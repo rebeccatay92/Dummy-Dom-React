@@ -23,6 +23,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
+import constructGooglePlaceDataObj from '../../helpers/location'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -139,34 +140,7 @@ class CreateActivityForm extends Component {
   }
 
   selectLocation (place) {
-    // construct googlePlaceData for db
-    var googlePlaceData = {
-      placeId: place.place_id,
-      countryCode: null,
-      name: place.name,
-      address: place.formatted_address,
-      latitude: null,
-      longitude: null,
-      openingHours: null
-    }
-    if (place.opening_hours && place.opening_hours.periods) {
-      googlePlaceData.openingHours = JSON.stringify(place.opening_hours.periods)
-    }
-    place.address_components.forEach(e => {
-      if (e.types.includes('country')) {
-        googlePlaceData.countryCode = e.short_name
-      }
-    })
-
-    // depending on whether lat/lng comes from search or map
-    if (typeof (place.geometry.location.lat) === 'number') {
-      googlePlaceData.latitude = place.geometry.location.lat
-      googlePlaceData.longitude = place.geometry.location.lng
-    } else {
-      googlePlaceData.latitude = place.geometry.location.lat()
-      googlePlaceData.longitude = place.geometry.location.lng()
-    }
-
+    var googlePlaceData = constructGooglePlaceDataObj(place)
     this.setState({googlePlaceData: googlePlaceData})
     this.setState({googlePlaceDetails: place})
   }
@@ -180,6 +154,8 @@ class CreateActivityForm extends Component {
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
+
+    // need to not reset background image everytime a file is removed. backgroundImage is url, while attachments use filename.
     this.setState({backgroundImage: defaultBackground})
   }
 
