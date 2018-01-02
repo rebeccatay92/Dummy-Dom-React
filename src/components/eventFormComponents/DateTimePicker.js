@@ -29,7 +29,7 @@ class DateTimePicker extends Component {
       date: (new Date(this.props.date)).toISOString().substring(0, 10),
       startDate: moment(new Date(this.props.date)),
       endDate: moment(new Date(this.props.date)),
-      startTime: '', // '10:00AM'
+      startTime: '', // '23:59'
       endTime: ''
     }
   }
@@ -39,25 +39,32 @@ class DateTimePicker extends Component {
     if (field === 'startTime' || field === 'endTime') {
       // convert time in '10:00AM' string to Int
       // time is relative to 1970 1st jan
+
+      // console.log('value', e.target.value, 'type', typeof (e.target.value))
+
       this.setState({
         [field]: e.target.value
       })
 
-      var timeStr = e.target.value
-      if (field === 'startTime') {
-        var hours = timeStr.split(':')[0]
-        var mins = timeStr.split(':')[1]
-        var unix = (hours * 60 * 60) + (mins * 60)
-      }
-      if (field === 'endTime') {
-        if (timeStr === '00:00') {
-          timeStr = '24:00'
+      if (e.target.value) {
+        var timeStr = e.target.value
+        if (field === 'startTime') {
+          var hours = timeStr.split(':')[0]
+          var mins = timeStr.split(':')[1]
+          var unix = (hours * 60 * 60) + (mins * 60)
         }
-        hours = timeStr.split(':')[0]
-        mins = timeStr.split(':')[1]
-        unix = (hours * 60 * 60) + (mins * 60)
+        if (field === 'endTime') {
+          if (timeStr === '00:00') {
+            timeStr = '24:00'
+          }
+          hours = timeStr.split(':')[0]
+          mins = timeStr.split(':')[1]
+          unix = (hours * 60 * 60) + (mins * 60)
+        }
+        this.props.updateDayTime(field, unix)
+      } else {
+        this.props.updateDayTime(field, null)
       }
-      this.props.updateDayTime(field, unix)
     }
 
     // HANDLING DAY INPUT

@@ -201,9 +201,17 @@ class CreateActivityForm extends Component {
         this.setState({locationDetails: locationDetails})
       }
       // if location/day/time changed, validate opening hours
-      // must check start and end time is truthy. clearing the time will cause NaN !== NaN always true between prevstate and thistate. overflow.
+      // must check start and end time is truthy. clearing the time means time = null
       if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
         this.validateOpeningHours()
+      }
+
+      // if time has been cleared out remove the warning text
+      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
+        this.setState({openingHoursValidation: null})
+      }
+      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
+        this.setState({openingHoursValidation: null})
       }
     }
   }
@@ -227,29 +235,29 @@ class CreateActivityForm extends Component {
       var endUnix = this.state.endTime
 
       if (this.state.endDay === this.state.startDay) {
-        if (startUnix < openingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid'})
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 1'})
         }
-        if (endUnix > closingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid'})
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 2'})
         }
-        if (startUnix > endUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid'})
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 3'})
         }
       } else if (this.state.endDay === this.state.startDay + 1) {
         // day 2 unix is 1 full day + unix from midnight
         endUnix += (24 * 60 * 60)
-        if (startUnix < openingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid'})
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 4'})
         }
-        if (endUnix > closingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid'})
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 5'})
         }
-        if (startUnix > endUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid'})
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 6'})
         }
       } else if (this.state.endDay > this.state.startDay + 1) {
-        this.setState({openingHoursValidation: 'Selected times are not valid'})
+        this.setState({openingHoursValidation: 'Selected times are not valid 7'})
       }
     }
   }
