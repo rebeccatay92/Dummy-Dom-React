@@ -177,6 +177,10 @@ export const eventDescriptionStyle = (bgImage) => {
   return {background: bgImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '24px', fontWeight: '300', width: 'fit-content', minWidth: '100px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}
 }
 
+export const eventWarningStyle = (bgImage) => {
+  return {background: bgImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '24px', fontWeight: '300', width: 'fit-content', minWidth: '100px', position: 'relative'}
+}
+
 export const foodTypeStyle = (bgImage) => {
   return {background: bgImage ? 'none' : 'inherit', outline: 'none', border: 'none', textAlign: 'center', fontSize: '24px', fontWeight: '300', width: '150px', position: 'relative', ':hover': { boxShadow: '0 1px 0 #FFF' }}
 }

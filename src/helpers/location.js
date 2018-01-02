@@ -41,10 +41,10 @@ export function constructLocationDetails (googlePlaceDetails, datesArr, dayInt) 
   var momentTime = moment.utc(dateUnix)
   var momentDayStr = momentTime.format('dddd')
   if (googlePlaceDetails.opening_hours && googlePlaceDetails.opening_hours.weekday_text) {
-    var text = googlePlaceDetails.opening_hours.weekday_text.filter(e => {
+    var textArr = googlePlaceDetails.opening_hours.weekday_text.filter(e => {
       return e.indexOf(momentDayStr) > -1
     })
-    locationDetails.openingHours = text
+    locationDetails.openingHours = textArr[0]
   }
 
   return locationDetails
