@@ -190,15 +190,17 @@ class CreateActivityForm extends Component {
     if (this.state.googlePlaceDetails) {
       if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
         var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
-        this.setState({locationDetails: locationDetails}, function () {
-          this.validateOpeningHours()
-        })
+        this.setState({locationDetails: locationDetails})
+      }
+      // if location/day/time changed, validate opening hours
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || prevState.startTime !== this.state.startTime || prevState.endTime !== this.state.endTime) {
+        this.validateOpeningHours()
       }
     }
-    // if location/day/time changed, validate opening hours
   }
 
   validateOpeningHours () {
+    console.log('validating')
     // check text if 24 hrs or closed
     var openingHoursText = this.state.locationDetails.openingHours
     if (!openingHoursText) {
@@ -224,7 +226,7 @@ class CreateActivityForm extends Component {
     var period = allPeriods.find(e => {
       return e.open.day === momentDayInt
     })
-    console.log('periods open and close', period.open, period.close)
+    // console.log('periods open and close', period.open, period.close)
 
     var openingHour = period.open.time.substring(0, 2)
     var openingMin = period.open.time.substring(2, 4)
@@ -234,12 +236,12 @@ class CreateActivityForm extends Component {
     var closingHour = period.close.time.substring(0, 2)
     var closingMin = period.close.time.substring(2, 4)
     var closingUnix = (parseInt(closingHour) * 3600) + (parseInt(closingMin * 60))
-    console.log('closingUnix', closingUnix)
 
     // clsoing unix is previous day + unix after midnight
     if (period.close.day === period.open.day + 1) {
       closingUnix += (24 * 60 * 60)
     }
+    console.log('closingUnix', closingUnix)
 
     if (this.state.endDay === this.state.startDay) {
       var startUnix = this.state.startTime
@@ -258,6 +260,7 @@ class CreateActivityForm extends Component {
     } else if (this.state.endDay === this.state.startDay + 1) {
       startUnix = this.state.startTime
       endUnix = this.state.endTime + (24* 60 * 60) // day 2 unix is 1 full day + unix from midnight
+      console.log('start/end unix', startUnix, endUnix)
       if (startUnix < openingUnix) {
         console.log('starting time incorrect')
       }
@@ -286,7 +289,7 @@ class CreateActivityForm extends Component {
               <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} locationDetails={this.state.locationDetails} />
             </div>
             <div style={eventDescContainerStyle}>
-              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
+              <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key={'activityDescription'} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
