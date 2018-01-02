@@ -75,8 +75,8 @@ class CreateFoodForm extends Component {
     var newFood = {
       ItineraryId: parseInt(this.state.ItineraryId),
       locationAlias: this.state.locationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       description: this.state.description,

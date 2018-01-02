@@ -66,15 +66,15 @@ class DateTimePicker extends Component {
       var newDate = moment.unix(newUnix)
 
       if (field === 'startDay') {
-        this.props.updateDayTime('startDay', e.target.value)
+        this.props.updateDayTime('startDay', parseInt(e.target.value))
         this.setState({startDate: newDate})
         if (e.target.value > this.props.endDay) {
-          this.props.updateDayTime('endDay', e.target.value)
+          this.props.updateDayTime('endDay', parseInt(e.target.value))
           this.setState({endDate: newDate})
         }
       }
       if (field === 'endDay') {
-        this.props.updateDayTime('endDay', e.target.value)
+        this.props.updateDayTime('endDay', parseInt(e.target.value))
         this.setState({endDate: newDate})
       }
     }
@@ -90,7 +90,6 @@ class DateTimePicker extends Component {
       var newDay = this.state.dates.indexOf(selectedUnix) + 1
 
       if (field === 'startDate') {
-        // this.setState({startDay: newDay})
         this.props.updateDayTime('startDay', newDay)
         if (selectedUnix > this.state.endDate.unix()) {
           this.setState({endDate: moment(e._d)})

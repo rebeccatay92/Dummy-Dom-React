@@ -33,7 +33,7 @@ class CreateActivityForm extends Component {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      startDay: this.props.day,
+      startDay: this.props.day, //int
       endDay: this.props.day,
       googlePlaceData: {},
       locationAlias: '',
@@ -77,8 +77,8 @@ class CreateActivityForm extends Component {
     var newActivity = {
       ItineraryId: parseInt(this.state.ItineraryId),
       locationAlias: this.state.locationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       description: this.state.description,
@@ -219,14 +219,30 @@ class CreateActivityForm extends Component {
     var momentTime = moment.utc(dateUnix)
     // day ints are Sun 0 to Sat 6
     var momentDayInt = parseInt(momentTime.format('d'))
-    console.log('dayInt', momentDayInt, typeof (momentDayInt))
+    // console.log('dayInt', momentDayInt, typeof (momentDayInt))
     var allPeriods = this.state.googlePlaceDetails.opening_hours.periods
-    console.log('allPeriods', allPeriods)
+    // console.log('allPeriods', allPeriods)
     var period = allPeriods.find(e => {
       return e.open.day === momentDayInt
     })
-    console.log('period', period)
+    console.log('periods open and close', period.open, period.close)
 
+    console.log('startDay', typeof (this.state.startDay), 'endday', typeof (this.state.endDay))
+
+    if (this.state.endDay === this.state.startDay) {
+      // check startTime > opening, endTime <opening
+      // startTime is a unix. opening time is a 2400 string
+      var startUnix = this.state.startTime
+      var endUnix = this.state.endTime
+      console.log('start/end unix', startUnix, endUnix)
+    } else if (this.state.endDay === this.state.startDay + 1) {
+      // check time
+      startUnix = this.state.startTime
+      endUnix = this.state.endTime
+      console.log('start/end unix', startUnix, endUnix)
+    } else if (this.state.endDay > this.state.startDay + 1) {
+      console.log('invalid, extends past 2 days when opening hours has max day + 1')
+    }
     // if endDay = startDay, check opening n closing time
     // if endDay > startDay, at most day + 1 && endTime < close
   }
