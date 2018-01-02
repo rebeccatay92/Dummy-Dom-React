@@ -219,7 +219,6 @@ class CreateActivityForm extends Component {
     var momentTime = moment.utc(dateUnix)
     // day ints are Sun 0 to Sat 6
     var momentDayInt = parseInt(momentTime.format('d'))
-    // console.log('dayInt', momentDayInt, typeof (momentDayInt))
     var allPeriods = this.state.googlePlaceDetails.opening_hours.periods
     // console.log('allPeriods', allPeriods)
     var period = allPeriods.find(e => {
@@ -227,24 +226,50 @@ class CreateActivityForm extends Component {
     })
     console.log('periods open and close', period.open, period.close)
 
-    console.log('startDay', typeof (this.state.startDay), 'endday', typeof (this.state.endDay))
+    var openingHour = period.open.time.substring(0, 2)
+    var openingMin = period.open.time.substring(2, 4)
+    var openingUnix = (parseInt(openingHour) * 3600) + (parseInt(openingMin * 60))
+    console.log('openingUnix', openingUnix)
+
+    var closingHour = period.close.time.substring(0, 2)
+    var closingMin = period.close.time.substring(2, 4)
+    var closingUnix = (parseInt(closingHour) * 3600) + (parseInt(closingMin * 60))
+    console.log('closingUnix', closingUnix)
+
+    // clsoing unix is previous day + unix after midnight
+    if (period.close.day === period.open.day + 1) {
+      closingUnix += (24 * 60 * 60)
+    }
 
     if (this.state.endDay === this.state.startDay) {
-      // check startTime > opening, endTime <opening
-      // startTime is a unix. opening time is a 2400 string
       var startUnix = this.state.startTime
       var endUnix = this.state.endTime
       console.log('start/end unix', startUnix, endUnix)
+
+      if (startUnix < openingUnix) {
+        console.log('starting time incorrect')
+      }
+      if (endUnix > closingUnix) {
+        console.log('ending time incorrect')
+      }
+      if (startUnix > endUnix) {
+        console.log('err, ending time is before starting time')
+      }
     } else if (this.state.endDay === this.state.startDay + 1) {
-      // check time
       startUnix = this.state.startTime
-      endUnix = this.state.endTime
-      console.log('start/end unix', startUnix, endUnix)
+      endUnix = this.state.endTime + (24* 60 * 60) // day 2 unix is 1 full day + unix from midnight
+      if (startUnix < openingUnix) {
+        console.log('starting time incorrect')
+      }
+      if (endUnix > closingUnix) {
+        console.log('ending time incorrect')
+      }
+      if (startUnix > endUnix) {
+        console.log('err, ending time is before starting time')
+      }
     } else if (this.state.endDay > this.state.startDay + 1) {
       console.log('invalid, extends past 2 days when opening hours has max day + 1')
     }
-    // if endDay = startDay, check opening n closing time
-    // if endDay > startDay, at most day + 1 && endTime < close
   }
 
   render () {
