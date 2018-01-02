@@ -24,6 +24,7 @@ import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
+import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -140,7 +141,13 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null
+      googlePlaceDetails: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      openingHoursValidation: null
     })
     this.apiToken = null
   }
@@ -203,49 +210,23 @@ class CreateActivityForm extends Component {
 
   validateOpeningHours () {
     this.setState({openingHoursValidation: null})
-    // check text if 24 hrs or closed
     var openingHoursText = this.state.locationDetails.openingHours
-    console.log('openingHoursText', openingHoursText)
-    if (!openingHoursText) {
-      console.log('no opening hours provided')
-    } else if (openingHoursText.indexOf('Open 24 hours') > -1) {
-      console.log('its 24 hrs')
-    } else if (openingHoursText.indexOf('Closed') > -1) {
+
+    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
+
+    if (openingHoursText.indexOf('Closed') > -1) {
       this.setState({openingHoursValidation: 'Place is closed'})
     } else {
-      console.log('opening hours present, not closed, not 24 hrs. continue validating')
-      // if not missing, closed or 24hrs, find open and close hrs from periods
-      var dateUnix = this.props.dates[this.state.startDay - 1]
-      var momentTime = moment.utc(dateUnix)
-      // day ints are Sun 0 to Sat 6
-      var momentDayInt = parseInt(momentTime.format('d'))
-      var allPeriods = this.state.googlePlaceDetails.opening_hours.periods
-      // console.log('allPeriods', allPeriods)
-      var period = allPeriods.find(e => {
-        return e.open.day === momentDayInt
-      })
-      // console.log('periods open and close', period.open, period.close)
+      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
 
-      var openingHour = period.open.time.substring(0, 2)
-      var openingMin = period.open.time.substring(2, 4)
-      var openingUnix = (parseInt(openingHour) * 3600) + (parseInt(openingMin * 60))
-      console.log('openingUnix', openingUnix)
+      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
+      var openingUnix = openingAndClosingArr[0]
+      var closingUnix = openingAndClosingArr[1]
 
-      var closingHour = period.close.time.substring(0, 2)
-      var closingMin = period.close.time.substring(2, 4)
-      var closingUnix = (parseInt(closingHour) * 3600) + (parseInt(closingMin * 60))
-
-      // clsoing unix is previous day + unix after midnight
-      if (period.close.day === period.open.day + 1) {
-        closingUnix += (24 * 60 * 60)
-      }
-      // console.log('closingUnix', closingUnix)
+      var startUnix = this.state.startTime
+      var endUnix = this.state.endTime
 
       if (this.state.endDay === this.state.startDay) {
-        var startUnix = this.state.startTime
-        var endUnix = this.state.endTime
-        // console.log('start/end unix', startUnix, endUnix)
-
         if (startUnix < openingUnix) {
           this.setState({openingHoursValidation: 'Selected times are not valid'})
         }
@@ -256,9 +237,8 @@ class CreateActivityForm extends Component {
           this.setState({openingHoursValidation: 'Selected times are not valid'})
         }
       } else if (this.state.endDay === this.state.startDay + 1) {
-        startUnix = this.state.startTime
-        endUnix = this.state.endTime + (24 * 60 * 60) // day 2 unix is 1 full day + unix from midnight
-        // console.log('start/end unix', startUnix, endUnix)
+        // day 2 unix is 1 full day + unix from midnight
+        endUnix += (24 * 60 * 60)
         if (startUnix < openingUnix) {
           this.setState({openingHoursValidation: 'Selected times are not valid'})
         }
