@@ -5,6 +5,7 @@ import moment from 'moment'
 import Radium from 'radium'
 import LocationSearch from '../location/LocationSearch'
 
+import { constructGooglePlaceDataObj } from '../../helpers/location'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../../Styles/styles'
@@ -43,7 +44,7 @@ class IntuitiveFoodInput extends Component {
     if (location.openingHours) {
       location.openingHours = JSON.stringify(location.openingHours)
     }
-    this.setState({googlePlaceData: location})
+    this.setState({googlePlaceData: constructGooglePlaceDataObj(location)})
     console.log('selected location', location)
   }
 

@@ -5,6 +5,7 @@ import moment from 'moment'
 import Radium from 'radium'
 import LocationSearch from '../location/LocationSearch'
 
+import { constructGooglePlaceDataObj } from '../../helpers/location'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle, primaryColor } from '../../Styles/styles'
@@ -29,8 +30,8 @@ class IntuitiveLandTransportInput extends Component {
     if (location.openingHours) {
       location.openingHours = JSON.stringify(location.openingHours)
     }
-    if (type === 'departure') this.setState({departureGooglePlaceData: location})
-    else if (type === 'arrival') this.setState({arrivalGooglePlaceData: location})
+    if (type === 'departure') this.setState({departureGooglePlaceData: constructGooglePlaceDataObj(location)})
+    else if (type === 'arrival') this.setState({arrivalGooglePlaceData: constructGooglePlaceDataObj(location)})
     console.log('selected location', location)
   }
 

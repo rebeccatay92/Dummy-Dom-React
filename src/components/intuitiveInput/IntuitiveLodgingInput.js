@@ -5,6 +5,7 @@ import Radium from 'radium'
 import LocationSearch from '../location/LocationSearch'
 
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
+import { constructGooglePlaceDataObj } from '../../helpers/location'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle, primaryColor } from '../../Styles/styles'
@@ -92,7 +93,7 @@ class IntuitiveLodgingInput extends Component {
     if (location.openingHours) {
       location.openingHours = JSON.stringify(location.openingHours)
     }
-    this.setState({googlePlaceData: location}, () => console.log(this.state))
+    this.setState({googlePlaceData: constructGooglePlaceDataObj(location)}, () => console.log(this.state))
     console.log('selected location', location)
   }
 
