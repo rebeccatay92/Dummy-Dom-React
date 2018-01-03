@@ -112,6 +112,12 @@ class DateTimePicker extends Component {
     }
   }
 
+  // updating state '' for start/end time with default time props
+  componentWillReceiveProps (nextProps) {
+    if (this.props.defaultTime !== nextProps.defaultTime) {
+      this.setState({startTime: nextProps.defaultTime, endTime: nextProps.defaultTime})
+    }
+  }
 
   render () {
     if (this.props.intuitiveInput) {

@@ -27,33 +27,10 @@ class GooglePlaceResult extends Component {
         })
         .then(json => {
           console.log('details', json)
-          if (json.result.opening_hours) {
-            this.setState({openingHours: json.result.opening_hours.periods})
-          }
-          var addressComponents = json.result.address_components
-          addressComponents.forEach(e => {
-            if (e.types.includes('country')) {
-              this.setState({countryCode: e.short_name})
-            }
-          })
+          this.props.selectLocation(json.result)
         })
         .catch(err => {
           console.log('err', err)
-        })
-        .then(() => {
-          // pass location up to parent LocationSelection
-          var location = {}
-          Object.keys(this.state).forEach(key => {
-            if (key !== '_radiumStyleState' && key !== 'place_id') {
-              location[key] = this.state[key]
-            }
-          })
-          //stringify the openingHours array first
-          location.placeId = this.state.place_id
-          // pass array up to LocationSelection
-          // location.openingHours = JSON.stringify(this.state.openingHours)
-
-          this.props.selectLocation(location)
         })
   }
 
