@@ -93,6 +93,12 @@ class CreateFoodForm extends Component {
     }
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
 
+    // VALIDATE START AND END TIMES
+    if (!this.state.startTime || !this.state.endTime) {
+      console.log('time is missing')
+      return
+    }
+
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)
 

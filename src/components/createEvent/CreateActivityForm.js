@@ -25,6 +25,7 @@ import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
+import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -97,26 +98,34 @@ class CreateActivityForm extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
+    // VALIDATE START AND END TIMES
+    if (!this.state.startTime || !this.state.endTime) {
+      console.log('time is missing')
+      return
+    }
+
+    // VALIDATE PLANNER TIMINGS
+    newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-    // console.log('helper output', helperOutput)
-
-    this.props.changingLoadSequence({
-      variables: {
-        input: helperOutput.loadSequenceInput
-      }
-    })
-
-    this.props.createActivity({
-      variables: helperOutput.newEvent,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
-    })
-
-    this.resetState()
-    this.props.toggleCreateEventType()
+    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+    //
+    // this.props.changingLoadSequence({
+    //   variables: {
+    //     input: helperOutput.loadSequenceInput
+    //   }
+    // })
+    //
+    // this.props.createActivity({
+    //   variables: helperOutput.newEvent,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+    //
+    // this.resetState()
+    // this.props.toggleCreateEventType()
   }
 
   closeCreateActivity () {

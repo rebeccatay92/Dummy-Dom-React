@@ -33,7 +33,6 @@ function checkDisplacingEndingRow (displacedRow) {
   return (typeof (displacedRow.start) === 'boolean' && !displacedRow.start && displacedRow.type !== 'Lodging')
 }
 
-
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
   var allEvents = JSON.parse(JSON.stringify(eventsArr))
