@@ -63,6 +63,7 @@ class IntuitiveLodgingInput extends Component {
     if (this.state.googlePlaceData.placeId) {
       newLodging.googlePlaceData = this.state.googlePlaceData
     }
+    console.log(newLodging)
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
     console.log('helper output', helperOutput)
@@ -91,7 +92,7 @@ class IntuitiveLodgingInput extends Component {
     if (location.openingHours) {
       location.openingHours = JSON.stringify(location.openingHours)
     }
-    this.setState({googlePlaceData: location})
+    this.setState({googlePlaceData: location}, () => console.log(this.state))
     console.log('selected location', location)
   }
 

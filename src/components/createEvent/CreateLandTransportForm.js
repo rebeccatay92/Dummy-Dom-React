@@ -24,6 +24,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
+import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
@@ -49,7 +50,20 @@ class CreateLandTransportForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      // googlePlaceDetails is the unmodified google api response
+      departureGooglePlaceDetails: null,
+      arrivalGooglePlaceDetails: null,
+      departureLocationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      arrivalLocationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      }
     }
   }
 
@@ -72,8 +86,8 @@ class CreateLandTransportForm extends Component {
       ItineraryId: parseInt(this.state.ItineraryId),
       departureLocationAlias: this.state.departureLocationAlias,
       arrivalLocationAlias: this.state.arrivalLocationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       currency: this.state.currency,
@@ -137,15 +151,18 @@ class CreateLandTransportForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      departureGooglePlaceDetails: null,
+      arrivalGooglePlaceDetails: null
     })
     this.apiToken = null
   }
 
   // need to select either departure or arrival
-  selectLocation (location, type) {
-    this.setState({[`${type}GooglePlaceData`]: location})
-    console.log('selected location in form', type, location)
+  selectLocation (place, type) {
+    var googlePlaceData = constructGooglePlaceDataObj(place)
+    this.setState({[`${type}GooglePlaceData`]: googlePlaceData})
+    this.setState({[`${type}GooglePlaceDetails`]: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -190,6 +207,22 @@ class CreateLandTransportForm extends Component {
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.departureGooglePlaceDetails) {
+      if (prevState.departureGooglePlaceDetails !== this.state.departureGooglePlaceDetails || prevState.startDay !== this.state.startDay) {
+        var departureLocationDetails = constructLocationDetails(this.state.departureGooglePlaceDetails, this.props.dates, this.state.startDay)
+        this.setState({departureLocationDetails: departureLocationDetails})
+      }
+    }
+    if (this.state.arrivalGooglePlaceDetails) {
+      if (prevState.arrivalGooglePlaceDetails !== this.state.arrivalGooglePlaceDetails || prevState.endDay !== this.state.endDay) {
+        var arrivalLocationDetails = constructLocationDetails(this.state.arrivalGooglePlaceDetails, this.props.dates, this.state.endDay)
+        this.setState({arrivalLocationDetails: arrivalLocationDetails})
+      }
+    }
+    // if location/day/time changed, validate opening hours
+  }
+
   render () {
     return (
       <div style={createEventFormContainerStyle}>
@@ -202,7 +235,7 @@ class CreateLandTransportForm extends Component {
             <div style={greyTintStyle} />
 
             <div style={eventDescContainerStyle}>
-              <TransportLocationSelection selectLocation={(location, type) => this.selectLocation(location, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+              <TransportLocationSelection selectLocation={(place, type) => this.selectLocation(place, type)} departureLocation={this.state.departureGooglePlaceData} arrivalLocation={this.state.arrivalGooglePlaceData} departureLocationDetails={this.state.departureLocationDetails} arrivalLocationDetails={this.state.arrivalLocationDetails} />
             </div>
 
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}

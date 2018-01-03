@@ -23,6 +23,7 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
+import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}lodgingDefaultBackground.jpg`
 
@@ -46,7 +47,13 @@ class CreateLodgingForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      }
     }
   }
 
@@ -68,8 +75,8 @@ class CreateLodgingForm extends Component {
     var newLodging = {
       ItineraryId: parseInt(this.state.ItineraryId),
       locationAlias: this.state.locationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       // loadSequence: this.props.highestLoadSequence + 1,
@@ -132,14 +139,16 @@ class CreateLodgingForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null
     })
     this.apiToken = null
   }
 
-  selectLocation (location) {
-    this.setState({googlePlaceData: location})
-    console.log('selected location', location)
+  selectLocation (place) {
+    var googlePlaceData = constructGooglePlaceDataObj(place)
+    this.setState({googlePlaceData: googlePlaceData})
+    this.setState({googlePlaceDetails: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -176,6 +185,16 @@ class CreateLodgingForm extends Component {
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.googlePlaceDetails) {
+      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+        this.setState({locationDetails: locationDetails})
+      }
+    }
+    // if location/day/time changed, validate opening hours
+  }
+
   render () {
     return (
       <div style={createEventFormContainerStyle}>
@@ -187,7 +206,7 @@ class CreateLodgingForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
             <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+              <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} locationDetails={this.state.locationDetails} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
