@@ -8,6 +8,8 @@ import Thumbnail from './Thumbnail'
 import Radium from 'radium'
 import { primaryColor, attachmentStyle, addAttachmentBtnStyle, attachmentNameStyle, attachmentSizeStyle, attachmentDeleteBtnStyle, pdfLogoStyle, imageLogoStyle } from '../../Styles/styles'
 
+const PDFJS = require('pdfjs-dist')
+
 class Attachments extends Component {
   constructor (props) {
     super(props)
@@ -47,7 +49,6 @@ class Attachments extends Component {
     var url = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}${fileName}`
 
     // fileName = fileName.replace('/', '%2F')
-    //
     // fetch(`https://www.googleapis.com/storage/v1/b/domatodevs/o/${fileName}?alt=media`, {
     //   method: 'GET',
     //   headers: {
@@ -55,33 +56,28 @@ class Attachments extends Component {
     //   }
     // })
     // .then(response => {
-    //   let result
-    //   const reader = response.body.getReader()
-    //   reader.read().then(function processText ({ done, value }) {
-    //     if (done) {
-    //       console.log('Stream complete')
-    //       // console.log('complete result', result)
-    //       // console.log('typeof', typeof (result))
-    //       var scrub = result.substring(9)
-    //       scrub = scrub.split(',')
-    //       var array = JSON.parse('[' + scrub + ']')
-    //       // console.log(array)
-    //       var int8arr = Uint8Array.from(array)
-    //       console.log(int8arr)
-    //       PDFJS.getDocument(int8arr).then(function (pdf) {
-    //         pdf.getPage(1).then(function (page) {
-    //           console.log(page.toDataURL())
-    //         })
-    //       })
-    //       return
-    //     }
-    //     result += value
-    //
-    //     return reader.read().then(processText)
-    //   })
+    //   console.log('response', response)
+    //   return response.blob()
     // })
-    // .catch(err => {
-    //   console.log(err)
+    // .then(blob => {
+    //   console.log(blob)
+    //   var url = window.URL.createObjectURL(blob)
+    //   // window.open(url)
+    //   PDFJS.getDocument({url: url})
+    //     .then(pdfdoc => {
+    //       // console.log('pages', pdfdoc.numPages)
+    //       pdfdoc.getPage(1)
+    //         .then(page => {
+    //           var viewport = page.getViewport(0.5)
+    //           var renderContext = {
+    //             canvasContext: document.getElementById('pdf-canvas').getContext('2d'),
+    //             viewport: viewport
+    //           }
+    //           page.render(renderContext).then(function() {
+    //             console.log('rendered')
+    //           })
+    //         })
+    //     })
     // })
 
     if (fileType === 'application/pdf') {
@@ -196,6 +192,7 @@ class Attachments extends Component {
     // if (this.apiToken) { console.log(this.apiToken) }
     return (
       <div>
+        {/* <canvas id='pdf-canvas' width='200' /> */}
         {/* UPLOADED FILE NAMES */}
         {!this.state.preview && this.props.attachments.map((info, i) => {
           return <div onMouseEnter={(event) => this.thumbnailMouseEnter(event, i)} onMouseLeave={(event) => this.thumbnailMouseLeave(event)} style={attachmentStyle} key={'thumbnail' + i}>

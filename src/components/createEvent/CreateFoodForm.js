@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 
-import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, eventWarningStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import SingleLocationSelection from '../location/SingleLocationSelection'
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
@@ -23,6 +23,8 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
+import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
+import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
@@ -46,7 +48,14 @@ class CreateFoodForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      openingHoursValidation: null
     }
   }
 
@@ -68,8 +77,8 @@ class CreateFoodForm extends Component {
     var newFood = {
       ItineraryId: parseInt(this.state.ItineraryId),
       locationAlias: this.state.locationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       description: this.state.description,
@@ -83,6 +92,12 @@ class CreateFoodForm extends Component {
       backgroundImage: this.state.backgroundImage
     }
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
+
+    // VALIDATE START AND END TIMES
+    if (!this.state.startTime || !this.state.endTime) {
+      console.log('time is missing')
+      return
+    }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)
@@ -127,14 +142,22 @@ class CreateFoodForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      openingHoursValidation: null
     })
     this.apiToken = null
   }
 
-  selectLocation (location) {
-    this.setState({googlePlaceData: location})
-    console.log('selected location', location)
+  selectLocation (place) {
+    var googlePlaceData = constructGooglePlaceDataObj(place)
+    this.setState({googlePlaceData: googlePlaceData})
+    this.setState({googlePlaceDetails: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -171,6 +194,71 @@ class CreateFoodForm extends Component {
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.googlePlaceDetails) {
+      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+        this.setState({locationDetails: locationDetails})
+      }
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
+        this.validateOpeningHours()
+      }
+      // if time has been cleared out remove the warning text
+      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
+        this.setState({openingHoursValidation: null})
+      }
+      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
+        this.setState({openingHoursValidation: null})
+      }
+    }
+  }
+
+  validateOpeningHours () {
+    this.setState({openingHoursValidation: null})
+    var openingHoursText = this.state.locationDetails.openingHours
+
+    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
+
+    if (openingHoursText.indexOf('Closed') > -1) {
+      this.setState({openingHoursValidation: 'Place is closed'})
+    } else {
+      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
+
+      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
+      var openingUnix = openingAndClosingArr[0]
+      var closingUnix = openingAndClosingArr[1]
+
+      var startUnix = this.state.startTime
+      var endUnix = this.state.endTime
+
+      if (this.state.endDay === this.state.startDay) {
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 1'})
+        }
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 2'})
+        }
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 3'})
+        }
+      } else if (this.state.endDay === this.state.startDay + 1) {
+        // day 2 unix is 1 full day + unix from midnight
+        endUnix += (24 * 60 * 60)
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 4'})
+        }
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 5'})
+        }
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 6'})
+        }
+      } else if (this.state.endDay > this.state.startDay + 1) {
+        this.setState({openingHoursValidation: 'Selected times are not valid 7'})
+      }
+    }
+  }
+
   render () {
     return (
       <div style={createEventFormContainerStyle}>
@@ -181,14 +269,20 @@ class CreateFoodForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
-            <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+            <div style={{...eventDescContainerStyle, ...{marginTop: '120px'}}}>
+              <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} locationDetails={this.state.locationDetails} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} key='fooddescription' />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
+
+            {this.state.openingHoursValidation &&
+              <div>
+                <h4 style={eventWarningStyle(this.state.backgroundImage)}>Warning: {this.state.openingHoursValidation}</h4>
+              </div>
+            }
           </div>
 
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}

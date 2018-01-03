@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
 import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 
-import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+import { createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, eventWarningStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
 
 import SingleLocationSelection from '../location/SingleLocationSelection'
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
@@ -23,17 +23,19 @@ import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
+import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
+import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
+import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
-// const PDFJS = require('pdfjs-dist')
 
 class CreateActivityForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      startDay: this.props.day,
+      startDay: this.props.day, //int
       endDay: this.props.day,
       googlePlaceData: {},
       locationAlias: '',
@@ -48,7 +50,15 @@ class CreateActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null,
+      // for google api response, not for db
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      openingHoursValidation: null
     }
   }
 
@@ -70,8 +80,8 @@ class CreateActivityForm extends Component {
     var newActivity = {
       ItineraryId: parseInt(this.state.ItineraryId),
       locationAlias: this.state.locationAlias,
-      startDay: typeof (this.state.startDay) === 'number' ? this.state.startDay : parseInt(this.state.startDay),
-      endDay: typeof (this.state.endDay) === 'number' ? this.state.endDay : parseInt(this.state.endDay),
+      startDay: this.state.startDay,
+      endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       description: this.state.description,
@@ -88,26 +98,34 @@ class CreateActivityForm extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
+    // VALIDATE START AND END TIMES
+    if (!this.state.startTime || !this.state.endTime) {
+      console.log('time is missing')
+      return
+    }
+
+    // VALIDATE PLANNER TIMINGS
+    newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-    // console.log('helper output', helperOutput)
-
-    this.props.changingLoadSequence({
-      variables: {
-        input: helperOutput.loadSequenceInput
-      }
-    })
-
-    this.props.createActivity({
-      variables: helperOutput.newEvent,
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.ItineraryId }
-      }]
-    })
-
-    this.resetState()
-    this.props.toggleCreateEventType()
+    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+    //
+    // this.props.changingLoadSequence({
+    //   variables: {
+    //     input: helperOutput.loadSequenceInput
+    //   }
+    // })
+    //
+    // this.props.createActivity({
+    //   variables: helperOutput.newEvent,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+    //
+    // this.resetState()
+    // this.props.toggleCreateEventType()
   }
 
   closeCreateActivity () {
@@ -131,14 +149,22 @@ class CreateActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground
+      backgroundImage: defaultBackground,
+      googlePlaceDetails: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null
+      },
+      openingHoursValidation: null
     })
     this.apiToken = null
   }
 
-  selectLocation (location) {
-    this.setState({googlePlaceData: location})
-    console.log('selected location', location)
+  selectLocation (place) {
+    var googlePlaceData = constructGooglePlaceDataObj(place)
+    this.setState({googlePlaceData: googlePlaceData})
+    this.setState({googlePlaceDetails: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -150,6 +176,8 @@ class CreateActivityForm extends Component {
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
+
+    // need to not reset background image everytime a file is removed. backgroundImage is url, while attachments use filename.
     this.setState({backgroundImage: defaultBackground})
   }
 
@@ -175,6 +203,74 @@ class CreateActivityForm extends Component {
     this.setState({startTime: defaultUnix, endTime: defaultUnix})
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.googlePlaceDetails) {
+      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+        this.setState({locationDetails: locationDetails})
+      }
+      // if location/day/time changed, validate opening hours
+      // must check start and end time is truthy. clearing the time means time = null
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
+        this.validateOpeningHours()
+      }
+
+      // if time has been cleared out remove the warning text
+      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
+        this.setState({openingHoursValidation: null})
+      }
+      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
+        this.setState({openingHoursValidation: null})
+      }
+    }
+  }
+
+  validateOpeningHours () {
+    this.setState({openingHoursValidation: null})
+    var openingHoursText = this.state.locationDetails.openingHours
+
+    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
+
+    if (openingHoursText.indexOf('Closed') > -1) {
+      this.setState({openingHoursValidation: 'Place is closed'})
+    } else {
+      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
+
+      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
+      var openingUnix = openingAndClosingArr[0]
+      var closingUnix = openingAndClosingArr[1]
+
+      var startUnix = this.state.startTime
+      var endUnix = this.state.endTime
+
+      if (this.state.endDay === this.state.startDay) {
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 1'})
+        }
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 2'})
+        }
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 3'})
+        }
+      } else if (this.state.endDay === this.state.startDay + 1) {
+        // day 2 unix is 1 full day + unix from midnight
+        endUnix += (24 * 60 * 60)
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 4'})
+        }
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 5'})
+        }
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: 'Selected times are not valid 6'})
+        }
+      } else if (this.state.endDay > this.state.startDay + 1) {
+        this.setState({openingHoursValidation: 'Selected times are not valid 7'})
+      }
+    }
+  }
+
   render () {
     return (
       <div style={createEventFormContainerStyle}>
@@ -185,16 +281,23 @@ class CreateActivityForm extends Component {
           {/* LEFT PANEL --- BACKGROUND, LOCATION, DATETIME */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
-            <div style={{...eventDescContainerStyle, ...{marginTop: '240px'}}}>
-              <SingleLocationSelection selectLocation={location => this.selectLocation(location)} currentLocation={this.state.googlePlaceData} dates={this.props.dates} startDay={this.state.startDay} endDay={this.state.endDay} />
+
+            <div style={{...eventDescContainerStyle, ...{marginTop: '120px'}}}>
+              <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} locationDetails={this.state.locationDetails} />
             </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
-          </div>
 
+            {this.state.openingHoursValidation &&
+              <div>
+                <h4 style={eventWarningStyle(this.state.backgroundImage)}>Warning: {this.state.openingHoursValidation}</h4>
+              </div>
+            }
+
+          </div>
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
