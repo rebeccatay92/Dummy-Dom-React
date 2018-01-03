@@ -161,13 +161,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       })
     } // close else for separate days
   }
-  // if (eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
-  //   if (newEvent.startDay === newEvent.endDay) {
-  //     // find start and then end is start + 1
-  //   } else {
-  //     //
-  //   }
-  // }
   if (eventModel === 'Flight') {
     console.log('flight instance arr', newEvent)
     var flightInstanceRows = []
