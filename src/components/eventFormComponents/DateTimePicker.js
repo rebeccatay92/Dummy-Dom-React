@@ -27,8 +27,8 @@ class DateTimePicker extends Component {
         return moment(e).unix()
       }),
       date: (new Date(this.props.date)).toISOString().substring(0, 10),
-      startDate: moment(new Date(this.props.date)),
-      endDate: moment(new Date(this.props.date)),
+      startDate: this.props.type ? moment.utc(new Date(this.props.date)) : moment(new Date(this.props.date)),
+      endDate: this.props.type ? moment.utc(new Date(this.props.date)) : moment(new Date(this.props.date)),
       startTime: '', // '10:00AM'
       endTime: ''
     }
@@ -36,7 +36,14 @@ class DateTimePicker extends Component {
 
   handleChange (e, field) {
     // HANDLING TIME INPUT
-    if (field === 'checkInTime') console.log(moment.utc(e._d).unix());
+    if (field === 'checkInTime' || field === 'checkOutTime') {
+      if (field === 'checkInTime') this.setState({startDate: (moment.utc(e._d))})
+      if (field === 'checkOutTime') this.setState({endDate: (moment.utc(e._d))})
+      console.log(Math.floor(moment.utc(e._d).unix() / 86400) * 86400)
+      const time = moment.utc(e._d).unix() % 86400
+      const day = this.props.dates.map(date => moment(date).unix()).indexOf(Math.floor(moment.utc(e._d).unix() / 86400) * 86400) + 1
+      this.props.handleSelect(field, day, time)
+    }
     if (field === 'startTime' || field === 'endTime') {
       // convert time in '10:00AM' string to Int
       // time is relative to 1970 1st jan
@@ -110,7 +117,7 @@ class DateTimePicker extends Component {
     if (this.props.intuitiveInput) {
       return (
         <DatePicker
-          selected={null}
+          selected={this.props.type === 'checkInTime' ? this.state.startDate : this.state.endDate}
           onChange={(e) => this.handleChange(e, this.props.type)}
           showTimeSelect
           timeFormat='HH:mm'
