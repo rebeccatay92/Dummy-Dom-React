@@ -18,6 +18,9 @@ import PlannerActivityTimeline from './PlannerActivityTimeline'
 
 import IntuitiveFlightInput from './intuitiveInput/IntuitiveFlightInput'
 import IntuitiveActivityInput from './intuitiveInput/IntuitiveActivityInput'
+import IntuitiveFoodInput from './intuitiveInput/IntuitiveFoodInput'
+import IntuitiveLandTransportInput from './intuitiveInput/IntuitiveLandTransportInput'
+import IntuitiveLodgingInput from './intuitiveInput/IntuitiveLodgingInput'
 
 import CreateActivityForm from './createEvent/CreateActivityForm'
 import CreateFoodForm from './createEvent/CreateFoodForm'
@@ -160,7 +163,7 @@ class PlannerActivity extends Component {
           <span className='createEventBox'>
             {iconTypes.map((type, i) => {
               return (
-                <i key={i} onClick={() => type === 'flight' || type === 'directions_run' ? this.handleIntuitiveInput(eventTypes[i]) : this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
+                <i key={i} onClick={() => type === 'flight' || type === 'directions_run' || type === 'restaurant' || type === 'local_car_wash' || type === 'hotel' ? this.handleIntuitiveInput(eventTypes[i]) : this.handleCreateEventClick(eventTypes[i])} className='material-icons' style={activityIconStyle}>{type}</i>
               )
             })}
             <span style={createEventPickOneStyle}>Pick One</span>
@@ -174,6 +177,15 @@ class PlannerActivity extends Component {
         ),
         Activity: (
           <IntuitiveActivityInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} activityDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+        ),
+        Food: (
+          <IntuitiveFoodInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} foodDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+        ),
+        LandTransport: (
+          <IntuitiveLandTransportInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+        ),
+        Lodging: (
+          <IntuitiveLodgingInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} lodgingDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         )
       }
       createEventBox = types[this.state.intuitiveInputType]
