@@ -21,7 +21,7 @@ function constructLoadSeqInputObj (event, correctLoadSeq) {
     loadSequence: correctLoadSeq,
     day: event.day
   }
-  if (event.type === 'Flight' || event.type === 'Transport' || event.type === 'Lodging') {
+  if (event.type === 'Flight' || event.type === 'LandTransport' || event.type === 'SeaTransport' || event.type === 'Train' || event.type === 'Lodging') {
     inputObj.start = event.start
   }
   return inputObj

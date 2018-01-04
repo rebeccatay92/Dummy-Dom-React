@@ -111,7 +111,7 @@ class CreateLodgingForm extends Component {
       console.log('helper output', helperOutput)
 
       newLodging = helperOutput.newEvent
-      // console.log('newLodging', newLodging)
+      console.log('newLodging', newLodging)
 
       this.props.changingLoadSequence({
         variables: {

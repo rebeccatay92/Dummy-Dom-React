@@ -35,6 +35,8 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       if (!displacedRow) {
         console.log('no displaced row')
         // if no displaced row (insert right at end), check last row in that day is not of type start:true
+        // check the day at least has 1 event
+        if (dayEvents.length < 1) return
         var lastRow = dayEvents[dayEvents.length - 1]
         var isStartingRow = checkIfStartingRow(lastRow)
         if (isStartingRow) {
@@ -64,7 +66,9 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
             isValid = false
           }
           // check row before displaced row. newEvent start time must be after previous ending
+          // check only if previous row does exist. else no endtime to clash with
           var displacedIndex = dayEvents.indexOf(displacedRow)
+          if (displacedIndex === 0) return // displaced row is already very first event
           var previousRow = dayEvents[displacedIndex - 1]
           lastTiming = findEndTime(previousRow)
           if (newEvent.startTime < lastTiming) {
@@ -77,7 +81,9 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       var startDayEvents = eventsArr.filter(e => {
         return e.day === newEvent.startDay
       })
+      if (startDayEvents.length === 0) return
       // last row of day 1 must not be a startingRow
+
       lastRow = startDayEvents[startDayEvents.length - 1]
       isStartingRow = checkIfStartingRow(lastRow)
       if (isStartingRow) {
@@ -93,6 +99,7 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       var endDayEvents = eventsArr.filter(e => {
         return e.day === newEvent.endDay
       })
+      if (endDayEvents.length === 0) return
       var firstRowOfEndDay = endDayEvents[0]
       if (newEvent.endTime > firstRowOfEndDay.time) {
         isValid = false
@@ -102,24 +109,63 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
   if (model === 'Lodging') {
     var types = ['start', 'end'] // start and end of new lodging
     types.forEach(type => {
+      console.log('type', type)
       dayEvents = eventsArr.filter(e => {
         return e.day === newEvent[`${type}Day`]
       })
-      var displacedRow = dayEvents.find(e => {
-        return (e.time > newEvent.startTime)
-      })
+      // console.log('dayEvents', dayEvents)
+      if (!dayEvents) return
+
+      // if type ===starting displacedRow is time > startTime
+      // if type === ending, displacedRow is time >= endTime
+      // var displacedRow = dayEvents.find(e => {
+      //   return (e.time > newEvent[`${type}Time`])
+      // })
+      if (type === 'start') {
+        var displacedRow = dayEvents.find(e => {
+          return (e.time > newEvent[`${type}Time`])
+        })
+      } else if (type === 'end') {
+        displacedRow = dayEvents.find(e => {
+          return (e.time >= newEvent[`${type}Time`])
+        })
+      }
+
       if (!displacedRow) {
+        console.log('no displaced row')
         // last event must not be of type starting
         var lastRow = dayEvents[dayEvents.length - 1]
         var isStartingRow = checkIfStartingRow(lastRow)
         if (isStartingRow) {
-          isValid = false
+          console.log('trying to insert at or after starting row')
+          // isValid = false
         } else {
-          // check if start time is after end time of last row <last end time, start time>
+          // check if lodging start/end time is after end time of last row <last end time, time>
           var lastTiming = findEndTime(lastRow)
-          var didStartTimeOverlap = (newEvent.startTime < lastTiming)
-          if (didStartTimeOverlap) {
+          var didTimeOverlap = (newEvent[`${type}Time`] < lastTiming)
+          if (didTimeOverlap) {
             console.log('start time is before end time of previous row')
+            isValid = false
+          }
+        }
+      } else {
+        // if there is a displaced row
+        console.log('there is a displaced row')
+        var isEndingRow = checkIfEndingRow(displacedRow)
+        if (isEndingRow) {
+          console.log('displacing an ending row')
+          // isValid = false
+        } else {
+          // if not ending row, check time > end time of previous row. (if previous row exists/ displacedrow is not the first row)
+          var displacedIndex = dayEvents.indexOf(displacedRow)
+          console.log('displacedIndex', displacedIndex)
+          if (displacedIndex === 0) return // displaced row is alrdy the very first
+          var previousRow = dayEvents[displacedIndex - 1]
+          lastTiming = findEndTime(previousRow)
+          console.log('newevent time', newEvent[`${type}Time`], 'lastTiming', lastTiming)
+          didTimeOverlap = (newEvent[`${type}Time`] < lastTiming)
+          if (didTimeOverlap) {
+            console.log('time overlap')
             isValid = false
           }
         }
