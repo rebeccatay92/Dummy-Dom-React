@@ -27,8 +27,10 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       var dayEvents = eventsArr.filter(e => {
         return e.day === newEvent.startDay
       })
+
+      // equals or not equals????
       var displacedRow = dayEvents.find(e => {
-        return (e.time >= newEvent.startTime)
+        return (e.time > newEvent.startTime)
       })
 
       if (!displacedRow) {
@@ -39,7 +41,7 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
         var lastRow = dayEvents[dayEvents.length - 1]
         var isStartingRow = checkIfStartingRow(lastRow)
         if (isStartingRow) {
-          // isValid = false
+          isValid = false
         } else {
           // check if start time is after end time of last row <last end time, start time>
           var lastTiming = findEndTime(lastRow)
@@ -56,7 +58,7 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
 
         if (isEndingRow) {
           console.log('displaced ending row')
-          // isValid = false
+          isValid = false
         } else {
           console.log('not ending row')
           // if displacedRow exists but not an ending row, check end time is also before displaced time, else overlap <start, end><ending row>
