@@ -138,6 +138,7 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       if (!displacedRow) {
         console.log('no displaced row')
         // last event must not be of type starting
+        if (dayEvents.length < 1) return isValid
         var lastRow = dayEvents[dayEvents.length - 1]
         var isStartingRow = checkIfStartingRow(lastRow)
         if (isStartingRow) {
