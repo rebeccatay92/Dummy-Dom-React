@@ -126,7 +126,7 @@ class IntuitiveFoodInput extends Component {
         <div style={{display: 'inline-block', width: '30%'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>watch_later</i>
           <div style={{position: 'relative'}}>
-            <i key='more' onClick={() => this.props.handleCreateEventClick('Activity')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('Food')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'startTime')} />
             <span>{' '}to{' '}</span>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'endTime')} />

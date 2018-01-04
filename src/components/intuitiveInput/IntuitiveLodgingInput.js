@@ -132,6 +132,8 @@ class IntuitiveLodgingInput extends Component {
         <div style={{display: 'inline-block', width: '30%'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...endStyle, ...{cursor: 'default'}}}>hotel</i>
           <DateTimePicker intuitiveInput type='checkOutTime' dates={this.props.dates} date={this.props.lodgingDate} handleSelect={(type, day, time) => this.handleSelect(type, day, time)} />
+          {/* RANDOM DOTS TO OPEN THE FORM */}
+          <i key='more' onClick={() => this.props.handleCreateEventClick('Lodging')} className='material-icons' style={{position: 'absolute', right: '12%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
         </div>
         <div style={{marginTop: '5px'}}>
           <button onClick={() => this.handleSubmit()} style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>
