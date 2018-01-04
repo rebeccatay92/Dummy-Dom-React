@@ -53,6 +53,18 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
           if (didEndTimeOverlap) {
             isValid = false
           }
+          // check row before displaced row. newEvent start time must be after previous ending
+          var displacedIndex = dayEvents.indexOf(displacedRow)
+          var previousRow = dayEvents[displacedIndex - 1]
+          lastTiming = null
+          if (previousRow.type === 'Activity' || previousRow.type === 'Food') {
+            lastTiming = previousRow[previousRow.type].endTime
+          } else {
+            lastTiming = previousRow.time
+          }
+          if (newEvent.startTime < lastTiming) {
+            isValid = false
+          }
         }
       }
     } else { // if different start and end day
