@@ -28,9 +28,8 @@ function constructLoadSeqInputObj (event, correctLoadSeq) {
 }
 
 // check displaced row is not an ending row, and if ending row is not of type lodging
-function checkDisplacingEndingRow (displacedRow) {
-  console.log('displacedRow', displacedRow)
-  return (typeof (displacedRow.start) === 'boolean' && !displacedRow.start && displacedRow.type !== 'Lodging')
+function checkIfEndingRow (event) {
+  return (typeof (event.start) === 'boolean' && !event.start && event.type !== 'Lodging')
 }
 
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
@@ -56,7 +55,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       newEvent.loadSequence = dayEvents.length + 1
     } else {
       var index = dayEvents.indexOf(displacedRow)
-      if (checkDisplacingEndingRow(displacedRow)) {
+      if (checkIfEndingRow(displacedRow)) {
         dayEvents.splice(index + 1, 0, 'placeholder')
       } else {
         dayEvents.splice(index, 0, 'placeholder')
@@ -99,7 +98,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           dayEvents.push({start: isStart})
         } else {
           index = dayEvents.indexOf(displacedRow)
-          if (checkDisplacingEndingRow(displacedRow)) {
+          if (checkIfEndingRow(displacedRow)) {
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
             dayEvents.splice(index, 0, {start: isStart})
@@ -141,7 +140,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           dayEvents.push({start: isStart})
         } else {
           index = dayEvents.indexOf(displacedRow)
-          if (checkDisplacingEndingRow(displacedRow)) {
+          if (checkIfEndingRow(displacedRow)) {
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
             dayEvents.splice(index, 0, {start: isStart})
@@ -198,7 +197,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       } else if (displacedRow) {
         var index = dayEvents.indexOf(displacedRow)
 
-        if (checkDisplacingEndingRow(displacedRow)) {
+        if (checkIfEndingRow(displacedRow)) {
           dayEvents.splice(index + 1, 0, ...dayInstanceRows)
         } else {
           dayEvents.splice(index, 0, ...dayInstanceRows)
