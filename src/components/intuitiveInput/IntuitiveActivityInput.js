@@ -6,6 +6,7 @@ import Radium from 'radium'
 import LocationSearch from '../location/LocationSearch'
 
 import { constructGooglePlaceDataObj } from '../../helpers/location'
+import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../../Styles/styles'
@@ -56,15 +57,47 @@ class IntuitiveActivityInput extends Component {
   }
 
   handleSubmit () {
-    var startHours = this.state.startTime.split(':')[0]
-    var startMins = this.state.startTime.split(':')[1]
-    var startUnix = (startHours * 60 * 60) + (startMins * 60)
-    var endHours = this.state.endTime.split(':')[0]
-    var endMins = this.state.endTime.split(':')[1]
-    var endUnix = (endHours * 60 * 60) + (endMins * 60)
+    const validations = [
+      {
+        type: 'googlePlaceData',
+        notification: 'locRequired'
+      },
+      {
+        type: 'description',
+        notification: 'descRequired'
+      }
+    ]
+    let validated = false
+    validations.forEach((validation) => {
+      if (this.state[validation.type]) {
+        this.setState({
+          [validation.notification]: false
+        })
+        validated = true // Because only one of the two is required
+      }
+      if (!this.state[validation.type]) {
+        this.setState({
+          [validation.notification]: true
+        })
+      }
+    })
+    if (!validated) return
+
+    var startUnix, endUnix
+    if (this.state.startTime) {
+      var startHours = this.state.startTime.split(':')[0]
+      var startMins = this.state.startTime.split(':')[1]
+      startUnix = (startHours * 60 * 60) + (startMins * 60)
+    }
+    if (this.state.endTime) {
+      var endHours = this.state.endTime.split(':')[0]
+      var endMins = this.state.endTime.split(':')[1]
+      endUnix = (endHours * 60 * 60) + (endMins * 60)
+    }
 
     const startDay = this.props.dates.map(date => date.getTime()).findIndex((e) => e === this.props.activityDate) + 1
     console.log(startDay);
+
 
     const newActivity = {
       ItineraryId: parseInt(this.props.itineraryId),
@@ -82,8 +115,18 @@ class IntuitiveActivityInput extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
+    // Assign Start/End Time based on previous/next event within that day.
+    let startEndTimeOutput = newActivity
+    if (!this.state.startTime && !this.state.endTime) {
+      // add default time as all-day event here
+      startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
+    } else if (!this.state.startTime) {
+      startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
+    } else if (!this.state.endTime) {
+      startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
+    }
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', startEndTimeOutput)
     // console.log('helper output', helperOutput)
 
     this.props.changingLoadSequence({
@@ -115,6 +158,7 @@ class IntuitiveActivityInput extends Component {
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{display: 'inline-block', width: '35%'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>directions_run</i>
+          {this.state.descRequired && this.state.locRequired && <span style={{fontWeight: 'bold'}}>(Description or Location Required)</span>}
           <div>
             <input type='text' placeholder='Description' style={{width: '90%'}} onChange={(e) => this.handleChange(e, 'description')} />
           </div>

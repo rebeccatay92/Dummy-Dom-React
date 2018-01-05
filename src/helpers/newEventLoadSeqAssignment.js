@@ -33,7 +33,6 @@ function checkIfEndingRow (event) {
 }
 
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
-
   var allEvents = JSON.parse(JSON.stringify(eventsArr))
   // for changing load seq of existing events
   var loadSequenceInput = []

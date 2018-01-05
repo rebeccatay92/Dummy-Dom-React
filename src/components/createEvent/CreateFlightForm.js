@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import Radium, { Style } from 'radium'
 import moment from 'moment'
 import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
+import { Button } from 'react-bootstrap'
 
-import { labelStyle, createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle } from '../../Styles/styles'
+import { labelStyle, createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle, createFlightButtonStyle } from '../../Styles/styles'
 
 import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
 import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
@@ -294,15 +295,15 @@ class CreateFlightForm extends Component {
               </div>
             </div>
             <div style={{position: 'absolute', right: '0', bottom: '0', padding: '10px'}}>
-              {this.state.searching && <button style={{color: 'black'}} onClick={() => this.setState({searchClicked: this.state.searchClicked + 1})}>Search</button>}
-              {this.state.searching && <button style={{color: 'black'}} onClick={() => {
+              {this.state.searching && <Button bsStyle='danger' style={{...createFlightButtonStyle, ...{marginRight: '10px'}}} onClick={() => this.setState({searchClicked: this.state.searchClicked + 1})}>Search</Button>}
+              {this.state.searching && <Button bsStyle='danger' style={createFlightButtonStyle} onClick={() => {
                 this.setState({
                   searching: false,
                   bookingDetails: true
                 })
-              }}>Confirm</button>}
-              {this.state.bookingDetails && <button style={{color: 'black'}} onClick={() => this.setState({bookingDetails: false, searching: true})}>Back</button>}
-              {this.state.bookingDetails && <button style={{color: 'black'}} onClick={() => this.handleSubmit()}>Save</button>}
+              }}>Confirm</Button>}
+              {this.state.bookingDetails && <Button bsStyle='danger' style={{...createFlightButtonStyle, ...{marginRight: '10px'}}} onClick={() => this.setState({bookingDetails: false, searching: true})}>Back</Button>}
+              {this.state.bookingDetails && <Button bsStyle='danger' style={createFlightButtonStyle} onClick={() => this.handleSubmit()}>Save</Button>}
             </div>
           </div>
 
