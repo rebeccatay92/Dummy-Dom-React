@@ -34,7 +34,6 @@ function checkDisplacingEndingRow (displacedRow) {
 }
 
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
-
   var allEvents = JSON.parse(JSON.stringify(eventsArr))
   // for changing load seq of existing events
   var loadSequenceInput = []
@@ -48,7 +47,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       if (!newEvent.startTime) {
         return null
       } else {
-        return (e.time >= newEvent.startTime)
+        return (e.time > newEvent.startTime)
       }
     })
 
@@ -57,7 +56,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     } else {
       var index = dayEvents.indexOf(displacedRow)
       if (checkDisplacingEndingRow(displacedRow)) {
-        dayEvents.splice(index + 1, 0, 'placeholder')
+        dayEvents.splice(index, 0, 'placeholder')
       } else {
         dayEvents.splice(index, 0, 'placeholder')
       }

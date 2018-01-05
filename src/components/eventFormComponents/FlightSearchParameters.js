@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import AirportSearch from './AirportSearch'
 import Radium from 'radium'
 import moment from 'moment'
+import { Button } from 'react-bootstrap'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import CustomDatePicker from './CustomDatePicker'
 import FlightMapHOC from '../location/FlightMapHOC'
 
-import { dateTimePickerContainerStyle, eventDescContainerStyle, flightMapContainerStyle } from '../../Styles/styles'
+import { dateTimePickerContainerStyle, eventDescContainerStyle, flightMapContainerStyle, createFlightButtonStyle } from '../../Styles/styles'
 
 class FlightSearchParameters extends Component {
   constructor (props) {
@@ -205,8 +206,8 @@ class FlightSearchParameters extends Component {
         </div>
         <div style={{textAlign: 'center'}}>
           <hr style={{opacity: 0.5}} />
-          {!this.props.searching && !this.props.bookingDetails && <button style={{color: 'black'}} onClick={() => this.handleFlightSearch()}>SEARCH</button>}
-          {!this.props.searching && !this.props.bookingDetails && <button style={{color: 'black'}} onClick={() => this.props.closeCreateForm()}>CANCEL</button>}
+          {!this.props.searching && !this.props.bookingDetails && <Button style={{...createFlightButtonStyle, ...{marginRight: '20px'}}} bsStyle='danger' onClick={() => this.handleFlightSearch()}>SEARCH</Button>}
+          {!this.props.searching && !this.props.bookingDetails && <Button style={createFlightButtonStyle} bsStyle='danger' onClick={() => this.props.closeCreateForm()}>CANCEL</Button>}
         </div>
       </div>
     )

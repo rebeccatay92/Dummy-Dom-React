@@ -202,7 +202,7 @@ export const locationMapContainerStyle = {backgroundColor: 'white', position: 'f
 export const flightMapContainerStyle = {backgroundColor: 'white', position: 'fixed', right: 'calc(50% - 610.5px)', top: `calc(50% - ${totalHeight / 2}px)`, width: leftPanelWidth + 'px', height: (0.9 * totalHeight) + 'px', zIndex: 999, color: 'black'}
 
 // DateTimePicker.js styles
-export const dateTimePickerContainerStyle = {width: '370px', margin: '45px auto 0 auto', textAlign: 'center', height: '131px', position: 'relative', whiteSpace: 'noWrap'}
+export const dateTimePickerContainerStyle = {width: '415px', margin: '45px auto 0 auto', textAlign: 'center', height: '131px', position: 'relative', whiteSpace: 'noWrap'}
 
 // BookingDetails.js styles
 export const labelStyle = {
@@ -222,6 +222,9 @@ export const attachmentDeleteBtnStyle = (hovering, i) => {
 }
 export const pdfLogoStyle = {color: 'rgb(237, 15, 135)', fontSize: '50px', marginRight: '2px'}
 export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
+
+// Create Flight Form Button
+export const createFlightButtonStyle = {backgroundColor: 'rgb(237, 15, 135)', border: 'none'}
 
 // FlightSearchResults.js styles
 export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}

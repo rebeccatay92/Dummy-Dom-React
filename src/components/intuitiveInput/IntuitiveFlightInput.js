@@ -169,6 +169,32 @@ class IntuitiveFlightInput extends Component {
   }
 
   handleSubmit () {
+    const validations = [
+      {
+        type: 'departureLocation',
+        notification: 'departureRequired'
+      },
+      {
+        type: 'arrivalLocation',
+        notification: 'arrivalRequired'
+      }
+    ]
+    let validated = true
+    validations.forEach((validation) => {
+      if (this.state[validation.type]) {
+        this.setState({
+          [validation.notification]: false
+        })
+      }
+      if (!this.state[validation.type]) {
+        this.setState({
+          [validation.notification]: true
+        })
+        validated = false
+      }
+    })
+    if (!validated) return
+
     const newFlight = {
       ItineraryId: parseInt(this.props.itineraryId),
       paxAdults: 1,
@@ -241,10 +267,12 @@ class IntuitiveFlightInput extends Component {
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{width: '33%', display: 'inline-block'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>flight_takeoff</i>
+          {this.state.departureRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
           <AirportSearch intuitiveInput currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
         </div>
         <div style={{width: '33%', display: 'inline-block'}}>
           <i key='arrival' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>flight_land</i>
+          {this.state.arrivalRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
           <AirportSearch intuitiveInput currentLocation={this.state.arrivalLocation} placeholder={'Arrival City/Airport'} selectLocation={details => this.selectLocation('arrival', details)} />
         </div>
         <div style={{width: '33%', display: 'inline-block'}}>

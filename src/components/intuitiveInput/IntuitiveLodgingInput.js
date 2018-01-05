@@ -23,10 +23,10 @@ class IntuitiveLodgingInput extends Component {
     this.state = {
       googlePlaceData: '',
       search: '',
-      checkInDay: '',
-      checkInTime: '',
-      checkOutDay: '',
-      checkOutTime: ''
+      checkInDay: this.props.day,
+      checkInTime: 0,
+      checkOutDay: this.props.day,
+      checkOutTime: 0
     }
   }
 
@@ -51,6 +51,28 @@ class IntuitiveLodgingInput extends Component {
   }
 
   handleSubmit () {
+    const validations = [
+      {
+        type: 'googlePlaceData',
+        notification: 'locRequired'
+      }
+    ]
+    let validated = true
+    validations.forEach((validation) => {
+      if (this.state[validation.type]) {
+        this.setState({
+          [validation.notification]: false
+        })
+      }
+      if (!this.state[validation.type]) {
+        this.setState({
+          [validation.notification]: true
+        })
+        validated = false
+      }
+    })
+    if (!validated) return
+
     var newLodging = {
       ItineraryId: parseInt(this.props.itineraryId),
       startDay: this.state.checkInDay,
@@ -101,10 +123,10 @@ class IntuitiveLodgingInput extends Component {
     this.setState({
       googlePlaceData: '',
       search: '',
-      checkInDay: '',
-      checkInTime: '',
-      checkOutDay: '',
-      checkOutTime: ''
+      checkInDay: this.props.day,
+      checkInTime: 0,
+      checkOutDay: this.props.day,
+      checkOutTime: 0
     })
   }
 
@@ -123,6 +145,7 @@ class IntuitiveLodgingInput extends Component {
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{display: 'inline-block', width: '40%'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>place</i>
+          {this.state.locRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
           <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location)} placeholder={'Location'} currentLocation={this.state.googlePlaceData} />
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
@@ -131,7 +154,10 @@ class IntuitiveLodgingInput extends Component {
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...endStyle, ...{cursor: 'default'}}}>hotel</i>
-          <DateTimePicker intuitiveInput type='checkOutTime' dates={this.props.dates} date={this.props.lodgingDate} handleSelect={(type, day, time) => this.handleSelect(type, day, time)} />
+          <div style={{position: 'relative'}}>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('Lodging')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer', zIndex: 1}}>more_horiz</i>
+            <DateTimePicker intuitiveInput type='checkOutTime' dates={this.props.dates} date={this.props.lodgingDate} handleSelect={(type, day, time) => this.handleSelect(type, day, time)} />
+          </div>
         </div>
         <div style={{marginTop: '5px'}}>
           <button onClick={() => this.handleSubmit()} style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>

@@ -169,7 +169,7 @@ class IntuitiveLandTransportInput extends Component {
           <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>watch_later</i>
           {(this.state.startTimeRequired || this.state.endTimeRequired) && <span style={{fontWeight: 'bold'}}>(Both Fields Required)</span>}
           <div style={{position: 'relative'}}>
-            <i key='more' onClick={() => this.props.handleCreateEventClick('Activity')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('LandTransport')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'startTime')} />
             <span>{' '}to{' '}</span>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'endTime')} />
