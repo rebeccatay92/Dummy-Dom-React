@@ -125,6 +125,7 @@ class IntuitiveActivityInput extends Component {
     } else if (!this.state.endTime) {
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
     }
+
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', startEndTimeOutput)
     // console.log('helper output', helperOutput)
