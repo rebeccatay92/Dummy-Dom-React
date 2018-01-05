@@ -42,7 +42,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       return e.day === newEvent.startDay
     })
 
-    //FIND EVENT > STARTTIME. NO EQUALS
+    // FIND EVENT > STARTTIME. NO EQUALS
 
     var displacedRow = dayEvents.find(e => {
       if (!newEvent.startTime) {
@@ -87,14 +87,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         var isStart = (type === 'start') // true or false
 
         var displacedRow = dayEvents.find(event => {
-          // if (isStart && newEvent.startTime) {
-          //   return (event.time >= newEvent.startTime)
-          // } else if (!isStart && newEvent.endTime) {
-          //   return (event.time >= newEvent.endTime)
-          // } else {
-          //   return null
-          // }
-          if (newEvent[`${type}Time`]) {
+          if (typeof (newEvent[`${type}Time`]) === 'number') {
             return (event.time >= newEvent[`${type}Time`])
           } else {
             return null
@@ -128,6 +121,10 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       })
     } else {
       // different start and end day
+      console.log('DIFFERENT START AND END DAY')
+      console.log('startTime', newEvent.startTime, 'type', typeof (newEvent.startTime))
+      console.log('endTime', newEvent.endTime, 'type', typeof (newEvent.endTime))
+
       types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start')
@@ -136,22 +133,25 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         })
 
         var displacedRow = dayEvents.find(event => {
-          if (isStart && newEvent.startTime) {
-            return (event.time >= newEvent.startTime)
-          } else if (!isStart && newEvent.endTime) {
-            return (event.time >= newEvent.endTime)
+          // start is truthy.
+          if (typeof (newEvent[`${type}Time`]) === 'number') {
+            return (event.time >= newEvent[`${type}Time`])
           } else {
             return null
           }
         })
 
         if (!displacedRow) {
+          console.log(type, 'NO DISPLACED ROW')
           dayEvents.push({start: isStart})
         } else {
+          console.log(type, 'DISPALCED ROW EXISTS')
           index = dayEvents.indexOf(displacedRow)
           if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent[`${type}Time`]) {
+            console.log(type, 'BUMP ONE POSITION')
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
+            console.log(type, 'DONT BUMP')
             dayEvents.splice(index, 0, {start: isStart})
           }
         }
