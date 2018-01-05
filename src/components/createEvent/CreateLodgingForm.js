@@ -102,34 +102,36 @@ class CreateLodgingForm extends Component {
 
     // VALIDATE PLANNER TIMINGS
     var isValid = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
-    console.log('isValid', isValid)
+    // console.log('isValid', isValid)
 
     if (!isValid) {
       window.alert(`time ${newLodging.startTime} // ${newLodging.endTime} clashes with pre existing events.`)
-    } else {
-      var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
-      console.log('helper output', helperOutput)
-
-      newLodging = helperOutput.newEvent
-      console.log('newLodging', newLodging)
-
-      this.props.changingLoadSequence({
-        variables: {
-          input: helperOutput.loadSequenceInput
-        }
-      })
-
-      this.props.createLodging({
-        variables: newLodging,
-        refetchQueries: [{
-          query: queryItinerary,
-          variables: { id: this.props.ItineraryId }
-        }]
-      })
-
-      this.resetState()
-      this.props.toggleCreateEventType()
     }
+
+    // else {
+    // }
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
+    console.log('helper output', helperOutput)
+
+    newLodging = helperOutput.newEvent
+    console.log('newLodging', newLodging)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    this.props.createLodging({
+      variables: newLodging,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateLodging () {

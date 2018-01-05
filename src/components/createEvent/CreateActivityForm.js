@@ -111,27 +111,28 @@ class CreateActivityForm extends Component {
     // prevent form submission if time is not valid
     if (!isValid) {
       window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
-    } else {
-      // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
-      var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-
-      this.props.changingLoadSequence({
-        variables: {
-          input: helperOutput.loadSequenceInput
-        }
-      })
-
-      this.props.createActivity({
-        variables: helperOutput.newEvent,
-        refetchQueries: [{
-          query: queryItinerary,
-          variables: { id: this.props.ItineraryId }
-        }]
-      })
-
-      this.resetState()
-      this.props.toggleCreateEventType()
     }
+    // else {
+    // }
+    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    this.props.createActivity({
+      variables: helperOutput.newEvent,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateActivity () {

@@ -106,27 +106,28 @@ class CreateFoodForm extends Component {
 
     if (!isValid) {
       window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
-    } else {
-      var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
-      console.log('helper output', helperOutput)
-
-      this.props.changingLoadSequence({
-        variables: {
-          input: helperOutput.loadSequenceInput
-        }
-      })
-
-      this.props.createFood({
-        variables: helperOutput.newEvent,
-        refetchQueries: [{
-          query: queryItinerary,
-          variables: { id: this.props.ItineraryId }
-        }]
-      })
-
-      this.resetState()
-      this.props.toggleCreateEventType()
     }
+    // else {
+    // }
+    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
+    console.log('helper output', helperOutput)
+
+    this.props.changingLoadSequence({
+      variables: {
+        input: helperOutput.loadSequenceInput
+      }
+    })
+
+    this.props.createFood({
+      variables: helperOutput.newEvent,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleCreateEventType()
   }
 
   closeCreateFood () {
