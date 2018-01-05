@@ -118,7 +118,6 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       dayEvents = eventsArr.filter(e => {
         return e.day === newEvent[`${type}Day`]
       })
-      // console.log('dayEvents', dayEvents)
       if (!dayEvents) return isValid
 
       // if type ===starting displacedRow is time > startTime
@@ -126,16 +125,19 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       // var displacedRow = dayEvents.find(e => {
       //   return (e.time > newEvent[`${type}Time`])
       // })
-      if (type === 'start') {
-        var displacedRow = dayEvents.find(e => {
-          return (e.time > newEvent[`${type}Time`])
-        })
-      } else if (type === 'end') {
-        displacedRow = dayEvents.find(e => {
-          return (e.time >= newEvent[`${type}Time`])
-        })
-      }
 
+      // if (type === 'start') {
+      //   var displacedRow = dayEvents.find(e => {
+      //     return (e.time > newEvent[`${type}Time`])
+      //   })
+      // } else if (type === 'end') {
+      //   displacedRow = dayEvents.find(e => {
+      //     return (e.time >= newEvent[`${type}Time`])
+      //   })
+      // }
+
+      displacedRow = dayEvents.find()
+      
       if (!displacedRow) {
         console.log('no displaced row')
         // last event must not be of type starting
