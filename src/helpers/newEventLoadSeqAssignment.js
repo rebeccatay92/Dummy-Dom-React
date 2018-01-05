@@ -21,16 +21,15 @@ function constructLoadSeqInputObj (event, correctLoadSeq) {
     loadSequence: correctLoadSeq,
     day: event.day
   }
-  if (event.type === 'Flight' || event.type === 'Transport' || event.type === 'Lodging') {
+  if (event.type === 'Flight' || event.type === 'LandTransport' || event.type === 'SeaTransport' || event.type === 'Train' || event.type === 'Lodging') {
     inputObj.start = event.start
   }
   return inputObj
 }
 
 // check displaced row is not an ending row, and if ending row is not of type lodging
-function checkDisplacingEndingRow (displacedRow) {
-  console.log('displacedRow', displacedRow)
-  return (typeof (displacedRow.start) === 'boolean' && !displacedRow.start && displacedRow.type !== 'Lodging')
+function checkIfEndingRow (event) {
+  return (typeof (event.start) === 'boolean' && !event.start && event.type !== 'Lodging')
 }
 
 function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
@@ -43,6 +42,8 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       return e.day === newEvent.startDay
     })
 
+    //FIND EVENT > STARTTIME. NO EQUALS
+
     var displacedRow = dayEvents.find(e => {
       if (!newEvent.startTime) {
         return null
@@ -51,12 +52,14 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       }
     })
 
+    // IF CLASH BETWEEN START AND END JUST INSERT, DONT SHIFT BY 1
     if (!displacedRow) {
       newEvent.loadSequence = dayEvents.length + 1
     } else {
       var index = dayEvents.indexOf(displacedRow)
-      if (checkDisplacingEndingRow(displacedRow)) {
+      if (checkIfEndingRow(displacedRow)) {
         dayEvents.splice(index, 0, 'placeholder')
+        // dayEvents.splice(index + 1, 0, 'placeholder')
       } else {
         dayEvents.splice(index, 0, 'placeholder')
       }
@@ -84,10 +87,15 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         var isStart = (type === 'start') // true or false
 
         var displacedRow = dayEvents.find(event => {
-          if (isStart && newEvent.startTime) {
-            return (event.time >= newEvent.startTime)
-          } else if (!isStart && newEvent.endTime) {
-            return (event.time >= newEvent.endTime)
+          // if (isStart && newEvent.startTime) {
+          //   return (event.time >= newEvent.startTime)
+          // } else if (!isStart && newEvent.endTime) {
+          //   return (event.time >= newEvent.endTime)
+          // } else {
+          //   return null
+          // }
+          if (newEvent[`${type}Time`]) {
+            return (event.time >= newEvent[`${type}Time`])
           } else {
             return null
           }
@@ -98,7 +106,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           dayEvents.push({start: isStart})
         } else {
           index = dayEvents.indexOf(displacedRow)
-          if (checkDisplacingEndingRow(displacedRow)) {
+          if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent[`${type}Time`]) {
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
             dayEvents.splice(index, 0, {start: isStart})
@@ -119,6 +127,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         }
       })
     } else {
+      // different start and end day
       types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start')
@@ -140,7 +149,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           dayEvents.push({start: isStart})
         } else {
           index = dayEvents.indexOf(displacedRow)
-          if (checkDisplacingEndingRow(displacedRow)) {
+          if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent[`${type}Time`]) {
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
             dayEvents.splice(index, 0, {start: isStart})
@@ -160,13 +169,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       })
     } // close else for separate days
   }
-  // if (eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
-  //   if (newEvent.startDay === newEvent.endDay) {
-  //     // find start and then end is start + 1
-  //   } else {
-  //     //
-  //   }
-  // }
   if (eventModel === 'Flight') {
     console.log('flight instance arr', newEvent)
     var flightInstanceRows = []
@@ -204,7 +206,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       } else if (displacedRow) {
         var index = dayEvents.indexOf(displacedRow)
 
-        if (checkDisplacingEndingRow(displacedRow)) {
+        if (checkIfEndingRow(displacedRow)) {
           dayEvents.splice(index + 1, 0, ...dayInstanceRows)
         } else {
           dayEvents.splice(index, 0, ...dayInstanceRows)

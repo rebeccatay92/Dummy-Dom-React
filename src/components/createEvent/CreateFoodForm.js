@@ -25,6 +25,7 @@ import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
+import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
@@ -99,6 +100,15 @@ class CreateFoodForm extends Component {
       return
     }
 
+    // VALIDATE PLANNER TIMINGS
+    var isValid = newEventTimelineValidation(this.props.events, 'Food', newFood)
+    console.log('isValid', isValid)
+
+    if (!isValid) {
+      window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
+    }
+    // else {
+    // }
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)
 

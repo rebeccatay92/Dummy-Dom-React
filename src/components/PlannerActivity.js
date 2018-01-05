@@ -244,6 +244,7 @@ class PlannerActivity extends Component {
   }
 
   handleIntuitiveInput (eventType = '') {
+    // console.log('eventType', eventType)
     this.setState({
       intuitiveInputType: eventType
     }, () => this.setState({creatingEvent: !!this.state.intuitiveInputType}))

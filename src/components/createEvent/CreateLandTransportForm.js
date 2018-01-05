@@ -25,6 +25,7 @@ import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
+import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}landTransportDefaultBackground.jpg`
 
@@ -107,6 +108,12 @@ class CreateLandTransportForm extends Component {
       newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
     }
 
+    // VALIDATE PLANNER TIMINGS
+    var isValid = newEventTimelineValidation(this.props.events, 'LandTransport', newLandTransport)
+    if (!isValid) {
+      window.alert(`time ${newLandTransport.startTime} // ${newLandTransport.endTime} clashes with pre existing events.`)
+    }
+    
     // console.log('newLandTransport', newLandTransport)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
     console.log('helper output', helperOutput)

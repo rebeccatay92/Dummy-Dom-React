@@ -24,6 +24,7 @@ import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
+import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}lodgingDefaultBackground.jpg`
 
@@ -79,7 +80,6 @@ class CreateLodgingForm extends Component {
       endDay: this.state.endDay,
       startTime: this.state.startTime,
       endTime: this.state.endTime,
-      // loadSequence: this.props.highestLoadSequence + 1,
       description: this.state.description,
       currency: this.state.currency,
       cost: parseInt(this.state.cost),
@@ -94,11 +94,27 @@ class CreateLodgingForm extends Component {
       newLodging.googlePlaceData = this.state.googlePlaceData
     }
 
+    // VALIDATE START AND END TIMES
+    if (!this.state.startTime || !this.state.endTime) {
+      console.log('time is missing')
+      return
+    }
+
+    // VALIDATE PLANNER TIMINGS
+    var isValid = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
+    // console.log('isValid', isValid)
+
+    if (!isValid) {
+      window.alert(`time ${newLodging.startTime} // ${newLodging.endTime} clashes with pre existing events.`)
+    }
+
+    // else {
+    // }
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
     console.log('helper output', helperOutput)
 
     newLodging = helperOutput.newEvent
-    // console.log('newLodging', newLodging)
+    console.log('newLodging', newLodging)
 
     this.props.changingLoadSequence({
       variables: {
