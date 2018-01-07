@@ -92,7 +92,8 @@ class CreateActivityForm extends Component {
       bookingConfirmation: this.state.bookingConfirmation,
       notes: this.state.notes,
       attachments: this.state.attachments,
-      backgroundImage: this.state.backgroundImage
+      backgroundImage: this.state.backgroundImage,
+      openingHoursValidation: this.state.openingHoursValidation
     }
     if (this.state.googlePlaceData.placeId) {
       newActivity.googlePlaceData = this.state.googlePlaceData

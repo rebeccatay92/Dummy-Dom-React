@@ -65,7 +65,7 @@ export const updateFood = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $backgroundImage: String,
-    openingHoursValidation: String
+    $openingHoursValidation: String
   ) {
     updateFood(
       id: $id,
