@@ -112,9 +112,6 @@ class IntuitiveLodgingInput extends Component {
   }
 
   selectLocation (location) {
-    if (location.openingHours) {
-      location.openingHours = JSON.stringify(location.openingHours)
-    }
     this.setState({googlePlaceData: constructGooglePlaceDataObj(location)}, () => console.log(this.state))
     console.log('selected location', location)
   }

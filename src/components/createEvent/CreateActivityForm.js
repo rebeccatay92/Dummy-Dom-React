@@ -112,8 +112,7 @@ class CreateActivityForm extends Component {
     if (!isValid) {
       window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
     }
-    // else {
-    // }
+
     // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
 
