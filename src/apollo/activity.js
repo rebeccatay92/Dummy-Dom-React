@@ -20,7 +20,8 @@ export const createActivity = gql`
     $notes: String,
     $attachments: [attachmentInput],
     $backgroundImage: String,
-    $openingHoursValidation: String
+    $openingHoursValidation: String,
+    $allDayEvent: Boolean
   ) {
     createActivity(
       ItineraryId: $ItineraryId,
@@ -41,7 +42,8 @@ export const createActivity = gql`
       notes: $notes,
       attachments: $attachments,
       backgroundImage: $backgroundImage,
-      openingHoursValidation: $openingHoursValidation
+      openingHoursValidation: $openingHoursValidation,
+      allDayEvent: $allDayEvent
     ) {
       id
     }
@@ -65,7 +67,8 @@ export const updateActivity = gql`
     $bookingConfirmation: String,
     $notes: String,
     $backgroundImage: String,
-    $openingHoursValidation: String
+    $openingHoursValidation: String,
+    $allDayEvent: Boolean
   ) {
     updateActivity(
       id: $id,
@@ -84,6 +87,7 @@ export const updateActivity = gql`
       notes: $notes,
       backgroundImage: $backgroundImage
       openingHoursValidation: $openingHoursValidation
+      allDayEvent: $allDayEvent
     ) {
       id
     }

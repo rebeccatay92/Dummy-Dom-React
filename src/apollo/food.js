@@ -20,7 +20,8 @@ export const createFood = gql`
     $bookingConfirmation: String,
     $attachments: [attachmentInput],
     $backgroundImage: String,
-    $openingHoursValidation: String
+    $openingHoursValidation: String,
+    $allDayEvent: Boolean
   ) {
     createFood(
       ItineraryId: $ItineraryId,
@@ -41,7 +42,8 @@ export const createFood = gql`
       bookingConfirmation: $bookingConfirmation,
       attachments: $attachments,
       backgroundImage: $backgroundImage,
-      openingHoursValidation: $openingHoursValidation
+      openingHoursValidation: $openingHoursValidation,
+      allDayEvent: $allDayEvent
     ) {
       id
     }
@@ -65,7 +67,8 @@ export const updateFood = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $backgroundImage: String,
-    $openingHoursValidation: String
+    $openingHoursValidation: String,
+    $allDayEvent: Boolean
   ) {
     updateFood(
       id: $id,
@@ -83,7 +86,8 @@ export const updateFood = gql`
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
       backgroundImage: $backgroundImage,
-      openingHoursValidation: $openingHoursValidation
+      openingHoursValidation: $openingHoursValidation,
+      allDayEvent: $allDayEvent
     ) {
       id
     }
