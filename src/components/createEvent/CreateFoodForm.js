@@ -26,6 +26,7 @@ import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
+import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
@@ -96,10 +97,19 @@ class CreateFoodForm extends Component {
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
 
     // VALIDATE START AND END TIMES
-    if (!this.state.startTime || !this.state.endTime) {
+    if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
       console.log('time is missing')
       return
     }
+
+    // VALIDATE AND ASSIGN MISSING TIMINGS
+    // if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
+    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
+    // } else if (typeof (newFood.startTime) !== 'number') {
+    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
+    // } else if (typeof (newFood.startTime) !== 'number') {
+    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
+    // }
 
     // VALIDATE PLANNER TIMINGS
     var isValid = newEventTimelineValidation(this.props.events, 'Food', newFood)
@@ -108,8 +118,7 @@ class CreateFoodForm extends Component {
     if (!isValid) {
       window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
     }
-    // else {
-    // }
+
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)
 

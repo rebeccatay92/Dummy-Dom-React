@@ -26,6 +26,7 @@ import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
+import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -100,10 +101,19 @@ class CreateActivityForm extends Component {
     }
 
     // VALIDATE START AND END TIMES
-    if (!this.state.startTime || !this.state.endTime) {
+    if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
       console.log('time is missing')
       return
     }
+
+    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
+    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
+    // }
 
     // VALIDATE PLANNER TIMINGS
     var isValid = newEventTimelineValidation(this.props.events, 'Activity', newActivity)

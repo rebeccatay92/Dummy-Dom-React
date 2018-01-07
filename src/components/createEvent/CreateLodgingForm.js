@@ -95,7 +95,7 @@ class CreateLodgingForm extends Component {
     }
 
     // VALIDATE START AND END TIMES
-    if (!this.state.startTime || !this.state.endTime) {
+    if (typeof (newLodging.startTime) !== 'number' || typeof (newLodging.endTime) !== 'number') {
       console.log('time is missing')
       return
     }
