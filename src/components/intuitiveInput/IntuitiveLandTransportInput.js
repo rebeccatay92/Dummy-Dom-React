@@ -27,11 +27,7 @@ class IntuitiveLandTransportInput extends Component {
   }
 
   selectLocation (location, type) {
-    if (location.openingHours) {
-      location.openingHours = JSON.stringify(location.openingHours)
-    }
-    if (type === 'departure') this.setState({departureGooglePlaceData: constructGooglePlaceDataObj(location)})
-    else if (type === 'arrival') this.setState({arrivalGooglePlaceData: constructGooglePlaceDataObj(location)})
+    this.setState({[`${type}GooglePlaceData`]: constructGooglePlaceDataObj(location)})
     console.log('selected location', location)
   }
 

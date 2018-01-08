@@ -6,32 +6,20 @@ var key = `key=${process.env.REACT_APP_GOOGLE_API_KEY}`
 var placeDetails = `https://maps.googleapis.com/maps/api/place/details/json?`
 
 class GooglePlaceResult extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      place_id: this.props.result.place_id,
-      countryCode: '',
-      name: this.props.result.name,
-      address: this.props.result.formatted_address,
-      latitude: this.props.result.geometry.location.lat,
-      longitude: this.props.result.geometry.location.lng,
-      openingHours: null
-    }
-  }
-
+  // got rid of state since placeDetails api response is now passed directly to form, instead of used to construct googlePlaceData obj
   selectLocation () {
     var urlPlaceDetails = crossOriginUrl + placeDetails + key + `&placeid=${this.props.result.place_id}`
-      fetch(urlPlaceDetails)
-        .then(response => {
-          return response.json()
-        })
-        .then(json => {
-          console.log('details', json)
-          this.props.selectLocation(json.result)
-        })
-        .catch(err => {
-          console.log('err', err)
-        })
+    fetch(urlPlaceDetails)
+      .then(response => {
+        return response.json()
+      })
+      .then(json => {
+        console.log('details', json)
+        this.props.selectLocation(json.result)
+      })
+      .catch(err => {
+        console.log('err', err)
+      })
   }
 
   render () {
@@ -40,7 +28,7 @@ class GooglePlaceResult extends Component {
         <i className='material-icons' style={{fontSize: '18px', color: '#3c3a44', verticalAlign: 'top'}}>place</i>
         <div style={{display: 'inline-block', width: '93%'}}>
           <h4 style={{fontSize: '1em', margin: '0', color: '#3C3A44', display: 'inline'}}>
-            {this.state.name} <span style={{color: 'rgb(120, 120, 120)'}}>{this.state.address}</span>
+            {this.props.result.name} <span style={{color: 'rgb(120, 120, 120)'}}>{this.props.result.formatted_address}</span>
           </h4>
         </div>
       </div>

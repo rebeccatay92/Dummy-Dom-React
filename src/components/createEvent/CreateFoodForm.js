@@ -26,6 +26,7 @@ import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
+import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
@@ -90,25 +91,34 @@ class CreateFoodForm extends Component {
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
       attachments: this.state.attachments,
-      backgroundImage: this.state.backgroundImage
+      backgroundImage: this.state.backgroundImage,
+      openingHoursValidation: this.state.openingHoursValidation
     }
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
 
     // VALIDATE START AND END TIMES
-    if (!this.state.startTime || !this.state.endTime) {
+    if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
       console.log('time is missing')
       return
     }
 
-    // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'Food', newFood)
-    console.log('isValid', isValid)
+    // VALIDATE AND ASSIGN MISSING TIMINGS
+    // if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
+    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
+    // } else if (typeof (newFood.startTime) !== 'number') {
+    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
+    // } else if (typeof (newFood.startTime) !== 'number') {
+    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
+    // }
 
-    if (!isValid) {
+    // VALIDATE PLANNER TIMINGS
+    var output = newEventTimelineValidation(this.props.events, 'Food', newFood)
+    console.log('output', output)
+
+    if (!output.isValid) {
       window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
     }
-    // else {
-    // }
+
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)
 
@@ -230,7 +240,7 @@ class CreateFoodForm extends Component {
     if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
 
     if (openingHoursText.indexOf('Closed') > -1) {
-      this.setState({openingHoursValidation: 'Place is closed'})
+      this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
     } else {
       var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
 
@@ -243,28 +253,25 @@ class CreateFoodForm extends Component {
 
       if (this.state.endDay === this.state.startDay) {
         if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 1'})
+          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
         }
         if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 2'})
+          this.setState({openingHoursValidation: '3 -> End time is after closing'})
         }
         if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 3'})
+          this.setState({openingHoursValidation: '4 -> start time is after end time'})
         }
       } else if (this.state.endDay === this.state.startDay + 1) {
         // day 2 unix is 1 full day + unix from midnight
         endUnix += (24 * 60 * 60)
         if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 4'})
+          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
         }
         if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 5'})
-        }
-        if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 6'})
+          this.setState({openingHoursValidation: '3 -> End time is after closing'})
         }
       } else if (this.state.endDay > this.state.startDay + 1) {
-        this.setState({openingHoursValidation: 'Selected times are not valid 7'})
+        this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
       }
     }
   }

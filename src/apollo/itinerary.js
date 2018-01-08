@@ -45,6 +45,8 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          openingHoursValidation
+          allDayEvent
         }
         Flight {
           FlightInstance {
@@ -150,6 +152,8 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          openingHoursValidation
+          allDayEvent
         }
         LandTransport {
           id

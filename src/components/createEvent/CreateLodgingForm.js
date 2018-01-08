@@ -95,21 +95,19 @@ class CreateLodgingForm extends Component {
     }
 
     // VALIDATE START AND END TIMES
-    if (!this.state.startTime || !this.state.endTime) {
+    if (typeof (newLodging.startTime) !== 'number' || typeof (newLodging.endTime) !== 'number') {
       console.log('time is missing')
       return
     }
 
     // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
-    // console.log('isValid', isValid)
+    var output = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
+    // console.log('output', output)
 
-    if (!isValid) {
+    if (!output.isValid) {
       window.alert(`time ${newLodging.startTime} // ${newLodging.endTime} clashes with pre existing events.`)
     }
 
-    // else {
-    // }
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
     console.log('helper output', helperOutput)
 
