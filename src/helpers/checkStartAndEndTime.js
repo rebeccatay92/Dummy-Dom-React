@@ -20,7 +20,7 @@ function checkStartAndEndTime (eventsArr, event, type) {
       event.endTime = eventsInDay[index].type === 'Lodging' && !eventsInDay[index].start ? eventsInDay[index][eventsInDay[index].type].endTime : eventsInDay[index][eventsInDay[index].type].startTime
     }
   } else if (type === 'allDayEvent') {
-    if (eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].endTime < eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].startTime && eventsInDay[eventsInDay.length - 1].type !== 'Lodging') {
+    if (eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].startDay < eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].endDay && eventsInDay[eventsInDay.length - 1].type !== 'Lodging') {
       event.startTime = eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].startTime
       event.endTime = event.startTime
     } else {
