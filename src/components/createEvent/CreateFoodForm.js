@@ -112,10 +112,10 @@ class CreateFoodForm extends Component {
     // }
 
     // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'Food', newFood)
-    console.log('isValid', isValid)
+    var output = newEventTimelineValidation(this.props.events, 'Food', newFood)
+    console.log('output', output)
 
-    if (!isValid) {
+    if (!output.isValid) {
       window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
     }
 

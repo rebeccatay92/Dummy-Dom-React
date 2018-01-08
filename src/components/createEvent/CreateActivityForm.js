@@ -116,15 +116,14 @@ class CreateActivityForm extends Component {
     // }
 
     // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
-    console.log('isValid', isValid)
+    var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+    console.log('output', output)
 
-    // prevent form submission if time is not valid
-    if (!isValid) {
+    if (!output.isValid) {
       window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
+      console.log('ERROR ROWS', output.errorRows)
     }
 
-    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
 
     this.props.changingLoadSequence({

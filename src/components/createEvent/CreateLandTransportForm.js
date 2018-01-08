@@ -115,8 +115,8 @@ class CreateLandTransportForm extends Component {
     }
 
     // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'LandTransport', newLandTransport)
-    if (!isValid) {
+    var output = newEventTimelineValidation(this.props.events, 'LandTransport', newLandTransport)
+    if (!output.isValid) {
       window.alert(`time ${newLandTransport.startTime} // ${newLandTransport.endTime} clashes with pre existing events.`)
     }
 

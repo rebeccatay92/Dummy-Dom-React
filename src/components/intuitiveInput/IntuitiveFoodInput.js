@@ -112,12 +112,12 @@ class IntuitiveFoodInput extends Component {
     }
 
     let startEndTimeOutput = newFood
-    if (!this.state.startTime && !this.state.endTime) {
+    if (typeof (this.state.startTime) !== 'number' && typeof (this.state.endTime) !== 'number') {
       // add default time as all-day event here
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
-    } else if (!this.state.startTime) {
+    } else if (typeof (this.state.startTime) !== 'number') {
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
-    } else if (!this.state.endTime) {
+    } else if (typeof (this.state.endTime) !== 'number') {
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
     }
 
