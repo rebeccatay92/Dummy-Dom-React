@@ -19,7 +19,8 @@ export const createFood = gql`
     $bookedThrough: String,
     $bookingConfirmation: String,
     $attachments: [attachmentInput],
-    $backgroundImage: String
+    $backgroundImage: String,
+    $allDay: Boolean
   ) {
     createFood(
       ItineraryId: $ItineraryId,
@@ -39,7 +40,8 @@ export const createFood = gql`
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
       attachments: $attachments,
-      backgroundImage: $backgroundImage
+      backgroundImage: $backgroundImage,
+      allDay: $allDay
     ) {
       id
     }
