@@ -115,12 +115,12 @@ class IntuitiveActivityInput extends Component {
     // Assign Start/End Time based on previous/next event within that day.
     // unix 0 is taken to be falsy. check missing time using typeof !== number
     let startEndTimeOutput = newActivity
-    if (typeof (this.state.startTime) !== 'number' && typeof (this.state.endTime) !== 'number') {
+    if (!this.state.startTime && !this.state.endTime) {
       // add default time as all-day event here
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-    } else if (typeof (this.state.startTime) !== 'number') {
+    } else if (!this.state.startTime) {
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    } else if (typeof (this.state.endTime) !== 'number') {
+    } else if (!this.state.endTime) {
       startEndTimeOutput = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
     }
 
