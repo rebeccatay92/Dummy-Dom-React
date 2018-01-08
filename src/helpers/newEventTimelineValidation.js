@@ -268,12 +268,10 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
     // if first instance is ending row, anything before it is wrong.
     // if last instance is of type start, everything after is wrong,
     // if last instance is of type end, displacedRow is right after it.
-
     console.log('flight instance arr', newEvent)
     var flightInstanceRows = []
     var days = []
     newEvent.forEach(instance => {
-      // 2 rows for start/end
       flightInstanceRows.push(
         {day: instance.startDay, time: instance.startTime},
         {day: instance.endDay, time: instance.endTime}
@@ -283,6 +281,45 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
         days.push(instance.startDay)
       } else if (!days.includes(instance.endDay)) {
         days.push(instance.endDay)
+      }
+    })
+    days.forEach(day => {
+      var dayEvents = newEvent.filter(e => {
+        return e.day === day
+      })
+      var dayInstanceRows = flightInstanceRows.filter(e => {
+        return e.day === day
+      })
+      var firstInstanceInDay = dayInstanceRows[0]
+      var lastInstanceInDay = dayInstanceRows[dayInstanceRows.length - 1]
+
+      // compare day events with incoming flight instances
+      var displacedRow = dayEvents.filter(e => {
+        return (e.time >= firstInstanceInDay.time)
+      })
+
+      if (!displacedRow) {
+        // check last row in day is not of type starting
+        var lastRow = dayEvents[dayEvents.length - 1]
+        var isStartingRow = checkIfStartingRow(lastRow)
+        if (isStartingRow) {
+          output.isValid = false
+          output.errorRows = createErrorRow(lastRow, output.errorRows)
+        } else {
+          // check flight instance time is after lastRow endTime
+        }
+        // check first flight instance is not of type end
+      } else {
+        // if displaced row, check it is not type ending && time equals
+        var isEndingRow = checkIfEndingRow(displacedRow)
+        if (isEndingRow && displacedRow.time !== firstInstanceInDay.time) {
+          output.isValid = false
+          output.errorRows = createErrorRow(displacedRow, output.errorRows)
+        } else {
+          // check first flight instance is not type end
+          // check last flight instance is not type start
+          // displaced row start time must be >= lastInstance time (since flight instances are inserted as a block)
+        }
       }
     })
   }
