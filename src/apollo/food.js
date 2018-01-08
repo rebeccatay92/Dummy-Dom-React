@@ -90,8 +90,6 @@ export const updateFood = gql`
 
 export const deleteFood = gql`
   mutation deleteFood($id: ID!) {
-    deleteFood(id: $id) {
-      status
-    }
+    deleteFood(id: $id)
   }
 `

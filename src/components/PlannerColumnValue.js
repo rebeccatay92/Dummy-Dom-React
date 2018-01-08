@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
-import { columnValueContainerStyle, eventDropdownStyle } from '../Styles/styles'
+import EventDropdownMenu from './EventDropdownMenu'
+import { columnValueContainerStyle, eventDropdownStyle, eventDropdownExpandedStyle } from '../Styles/styles'
 
 const columnValues = {
   'Price': 'cost',
@@ -10,13 +11,32 @@ const columnValues = {
 }
 
 class PlannerColumnValue extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      expandedMenu: false
+    }
+  }
   render () {
     return (
       <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={columnValueContainerStyle(this.props.column)}>
         {this.renderInfo()}
-        {this.props.isLast && this.props.hover && !this.props.activity.dropzone && <i key='eventOptions' className='material-icons' style={eventDropdownStyle}>more_vert</i>}
+        {this.props.isLast && this.props.hover && !this.state.expandedMenu && !this.props.activity.dropzone && <i key='eventOptions' className='material-icons' style={eventDropdownStyle} onClick={() => this.setState({expandedMenu: !this.state.expandedMenu})}>more_vert</i>}
+        {this.props.isLast && this.state.expandedMenu && !this.props.activity.dropzone && (
+          <div>
+            <i key='eventOptions' className='material-icons' style={eventDropdownExpandedStyle} onClick={() => this.setState({expandedMenu: !this.state.expandedMenu})}>more_vert</i>
+            <EventDropdownMenu event={this.props.activity} itineraryId={this.props.itineraryId} toggleEventDropdown={() => this.toggleEventDropdown()} />
+          </div>
+        )}
       </td>
     )
+  }
+
+  toggleEventDropdown () {
+    this.setState({
+      expandedMenu: false
+    })
   }
 
   renderInfo () {
