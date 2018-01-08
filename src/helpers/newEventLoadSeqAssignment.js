@@ -42,24 +42,21 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       return e.day === newEvent.startDay
     })
 
-    // FIND EVENT > STARTTIME. NO EQUALS
-
     var displacedRow = dayEvents.find(e => {
-      if (!newEvent.startTime) {
-        return null
+      if (typeof (newEvent.startTime) === 'number') {
+        return (e.time >= newEvent.startTime)
       } else {
-        return (e.time > newEvent.startTime)
+        return null
       }
     })
 
-    // IF CLASH BETWEEN START AND END JUST INSERT, DONT SHIFT BY 1
     if (!displacedRow) {
       newEvent.loadSequence = dayEvents.length + 1
     } else {
       var index = dayEvents.indexOf(displacedRow)
-      if (checkIfEndingRow(displacedRow)) {
-        dayEvents.splice(index, 0, 'placeholder')
-        // dayEvents.splice(index + 1, 0, 'placeholder')
+      // if time is equal, it goes after an ending row. if time is before, or if not an ending row, event goes before
+      if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent.startTime) {
+        dayEvents.splice(index + 1, 0, 'placeholder')
       } else {
         dayEvents.splice(index, 0, 'placeholder')
       }
@@ -121,10 +118,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       })
     } else {
       // different start and end day
-      console.log('DIFFERENT START AND END DAY')
-      console.log('startTime', newEvent.startTime, 'type', typeof (newEvent.startTime))
-      console.log('endTime', newEvent.endTime, 'type', typeof (newEvent.endTime))
-
       types = ['start', 'end']
       types.forEach(type => {
         var isStart = (type === 'start')
@@ -133,7 +126,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         })
 
         var displacedRow = dayEvents.find(event => {
-          // start is truthy.
           if (typeof (newEvent[`${type}Time`]) === 'number') {
             return (event.time >= newEvent[`${type}Time`])
           } else {
@@ -142,21 +134,16 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         })
 
         if (!displacedRow) {
-          console.log(type, 'NO DISPLACED ROW')
           dayEvents.push({start: isStart})
         } else {
-          console.log(type, 'DISPALCED ROW EXISTS')
           index = dayEvents.indexOf(displacedRow)
           if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent[`${type}Time`]) {
-            console.log(type, 'BUMP ONE POSITION')
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
-            console.log(type, 'DONT BUMP')
             dayEvents.splice(index, 0, {start: isStart})
           }
         }
 
-        console.log('dayEvents', dayEvents)
         dayEvents.forEach(event => {
           var correctLoadSeq = dayEvents.indexOf(event) + 1
           if (event.modelId && event.loadSeq !== correctLoadSeq) {
@@ -201,17 +188,34 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         return (e.time >= dayInstanceRows[0].time)
       })
       if (!displacedRow) {
-        // add all to the end, no change in load seq for current events
         dayEvents.push(...dayInstanceRows)
       } else if (displacedRow) {
         var index = dayEvents.indexOf(displacedRow)
-
-        if (checkIfEndingRow(displacedRow)) {
+        if (checkIfEndingRow(displacedRow) && displacedRow.time === dayInstanceRows[0].time) {
           dayEvents.splice(index + 1, 0, ...dayInstanceRows)
         } else {
           dayEvents.splice(index, 0, ...dayInstanceRows)
         }
       }
+
+      // inserting each instance individually
+      // dayInstanceRows.forEach(instanceRow => {
+      //   console.log('inserting for instanceRow', instanceRow)
+      //   var displacedRow = dayEvents.find(e => {
+      //     return (e.time >= instanceRow.time)
+      //   })
+      //   if (!displacedRow) {
+      //     dayEvents.push(instanceRow)
+      //   } else {
+      //     console.log('instanceRow time', instanceRow.time, 'displacedRow', displacedRow.time)
+      //     var index = dayEvents.indexOf(displacedRow)
+      //     if (checkIfEndingRow(displacedRow) && displacedRow.time === instanceRow.time) {
+      //       dayEvents.splice(index + 1, 0, instanceRow)
+      //     } else {
+      //       dayEvents.splice(index, 0, instanceRow)
+      //     }
+      //   }
+      // })
 
       dayEvents.forEach(event => {
         var correctLoadSeq = dayEvents.indexOf(event) + 1
@@ -222,7 +226,6 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           flightInstanceLoadSeqs.push(correctLoadSeq)
         }
       })
-
       // after looping through all the days, flightInstanceLoadSeqs and loadSequenceInput should be filled. assign start/end load seq to flightinstances
       for (var i = 0; i < newEvent.length; i++) {
         newEvent[i].startLoadSequence = flightInstanceLoadSeqs[(2 * i)]

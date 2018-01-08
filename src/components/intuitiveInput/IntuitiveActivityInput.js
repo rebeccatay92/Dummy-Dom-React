@@ -42,9 +42,6 @@ class IntuitiveActivityInput extends Component {
   }
 
   selectLocation (location) {
-    if (location.openingHours) {
-      location.openingHours = JSON.stringify(location.openingHours)
-    }
     this.setState({googlePlaceData: constructGooglePlaceDataObj(location)})
     console.log('selected location', location)
   }
@@ -116,6 +113,7 @@ class IntuitiveActivityInput extends Component {
     }
 
     // Assign Start/End Time based on previous/next event within that day.
+    // unix 0 is taken to be falsy. check missing time using typeof !== number
     let startEndTimeOutput = newActivity
     if (!this.state.startTime && !this.state.endTime) {
       // add default time as all-day event here

@@ -26,6 +26,7 @@ import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
+import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -92,29 +93,37 @@ class CreateActivityForm extends Component {
       bookingConfirmation: this.state.bookingConfirmation,
       notes: this.state.notes,
       attachments: this.state.attachments,
-      backgroundImage: this.state.backgroundImage
+      backgroundImage: this.state.backgroundImage,
+      openingHoursValidation: this.state.openingHoursValidation
     }
     if (this.state.googlePlaceData.placeId) {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
     // VALIDATE START AND END TIMES
-    if (!this.state.startTime || !this.state.endTime) {
+    if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
       console.log('time is missing')
       return
     }
 
-    // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
-    console.log('isValid', isValid)
-
-    // prevent form submission if time is not valid
-    if (!isValid) {
-      window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
-    }
-    // else {
+    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
+    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
     // }
-    // TESTING LOAD SEQUENCE ASSIGNMENT (ASSUMING ALL START/END TIMES ARE PRESENT)
+
+    // VALIDATE PLANNER TIMINGS
+    var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+    console.log('output', output)
+
+    if (!output.isValid) {
+      window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
+      console.log('ERROR ROWS', output.errorRows)
+    }
+
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
 
     this.props.changingLoadSequence({
@@ -239,7 +248,7 @@ class CreateActivityForm extends Component {
     if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
 
     if (openingHoursText.indexOf('Closed') > -1) {
-      this.setState({openingHoursValidation: 'Place is closed'})
+      this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
     } else {
       var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
 
@@ -252,28 +261,25 @@ class CreateActivityForm extends Component {
 
       if (this.state.endDay === this.state.startDay) {
         if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 1'})
+          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
         }
         if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 2'})
+          this.setState({openingHoursValidation: '3 -> End time is after closing'})
         }
         if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 3'})
+          this.setState({openingHoursValidation: '4 -> start time is after end time'})
         }
       } else if (this.state.endDay === this.state.startDay + 1) {
         // day 2 unix is 1 full day + unix from midnight
         endUnix += (24 * 60 * 60)
         if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 4'})
+          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
         }
         if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 5'})
-        }
-        if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: 'Selected times are not valid 6'})
+          this.setState({openingHoursValidation: '3 -> End time is after closing'})
         }
       } else if (this.state.endDay > this.state.startDay + 1) {
-        this.setState({openingHoursValidation: 'Selected times are not valid 7'})
+        this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
       }
     }
   }

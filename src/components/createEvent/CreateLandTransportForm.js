@@ -108,12 +108,18 @@ class CreateLandTransportForm extends Component {
       newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
     }
 
+    // VALIDATE START AND END TIMES
+    if (typeof (newLandTransport.startTime) !== 'number' || typeof (newLandTransport.endTime) !== 'number') {
+      console.log('time is missing')
+      return
+    }
+
     // VALIDATE PLANNER TIMINGS
-    var isValid = newEventTimelineValidation(this.props.events, 'LandTransport', newLandTransport)
-    if (!isValid) {
+    var output = newEventTimelineValidation(this.props.events, 'LandTransport', newLandTransport)
+    if (!output.isValid) {
       window.alert(`time ${newLandTransport.startTime} // ${newLandTransport.endTime} clashes with pre existing events.`)
     }
-    
+
     // console.log('newLandTransport', newLandTransport)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
     console.log('helper output', helperOutput)
