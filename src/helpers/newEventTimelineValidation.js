@@ -273,8 +273,8 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
     var days = []
     newEvent.forEach(instance => {
       flightInstanceRows.push(
-        {day: instance.startDay, time: instance.startTime},
-        {day: instance.endDay, time: instance.endTime}
+        {day: instance.startDay, time: instance.startTime, start: true},
+        {day: instance.endDay, time: instance.endTime, start: false}
       )
 
       if (!days.includes(instance.startDay)) {
@@ -299,6 +299,15 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
       })
 
       if (!displacedRow) {
+        // if first flight instance is an ending row, the entire day is invalid
+        if (!firstInstanceInDay.start) {
+          output.isValid = false
+          // construct errorRows for all events in day
+          for (var i = 0; i < dayEvents.length - 1; i++) {
+            output.errorRows = createErrorRow(dayEvents[i], output.errorRows)
+          }
+        }
+
         // check last row in day is not of type starting
         var lastRow = dayEvents[dayEvents.length - 1]
         var isStartingRow = checkIfStartingRow(lastRow)
@@ -307,18 +316,58 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
           output.errorRows = createErrorRow(lastRow, output.errorRows)
         } else {
           // check flight instance time is after lastRow endTime
+          var lastTiming = findEndTime(lastRow)
+          var didTimeOverlap = (firstInstanceInDay.time < lastTiming)
+          if (didTimeOverlap) {
+            output.isValid = false
+            output.errorRows = createErrorRow(lastRow, output.errorRows)
+          }
         }
-        // check first flight instance is not of type end
       } else {
+        // displacedRow exists
+        // if first flight is ending row, everything from start of day up to displaced row is all invalid. displacedRow is included if displacedRow.time === first flight time
+        if (!firstInstanceInDay.start) {
+          output.isValid = false
+          var displacedIndex = dayEvents.findIndex(displacedRow)
+          for (var j = 0; j < displacedIndex; j++) {
+            output.errorRows = createErrorRow(dayEvents[j], output.errorRows)
+          }
+          // flight instance row will go after displacedRow if times r equal and displacedRow is an ending row
+          // ie if displaced row is ending row and time is equal, it will be before flightInstance type:end and is invalid
+          if (checkIfEndingRow(displacedRow) && displacedRow.time === firstInstanceInDay.time) {
+            output.isValid = false
+            output.errorRows = createErrorRow(displacedRow, output.errorRows)
+          }
+        }
+        // check last flight instance is not type start
+        if (lastInstanceInDay.start) {
+          output.isValid = false
+          // everything after last instance is invalid
+          // if time is equals and displaced is endingrow, flight goes after. displaced row is still valid
+          displacedIndex = dayEvents.findIndex(displacedRow)
+          for (var k = displacedIndex + 1; k < dayEvents[dayEvents.length - 1]; k++) {
+            output.errorRows = createErrorRow(dayEvents[k], output.errorRows)
+          }
+          // if time is not equal, last instance is definitely before displaced row. hence invalid
+          if (checkIfEndingRow(displacedRow) && displacedRow.time !== lastInstanceInDay.time) {
+            output.errorRows = createErrorRow(displacedRow, output.errorRows)
+          }
+        }
         // if displaced row, check it is not type ending && time equals
         var isEndingRow = checkIfEndingRow(displacedRow)
         if (isEndingRow && displacedRow.time !== firstInstanceInDay.time) {
           output.isValid = false
           output.errorRows = createErrorRow(displacedRow, output.errorRows)
         } else {
-          // check first flight instance is not type end
-          // check last flight instance is not type start
-          // displaced row start time must be >= lastInstance time (since flight instances are inserted as a block)
+          // displaced row start time must be >= lastInstance time (since flight instances are inserted as a block). else everything from displaced row onwards is wrong
+          didTimeOverlap = (displacedRow.time < lastInstanceInDay.time)
+          if (didTimeOverlap) {
+            output.isValid = false
+            displacedIndex = dayEvents.findIndex(displacedRow)
+            for (var l = displacedIndex; l < dayEvents.length - 1; l++) {
+              output.errorRows = createErrorRow(dayEvents[l], output.errorRows)
+            }
+          }
         }
       }
     })
