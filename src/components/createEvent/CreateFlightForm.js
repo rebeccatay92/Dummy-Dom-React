@@ -24,6 +24,7 @@ import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
 import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
+import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
@@ -117,6 +118,13 @@ class CreateFlightForm extends Component {
       })
     }
     // console.log('newFlight', newFlight)
+
+    // VALIDATE PLANNER TIMINGS
+    var output = newEventTimelineValidation(this.props.events, 'Flight', newFlight.flightInstances)
+    console.log('output', output)
+    if (!output.isValid) {
+      window.alert(`some flight instances hv timing clash`)
+    }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Flight', newFlight.flightInstances)
     console.log('helper output', helperOutput)
