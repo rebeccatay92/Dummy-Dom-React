@@ -124,6 +124,7 @@ class CreateFlightForm extends Component {
     console.log('output', output)
     if (!output.isValid) {
       window.alert(`some flight instances hv timing clash`)
+      console.log('ERROR ROWS', output.errorRows)
     }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Flight', newFlight.flightInstances)
