@@ -328,18 +328,18 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
           output.errorRows = createErrorRow(lastRow, output.errorRows)
         }
       } else {
-        // if displacedStart exists, check that previous row is not starting row. else <start><start>
-        console.log('displacedByStart exists')
-        console.log('dayEvents', dayEvents)
-        displacedByStartIndex = dayEvents.indexOf(displacedByStart)
-        // if no previous row, skip to checking end row
-        if (displacedByStartIndex === 0) return output
-        previousRow = dayEvents[displacedByStartIndex - 1]
-        isStartingRow = checkIfStartingRow(previousRow)
-        if (isStartingRow) {
-          output.isValid = false
-          output.errorRows = createErrorRow(previousRow, output.errorRows)
-        }
+        // // if displacedStart exists, check that previous row is not starting row. else <start><start>
+        // console.log('displacedByStart exists')
+        // displacedByStartIndex = dayEvents.indexOf(displacedByStart)
+        // // if no previous row, skip to checking end row
+        // if (displacedByStartIndex === 0) return output
+        // previousRow = dayEvents[displacedByStartIndex - 1]
+        // isStartingRow = checkIfStartingRow(previousRow)
+        // if (isStartingRow) {
+        //   output.isValid = false
+        //   console.log('previous row is starting row', previousRow)
+        //   output.errorRows = createErrorRow(previousRow, output.errorRows)
+        // }
 
         // if displacedStart exists, check if displacedEnd exists.
         displacedByEnd = dayEvents.find(e => {
@@ -350,6 +350,8 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
         // if indexes not equal, errors are from displacedStart + 1 -> displacedEnd - 1
         if (displacedByStartIndex !== displacedByEndIndex) {
           output.isValid = false
+          console.log('between start and end rows are errors')
+          //INDEX IS DIFFERENT BUT THERE ARE NO ERROR ROWS.
           for (var p = displacedByStartIndex + 1; p < displacedByEndIndex; p++) {
             output.errorRows = createErrorRow(dayEvents[p], output.errorRows)
           }
@@ -357,11 +359,13 @@ function newEventTimelineValidation (eventsArr, model, newEvent) {
         // displaced start and end is included if they are type ending and time is not equal
         isEndingRow = checkIfEndingRow(displacedByStart)
         if (isEndingRow && displacedByStart.time !== newEvent.startTime) {
+          console.log('testing1')
           output.isValid = false
           output.errorRows = createErrorRow(displacedByStart, output.errorRows)
         }
         isEndingRow = checkIfEndingRow(displacedByEnd)
         if (isEndingRow && displacedByEnd.time !== newEvent.endTime) {
+          console.log('testing2')
           output.isValid = false
           output.errorRows = createErrorRow(displacedByEnd, output.errorRows)
         }
