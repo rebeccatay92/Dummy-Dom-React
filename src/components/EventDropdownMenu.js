@@ -17,20 +17,16 @@ class EventDropdownMenu extends Component {
   }
 
   deleteEvent () {
-    const types = {
+    const apolloNaming = {
       Activity: 'deleteActivity',
       Food: 'deleteFood',
       Flight: 'deleteFlightBooking',
       LandTransport: 'deleteLandTransport',
       Lodging: 'deleteLodging'
     }
-
-    console.log('event to be deleted', this.props.event)
     var eventType = this.props.event.type
-    var deleteMutationNaming = types[eventType]
+    var deleteMutationNaming = apolloNaming[eventType]
     var modelId = this.props.event.modelId
-    // console.log('eventType', eventType, 'modelId', modelId)
-    // console.log('deleteMutationNaming', deleteMutationNaming, 'id', modelId)
 
     // REASSIGN LOAD SEQ AFTER DELETING
     function constructLoadSeqInputObj (event, correctLoadSeq) {
@@ -45,7 +41,7 @@ class EventDropdownMenu extends Component {
       }
       return inputObj
     }
-    console.log('all events', this.props.events)
+    // console.log('all events', this.props.events)
     var loadSequenceInputArr = []
     var eventsArr = this.props.events
     // remove deleted rows from eventsArr
@@ -53,7 +49,7 @@ class EventDropdownMenu extends Component {
       var isDeletedEvent = (e.type === eventType && e.modelId === modelId)
       return (!isDeletedEvent)
     })
-    console.log('newEventsArr', newEventsArr)
+    // console.log('newEventsArr', newEventsArr)
     // find how many days with events exist in eventsArr, split by day
     var daysArr = []
     newEventsArr.forEach(e => {
@@ -61,7 +57,7 @@ class EventDropdownMenu extends Component {
         daysArr.push(e.day)
       }
     })
-    console.log('daysArr', daysArr)
+    // console.log('daysArr', daysArr)
     // check load seq and reassign
     daysArr.forEach(day => {
       var dayEvents = newEventsArr.filter(e => {
@@ -76,15 +72,14 @@ class EventDropdownMenu extends Component {
       })
     })
     console.log('loadSequenceInputArr', loadSequenceInputArr)
-    // delete first before changing load seq, so if delete fails, there will not be repeated load seq (at most empty space in between)
-    this.props[`${deleteMutationNaming}`]({
-      variables: {
-        id: modelId
-      }
-    })
     this.props.changingLoadSequence({
       variables: {
         input: loadSequenceInputArr
+      }
+    })
+    this.props[`${deleteMutationNaming}`]({
+      variables: {
+        id: modelId
       },
       refetchQueries: [{
         query: queryItinerary,
