@@ -12,7 +12,7 @@ import { queryItinerary } from '../apollo/itinerary'
 
 class EventDropdownMenu extends Component {
   handleClickOutside (event) {
-    this.props.toggleEventDropdown()
+    this.props.toggleEventDropdown(event)
   }
 
   deleteEvent () {
@@ -39,8 +39,16 @@ class EventDropdownMenu extends Component {
 
   render () {
     return (
-      <div style={{width: '180px', height: 'auto', position: 'absolute', right: '12px', top: '45px', backgroundColor: 'white', zIndex: 1, cursor: 'default', boxShadow: '0px 1px 5px 2px rgba(0, 0, 0, .2)'}}>
-        <span onClick={() => this.deleteEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Delete</span>
+      <div style={{width: '145px', position: 'absolute', right: this.props.expandedEvent ? '590px' : '12px', top: '15px', backgroundColor: 'white', zIndex: 1, cursor: 'default', boxShadow: '0px 1px 5px 2px rgba(0, 0, 0, .2)'}}>
+        <div style={{margin: '8px'}}>
+          <span key='edit' onClick={() => this.props.toggleEditEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Edit Event</span>
+        </div>
+        <div style={{margin: '8px'}}>
+          <span key='delete' onClick={() => this.deleteEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Delete Event</span>
+        </div>
+        <div style={{margin: '8px'}}>
+          <span key='kissDom' onClick={() => alert('You son of a bitch')} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Kiss Dom</span>
+        </div>
       </div>
     )
   }

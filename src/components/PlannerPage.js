@@ -13,10 +13,10 @@ class PlannerPage extends Component {
           {/* <h1>Short Trip to Thailand</h1> */}
           <Planner id={this.props.match.params.itineraryId} />
         </div>
-        <div style={bucketStyle}>
+        {/* <div style={bucketStyle}>
           <p style={bucketTitleStyle}>BUCKETLIST</p>
-          {/* <BucketList /> */}
-        </div>
+          <BucketList />
+        </div> */}
       </div>
     )
   }
