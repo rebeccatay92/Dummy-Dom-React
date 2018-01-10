@@ -141,10 +141,10 @@ class PlannerActivity extends Component {
         </td>
         {
           !this.state.expanded && this.props.columns && this.props.columns.includes('Notes') &&
-          <PlannerColumnValue column='Notes' activity={this.props.activity} isLast hover={this.state.hover} />
+          <PlannerColumnValue column='Notes' activity={this.props.activity} isLast hover={this.state.hover} itineraryId={this.props.itineraryId} />
         }
         {!this.state.expanded && this.props.columns && !this.props.columns.includes('Notes') && this.props.columns.map((column, i) => {
-          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} isLast={i === 2} hover={this.state.hover} firstInFlightBooking={this.props.firstInFlightBooking} />
+          return <PlannerColumnValue key={i} column={column} activity={this.props.activity} isLast={i === 2} hover={this.state.hover} firstInFlightBooking={this.props.firstInFlightBooking} itineraryId={this.props.itineraryId} />
         })}
       </tr>
     )
@@ -222,6 +222,14 @@ class PlannerActivity extends Component {
                 }
               </div>
             }
+
+            {/* {this.state.editEventType &&
+              <div>
+                {this.state.editEventType === 'Activity' &&
+
+                }
+              </div>
+            } */}
           </td>
           {this.state.createEventType && <td style={plannerBlurredBackgroundStyle} />}
         </tr>
@@ -253,6 +261,12 @@ class PlannerActivity extends Component {
   handleCreateEventClick (eventType = null) {
     this.setState({
       createEventType: eventType
+    })
+  }
+
+  handleEditEventClick () {
+    this.setState({
+      editEventType: this.props.activity.type
     })
   }
 
@@ -375,7 +389,7 @@ class PlannerActivity extends Component {
     } else if (expanded) {
       const expandedEventIcons = (
         <div style={expandedEventIconsBoxStyle}>
-          <i key='expandedActivityEdit' className='material-icons' style={{...expandedEventIconsStyle, ...{marginRight: '5px'}}}>mode_edit</i>
+          <i onClick={() => this.handleEditEventClick()} key='expandedActivityEdit' className='material-icons' style={{...expandedEventIconsStyle, ...{marginRight: '5px'}}}>mode_edit</i>
           <i key='expandedActivityMap' className='material-icons' style={{...expandedEventIconsStyle, ...{marginRight: '5px'}}}>map</i>
           <i key='expandedActivityMore' className='material-icons' style={expandedEventIconsStyle}>more_vert</i>
         </div>

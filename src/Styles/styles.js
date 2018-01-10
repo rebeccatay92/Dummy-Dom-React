@@ -161,6 +161,8 @@ export const columnValueContainerStyle = (columnType) => {
 
 export const eventDropdownStyle = {position: 'absolute', right: '0px', top: '20px', ':hover': {color: primaryColor}}
 
+export const eventDropdownExpandedStyle = {position: 'absolute', right: '0px', top: '20px', color: primaryColor}
+
 // Create Event Form Styles
 export const createEventFormContainerStyle = {backgroundColor: 'transparent', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: totalWidth + 'px', height: totalHeight + 'px', zIndex: 999, color: 'white'}
 
