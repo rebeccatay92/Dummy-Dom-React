@@ -6,11 +6,11 @@ import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } fro
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
-import { createActivity, deleteActivity } from '../apollo/activity'
-import { createFood, deleteFood } from '../apollo/food'
-import { createFlight, deleteFlight } from '../apollo/flight'
-import { createLandTransport, deleteLandTransport } from '../apollo/landtransport'
-import { createLodging, deleteLodging } from '../apollo/lodging'
+import { createActivity } from '../apollo/activity'
+import { createFood } from '../apollo/food'
+import { createFlight } from '../apollo/flight'
+import { createLandTransport } from '../apollo/landtransport'
+import { createLodging } from '../apollo/lodging'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
@@ -566,19 +566,6 @@ class PlannerActivity extends Component {
       draggable: !this.state.draggable
     })
   }
-
-  // DELETE HAS BEEN MOVED TO EVENTDROPDOWNMENU
-  handleDelete () {
-    this.props.deleteActivity({
-      variables: {
-        id: this.props.activity.id
-      },
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.itineraryId }
-      }]
-    })
-  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -609,6 +596,5 @@ const mapStateToProps = (state) => {
 
 // REMOVE DELETE ACTIVITY
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
-  graphql(createActivity, { name: 'createActivity' }),
-  graphql(deleteActivity, { name: 'deleteActivity' })
+  graphql(createActivity, { name: 'createActivity' })
 )(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(onClickOutside(Radium(PlannerActivity))))))
