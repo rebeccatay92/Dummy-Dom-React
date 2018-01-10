@@ -98,7 +98,7 @@ class EventDropdownMenu extends Component {
           <span key='delete' onClick={() => this.deleteEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Delete Event</span>
         </div>
         <div style={{margin: '8px'}}>
-          <span key='kissDom' onClick={() => window.alert('You son of a bitch')} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Kiss Dom</span>
+          <span key='kissDom' onClick={() => window.alert('yoo haz bin bless by koding doge')} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Kiss Dom</span>
         </div>
       </div>
     )

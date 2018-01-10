@@ -99,6 +99,8 @@ class PlannerActivity extends Component {
     this.state = {
       creatingEvent: false,
       createEventType: null,
+      // editingEvent: false,
+      editEventType: null,
       onBox: false,
       draggable: true,
       expanded: false,
@@ -141,7 +143,7 @@ class PlannerActivity extends Component {
           {this.state.editEventType &&
             <div>
               {this.state.editEventType === 'Activity' &&
-              <EditActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+              <EditActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
               }
             </div>
           }
@@ -270,10 +272,11 @@ class PlannerActivity extends Component {
     })
   }
 
-  handleEditEventClick () {
+  handleEditEventClick (eventType = null) {
     this.setState({
-      editEventType: this.props.activity.type
-    }, () => console.log(this.state))
+      // editEventType: this.props.activity.type
+      editEventType: eventType
+    }, () => console.log('this.state', this.state))
   }
 
   toggleEventDropdown (event) {
@@ -314,7 +317,7 @@ class PlannerActivity extends Component {
       color: '#9FACBC'
     }
     const expandMenu = this.state.expandedMenu && (
-      <EventDropdownMenu expandedEvent={this.state.expanded} event={this.props.activity} itineraryId={this.props.itineraryId} toggleEventDropdown={(event) => this.toggleEventDropdown(event)} toggleEditEvent={() => this.handleEditEventClick()} />
+      <EventDropdownMenu expandedEvent={this.state.expanded} event={this.props.activity} itineraryId={this.props.itineraryId} toggleEventDropdown={(event) => this.toggleEventDropdown(event)} toggleEditEvent={() => this.handleEditEventClick(this.props.activity.type)} />
     )
     let expandButton
     if (this.state.hover && !this.state.expandedMenu) {
@@ -380,7 +383,7 @@ class PlannerActivity extends Component {
               {expandMenu}
               <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /><span style={typeStyle}> - </span><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} /></p>
             </div>
-          )// import CreateActivityForm from './CreateActivityForm'
+          )
         case 'LandTransport':
           if (this.props.activity.start) {
             return (
