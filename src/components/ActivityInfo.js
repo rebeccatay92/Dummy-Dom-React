@@ -34,7 +34,7 @@ class ActivityInfo extends Component {
       <span style={{opacity: '0', fontSize: '1px'}}>a</span>
     )
     return (
-      <span style={{display: 'inline-block', height: '18px', maxWidth: '223px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{this.state.value}</span>
+      <span title={this.state.value} style={{display: 'inline-block', height: '18px', maxWidth: '223px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{this.state.value}</span>
     )
   }
 

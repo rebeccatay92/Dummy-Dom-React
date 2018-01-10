@@ -62,7 +62,9 @@ export const timelineStyle = {
   backgroundColor: primaryColor
 }
 export const dateTableStyle = {width: '1052px'}
-export const timelineColumnStyle = {width: '89px', position: 'relative'}
+export const timelineColumnStyle = clash => {
+  return {width: '89px', position: 'relative', border: clash ? '1px solid ' + backgroundColor : 'none', borderRight: clash ? '1px solid red' : 'none'}
+}
 export const timelineTitleStyle = headerSticky => {
   return {position: headerSticky ? 'fixed' : 'absolute', top: headerSticky ? '60px' : '0px', textAlign: 'center', width: 'inherit', zIndex: 10, backgroundColor: backgroundColor}
 }
@@ -87,10 +89,10 @@ export const dateTableHorizontalLineStyle = isFirstDay => {
 }
 
 // PlannerActivity.js styles
-export const eventBoxStyle = (draggable, activityId) => {
+export const eventBoxStyle = (draggable, activityId, clash) => {
   return {
     cursor: draggable ? 'move' : 'default',
-    border: activityId ? 'none' : '1px dashed black',
+    border: activityId ? (clash ? '1px solid red' : 'none') : 'none',
     position: 'relative'
   }
 }
@@ -124,7 +126,7 @@ export const expandedEventIconsStyle = {cursor: 'pointer', ':hover': {color: pri
 export const expandedEventBoxStyle = {width: '100%', height: '100%', boxShadow: '0px 2px 5px 2px rgba(0, 0, 0, .2)', overflow: 'auto', position: 'relative'}
 export const expandedEventBoxImageContainerStyle = {display: 'inline-block', height: '183px', width: '292px', margin: '25px', backgroundColor: 'black', textAlign: 'center'}
 export const expandedEventBoxImageStyle = {maxHeight: '100%', maxWidth: '100%'}
-export const expandedEventBoxTextBoxStyle = {display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)'}
+export const expandedEventBoxTextBoxStyle = {display: 'inline-block', verticalAlign: 'top', margin: '25px 0', width: 'calc(100% - 370px)', position: 'relative'}
 
 // PlannerColumnHeader.js styles
 export const tableDropdownStyle = {
