@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Radium from 'radium'
-import EventDropdownMenu from './EventDropdownMenu'
-import { columnValueContainerStyle, eventDropdownStyle, eventDropdownExpandedStyle } from '../Styles/styles'
+import { columnValueContainerStyle, expandEventIconStyle } from '../Styles/styles'
 
 const columnValues = {
   'Price': 'cost',
@@ -11,32 +10,22 @@ const columnValues = {
 }
 
 class PlannerColumnValue extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      expandedMenu: false
-    }
-  }
   render () {
+    if (this.props.expandedEvent) {
+      return (
+        <td style={{position: 'relative'}}>
+          {this.props.isLast && this.props.expandedEvent && (
+            <i key='eventOptions' className='material-icons' style={expandEventIconStyle} onClick={() => this.props.expandEvent()}>expand_less</i>
+          )}
+        </td>
+      )
+    }
     return (
       <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={columnValueContainerStyle(this.props.column)}>
         {this.renderInfo()}
-        {this.props.isLast && this.props.hover && !this.state.expandedMenu && !this.props.activity.dropzone && <i key='eventOptions' className='material-icons' style={eventDropdownStyle} onClick={() => this.setState({expandedMenu: !this.state.expandedMenu})}>more_vert</i>}
-        {this.props.isLast && this.state.expandedMenu && !this.props.activity.dropzone && (
-          <div>
-            <i key='eventOptions' className='material-icons' style={eventDropdownExpandedStyle} onClick={() => this.setState({expandedMenu: !this.state.expandedMenu})}>more_vert</i>
-            <EventDropdownMenu event={this.props.activity} itineraryId={this.props.itineraryId} toggleEventDropdown={() => this.toggleEventDropdown()} />
-          </div>
-        )}
+        {this.props.isLast && this.props.hover && !this.props.expandedEvent && !this.props.activity.dropzone && <i key='eventOptions' className='material-icons' style={expandEventIconStyle} onClick={() => this.props.expandEvent()}>expand_more</i>}
       </td>
     )
-  }
-
-  toggleEventDropdown () {
-    this.setState({
-      expandedMenu: false
-    })
   }
 
   renderInfo () {

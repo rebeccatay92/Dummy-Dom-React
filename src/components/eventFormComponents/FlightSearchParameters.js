@@ -136,7 +136,6 @@ class FlightSearchParameters extends Component {
   }
 
   selectLocation (type, details) {
-
     this.setState({[`${type}Location`]: details}) // set airport/city details
   }
 

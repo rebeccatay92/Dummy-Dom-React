@@ -17,7 +17,7 @@ export const plannerPageStyles = {
   fontFamily: '\'Roboto\', sans-serif',
   color: mainFontColor,
   margin: '0 auto',
-  width: '1445px',
+  width: '1300px',
   fontWeight: '300'
 }
 
@@ -159,9 +159,7 @@ export const columnValueContainerStyle = (columnType) => {
   return {position: 'relative', textAlign: columnType === 'Notes' ? 'left' : 'center', verticalAlign: 'top', color: '#9FACBC', fontSize: '16px', paddingTop: '12px', width: `${0.2 * 962}px`}
 }
 
-export const eventDropdownStyle = {position: 'absolute', right: '0px', top: '20px', ':hover': {color: primaryColor}}
-
-export const eventDropdownExpandedStyle = {position: 'absolute', right: '0px', top: '20px', color: primaryColor}
+export const expandEventIconStyle = {position: 'absolute', right: '0px', top: '10px', ':hover': {color: primaryColor}}
 
 // Create Event Form Styles
 export const createEventFormContainerStyle = {backgroundColor: 'transparent', position: 'fixed', left: `calc(50% - ${totalWidth / 2}px)`, top: `calc(50% - ${totalHeight / 2}px)`, width: totalWidth + 'px', height: totalHeight + 'px', zIndex: 999, color: 'white'}
