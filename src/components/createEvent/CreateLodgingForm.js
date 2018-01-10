@@ -102,10 +102,10 @@ class CreateLodgingForm extends Component {
 
     // VALIDATE PLANNER TIMINGS
     var output = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
-    // console.log('output', output)
-
+    console.log('output', output)
     if (!output.isValid) {
       window.alert(`time ${newLodging.startTime} // ${newLodging.endTime} clashes with pre existing events.`)
+      console.log('ERROR ROWS', output.errorRows)
     }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)

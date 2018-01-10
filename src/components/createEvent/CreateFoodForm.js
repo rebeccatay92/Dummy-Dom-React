@@ -117,6 +117,7 @@ class CreateFoodForm extends Component {
 
     if (!output.isValid) {
       window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
+      console.log('ERROR ROWS', output.errorRows)
     }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)

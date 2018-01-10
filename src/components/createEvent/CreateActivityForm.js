@@ -106,7 +106,7 @@ class CreateActivityForm extends Component {
       return
     }
 
-    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
+    // VALIDATE AND ASSIGN MISSING TIMINGS.
     // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
     //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
     // } else if (typeof (newActivity.startTime) !== 'number') {
@@ -139,6 +139,7 @@ class CreateActivityForm extends Component {
         variables: { id: this.props.ItineraryId }
       }]
     })
+    // .then() //get created id
 
     this.resetState()
     this.props.toggleCreateEventType()
