@@ -8,6 +8,9 @@ import { Image } from 'react-bootstrap'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { primaryColor, plannerContainerStyle, plannerHeaderContainerStyle, itineraryNameStyle, itineraryDescStyle, plannerHeaderIconsContainerStyle, userIconsContainerStyle, userIconStyle, plannerIconStyle } from '../Styles/styles'
 import DateBox from './Date'
+
+import checkForTimelineErrorsInPlanner from '../helpers/checkForTimelineErrorsInPlanner'
+
 const _ = require('lodash')
 
 class Planner extends Component {
@@ -119,23 +122,10 @@ class Planner extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
-      const allActivities = nextProps.data.findItinerary.events
-      console.log(allActivities)
-      // let lodgingCheckout = nextProps.data.findItinerary.lodgings.map(lodging => {
-      //   return {
-      //     id: lodging.id,
-      //     name: lodging.name,
-      //     location: {
-      //       name: lodging.location.name
-      //     },
-      //     endDay: lodging.endDay,
-      //     endTime: lodging.endTime,
-      //     __typename: lodging.__typename,
-      //     endLoadSequence: lodging.endLoadSequence
-      //   }
-      // })
-      // let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]
-      this.props.initializePlanner(allActivities)
+      const allEvents = nextProps.data.findItinerary.events
+      const activitiesWithTimelineErrors = checkForTimelineErrorsInPlanner(allEvents)
+      console.log(activitiesWithTimelineErrors)
+      this.props.initializePlanner(activitiesWithTimelineErrors)
     }
   }
 }
