@@ -567,6 +567,7 @@ class PlannerActivity extends Component {
     })
   }
 
+  // DELETE HAS BEEN MOVED TO EVENTDROPDOWNMENU
   handleDelete () {
     this.props.deleteActivity({
       variables: {
@@ -606,6 +607,7 @@ const mapStateToProps = (state) => {
   }
 }
 
+// REMOVE DELETE ACTIVITY
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
   graphql(createActivity, { name: 'createActivity' }),
   graphql(deleteActivity, { name: 'deleteActivity' })
