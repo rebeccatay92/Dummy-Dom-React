@@ -28,6 +28,7 @@ export const queryItinerary = gql`
             id
             name
           }
+          locationAlias
           startDay
           endDay
           loadSequence
@@ -105,6 +106,7 @@ export const queryItinerary = gql`
             id
             name
           }
+          locationAlias
           startDay
           endDay
           startTime
@@ -133,6 +135,7 @@ export const queryItinerary = gql`
             id
             name
           }
+          locationAlias
           startDay
           endDay
           startTime
@@ -165,6 +168,8 @@ export const queryItinerary = gql`
             id
             name
           }
+          departureLocationAlias
+          arrivalLocationAlias
           startDay
           startTime
           endDay
@@ -196,6 +201,8 @@ export const queryItinerary = gql`
             id
             name
           }
+          departureLocationAlias
+          arrivalLocationAlias
           startDay
           startTime
           endDay
@@ -227,6 +234,8 @@ export const queryItinerary = gql`
             id
             name
           }
+          departureLocationAlias
+          arrivalLocationAlias
           startDay
           startTime
           endDay

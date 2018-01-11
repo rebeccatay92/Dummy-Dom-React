@@ -36,35 +36,32 @@ class EditActivityForm extends Component {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      
+      startDay: null,
+      endDay: null,
+      googlePlaceData: {},
+      locationAlias: '',
+      description: '',
+      notes: '',
+      // defaultTime: null,
+      startTime: null, // if setstate, will change to unix
+      endTime: null, // if setstate, will change to unix
+
+      cost: 0,
+      currency: '',
+      currencyList: [],
+      bookedThrough: '',
+      bookingConfirmation: '',
+      // attachments: [],
+      // backgroundImage: defaultBackground,
+      // googlePlaceDetails: null,
+      // for google api response, not for db
+      // locationDetails: {
+      //   address: null,
+      //   telephone: null,
+      //   openingHours: null
+      // },
+      openingHoursValidation: null
     }
-    // this.state = {
-    //   ItineraryId: this.props.ItineraryId,
-    //   startDay: this.props.day, //int
-    //   endDay: this.props.day,
-    //   googlePlaceData: {},
-    //   locationAlias: '',
-    //   description: '',
-    //   notes: '',
-    //   defaultTime: null,
-    //   startTime: null, // if setstate, will change to unix
-    //   endTime: null, // if setstate, will change to unix
-    //   cost: 0,
-    //   currency: '',
-    //   currencyList: [],
-    //   bookedThrough: '',
-    //   bookingConfirmation: '',
-    //   attachments: [],
-    //   backgroundImage: defaultBackground,
-    //   googlePlaceDetails: null,
-    //   // for google api response, not for db
-    //   locationDetails: {
-    //     address: null,
-    //     telephone: null,
-    //     openingHours: null
-    //   },
-    //   openingHoursValidation: null
-    // }
   }
 
   // updateDayTime (field, value) {
@@ -72,12 +69,12 @@ class EditActivityForm extends Component {
   //     [field]: value
   //   })
   // }
-  //
-  // handleChange (e, field) {
-  //   this.setState({
-  //     [field]: e.target.value
-  //   })
-  // }
+
+  handleChange (e, field) {
+    this.setState({
+      [field]: e.target.value
+    })
+  }
 
   // handleSubmit () {
   //   var bookingStatus = this.state.bookingConfirmation ? true : false
@@ -222,7 +219,7 @@ class EditActivityForm extends Component {
   //   this.setState({defaultTime: defaultTime})
   //   this.setState({startTime: defaultUnix, endTime: defaultUnix})
   // }
-  //
+
   // componentDidUpdate (prevProps, prevState) {
   //   if (this.state.googlePlaceDetails) {
   //     if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
@@ -244,7 +241,7 @@ class EditActivityForm extends Component {
   //     }
   //   }
   // }
-  //
+
   // validateOpeningHours () {
   //   this.setState({openingHoursValidation: null})
   //   var openingHoursText = this.state.locationDetails.openingHours
@@ -289,8 +286,24 @@ class EditActivityForm extends Component {
   // }
 
   componentDidMount () {
+    this.props.retrieveCloudStorageToken()
+    this.props.cloudStorageToken.then(obj => {
+      this.apiToken = obj.token
+    })
+
+    var currencyList = countriesToCurrencyList(this.props.countries)
+    this.setState({currencyList: currencyList})
+
     // WHEN EDIT FORM MOUNTS, INSTANTIATE STATE TO BE WHATEVER WAS IN DB
-    console.log('props', this.props)
+    console.log('event', this.props.event)
+    this.setState({
+      locationAlias: this.props.event.locationAlias,
+      cost: this.props.event.cost,
+      bookedThrough: this.props.event.bookedThrough,
+      bookingConfirmation: this.props.event.bookingConfirmation,
+      notes: this.props.event.notes
+    }, () => console.log(this.state))
+    // this.setState({currency: currencyList[0]})
   }
 
   render () {
@@ -325,14 +338,15 @@ class EditActivityForm extends Component {
             <div style={bookingNotesContainerStyle}>
               <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeEditActivity()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
-              {/* <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
+
+              <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} bookedThrough={this.state.bookedThrough} bookingConfirmation={this.state.bookingConfirmation} />
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>
                   Additional Notes
               </h4>
 
-              <LocationAlias handleChange={(e) => this.handleChange(e, 'locationAlias')} />
+              <LocationAlias locationAlias={this.state.locationAlias} handleChange={(e) => this.handleChange(e, 'locationAlias')} />
 
-              <Notes handleChange={(e, field) => this.handleChange(e, field)} /> */}
+              <Notes notes={this.state.notes} handleChange={(e, field) => this.handleChange(e, field)} />
             </div>
           </div>
         </div>

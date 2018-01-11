@@ -42,11 +42,11 @@ class BookingDetails extends Component {
           <label style={labelStyle}>
             Booking Service
           </label>
-          <input style={{width: '100%'}} type='text' name='bookedThrough' onChange={(e) => this.props.handleChange(e, 'bookedThrough')} />
+          <input style={{width: '100%'}} type='text' name='bookedThrough' value={this.props.bookedThrough} onChange={(e) => this.props.handleChange(e, 'bookedThrough')} />
           <label style={labelStyle}>
             Confirmation Number
           </label>
-          <input style={{width: '100%'}} type='text' name='bookingConfirmation' onChange={(e) => this.props.handleChange(e, 'bookingConfirmation')} />
+          <input style={{width: '100%'}} type='text' name='bookingConfirmation' value={this.props.bookingConfirmation} onChange={(e) => this.props.handleChange(e, 'bookingConfirmation')} />
           <label style={labelStyle}>
             Amount:
           </label>

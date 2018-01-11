@@ -28,6 +28,8 @@ import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursV
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
+import createEventTimelineValidation from '../../helpers/createEventTimelineValidation'
+
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
 
@@ -123,6 +125,9 @@ class CreateActivityForm extends Component {
       window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
       console.log('ERROR ROWS', output.errorRows)
     }
+
+    // REWRITE FUNCTION TO VALIDATE ONLY, NO ERROR ROWS
+    // createEventTimelineValidation(this.props.events, newActivity)
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
 
