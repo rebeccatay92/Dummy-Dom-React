@@ -19,7 +19,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
-import { countriesToCurrencyList, allCurrenciesList} from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
@@ -38,7 +38,7 @@ class CreateActivityForm extends Component {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      startDay: this.props.day, //int
+      startDay: this.props.day, // int
       endDay: this.props.day,
       googlePlaceData: {},
       locationAlias: '',
@@ -54,8 +54,6 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
-      // for google api response, not for db
       locationDetails: {
         address: null,
         telephone: null,
@@ -172,7 +170,6 @@ class CreateActivityForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
       locationDetails: {
         address: null,
         telephone: null,
@@ -187,9 +184,8 @@ class CreateActivityForm extends Component {
     var googlePlaceData = constructGooglePlaceDataObj(place)
     this.setState({googlePlaceData: googlePlaceData}, () => {
       var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
-      this.setState({locationDetails: locationDetails}, () => console.log('state after setting details', this.state))
+      this.setState({locationDetails: locationDetails})
     })
-    // this.setState({googlePlaceDetails: place})
   }
 
   handleFileUpload (attachmentInfo) {

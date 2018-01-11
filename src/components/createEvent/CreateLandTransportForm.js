@@ -20,7 +20,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
-import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
@@ -52,9 +52,6 @@ class CreateLandTransportForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      // googlePlaceDetails is the unmodified google api response
-      departureGooglePlaceDetails: null,
-      arrivalGooglePlaceDetails: null,
       departureLocationDetails: {
         address: null,
         telephone: null,
@@ -166,9 +163,7 @@ class CreateLandTransportForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground,
-      departureGooglePlaceDetails: null,
-      arrivalGooglePlaceDetails: null
+      backgroundImage: defaultBackground
     })
     this.apiToken = null
   }
@@ -176,8 +171,16 @@ class CreateLandTransportForm extends Component {
   // need to select either departure or arrival
   selectLocation (place, type) {
     var googlePlaceData = constructGooglePlaceDataObj(place)
-    this.setState({[`${type}GooglePlaceData`]: googlePlaceData})
-    this.setState({[`${type}GooglePlaceDetails`]: place})
+    this.setState({[`${type}GooglePlaceData`]: googlePlaceData}, () => {
+      // construct location details for both departure/arrival, start/end day
+      if (type === 'departure') {
+        var locationDetails = constructLocationDetails(this.state.departureGooglePlaceData, this.props.dates, this.state.startDay)
+        this.setState({departureLocationDetails: locationDetails})
+      } else if (type === 'arrival') {
+        locationDetails = constructLocationDetails(this.state.arrivalGooglePlaceData, this.props.dates, this.state.endDay)
+        this.setState({arrivalLocationDetails: locationDetails})
+      }
+    })
   }
 
   handleFileUpload (attachmentInfo) {
@@ -204,10 +207,6 @@ class CreateLandTransportForm extends Component {
       this.apiToken = obj.token
     })
 
-    // var currencyList = countriesToCurrencyList(this.props.countries)
-    // this.setState({currencyList: currencyList})
-    // this.setState({currency: currencyList[0]})
-
     var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
@@ -227,19 +226,19 @@ class CreateLandTransportForm extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.departureGooglePlaceDetails) {
-      if (prevState.departureGooglePlaceDetails !== this.state.departureGooglePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var departureLocationDetails = constructLocationDetails(this.state.departureGooglePlaceDetails, this.props.dates, this.state.startDay)
+    if (this.state.departureGooglePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var departureLocationDetails = constructLocationDetails(this.state.departureGooglePlaceData, this.props.dates, this.state.startDay)
         this.setState({departureLocationDetails: departureLocationDetails})
       }
     }
-    if (this.state.arrivalGooglePlaceDetails) {
-      if (prevState.arrivalGooglePlaceDetails !== this.state.arrivalGooglePlaceDetails || prevState.endDay !== this.state.endDay) {
-        var arrivalLocationDetails = constructLocationDetails(this.state.arrivalGooglePlaceDetails, this.props.dates, this.state.endDay)
+    if (this.state.arrivalGooglePlaceData) {
+      if (prevState.endDay !== this.state.endDay) {
+        var arrivalLocationDetails = constructLocationDetails(this.state.arrivalGooglePlaceData, this.props.dates, this.state.endDay)
         this.setState({arrivalLocationDetails: arrivalLocationDetails})
       }
     }
-    // if location/day/time changed, validate opening hours
+    // transport doesnt need opening hours validation
   }
 
   render () {

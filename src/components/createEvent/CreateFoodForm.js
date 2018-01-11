@@ -19,7 +19,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
-import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
@@ -51,7 +51,6 @@ class CreateFoodForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
       locationDetails: {
         address: null,
         telephone: null,
@@ -164,7 +163,6 @@ class CreateFoodForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
       locationDetails: {
         address: null,
         telephone: null,
@@ -177,8 +175,10 @@ class CreateFoodForm extends Component {
 
   selectLocation (place) {
     var googlePlaceData = constructGooglePlaceDataObj(place)
-    this.setState({googlePlaceData: googlePlaceData})
-    this.setState({googlePlaceDetails: place})
+    this.setState({googlePlaceData: googlePlaceData}, () => {
+      var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+      this.setState({locationDetails: locationDetails})
+    })
   }
 
   handleFileUpload (attachmentInfo) {
@@ -205,10 +205,6 @@ class CreateFoodForm extends Component {
       this.apiToken = obj.token
     })
 
-    // var currencyList = countriesToCurrencyList(this.props.countries)
-    // this.setState({currencyList: currencyList})
-    // this.setState({currency: currencyList[0]})
-
     var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
@@ -220,9 +216,9 @@ class CreateFoodForm extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.googlePlaceDetails) {
-      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+    if (this.state.googlePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
       if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
@@ -249,7 +245,7 @@ class CreateFoodForm extends Component {
     } else {
       var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
 
-      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
+      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceData)
       var openingUnix = openingAndClosingArr[0]
       var closingUnix = openingAndClosingArr[1]
 
