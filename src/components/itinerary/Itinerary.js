@@ -69,10 +69,7 @@ class Itinerary extends Component {
         <h3>name: {itinerary.name}</h3>
         <h3 style={{display: 'inline-block'}}>Days: {itinerary.days}</h3>
         <h3 style={{display: 'inline-block'}}>startDate: {startDate}</h3>
-        <h3 style={{display: 'inline-block'}}>endDate: {endDate}</h3>
-        <h3 style={{display: 'inline-block'}}>pax: {itinerary.pax}</h3>
-        <h3 style={{display: 'inline-block'}}>travelInsurance: {itinerary.travelInsurance}</h3>
-        <h3 style={{display: 'inline-block'}}>budget: {itinerary.budget}</h3>
+        {/* <h3 style={{display: 'inline-block'}}>endDate: {endDate}</h3> */}
 
         <button onClick={() => this.toggleUpdateForm()}>Toggle update form</button>
         {this.state.updating &&

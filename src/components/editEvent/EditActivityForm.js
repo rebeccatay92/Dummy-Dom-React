@@ -35,11 +35,10 @@ class EditActivityForm extends Component {
     super(props)
     this.state = {
       ItineraryId: this.props.ItineraryId,
-      startDay: null,
-      endDay: null,
+      startDay: 0,
+      endDay: 0,
       startTime: null, // if setstate, will change to unix
       endTime: null, // if setstate, will change to unix
-      googlePlaceData: {},
       locationAlias: '',
       description: '',
       notes: '',
@@ -50,14 +49,25 @@ class EditActivityForm extends Component {
       bookingConfirmation: '',
       // attachments: [],
       backgroundImage: defaultBackground,
-      // googlePlaceDetails: null,
-      // for google api response, not for db
+      // HOW TO CONSTRUCT LOCATION DETAILS IF API IS NOT CALLED?
+      // googlePlaceData: {}, // input obj for new location, also currentLocation for SingleLocationSelection
+      // googlePlaceData: {
+      //   placeId: null,
+      //   countryCode: null,
+      //   name: null,
+      //   address: null,
+      //   latitude: null,
+      //   longitude: null,
+      //   openingHours: null,
+      //   openingHoursText: null
+      // },
+      // googlePlaceDetails: null, //googleapiresponse for new location
       // locationDetails: {
       //   address: null,
-      //   telephone: null,
-      //   openingHours: null
+      //   telephone: null, // not saved
+      //   openingHours: null // text for selected day
       // },
-      openingHoursValidation: null,
+      // openingHoursValidation: null,
       allDayEvent: null
     }
   }
@@ -65,13 +75,13 @@ class EditActivityForm extends Component {
   updateDayTime (field, value) {
     this.setState({
       [field]: value
-    })
+    }, () => console.log('after handledaytime', this.state))
   }
 
   handleChange (e, field) {
     this.setState({
       [field]: e.target.value
-    })
+    }, () => console.log('after handle change', this.state))
   }
 
   // handleSubmit () {
@@ -201,23 +211,6 @@ class EditActivityForm extends Component {
   //   this.setState({backgroundImage: `${previewUrl}`})
   // }
 
-  // componentDidMount () {
-  //   this.props.retrieveCloudStorageToken()
-  //
-  //   this.props.cloudStorageToken.then(obj => {
-  //     this.apiToken = obj.token
-  //   })
-  //
-  //   var currencyList = countriesToCurrencyList(this.props.countries)
-  //   this.setState({currencyList: currencyList})
-  //   this.setState({currency: currencyList[0]})
-  //
-  //   var defaultUnix = latestTime(this.props.events, this.props.day)
-  //   var defaultTime = moment.utc(defaultUnix * 1000).format('HH:mm')
-  //   this.setState({defaultTime: defaultTime})
-  //   this.setState({startTime: defaultUnix, endTime: defaultUnix})
-  // }
-
   // componentDidUpdate (prevProps, prevState) {
   //   if (this.state.googlePlaceDetails) {
   //     if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
@@ -288,9 +281,7 @@ class EditActivityForm extends Component {
     this.props.cloudStorageToken.then(obj => {
       this.apiToken = obj.token
     })
-
-    // DROPDOWN WITH ALL CURRENCIES. SET IT TO CURRENCY WHICH IS ALREADY SAVED
-    // const currencyList = countriesToCurrencyList(this.props.countries)
+    // DROPDOWN WITH ALL CURRENCIES.
     var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
 

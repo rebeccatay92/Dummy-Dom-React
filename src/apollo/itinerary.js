@@ -268,9 +268,6 @@ export const allItineraries = gql`
       name
       days
       startDate
-      pax
-      travelInsurance
-      budget
       countries {
         id
         name
@@ -296,9 +293,6 @@ export const itinerariesByUser = gql`
       name
       days
       startDate
-      pax
-      travelInsurance
-      budget
       countries {
         id
         name
@@ -323,28 +317,19 @@ export const createItinerary = gql`
     $CountryId: Int,
     $name: String!,
     $days: Int!,
-    $startDate: Int,
-    $pax: Int,
-    $travelInsurance: String,
-    $budget: Int
+    $startDate: Int
   ) {
     createItinerary(
       UserId:$UserId,
       CountryId: $CountryId,
       name: $name,
       days: $days,
-      startDate: $startDate,
-      pax: $pax,
-      travelInsurance: $travelInsurance,
-      budget: $budget
+      startDate: $startDate
     ) {
       id
       name
       days
       startDate
-      pax
-      travelInsurance
-      budget
     }
   }`
 
@@ -353,18 +338,12 @@ export const updateItineraryDetails = gql`
     $id: ID!,
     $name: String,
     $startDate: Int,
-    $pax: Int,
-    $travelInsurance: String,
-    $budget: Int,
-    $days: Int
+    $days: Int,
   ) {
     updateItineraryDetails(
       id: $id,
       name: $name,
       startDate: $startDate,
-      pax: $pax,
-      travelInsurance: $travelInsurance,
-      budget: $budget,
       days: $days
     ) {
       id
@@ -372,9 +351,6 @@ export const updateItineraryDetails = gql`
       days
       startDate
       days
-      pax
-      travelInsurance
-      budget
     }
   }`
 

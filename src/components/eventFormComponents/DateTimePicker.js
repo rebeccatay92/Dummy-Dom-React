@@ -120,11 +120,14 @@ class DateTimePicker extends Component {
 
   // updating state '' for start/end time with default time props
   componentWillReceiveProps (nextProps) {
-    // console.log('datetimepicker nextProps', nextProps)
     // default time props was passed down as a string
+
+    // DEFAULT TIME FOR CREATE FORM
     if (this.props.defaultTime !== nextProps.defaultTime) {
       this.setState({startTime: nextProps.defaultTime, endTime: nextProps.defaultTime})
     }
+
+    //DEFAULT START/END TIME FOR EDIT FORM
     if (this.props.defaultStartTime !== nextProps.defaultStartTime) {
       this.setState({startTime: nextProps.defaultStartTime})
     }
