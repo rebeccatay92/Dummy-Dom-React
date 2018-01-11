@@ -7,6 +7,7 @@ export function constructGooglePlaceDataObj (place) {
     countryCode: null,
     name: place.name,
     address: place.formatted_address,
+    telephone: place.international_phone_number || place.formatted_phone_number,
     latitude: null,
     longitude: null,
     openingHours: null,
@@ -49,21 +50,20 @@ export function constructGooglePlaceDataObj (place) {
   return googlePlaceData
 }
 
-// CONSTRUCT LOCATIONDETAILS OBJ TO PASS DOWN AS PROPS FOR RENDERING
-export function constructLocationDetails (googlePlaceDetails, datesArr, dayInt) {
+// CONSTRUCT LOCATION DETAILS OBJ FROM GOOGLE PLACE DATA OBJ, DATES ARR, AND CHOSEN DAY
+export function constructLocationDetails (googlePlaceData, datesArr, dayInt) {
   var locationDetails = {
-    address: googlePlaceDetails.formatted_address,
-    telephone: googlePlaceDetails.international_phone_number || googlePlaceDetails.formatted_phone_number
+    address: googlePlaceData.address,
+    telephone: googlePlaceData.telephone
   }
   var dateUnix = datesArr[dayInt - 1]
   var momentTime = moment.utc(dateUnix)
   var momentDayStr = momentTime.format('dddd')
-  if (googlePlaceDetails.opening_hours && googlePlaceDetails.opening_hours.weekday_text) {
-    var textArr = googlePlaceDetails.opening_hours.weekday_text.filter(e => {
+  if (googlePlaceData.openingHoursText) {
+    var textArr = googlePlaceData.openingHoursText.filter(e => {
       return e.indexOf(momentDayStr) > -1
     })
     locationDetails.openingHours = textArr[0]
   }
-
   return locationDetails
 }

@@ -143,7 +143,7 @@ class PlannerActivity extends Component {
           {this.state.editEventType &&
             <div>
               {this.state.editEventType === 'Activity' &&
-              <EditActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
+              <EditActivityForm day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
               }
             </div>
           }

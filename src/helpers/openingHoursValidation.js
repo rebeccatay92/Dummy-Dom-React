@@ -7,8 +7,8 @@ export function findDayOfWeek (datesArr, dayInt) {
   return momentDayInt
 }
 
-export function findOpenAndCloseUnix (dayOfWeek, googlePlaceDetails) {
-  var allPeriods = googlePlaceDetails.opening_hours.periods
+export function findOpenAndCloseUnix (dayOfWeek, googlePlaceData) {
+  var allPeriods = googlePlaceData.openingHours
   var period = allPeriods.find(e => {
     return e.open.day === dayOfWeek
   })

@@ -185,8 +185,11 @@ class CreateActivityForm extends Component {
 
   selectLocation (place) {
     var googlePlaceData = constructGooglePlaceDataObj(place)
-    this.setState({googlePlaceData: googlePlaceData})
-    this.setState({googlePlaceDetails: place})
+    this.setState({googlePlaceData: googlePlaceData}, () => {
+      var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+      this.setState({locationDetails: locationDetails}, () => console.log('state after setting details', this.state))
+    })
+    // this.setState({googlePlaceDetails: place})
   }
 
   handleFileUpload (attachmentInfo) {
@@ -230,9 +233,9 @@ class CreateActivityForm extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.googlePlaceDetails) {
-      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+    if (this.state.googlePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
       // if location/day/time changed, validate opening hours
@@ -262,7 +265,7 @@ class CreateActivityForm extends Component {
     } else {
       var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
 
-      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
+      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceData)
       var openingUnix = openingAndClosingArr[0]
       var closingUnix = openingAndClosingArr[1]
 

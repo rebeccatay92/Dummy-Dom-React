@@ -34,7 +34,7 @@ class EditActivityForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      ItineraryId: this.props.ItineraryId,
+      id: this.props.event.id, // activity id
       startDay: 0,
       endDay: 0,
       startTime: null, // if setstate, will change to unix
@@ -50,21 +50,11 @@ class EditActivityForm extends Component {
       // attachments: [],
       backgroundImage: defaultBackground,
       // HOW TO CONSTRUCT LOCATION DETAILS IF API IS NOT CALLED?
-      // googlePlaceData: {}, // input obj for new location, also currentLocation for SingleLocationSelection
-      // googlePlaceData: {
-      //   placeId: null,
-      //   countryCode: null,
-      //   name: null,
-      //   address: null,
-      //   latitude: null,
-      //   longitude: null,
-      //   openingHours: null,
-      //   openingHoursText: null
-      // },
+      googlePlaceData: {},
       // googlePlaceDetails: null, //googleapiresponse for new location
       // locationDetails: {
       //   address: null,
-      //   telephone: null, // not saved
+      //   telephone: null,
       //   openingHours: null // text for selected day
       // },
       // openingHoursValidation: null,
@@ -298,14 +288,15 @@ class EditActivityForm extends Component {
       defaultStartTime: defaultStartTime, // 'HH:mm' string
       defaultEndTime: defaultEndTime,
       description: this.props.event.description,
-      locationAlias: this.props.event.locationAlias,
+      locationAlias: this.props.event.locationAlias || '',
       currency: this.props.event.currency,
       cost: this.props.event.cost,
-      bookedThrough: this.props.event.bookedThrough,
-      bookingConfirmation: this.props.event.bookingConfirmation,
-      notes: this.props.event.notes,
+      bookedThrough: this.props.event.bookedThrough || '',
+      bookingConfirmation: this.props.event.bookingConfirmation || '',
+      notes: this.props.event.notes || '',
       backgroundImage: this.props.event.backgroundImage,
-      allDayEvent: this.props.event.allDayEvent
+      allDayEvent: this.props.event.allDayEvent,
+      googlePlaceData: this.props.event.location
     }, () => console.log('edit form state', this.state))
   }
 

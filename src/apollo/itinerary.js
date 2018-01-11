@@ -26,7 +26,22 @@ export const queryItinerary = gql`
           endTime
           location {
             id
+            placeId
             name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
           }
           locationAlias
           startDay
@@ -49,6 +64,284 @@ export const queryItinerary = gql`
           openingHoursValidation
           allDayEvent
         }
+        Food {
+          id
+          description
+          location {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          locationAlias
+          startDay
+          endDay
+          startTime
+          endTime
+          loadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+          openingHoursValidation
+          allDayEvent
+        }
+        Lodging {
+          id
+          description
+          location {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          locationAlias
+          startDay
+          endDay
+          startTime
+          endTime
+          startLoadSequence
+          endLoadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+        }
+        LandTransport {
+          id
+          departureLocation {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          arrivalLocation {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          departureLocationAlias
+          arrivalLocationAlias
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+        }
+        SeaTransport {
+          id
+          departureLocation {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          arrivalLocation {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          departureLocationAlias
+          arrivalLocationAlias
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+        }
+        Train {
+          id
+          departureLocation {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          arrivalLocation {
+            id
+            placeId
+            name
+            address
+            telephone
+            latitude
+            longitude
+            openingHours {
+              open {
+                day
+                time
+              }
+              close {
+                day
+              }
+            }
+            openingHoursText
+          }
+          departureLocationAlias
+          arrivalLocationAlias
+          startDay
+          startTime
+          endDay
+          endTime
+          startLoadSequence
+          endLoadSequence
+          currency
+          cost
+          bookedThrough
+          bookingConfirmation
+          bookingStatus
+          notes
+          attachments {
+            id
+            fileName
+            fileAlias
+            fileType
+            fileSize
+          }
+          backgroundImage
+        }
         Flight {
           FlightInstance {
             id
@@ -58,11 +351,41 @@ export const queryItinerary = gql`
             airlineName
             departureLocation {
               id
+              placeId
               name
+              address
+              telephone
+              latitude
+              longitude
+              openingHours {
+                open {
+                  day
+                  time
+                }
+                close {
+                  day
+                }
+              }
+              openingHoursText
             }
             arrivalLocation {
               id
+              placeId
               name
+              address
+              telephone
+              latitude
+              longitude
+              openingHours {
+                open {
+                  day
+                  time
+                }
+                close {
+                  day
+                }
+              }
+              openingHoursText
             }
             departureTerminal
             arrivalTerminal
@@ -98,164 +421,6 @@ export const queryItinerary = gql`
               fileSize
             }
           }
-        }
-        Lodging {
-          id
-          description
-          location {
-            id
-            name
-          }
-          locationAlias
-          startDay
-          endDay
-          startTime
-          endTime
-          startLoadSequence
-          endLoadSequence
-          currency
-          cost
-          bookedThrough
-          bookingConfirmation
-          bookingStatus
-          notes
-          attachments {
-            id
-            fileName
-            fileAlias
-            fileType
-            fileSize
-          }
-          backgroundImage
-        }
-        Food {
-          id
-          description
-          location {
-            id
-            name
-          }
-          locationAlias
-          startDay
-          endDay
-          startTime
-          endTime
-          loadSequence
-          currency
-          cost
-          bookedThrough
-          bookingConfirmation
-          bookingStatus
-          notes
-          attachments {
-            id
-            fileName
-            fileAlias
-            fileType
-            fileSize
-          }
-          backgroundImage
-          openingHoursValidation
-          allDayEvent
-        }
-        LandTransport {
-          id
-          departureLocation {
-            id
-            name
-          }
-          arrivalLocation {
-            id
-            name
-          }
-          departureLocationAlias
-          arrivalLocationAlias
-          startDay
-          startTime
-          endDay
-          endTime
-          startLoadSequence
-          endLoadSequence
-          currency
-          cost
-          bookedThrough
-          bookingConfirmation
-          bookingStatus
-          notes
-          attachments {
-            id
-            fileName
-            fileAlias
-            fileType
-            fileSize
-          }
-          backgroundImage
-        }
-        SeaTransport {
-          id
-          departureLocation {
-            id
-            name
-          }
-          arrivalLocation {
-            id
-            name
-          }
-          departureLocationAlias
-          arrivalLocationAlias
-          startDay
-          startTime
-          endDay
-          endTime
-          startLoadSequence
-          endLoadSequence
-          currency
-          cost
-          bookedThrough
-          bookingConfirmation
-          bookingStatus
-          notes
-          attachments {
-            id
-            fileName
-            fileAlias
-            fileType
-            fileSize
-          }
-          backgroundImage
-        }
-        Train {
-          id
-          departureLocation {
-            id
-            name
-          }
-          arrivalLocation {
-            id
-            name
-          }
-          departureLocationAlias
-          arrivalLocationAlias
-          startDay
-          startTime
-          endDay
-          endTime
-          startLoadSequence
-          endLoadSequence
-          currency
-          cost
-          bookedThrough
-          bookingConfirmation
-          bookingStatus
-          notes
-          attachments {
-            id
-            fileName
-            fileAlias
-            fileType
-            fileSize
-          }
-          backgroundImage
         }
       }
     }
