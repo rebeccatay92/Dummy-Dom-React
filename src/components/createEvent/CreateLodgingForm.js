@@ -19,7 +19,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
@@ -189,7 +189,11 @@ class CreateLodgingForm extends Component {
       this.apiToken = obj.token
     })
 
-    var currencyList = countriesToCurrencyList(this.props.countries)
+    // var currencyList = countriesToCurrencyList(this.props.countries)
+    // this.setState({currencyList: currencyList})
+    // this.setState({currency: currencyList[0]})
+
+    var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
 

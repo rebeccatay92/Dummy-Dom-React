@@ -50,6 +50,7 @@ class BookingDetails extends Component {
           <label style={labelStyle}>
             Amount:
           </label>
+          {/* CURRENCY NO LONGER DEPENDS ON ITINERARY-COUNTRIES. NEED TO REMOVE CURRENCY LIST. */}
           <select style={{height: '25px', borderRight: '0', background: 'white', width: '20%'}} name='currency' value={this.props.currency} onChange={(e) => this.props.handleChange(e, 'currency')}>
             {this.props.currencyList.map((e, i) => {
               return <option key={i}>{e}</option>

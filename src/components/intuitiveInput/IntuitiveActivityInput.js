@@ -7,7 +7,7 @@ import LocationSearch from '../location/LocationSearch'
 
 import { constructGooglePlaceDataObj } from '../../helpers/location'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../../Styles/styles'
 
@@ -147,8 +147,10 @@ class IntuitiveActivityInput extends Component {
   }
 
   componentDidMount () {
-    const currencyList = countriesToCurrencyList(this.props.countries)
+    // const currencyList = countriesToCurrencyList(this.props.countries)
+    var currencyList = allCurrenciesList()
     this.setState({currency: currencyList[0]})
+
     console.log(this.props.activityDate, this.props.dates.map(date => date.getTime()))
   }
 
