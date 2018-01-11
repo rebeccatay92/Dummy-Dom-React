@@ -276,7 +276,7 @@ class PlannerActivity extends Component {
     this.setState({
       // editEventType: this.props.activity.type
       editEventType: eventType
-    }, () => console.log('this.state', this.state))
+    }, () => console.log('plannerActivity state', this.state))
   }
 
   toggleEventDropdown (event) {
