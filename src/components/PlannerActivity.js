@@ -189,16 +189,16 @@ class PlannerActivity extends Component {
     } else if (this.state.intuitiveInputType) {
       const types = {
         Flight: (
-          <IntuitiveFlightInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveFlightInput itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         Activity: (
-          <IntuitiveActivityInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} activityDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveActivityInput itineraryId={this.props.itineraryId} dates={this.props.dates} activityDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         Food: (
-          <IntuitiveFoodInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} foodDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveFoodInput itineraryId={this.props.itineraryId} dates={this.props.dates} foodDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         LandTransport: (
-          <IntuitiveLandTransportInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveLandTransportInput itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         Lodging: (
           <IntuitiveLodgingInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} day={this.props.day} lodgingDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
@@ -222,19 +222,19 @@ class PlannerActivity extends Component {
             {this.state.createEventType &&
               <div>
                 {this.state.createEventType === 'Activity' &&
-                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Food' &&
-                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Flight' &&
-                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Lodging' &&
-                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'LandTransport' &&
-                <CreateLandTransportForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateLandTransportForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
               </div>
             }

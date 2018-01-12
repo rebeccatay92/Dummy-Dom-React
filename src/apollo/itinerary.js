@@ -39,6 +39,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -82,6 +83,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -127,6 +129,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -170,6 +173,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -189,6 +193,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -233,6 +238,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -252,6 +258,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -296,6 +303,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -315,6 +323,7 @@ export const queryItinerary = gql`
               }
               close {
                 day
+                time
               }
             }
             openingHoursText
@@ -364,6 +373,7 @@ export const queryItinerary = gql`
                 }
                 close {
                   day
+                  time
                 }
               }
               openingHoursText

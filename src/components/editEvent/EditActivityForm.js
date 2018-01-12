@@ -49,15 +49,13 @@ class EditActivityForm extends Component {
       bookingConfirmation: '',
       // attachments: [],
       backgroundImage: defaultBackground,
-      // HOW TO CONSTRUCT LOCATION DETAILS IF API IS NOT CALLED?
       googlePlaceData: {},
-      // googlePlaceDetails: null, //googleapiresponse for new location
-      // locationDetails: {
-      //   address: null,
-      //   telephone: null,
-      //   openingHours: null // text for selected day
-      // },
-      // openingHoursValidation: null,
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null // text for selected day
+      },
+      openingHoursValidation: null,
       allDayEvent: null
     }
   }
@@ -145,47 +143,50 @@ class EditActivityForm extends Component {
 
   closeEditActivity () {
     // removeAllAttachments(this.state.attachments, this.apiToken)
-    // this.resetState()
+    this.resetState()
     this.props.toggleEditEventType()
   }
 
-  // resetState () {
-  //   this.setState({
-  //     startDay: this.props.startDay,
-  //     endDay: this.props.endDay,
-  //     googlePlaceData: {},
-  //     locationAlias: '',
-  //     description: '',
-  //     notes: '',
-  //     startTime: null, // should be Int
-  //     endTime: null, // should be Int
-  //     cost: 0,
-  //     currency: this.state.currencyList[0],
-  //     bookedThrough: '',
-  //     bookingConfirmation: '',
-  //     attachments: [],
-  //     backgroundImage: defaultBackground,
-  //     googlePlaceDetails: null,
-  //     locationDetails: {
-  //       address: null,
-  //       telephone: null,
-  //       openingHours: null
-  //     },
-  //     openingHoursValidation: null
-  //   })
-  //   this.apiToken = null
-  // }
+  resetState () {
+    this.setState({
+      startDay: 0,
+      endDay: 0,
+      startTime: null,
+      endTime: null,
+      locationAlias: '',
+      description: '',
+      notes: '',
+      cost: 0,
+      currency: '',
+      currencyList: [],
+      bookedThrough: '',
+      bookingConfirmation: '',
+      attachments: [],
+      backgroundImage: defaultBackground,
+      googlePlaceData: {},
+      locationDetails: {
+        address: null,
+        telephone: null,
+        openingHours: null // text for selected day
+      },
+      openingHoursValidation: null,
+      allDayEvent: null
+    })
+    this.apiToken = null
+  }
 
-  // selectLocation (place) {
-  //   var googlePlaceData = constructGooglePlaceDataObj(place)
-  //   this.setState({googlePlaceData: googlePlaceData})
-  //   this.setState({googlePlaceDetails: place})
-  // }
-  //
+  selectLocation (place) {
+    var googlePlaceData = constructGooglePlaceDataObj(place)
+    this.setState({googlePlaceData: googlePlaceData}, () => {
+      var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+      this.setState({locationDetails: locationDetails})
+    })
+  }
+
   // handleFileUpload (attachmentInfo) {
   //   this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
   // }
-  //
+
   // removeUpload (index) {
   //   var files = this.state.attachments
   //   var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
@@ -201,70 +202,71 @@ class EditActivityForm extends Component {
   //   this.setState({backgroundImage: `${previewUrl}`})
   // }
 
-  // componentDidUpdate (prevProps, prevState) {
-  //   if (this.state.googlePlaceDetails) {
-  //     if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-  //       var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
-  //       this.setState({locationDetails: locationDetails})
-  //     }
-  //     // if location/day/time changed, validate opening hours
-  //     // must check start and end time is truthy. clearing the time means time = null
-  //     if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
-  //       this.validateOpeningHours()
-  //     }
-  //
-  //     // if time has been cleared out remove the warning text
-  //     if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
-  //       this.setState({openingHoursValidation: null})
-  //     }
-  //     if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
-  //       this.setState({openingHoursValidation: null})
-  //     }
-  //   }
-  // }
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.googlePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+        this.setState({locationDetails: locationDetails})
+      }
+      // if location/day/time changed, validate opening hours
+      // must check start and end time is truthy. clearing the time means time = null
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
+        this.validateOpeningHours()
+      }
 
-  // validateOpeningHours () {
-  //   this.setState({openingHoursValidation: null})
-  //   var openingHoursText = this.state.locationDetails.openingHours
-  //
-  //   if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
-  //
-  //   if (openingHoursText.indexOf('Closed') > -1) {
-  //     this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
-  //   } else {
-  //     var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
-  //
-  //     var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
-  //     var openingUnix = openingAndClosingArr[0]
-  //     var closingUnix = openingAndClosingArr[1]
-  //
-  //     var startUnix = this.state.startTime
-  //     var endUnix = this.state.endTime
-  //
-  //     if (this.state.endDay === this.state.startDay) {
-  //       if (startUnix && startUnix < openingUnix) {
-  //         this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-  //       }
-  //       if (endUnix && endUnix > closingUnix) {
-  //         this.setState({openingHoursValidation: '3 -> End time is after closing'})
-  //       }
-  //       if (startUnix && endUnix && startUnix > endUnix) {
-  //         this.setState({openingHoursValidation: '4 -> start time is after end time'})
-  //       }
-  //     } else if (this.state.endDay === this.state.startDay + 1) {
-  //       // day 2 unix is 1 full day + unix from midnight
-  //       endUnix += (24 * 60 * 60)
-  //       if (startUnix && startUnix < openingUnix) {
-  //         this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-  //       }
-  //       if (endUnix && endUnix > closingUnix) {
-  //         this.setState({openingHoursValidation: '3 -> End time is after closing'})
-  //       }
-  //     } else if (this.state.endDay > this.state.startDay + 1) {
-  //       this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
-  //     }
-  //   }
-  // }
+      // if time has been cleared out remove the warning text
+      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
+        this.setState({openingHoursValidation: null})
+      }
+      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
+        this.setState({openingHoursValidation: null})
+      }
+    }
+  }
+
+  validateOpeningHours () {
+    this.setState({openingHoursValidation: null})
+
+    var openingHoursText = this.state.locationDetails.openingHours
+
+    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
+
+    if (openingHoursText.indexOf('Closed') > -1) {
+      this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
+    } else {
+      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
+
+      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceData)
+      var openingUnix = openingAndClosingArr[0]
+      var closingUnix = openingAndClosingArr[1]
+
+      var startUnix = this.state.startTime
+      var endUnix = this.state.endTime
+
+      if (this.state.endDay === this.state.startDay) {
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
+        }
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: '3 -> End time is after closing'})
+        }
+        if (startUnix && endUnix && startUnix > endUnix) {
+          this.setState({openingHoursValidation: '4 -> start time is after end time'})
+        }
+      } else if (this.state.endDay === this.state.startDay + 1) {
+        // day 2 unix is 1 full day + unix from midnight
+        endUnix += (24 * 60 * 60)
+        if (startUnix && startUnix < openingUnix) {
+          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
+        }
+        if (endUnix && endUnix > closingUnix) {
+          this.setState({openingHoursValidation: '3 -> End time is after closing'})
+        }
+      } else if (this.state.endDay > this.state.startDay + 1) {
+        this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
+      }
+    }
+  }
 
   componentDidMount () {
     this.props.retrieveCloudStorageToken()
@@ -296,6 +298,7 @@ class EditActivityForm extends Component {
       notes: this.props.event.notes || '',
       backgroundImage: this.props.event.backgroundImage,
       allDayEvent: this.props.event.allDayEvent,
+      openingHoursValidation: this.props.event.openingHoursValidation,
       googlePlaceData: this.props.event.location
     }, () => console.log('edit form state', this.state))
   }
@@ -311,20 +314,20 @@ class EditActivityForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage)}>
             <div style={greyTintStyle} />
 
-            {/* <div style={{...eventDescContainerStyle, ...{marginTop: '120px'}}}>
+            <div style={{...eventDescContainerStyle, ...{marginTop: '120px'}}}>
               <SingleLocationSelection selectLocation={place => this.selectLocation(place)} currentLocation={this.state.googlePlaceData} locationDetails={this.state.locationDetails} />
-            </div> */}
+            </div>
             <div style={eventDescContainerStyle}>
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
             <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultStartTime={this.state.defaultStartTime} defaultEndTime={this.state.defaultEndTime} />
 
-            {/* {this.state.openingHoursValidation &&
+            {this.state.openingHoursValidation &&
               <div>
                 <h4 style={eventWarningStyle(this.state.backgroundImage)}>Warning: {this.state.openingHoursValidation}</h4>
               </div>
-            } */}
+            }
 
           </div>
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}

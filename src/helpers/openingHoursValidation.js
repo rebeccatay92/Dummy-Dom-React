@@ -12,7 +12,6 @@ export function findOpenAndCloseUnix (dayOfWeek, googlePlaceData) {
   var period = allPeriods.find(e => {
     return e.open.day === dayOfWeek
   })
-
   var output = ['open', 'close'].map(e => {
     var hours = parseInt(period[e].time.substring(0, 2))
     var mins = parseInt(period[e].time.substring(2, 4))
