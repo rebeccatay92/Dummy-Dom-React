@@ -47,7 +47,9 @@ class EditActivityForm extends Component {
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      // attachments: [],
+      attachments: [],
+      holderNewAttachments: [],
+      holderDeleteAttachments: [],
       backgroundImage: defaultBackground,
       googlePlaceData: {},
       locationDetails: {
@@ -72,6 +74,8 @@ class EditActivityForm extends Component {
     }, () => console.log('after handle change', this.state))
   }
 
+  // form updates are saved. delete all in holderDeleteAttachments.
+  
   // handleSubmit () {
   //   var bookingStatus = this.state.bookingConfirmation ? true : false
   //
@@ -141,8 +145,9 @@ class EditActivityForm extends Component {
   //   this.props.toggleCreateEventType()
   // }
 
+  // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
   closeEditActivity () {
-    // removeAllAttachments(this.state.attachments, this.apiToken)
+    removeAllAttachments(this.state.holderNewAttachments, this.apiToken)
     this.resetState()
     this.props.toggleEditEventType()
   }
@@ -162,6 +167,8 @@ class EditActivityForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
+      holderNewAttachments: [],
+      holderDeleteAttachments: [],
       backgroundImage: defaultBackground,
       googlePlaceData: {},
       locationDetails: {
@@ -183,24 +190,66 @@ class EditActivityForm extends Component {
     })
   }
 
-  // handleFileUpload (attachmentInfo) {
-  //   this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
-  // }
+  // when new file is uploaded, send http req, then add to attachments arr, and holderNewAttachments. if form is cancelled, holderNewAttachments has to be deleted from cloud. if form is submitted, holderNewAttachments is sent to backend.
+  // when file is deleted, dont send http req. remove file from attachments and holderNewAttachments (depending on whether deleted file is old or just uploaded), and add it to holderDeleteAttachments (only if file is old). if form is cancelled, ignore holderDeleteAttachments. if form is submitted, send all http req, wait for response, then send to backend.
 
-  // removeUpload (index) {
-  //   var files = this.state.attachments
-  //   var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
-  //
-  //   this.setState({attachments: newFilesArr})
-  //
-  //   // need to not reset background image everytime a file is removed. backgroundImage is url, while attachments use filename.
-  //   this.setState({backgroundImage: defaultBackground})
-  // }
-  //
-  // setBackground (previewUrl) {
-  //   previewUrl = previewUrl.replace(/ /gi, '%20')
-  //   this.setState({backgroundImage: `${previewUrl}`})
-  // }
+  handleFileUpload (attachmentInfo) {
+    this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
+    // new attachment that are not in db go into holding area
+    this.setState({holderNewAttachments: this.state.holderNewAttachments.concat([attachmentInfo])})
+  }
+
+  // for formType==='edit', Attachment's removeUpload() returns index without the http req being made. compare against holderNewAttachments. if exists in holderNewAttachments, delete http req. if not a newly uploaded file (not in holderNewAttachments), delay the http. add it to holderDeleteAttachments.
+
+  removeUpload (index) {
+    var files = this.state.attachments
+    var holderNew = this.state.holderNewAttachments
+
+    var fileToDelete = files[index]
+    var isRecentUpload = holderNew.includes(fileToDelete)
+
+    // removing from attachments arr
+    var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
+    this.setState({attachments: newFilesArr})
+
+    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
+    var objectName = fileToDelete.fileName
+    var uriFull = uriBase + objectName
+
+    if (isRecentUpload) {
+      // remove from holding area, send delete http req
+      var holdingIndex = holderNew.indexOf(fileToDelete)
+      var newArr = (holderNew.slice(0, holdingIndex)).concat(holderNew.slice(holdingIndex + 1))
+      this.setState({holderNewAttachments: newArr})
+
+      fetch(uriFull, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.apiToken}`
+        }
+      })
+      .then(response => {
+        if (response.status === 204) {
+          console.log('delete from cloud storage succeeded')
+          this.props.removeUpload(index)
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    } else {
+      // add to holderDeleteAttachments. dont send req
+      this.setState({holderDeleteAttachments: this.state.holderDeleteAttachments.concat([fileToDelete])})
+    }
+
+    // not fixed yet. only reset background if corresponding file was removed from cloud
+    this.setState({backgroundImage: defaultBackground})
+  }
+
+  setBackground (previewUrl) {
+    previewUrl = previewUrl.replace(/ /gi, '%20')
+    this.setState({backgroundImage: `${previewUrl}`})
+  }
 
   componentDidUpdate (prevProps, prevState) {
     if (this.state.googlePlaceData) {
@@ -299,8 +348,9 @@ class EditActivityForm extends Component {
       backgroundImage: this.props.event.backgroundImage,
       allDayEvent: this.props.event.allDayEvent,
       openingHoursValidation: this.props.event.openingHoursValidation,
-      googlePlaceData: this.props.event.location
-    }, () => console.log('edit form state', this.state))
+      googlePlaceData: this.props.event.location,
+      attachments: this.props.event.attachments
+    }, () => console.log('edit form did mount', this.state))
   }
 
   render () {
@@ -350,7 +400,7 @@ class EditActivityForm extends Component {
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={attachmentsStyle}>
-          {/* <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} ItineraryId={this.state.ItineraryId} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} /> */}
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} ItineraryId={this.props.ItineraryId} formType={'edit'} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )
