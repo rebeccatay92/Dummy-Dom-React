@@ -47,7 +47,7 @@ class EditActivityForm extends Component {
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      attachments: [],
+      attachments: [], // entire arr user sees. not sent to backend.
       holderNewAttachments: [],
       holderDeleteAttachments: [],
       backgroundImage: defaultBackground,
@@ -74,13 +74,12 @@ class EditActivityForm extends Component {
     }, () => console.log('after handle change', this.state))
   }
 
-  // form updates are saved. delete all in holderDeleteAttachments.
-  
+  // ONLY SEND UPDATED FIELDS. delete all in holderDeleteAttachments. send holderNewAttachments to backend
   // handleSubmit () {
   //   var bookingStatus = this.state.bookingConfirmation ? true : false
   //
   //   var newActivity = {
-  //     ItineraryId: parseInt(this.state.ItineraryId),
+  //     id: this.state.id,
   //     locationAlias: this.state.locationAlias,
   //     startDay: this.state.startDay,
   //     endDay: this.state.endDay,
@@ -102,10 +101,10 @@ class EditActivityForm extends Component {
   //   }
   //
   //   // VALIDATE START AND END TIMES
-  //   if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-  //     console.log('time is missing')
-  //     return
-  //   }
+  //   // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
+  //   //   console.log('time is missing')
+  //   //   return
+  //   // }
   //
   //   // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
   //   // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
@@ -117,32 +116,32 @@ class EditActivityForm extends Component {
   //   // }
   //
   //   // VALIDATE PLANNER TIMINGS
-  //   var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
-  //   console.log('output', output)
+  //   // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+  //   // console.log('output', output)
+  //   //
+  //   // if (!output.isValid) {
+  //   //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
+  //   //   console.log('ERROR ROWS', output.errorRows)
+  //   // }
   //
-  //   if (!output.isValid) {
-  //     window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
-  //     console.log('ERROR ROWS', output.errorRows)
-  //   }
-  //
-  //   var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-  //
-  //   this.props.changingLoadSequence({
-  //     variables: {
-  //       input: helperOutput.loadSequenceInput
-  //     }
-  //   })
-  //
-  //   this.props.createActivity({
-  //     variables: helperOutput.newEvent,
-  //     refetchQueries: [{
-  //       query: queryItinerary,
-  //       variables: { id: this.props.ItineraryId }
-  //     }]
-  //   })
+  //   // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+  //   //
+  //   // this.props.changingLoadSequence({
+  //   //   variables: {
+  //   //     input: helperOutput.loadSequenceInput
+  //   //   }
+  //   // })
+  //   //
+  //   // this.props.createActivity({
+  //   //   variables: helperOutput.newEvent,
+  //   //   refetchQueries: [{
+  //   //     query: queryItinerary,
+  //   //     variables: { id: this.props.ItineraryId }
+  //   //   }]
+  //   // })
   //
   //   this.resetState()
-  //   this.props.toggleCreateEventType()
+  //   this.props.toggleEditEventType()
   // }
 
   // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
@@ -190,16 +189,11 @@ class EditActivityForm extends Component {
     })
   }
 
-  // when new file is uploaded, send http req, then add to attachments arr, and holderNewAttachments. if form is cancelled, holderNewAttachments has to be deleted from cloud. if form is submitted, holderNewAttachments is sent to backend.
-  // when file is deleted, dont send http req. remove file from attachments and holderNewAttachments (depending on whether deleted file is old or just uploaded), and add it to holderDeleteAttachments (only if file is old). if form is cancelled, ignore holderDeleteAttachments. if form is submitted, send all http req, wait for response, then send to backend.
-
   handleFileUpload (attachmentInfo) {
     this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
     // new attachment that are not in db go into holding area
     this.setState({holderNewAttachments: this.state.holderNewAttachments.concat([attachmentInfo])})
   }
-
-  // for formType==='edit', Attachment's removeUpload() returns index without the http req being made. compare against holderNewAttachments. if exists in holderNewAttachments, delete http req. if not a newly uploaded file (not in holderNewAttachments), delay the http. add it to holderDeleteAttachments.
 
   removeUpload (index) {
     var files = this.state.attachments
