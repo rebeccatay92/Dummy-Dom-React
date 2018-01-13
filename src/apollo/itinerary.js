@@ -513,7 +513,7 @@ export const updateItineraryDetails = gql`
     $id: ID!,
     $name: String,
     $startDate: Int,
-    $days: Int,
+    $days: Int
   ) {
     updateItineraryDetails(
       id: $id,

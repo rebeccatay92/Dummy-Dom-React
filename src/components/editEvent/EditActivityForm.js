@@ -19,7 +19,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
-import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
@@ -78,7 +78,9 @@ class EditActivityForm extends Component {
 
   handleSubmit () {
     // COMPARE FIELDS AND SEE WHAT HAS CHANGED
-    var updatesObj = {}
+    var updatesObj = {
+      id: this.state.id
+    }
 
     var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'startTime', 'endTime', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation']
     fieldsToCheck.forEach(field => {
@@ -95,7 +97,8 @@ class EditActivityForm extends Component {
     if (bookingStatus !== this.props.event.bookingStatus) {
       updatesObj.bookingStatus = bookingStatus
     }
-    if (this.state.googlePlaceData !== this.props.event.googlePlaceData) {
+    // if location changed, it doesnt contain the id field
+    if (!this.state.googlePlaceData.id) {
       updatesObj.googlePlaceData = this.state.googlePlaceData
     }
     if (this.state.holderNewAttachments.length) {
@@ -103,19 +106,30 @@ class EditActivityForm extends Component {
     }
     // removeAttachments obj only takes id
     if (this.state.holderDeleteAttachments.length) {
-      updatesObj.deleteAttachments = this.state.holderDeleteAttachments.map(e => {
+      updatesObj.removeAttachments = this.state.holderDeleteAttachments.map(e => {
         return e.id
       })
     }
     console.log('handlesubmit', updatesObj)
 
     // removing holderDeleteAttachments from cloud
-    // removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
+    removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
 
-    // check if updatesObj has fields to change, if yes, add id, then send to backend
-    if (updatesObj.length) {
-      updatesObj.id = this.state.id
+    // check if updatesObj has fields other than id. if yes, then send to backend
+    if (Object.keys(updatesObj).length > 1) {
+      console.log('sending to backend')
+      // assign load seq, send to backend
+      this.props.updateActivity({
+        variables: updatesObj,
+        refetchQueries: [{
+          query: queryItinerary,
+          variables: { id: this.props.ItineraryId }
+        }]
+      })
     }
+    this.resetState()
+    this.props.toggleEditEventType()
+
     // VALIDATE START AND END TIMES
     // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
     //   console.log('time is missing')
@@ -147,17 +161,6 @@ class EditActivityForm extends Component {
     //     input: helperOutput.loadSequenceInput
     //   }
     // })
-    //
-    // this.props.createActivity({
-    //   variables: helperOutput.newEvent,
-    //   refetchQueries: [{
-    //     query: queryItinerary,
-    //     variables: { id: this.props.ItineraryId }
-    //   }]
-    // })
-
-    // this.resetState()
-    // this.props.toggleEditEventType()
   }
 
   // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
@@ -224,9 +227,11 @@ class EditActivityForm extends Component {
 
     var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
     var objectName = fileToDelete.fileName
+    objectName = objectName.replace('/', '%2F')
     var uriFull = uriBase + objectName
 
     if (isRecentUpload) {
+      console.log('isRecentUpload')
       // remove from holding area, send delete http req
       var holdingIndex = holderNew.indexOf(fileToDelete)
       var newArr = (holderNew.slice(0, holdingIndex)).concat(holderNew.slice(holdingIndex + 1))
@@ -241,7 +246,6 @@ class EditActivityForm extends Component {
       .then(response => {
         if (response.status === 204) {
           console.log('delete from cloud storage succeeded')
-          this.props.removeUpload(index)
         }
       })
       .catch(err => {
