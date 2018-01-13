@@ -75,74 +75,90 @@ class EditActivityForm extends Component {
   }
 
   // ONLY SEND UPDATED FIELDS. delete all in holderDeleteAttachments. send holderNewAttachments to backend
-  // handleSubmit () {
-  //   var bookingStatus = this.state.bookingConfirmation ? true : false
-  //
-  //   var newActivity = {
-  //     id: this.state.id,
-  //     locationAlias: this.state.locationAlias,
-  //     startDay: this.state.startDay,
-  //     endDay: this.state.endDay,
-  //     startTime: this.state.startTime,
-  //     endTime: this.state.endTime,
-  //     description: this.state.description,
-  //     currency: this.state.currency,
-  //     cost: parseInt(this.state.cost),
-  //     bookingStatus: bookingStatus,
-  //     bookedThrough: this.state.bookedThrough,
-  //     bookingConfirmation: this.state.bookingConfirmation,
-  //     notes: this.state.notes,
-  //     attachments: this.state.attachments,
-  //     backgroundImage: this.state.backgroundImage,
-  //     openingHoursValidation: this.state.openingHoursValidation
-  //   }
-  //   if (this.state.googlePlaceData.placeId) {
-  //     newActivity.googlePlaceData = this.state.googlePlaceData
-  //   }
-  //
-  //   // VALIDATE START AND END TIMES
-  //   // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-  //   //   console.log('time is missing')
-  //   //   return
-  //   // }
-  //
-  //   // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
-  //   // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
-  //   //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-  //   // } else if (typeof (newActivity.startTime) !== 'number') {
-  //   //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-  //   // } else if (typeof (newActivity.startTime) !== 'number') {
-  //   //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
-  //   // }
-  //
-  //   // VALIDATE PLANNER TIMINGS
-  //   // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
-  //   // console.log('output', output)
-  //   //
-  //   // if (!output.isValid) {
-  //   //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
-  //   //   console.log('ERROR ROWS', output.errorRows)
-  //   // }
-  //
-  //   // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-  //   //
-  //   // this.props.changingLoadSequence({
-  //   //   variables: {
-  //   //     input: helperOutput.loadSequenceInput
-  //   //   }
-  //   // })
-  //   //
-  //   // this.props.createActivity({
-  //   //   variables: helperOutput.newEvent,
-  //   //   refetchQueries: [{
-  //   //     query: queryItinerary,
-  //   //     variables: { id: this.props.ItineraryId }
-  //   //   }]
-  //   // })
-  //
-  //   this.resetState()
-  //   this.props.toggleEditEventType()
-  // }
+
+  handleSubmit () {
+    // COMPARE FIELDS AND SEE WHAT HAS CHANGED
+    var updatesObj = {}
+
+    var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'startTime', 'endTime', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation']
+    fieldsToCheck.forEach(field => {
+      if (this.props.event[field] !== this.state[field]) {
+        updatesObj[field] = this.state[field]
+      }
+    })
+    // if cost was updated, it is a str. make int.
+    if (updatesObj.cost) {
+      updatesObj.cost = parseInt(updatesObj.cost)
+    }
+    // then manually add booking status, googlePlaceData, attachments, allDayEvent
+    var bookingStatus = this.state.bookingConfirmation ? true : false
+    if (bookingStatus !== this.props.event.bookingStatus) {
+      updatesObj.bookingStatus = bookingStatus
+    }
+    if (this.state.googlePlaceData !== this.props.event.googlePlaceData) {
+      updatesObj.googlePlaceData = this.state.googlePlaceData
+    }
+    if (this.state.holderNewAttachments.length) {
+      updatesObj.addAttachments = this.state.holderNewAttachments
+    }
+    // removeAttachments obj only takes id
+    if (this.state.holderDeleteAttachments.length) {
+      updatesObj.deleteAttachments = this.state.holderDeleteAttachments.map(e => {
+        return e.id
+      })
+    }
+    console.log('handlesubmit', updatesObj)
+
+    // removing holderDeleteAttachments from cloud
+    // removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
+
+    // check if updatesObj has fields to change, if yes, add id, then send to backend
+    if (updatesObj.length) {
+      updatesObj.id = this.state.id
+    }
+    // VALIDATE START AND END TIMES
+    // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
+    //   console.log('time is missing')
+    //   return
+    // }
+
+    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
+    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
+    // }
+
+    // VALIDATE PLANNER TIMINGS
+    // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+    // console.log('output', output)
+    //
+    // if (!output.isValid) {
+    //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
+
+    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
+    //
+    // this.props.changingLoadSequence({
+    //   variables: {
+    //     input: helperOutput.loadSequenceInput
+    //   }
+    // })
+    //
+    // this.props.createActivity({
+    //   variables: helperOutput.newEvent,
+    //   refetchQueries: [{
+    //     query: queryItinerary,
+    //     variables: { id: this.props.ItineraryId }
+    //   }]
+    // })
+
+    // this.resetState()
+    // this.props.toggleEditEventType()
+  }
 
   // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
   closeEditActivity () {
