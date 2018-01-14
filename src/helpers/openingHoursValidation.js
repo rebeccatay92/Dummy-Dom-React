@@ -25,7 +25,7 @@ export function findOpenAndCloseUnix (dayOfWeek, googlePlaceData) {
   return output
 }
 
-// given googlePlaceData (containing both arr of periods and arr of text), datesArr and startDay, return validation error type
+// given googlePlaceData (containing openingHours and openingHoursText), datesArr and startDay, return validation error type
 export function validateOpeningHours (googlePlaceData, datesArr, startDayInt, endDayInt, startTime, endTime) {
   var errorTypes = {
     '1': 'Place is closed on selected day',
