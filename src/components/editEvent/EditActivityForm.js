@@ -77,7 +77,6 @@ class EditActivityForm extends Component {
   // ONLY SEND UPDATED FIELDS. delete all in holderDeleteAttachments. send holderNewAttachments to backend
 
   handleSubmit () {
-    // COMPARE FIELDS AND SEE WHAT HAS CHANGED
     var updatesObj = {
       id: this.state.id
     }

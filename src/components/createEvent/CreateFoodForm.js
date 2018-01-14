@@ -96,28 +96,29 @@ class CreateFoodForm extends Component {
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
 
     // VALIDATE START AND END TIMES
-    if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
-      console.log('time is missing')
-      return
-    }
-
-    // VALIDATE AND ASSIGN MISSING TIMINGS
-    // if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
-    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
-    // } else if (typeof (newFood.startTime) !== 'number') {
-    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
-    // } else if (typeof (newFood.startTime) !== 'number') {
-    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
+    // if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
+    //   console.log('time is missing')
+    //   return
     // }
 
-    // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Food', newFood)
-    console.log('output', output)
-
-    if (!output.isValid) {
-      window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
-      console.log('ERROR ROWS', output.errorRows)
+    // VALIDATE AND ASSIGN MISSING TIMINGS
+    if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
+      newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
+      newFood.allDayEvent = true
+    } else if (typeof (newFood.startTime) !== 'number') {
+      newFood = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
+    } else if (typeof (newFood.startTime) !== 'number') {
+      newFood = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
     }
+
+    // VALIDATE PLANNER TIMINGS
+    // var output = newEventTimelineValidation(this.props.events, 'Food', newFood)
+    // console.log('output', output)
+    //
+    // if (!output.isValid) {
+    //   window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)

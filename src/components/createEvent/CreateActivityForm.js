@@ -101,28 +101,29 @@ class CreateActivityForm extends Component {
     }
 
     // VALIDATE START AND END TIMES
-    if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-      console.log('time is missing')
-      return
-    }
-
-    // VALIDATE AND ASSIGN MISSING TIMINGS.
-    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
+    // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
+    //   console.log('time is missing')
+    //   return
     // }
 
-    // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
-    console.log('output', output)
-
-    if (!output.isValid) {
-      window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
-      console.log('ERROR ROWS', output.errorRows)
+    // VALIDATE AND ASSIGN MISSING TIMINGS.
+    if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
+      newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
+      newActivity.allDayEvent = true
+    } else if (typeof (newActivity.startTime) !== 'number') {
+      newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
+    } else if (typeof (newActivity.startTime) !== 'number') {
+      newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
     }
+
+    // VALIDATE PLANNER TIMINGS
+    // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+    // console.log('output', output)
+    //
+    // if (!output.isValid) {
+    //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     // REWRITE FUNCTION TO VALIDATE ONLY, NO ERROR ROWS
     // createEventTimelineValidation(this.props.events, newActivity)
@@ -213,10 +214,6 @@ class CreateActivityForm extends Component {
     this.props.cloudStorageToken.then(obj => {
       this.apiToken = obj.token
     })
-
-    // var currencyList = countriesToCurrencyList(this.props.countries)
-    // this.setState({currencyList: currencyList})
-    // this.setState({currency: currencyList[0]})
 
     var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})

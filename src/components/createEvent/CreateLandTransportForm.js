@@ -112,12 +112,12 @@ class CreateLandTransportForm extends Component {
     }
 
     // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Transport', newLandTransport)
-    console.log('output', output)
-    if (!output.isValid) {
-      window.alert(`time ${newLandTransport.startTime} // ${newLandTransport.endTime} clashes with pre existing events.`)
-      console.log('ERROR ROWS', output.errorRows)
-    }
+    // var output = newEventTimelineValidation(this.props.events, 'Transport', newLandTransport)
+    // console.log('output', output)
+    // if (!output.isValid) {
+    //   window.alert(`time ${newLandTransport.startTime} // ${newLandTransport.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     // console.log('newLandTransport', newLandTransport)
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'LandTransport', newLandTransport)
