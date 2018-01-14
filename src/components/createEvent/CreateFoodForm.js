@@ -18,13 +18,13 @@ import { createFood } from '../../apollo/food'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
+import { removeAllAttachments } from '../../helpers/cloudStorage'
 import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
-import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
+import { validateOpeningHours } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
@@ -222,58 +222,9 @@ class CreateFoodForm extends Component {
         var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
-      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
-        this.validateOpeningHours()
-      }
-      // if time has been cleared out remove the warning text
-      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
-        this.setState({openingHoursValidation: null})
-      }
-      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
-        this.setState({openingHoursValidation: null})
-      }
-    }
-  }
-
-  validateOpeningHours () {
-    this.setState({openingHoursValidation: null})
-    var openingHoursText = this.state.locationDetails.openingHours
-
-    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
-
-    if (openingHoursText.indexOf('Closed') > -1) {
-      this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
-    } else {
-      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
-
-      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceData)
-      var openingUnix = openingAndClosingArr[0]
-      var closingUnix = openingAndClosingArr[1]
-
-      var startUnix = this.state.startTime
-      var endUnix = this.state.endTime
-
-      if (this.state.endDay === this.state.startDay) {
-        if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-        }
-        if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: '3 -> End time is after closing'})
-        }
-        if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: '4 -> start time is after end time'})
-        }
-      } else if (this.state.endDay === this.state.startDay + 1) {
-        // day 2 unix is 1 full day + unix from midnight
-        endUnix += (24 * 60 * 60)
-        if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-        }
-        if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: '3 -> End time is after closing'})
-        }
-      } else if (this.state.endDay > this.state.startDay + 1) {
-        this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
+        var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
+        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
       }
     }
   }
