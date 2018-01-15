@@ -4,7 +4,7 @@ import { expandedEventPropStyle, expandedEventValueStyle } from '../Styles/style
 class PlannerEventExpandedInfo extends Component {
   render () {
     return (
-      <p style={{marginBottom: '15px'}}>
+      <p style={{marginBottom: '8px'}}>
         <span style={expandedEventPropStyle}>{this.props.name}</span><span style={expandedEventValueStyle}>{' '}{this.props.value}</span>
       </p>
     )

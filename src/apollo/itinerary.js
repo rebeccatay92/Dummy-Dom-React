@@ -27,6 +27,7 @@ export const queryItinerary = gql`
           location {
             id
             name
+            address
           }
           startDay
           endDay
@@ -45,6 +46,7 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          locationAlias
           openingHoursValidation
           allDayEvent
         }
@@ -104,6 +106,7 @@ export const queryItinerary = gql`
           location {
             id
             name
+            address
           }
           startDay
           endDay
@@ -125,6 +128,7 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          locationAlias
         }
         Food {
           id
@@ -132,6 +136,7 @@ export const queryItinerary = gql`
           location {
             id
             name
+            address
           }
           startDay
           endDay
@@ -152,6 +157,7 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          locationAlias
           openingHoursValidation
           allDayEvent
         }
@@ -160,10 +166,12 @@ export const queryItinerary = gql`
           departureLocation {
             id
             name
+            address
           }
           arrivalLocation {
             id
             name
+            address
           }
           startDay
           startTime
@@ -185,16 +193,20 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          departureLocationAlias
+          arrivalLocationAlias
         }
         SeaTransport {
           id
           departureLocation {
             id
             name
+            address
           }
           arrivalLocation {
             id
             name
+            address
           }
           startDay
           startTime
@@ -216,16 +228,20 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          departureLocationAlias
+          arrivalLocationAlias
         }
         Train {
           id
           departureLocation {
             id
             name
+            address
           }
           arrivalLocation {
             id
             name
+            address
           }
           startDay
           startTime
@@ -247,6 +263,8 @@ export const queryItinerary = gql`
             fileSize
           }
           backgroundImage
+          departureLocationAlias
+          arrivalLocationAlias
         }
       }
     }

@@ -21,7 +21,10 @@ function checkStartAndEndTime (eventsArr, event, type) {
     }
   } else if (type === 'allDayEvent') {
     event.allDayEvent = true
-    if (eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].startDay < eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].endDay && eventsInDay[eventsInDay.length - 1].type !== 'Lodging') {
+    if (eventsInDay.length === 0) {
+      event.startTime = 86400
+      event.endTime = 86400
+    } else if (eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].startDay < eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].endDay && eventsInDay[eventsInDay.length - 1].type !== 'Lodging') {
       event.startTime = eventsInDay[eventsInDay.length - 1][eventsInDay[eventsInDay.length - 1].type].startTime
       event.endTime = event.startTime
     } else {

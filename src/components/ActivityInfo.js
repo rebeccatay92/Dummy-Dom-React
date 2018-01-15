@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 
-import { updateActivity} from '../apollo/activity'
+import { updateActivity } from '../apollo/activity'
 import { updateFlightBooking } from '../apollo/flight'
 import { updateLodging } from '../apollo/lodging'
 import { updateLandTransport } from '../apollo/landtransport'

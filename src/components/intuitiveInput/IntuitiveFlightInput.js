@@ -266,23 +266,20 @@ class IntuitiveFlightInput extends Component {
     return (
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{width: '33%', display: 'inline-block'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>flight_takeoff</i>
-          {this.state.departureRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
+          {this.state.departureRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
           <AirportSearch intuitiveInput currentLocation={this.state.departureLocation} placeholder={'Departure City/Airport'} selectLocation={details => this.selectLocation('departure', details)} />
         </div>
         <div style={{width: '33%', display: 'inline-block'}}>
-          <i key='arrival' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>flight_land</i>
-          {this.state.arrivalRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
+          {this.state.arrivalRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
           <AirportSearch intuitiveInput currentLocation={this.state.arrivalLocation} placeholder={'Arrival City/Airport'} selectLocation={details => this.selectLocation('arrival', details)} />
         </div>
-        <div style={{width: '33%', display: 'inline-block'}}>
-          <i key='flightNum' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>flight</i>
+        <div style={{width: '34%', display: 'inline-block'}}>
           <div style={{position: 'relative'}}>
             <input style={{width: '90%'}} value={this.state.search} onChange={(e) => this.setState({
               search: e.target.value,
               showFlights: true
             })} />
-            <i key='more' onClick={() => this.props.handleCreateEventClick('Flight')} className='material-icons' style={{position: 'absolute', right: '12%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('Flight')} className='material-icons' style={{position: 'absolute', right: '0%', color: '#ed685a', cursor: 'pointer'}}>more_horiz</i>
             {this.state.showFlights &&
               <div style={{...intuitiveDropdownStyle, ...this.state.searching && {minHeight: '50px'}}}>
                 {this.state.searching && <h5 style={{textAlign: 'center'}}>Loading...</h5>}
@@ -307,7 +304,7 @@ class IntuitiveFlightInput extends Component {
             }
           </div>
         </div>
-        <div style={{marginTop: '5px'}}>
+        <div style={{marginTop: '5px', display: 'inline-block', textAlign: 'right', width: '96.6%'}}>
           <button onClick={() => this.handleSubmit()} style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>
           <button onClick={() => this.props.toggleIntuitiveInput()} style={{backgroundColor: 'white', border: '1px solid #9FACBC'}}>Cancel</button>
         </div>

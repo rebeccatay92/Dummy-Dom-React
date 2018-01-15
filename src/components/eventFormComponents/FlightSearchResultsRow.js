@@ -15,20 +15,20 @@ class FlightSearchResultsRow extends Component {
               </span>
             </td>
             <td style={{textAlign: 'center', padding: '5px', width: '10%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[0].departureDateTime).format('HH:mm')}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{moment(this.props.flight.flights[0].departureDateTime).format('HH:mm')}</p>
               <p style={{margin: 0}}>{this.props.flight.flights[0].departureAirportCode}</p>
             </td>
             <td style={{textAlign: 'center', width: '45%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{this.props.totalHours + this.props.totalMins + ' min'}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{this.props.totalHours + this.props.totalMins + ' min'}</p>
               <hr style={{width: '100%', height: '1px', margin: 0}} />
               <p style={{margin: 0}}>{this.props.flight.flights.length > 1 ? this.props.layoverHours + this.props.layoverMins + ' min ' + this.props.layoverAirport : 'no layover'}</p>
             </td>
             <td style={{textAlign: 'center', padding: '5px', width: '10%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[this.props.flight.flights.length - 1].arrivalDateTime).format('HH:mm')}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{moment(this.props.flight.flights[this.props.flight.flights.length - 1].arrivalDateTime).format('HH:mm')}</p>
               <p style={{margin: 0}}>{this.props.flight.flights[this.props.flight.flights.length - 1].arrivalAirportCode}</p>
             </td>
             <td style={{textAlign: 'center', fontSize: '20px', width: '25%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>USD {this.props.flight.cost}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>USD {this.props.flight.cost}</p>
             </td>
           </tr>
         </tbody>
@@ -46,20 +46,20 @@ class FlightSearchResultsRow extends Component {
               </span>
             </td>
             <td style={{textAlign: 'center', padding: '5px', width: '10%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[0].departureDateTime).format('HH:mm')}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{moment(this.props.flight.flights[0].departureDateTime).format('HH:mm')}</p>
               <p style={{margin: 0}}>{this.props.flight.flights[0].departureAirportCode}</p>
             </td>
             <td style={{textAlign: 'center', width: '45%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{this.props.totalHours + this.props.totalMins + ' min'}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{this.props.totalHours + this.props.totalMins + ' min'}</p>
               <hr style={{width: '100%', height: '1px', margin: 0}} />
               <p style={{margin: 0}}>{onwardLastFlightIndex !== 0 ? this.props.layoverHours + this.props.layoverMins + ' min ' + this.props.layoverAirport : 'no layover'}</p>
             </td>
             <td style={{textAlign: 'center', padding: '5px', width: '10%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[onwardLastFlightIndex].arrivalDateTime).format('HH:mm')}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{moment(this.props.flight.flights[onwardLastFlightIndex].arrivalDateTime).format('HH:mm')}</p>
               <p style={{margin: 0}}>{this.props.flight.flights[onwardLastFlightIndex].arrivalAirportCode}</p>
             </td>
             <td style={{textAlign: 'center', fontSize: '20px', width: '25%'}} rowSpan='2'>
-              <p style={{margin: 0, color: '#ed9fad'}}>USD {this.props.flight.cost}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>USD {this.props.flight.cost}</p>
             </td>
           </tr>
           <tr style={{height: '9vh'}}>
@@ -70,16 +70,16 @@ class FlightSearchResultsRow extends Component {
               </span>
             </td>
             <td style={{textAlign: 'center', padding: '5px', width: '10%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[returnFirstFlightIndex].departureDateTime).format('HH:mm')}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{moment(this.props.flight.flights[returnFirstFlightIndex].departureDateTime).format('HH:mm')}</p>
               <p style={{margin: 0}}>{this.props.flight.flights[returnFirstFlightIndex].departureAirportCode}</p>
             </td>
             <td style={{textAlign: 'center', width: '45%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{this.props.returnTotalHours + this.props.returnTotalMins + ' min'}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{this.props.returnTotalHours + this.props.returnTotalMins + ' min'}</p>
               <hr style={{width: '100%', height: '1px', margin: 0}} />
               <p style={{margin: 0}}>{this.props.flight.flights.length - 1 > returnFirstFlightIndex ? this.props.returnLayoverHours + this.props.returnLayoverMins + ' min ' + this.props.returnLayoverAirport : 'no layover'}</p>
             </td>
             <td style={{textAlign: 'center', padding: '5px', width: '10%'}}>
-              <p style={{margin: 0, color: '#ed9fad'}}>{moment(this.props.flight.flights[this.props.flight.flights.length - 1].arrivalDateTime).format('HH:mm')}</p>
+              <p style={{margin: 0, color: '#ed685a'}}>{moment(this.props.flight.flights[this.props.flight.flights.length - 1].arrivalDateTime).format('HH:mm')}</p>
               <p style={{margin: 0}}>{this.props.flight.flights[this.props.flight.flights.length - 1].arrivalAirportCode}</p>
             </td>
           </tr>
