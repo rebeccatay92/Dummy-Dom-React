@@ -24,8 +24,7 @@ import IntuitiveLandTransportInput from './intuitiveInput/IntuitiveLandTransport
 import IntuitiveLodgingInput from './intuitiveInput/IntuitiveLodgingInput'
 
 import CreateEventFormHOC from './createEvent/CreateEventFormHOC'
-
-import EditActivityForm from './editEvent/EditActivityForm'
+import EditEventFormHOC from './editEvent/EditEventFormHOC'
 
 import PlannerEventExpandedInfo from './PlannerEventExpandedInfo'
 import { timelineStyle, eventBoxStyle, timelineColumnStyle, dateTableFirstHeaderStyle, eventBoxFirstColumnStyle, createEventTextStyle, activityIconStyle, createEventBoxStyle, createEventPickOneStyle, createEventBoxContainerStyle, plannerBlurredBackgroundStyle, expandedEventIconsBoxStyle, expandedEventIconsStyle, expandedEventBoxStyle, expandedEventBoxImageContainerStyle, expandedEventBoxImageStyle, expandedEventBoxTextBoxStyle } from '../Styles/styles'
@@ -138,11 +137,7 @@ class PlannerActivity extends Component {
         </td>
         <td colSpan={this.state.expanded ? '4' : '1'} style={dateTableFirstHeaderStyle}>
           {this.state.editEventType &&
-            <div>
-              {this.state.editEventType === 'Activity' &&
-              <EditActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
-              }
-            </div>
+            <EditEventFormHOC eventType={this.state.editEventType} ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
           }
           {this.state.editEventType && <td style={plannerBlurredBackgroundStyle} />}
           <div style={eventBoxFirstColumnStyle(this.props.activity.modelId, minHeight)} key={this.props.activity.modelId}>
