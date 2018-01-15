@@ -107,14 +107,14 @@ class CreateActivityForm extends Component {
     // }
 
     // VALIDATE AND ASSIGN MISSING TIMINGS.
-    if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
-      newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-      newActivity.allDayEvent = true
-    } else if (typeof (newActivity.startTime) !== 'number') {
-      newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    } else if (typeof (newActivity.startTime) !== 'number') {
-      newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
-    }
+    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
+    //   newActivity.allDayEvent = true
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
+    // } else if (typeof (newActivity.startTime) !== 'number') {
+    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
+    // }
 
     // VALIDATE PLANNER TIMINGS
     // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)

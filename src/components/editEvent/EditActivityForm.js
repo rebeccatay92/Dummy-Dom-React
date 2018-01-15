@@ -20,7 +20,7 @@ import { queryItinerary } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
 import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
-import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
+import updateEventLoadSeqAssignment from '../../helpers/updateEventLoadSeqAssignment'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
 import { validateOpeningHours } from '../../helpers/openingHoursValidation'
@@ -117,18 +117,29 @@ class EditActivityForm extends Component {
 
     // check if updatesObj has fields other than id. if yes, then send to backend
     if (Object.keys(updatesObj).length > 1) {
-      console.log('sending to backend')
-      // assign load seq, send to backend
-      this.props.updateActivity({
-        variables: updatesObj,
-        refetchQueries: [{
-          query: queryItinerary,
-          variables: { id: this.props.ItineraryId }
-        }]
-      })
+      // reassign load seq if days or time change
+
+      if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
+        var updateEvent = {
+          startDay: this.state.startDay,
+          endDay: this.state.endDay,
+          startTime: this.state.startTime,
+          endTime: this.state.endTime
+        }
+        var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
+        console.log('helperOutput', helperOutput)
+      }
+
+      // this.props.updateActivity({
+      //   variables: updatesObj,
+      //   refetchQueries: [{
+      //     query: queryItinerary,
+      //     variables: { id: this.props.ItineraryId }
+      //   }]
+      // })
     }
-    this.resetState()
-    this.props.toggleEditEventType()
+    // this.resetState()
+    // this.props.toggleEditEventType()
 
     // VALIDATE START AND END TIMES
     // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
