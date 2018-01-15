@@ -89,7 +89,7 @@ class EditActivityForm extends Component {
     })
     // if cost was updated, it is a str. make int.
     if (updatesObj.cost) {
-      updatesObj.cost = parseInt(updatesObj.cost)
+      updatesObj.cost = parseInt(updatesObj.cost, 10)
     }
     // then manually add booking status, googlePlaceData, attachments, allDayEvent
     var bookingStatus = this.state.bookingConfirmation ? true : false

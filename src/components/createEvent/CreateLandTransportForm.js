@@ -81,7 +81,7 @@ class CreateLandTransportForm extends Component {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newLandTransport = {
-      ItineraryId: parseInt(this.state.ItineraryId),
+      ItineraryId: parseInt(this.state.ItineraryId, 10),
       departureLocationAlias: this.state.departureLocationAlias,
       arrivalLocationAlias: this.state.arrivalLocationAlias,
       startDay: this.state.startDay,
@@ -89,7 +89,7 @@ class CreateLandTransportForm extends Component {
       startTime: this.state.startTime,
       endTime: this.state.endTime,
       currency: this.state.currency,
-      cost: parseInt(this.state.cost),
+      cost: parseInt(this.state.cost, 10),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,

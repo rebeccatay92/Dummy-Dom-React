@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import Radium from 'radium'
 
-import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../../Styles/styles'
 import { createFlightBooking } from '../../apollo/flight'
@@ -94,7 +94,7 @@ class IntuitiveFlightInput extends Component {
       // console.log(flights);
       const details = flights.map(flight => {
         return {
-          totalDuration: parseInt(flight.ElapsedTime[0]),
+          totalDuration: parseInt(flight.ElapsedTime[0], 10),
           flights: flight.FlightDetails.map(flightDetails => {
             return {
               departureDateTime: flightDetails.DepartureDateTime,
@@ -196,7 +196,7 @@ class IntuitiveFlightInput extends Component {
     if (!validated) return
 
     const newFlight = {
-      ItineraryId: parseInt(this.props.itineraryId),
+      ItineraryId: parseInt(this.props.itineraryId, 10),
       paxAdults: 1,
       paxChildren: 0,
       paxInfants: 0,
@@ -258,7 +258,6 @@ class IntuitiveFlightInput extends Component {
   }
 
   componentDidMount () {
-    // const currencyList = countriesToCurrencyList(this.props.countries)
     var currencyList = allCurrenciesList()
     this.setState({currency: currencyList[0]})
   }

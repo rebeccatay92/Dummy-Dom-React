@@ -21,7 +21,7 @@ import { createFlightBooking } from '../../apollo/flight'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
 
-import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
+import { removeAllAttachments } from '../../helpers/cloudStorage'
 import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
@@ -94,7 +94,7 @@ class CreateFlightForm extends Component {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newFlight = {
-      ItineraryId: parseInt(this.state.ItineraryId),
+      ItineraryId: parseInt(this.state.ItineraryId, 10),
       paxAdults: this.state.paxAdults,
       paxChildren: this.state.paxChildren,
       paxInfants: this.state.paxInfants,

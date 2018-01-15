@@ -73,7 +73,7 @@ class CreateLodgingForm extends Component {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newLodging = {
-      ItineraryId: parseInt(this.state.ItineraryId),
+      ItineraryId: parseInt(this.state.ItineraryId, 10),
       locationAlias: this.state.locationAlias,
       startDay: this.state.startDay,
       endDay: this.state.endDay,
@@ -81,7 +81,7 @@ class CreateLodgingForm extends Component {
       endTime: this.state.endTime,
       description: this.state.description,
       currency: this.state.currency,
-      cost: parseInt(this.state.cost),
+      cost: parseInt(this.state.cost, 10),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,

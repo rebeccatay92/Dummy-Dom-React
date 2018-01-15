@@ -139,11 +139,11 @@ class PlannerActivity extends Component {
           {this.state.editEventType &&
             <EditEventFormHOC eventType={this.state.editEventType} ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
           }
-          {this.state.editEventType && <td style={plannerBlurredBackgroundStyle} />}
           <div style={eventBoxFirstColumnStyle(this.props.activity.modelId, minHeight)} key={this.props.activity.modelId}>
             {this.renderInfo(this.props.activity.type, this.state.expanded)}
           </div>
         </td>
+        {this.state.editEventType && <td style={plannerBlurredBackgroundStyle} />}
         {
           !this.state.expanded && this.props.columns && this.props.columns.includes('Notes') &&
           <PlannerColumnValue column='Notes' activity={this.props.activity} isLast hover={this.state.hover} itineraryId={this.props.itineraryId} expandEvent={() => this.expandEvent()} expandedEvent={this.state.expanded} />
