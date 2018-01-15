@@ -65,6 +65,8 @@ function updateEventLoadSeqAssignment (eventsArr, eventModel, modelId, updateEve
       var index = dayEvents.indexOf(displacedRow)
       if (checkIfEndingRow(displacedRow) && displacedRow.time === updateEvent.startTime) {
         dayEvents.splice(index + 1, 0, 'placeholder')
+      } else if (displacedRow.time === updateEvent.startTime && displacedRow.type === 'Lodging') {
+        dayEvents.splice(index + 1, 0, 'placeholder')
       } else {
         dayEvents.splice(index, 0, 'placeholder')
       }
