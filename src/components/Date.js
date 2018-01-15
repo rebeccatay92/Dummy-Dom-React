@@ -50,7 +50,7 @@ class DateBox extends Component {
         <table style={dateTableStyle}>
           <thead>
             <tr>
-              <th id='timeline-top' style={timelineColumnStyle}>
+              <th id='timeline-top' style={timelineColumnStyle()}>
                 {this.props.firstDay && (
                 <div style={timelineTitleStyle(headerSticky)}>
                   <span style={{fontSize: '24px', color: primaryColor, display: 'inline-block'}}>
@@ -106,7 +106,7 @@ class DateBox extends Component {
             )}
             </tr>
             <tr>
-              <td style={timelineColumnStyle}>
+              <td style={timelineColumnStyle()}>
                 {!this.props.firstDay && this.props.timeline.events && timeline}
               </td>
               <td colSpan='4'>

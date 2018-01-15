@@ -154,26 +154,23 @@ class IntuitiveFoodInput extends Component {
     return (
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{display: 'inline-block', width: '35%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>restaurant</i>
-          {this.state.descRequired && this.state.locRequired && <span style={{fontWeight: 'bold'}}>(Description or Location Required)</span>}
+          {this.state.descRequired && this.state.locRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Description or Location Required)</span>}
           <div>
             <input type='text' placeholder='Description' style={{width: '90%'}} onChange={(e) => this.handleChange(e, 'description')} />
           </div>
         </div>
         <div style={{display: 'inline-block', width: '35%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>place</i>
           <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location)} placeholder={'Location'} currentLocation={this.state.googlePlaceData} />
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>watch_later</i>
           <div style={{position: 'relative'}}>
-            <i key='more' onClick={() => this.props.handleCreateEventClick('Food')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('Food')} className='material-icons' style={{position: 'absolute', right: '0%', color: '#ed685a', cursor: 'pointer'}}>more_horiz</i>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'startTime')} />
             <span>{' '}to{' '}</span>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'endTime')} />
           </div>
         </div>
-        <div style={{marginTop: '5px'}}>
+        <div style={{marginTop: '5px', display: 'inline-block', textAlign: 'right', width: '96%'}}>
           <button onClick={() => this.handleSubmit()} style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>
           <button onClick={() => this.props.toggleIntuitiveInput()} style={{backgroundColor: 'white', border: '1px solid #9FACBC'}}>Cancel</button>
         </div>

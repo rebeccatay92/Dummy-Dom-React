@@ -6,8 +6,11 @@ import { initializePlanner } from '../actions/plannerActions'
 import { queryItinerary } from '../apollo/itinerary'
 import { Image } from 'react-bootstrap'
 import { Scrollbars } from 'react-custom-scrollbars'
-import { primaryColor, plannerContainerStyle, plannerHeaderContainerStyle, itineraryNameStyle, itineraryDescStyle, plannerHeaderIconsContainerStyle, userIconsContainerStyle, userIconStyle, plannerIconStyle } from '../Styles/styles'
+import { primaryColor, plannerContainerStyle, plannerHeaderContainerStyle, plannerHeaderRightBarIconStyle, itineraryNameStyle, itineraryDescStyle, plannerHeaderIconsContainerStyle, userIconsContainerStyle, userIconStyle, plannerIconStyle, plannerHeaderRightBarIconContainerStyle } from '../Styles/styles'
 import DateBox from './Date'
+
+import checkForTimelineErrorsInPlanner from '../helpers/checkForTimelineErrorsInPlanner'
+
 const _ = require('lodash')
 
 class Planner extends Component {
@@ -63,9 +66,15 @@ class Planner extends Component {
                   <i className='material-icons' style={{...plannerIconStyle, ...{verticalAlign: 'middle', margin: '0 0 10px 10px'}}}>person_add</i>
                 </div>
                 <div style={{position: 'absolute', right: '0', bottom: '0'}}>
-                  <i className='material-icons' style={plannerIconStyle} key={1}>line_weight</i>
-                  <i className='material-icons' style={plannerIconStyle} key={2}>share</i>
-                  <i className='material-icons' style={plannerIconStyle} key={3}>map</i>
+                  <div style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#ed6a5a'}}}>
+                    <i className='material-icons' style={plannerHeaderRightBarIconStyle} key={1}>view_list</i>
+                  </div>
+                  <div style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#438496'}}}>
+                    <i className='material-icons' style={plannerHeaderRightBarIconStyle} key={2}>share</i>
+                  </div>
+                  <div style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#a8dadc'}}}>
+                    <i className='material-icons' style={plannerHeaderRightBarIconStyle} key={3}>place</i>
+                  </div>
                 </div>
               </div>
             </div>
@@ -119,23 +128,10 @@ class Planner extends Component {
 
   componentWillReceiveProps (nextProps) {
     if (this.props.data.findItinerary !== nextProps.data.findItinerary) {
-      const allActivities = nextProps.data.findItinerary.events
-      console.log(allActivities)
-      // let lodgingCheckout = nextProps.data.findItinerary.lodgings.map(lodging => {
-      //   return {
-      //     id: lodging.id,
-      //     name: lodging.name,
-      //     location: {
-      //       name: lodging.location.name
-      //     },
-      //     endDay: lodging.endDay,
-      //     endTime: lodging.endTime,
-      //     __typename: lodging.__typename,
-      //     endLoadSequence: lodging.endLoadSequence
-      //   }
-      // })
-      // let allActivities = [...nextProps.data.findItinerary.activities, ...nextProps.data.findItinerary.flights, ...nextProps.data.findItinerary.food, ...nextProps.data.findItinerary.lodgings, ...nextProps.data.findItinerary.transports, ...lodgingCheckout]
-      this.props.initializePlanner(allActivities)
+      const allEvents = nextProps.data.findItinerary.events
+      const activitiesWithTimelineErrors = checkForTimelineErrorsInPlanner(allEvents)
+      console.log(activitiesWithTimelineErrors)
+      this.props.initializePlanner(activitiesWithTimelineErrors)
     }
   }
 }

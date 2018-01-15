@@ -28,8 +28,8 @@ class PlannerActivityTimeline extends Component {
     )
   }
 
-  renderDuration (duration, style) {
-    if (this.props.draggingItem || (!Math.floor(duration / 3600) && !Math.floor((duration % 3600) / 60))) {
+  renderDuration (duration, style, doNotShowTime) {
+    if (this.props.draggingItem || doNotShowTime || (!Math.floor(duration / 3600) && !Math.floor((duration % 3600) / 60))) {
       return (
         <div style={{...{textAlign: 'center', position: 'relative', color: '#9FACBC', top: this.props.expanded ? '110px' : '3px', fontWeight: 'bold', padding: '2px 0'}, ...style}}>
           <span style={{opacity: '0'}}>empty string</span>
@@ -41,7 +41,7 @@ class PlannerActivityTimeline extends Component {
       minutes: Math.floor((duration % 3600) / 60) + ' min'
     }
     return (
-      <div style={{...{textAlign: 'center', backgroundColor: '#FAFAFA', position: 'relative', color: '#9FACBC', top: this.props.expanded ? '110px' : '3px', fontWeight: 'bold', padding: '2px 0', zIndex: 1}, ...style}}>
+      <div style={{...{fontSize: '13px', textAlign: 'center', backgroundColor: '#FAFAFA', position: 'relative', color: '#9FACBC', top: this.props.expanded ? '110px' : '3px', fontWeight: 'bold', padding: '2px 0', zIndex: 1}, ...style}}>
         <span style={{color: this.props.isLast && this.props.lastDay ? '#FAFAFA' : '#9FACBC'}}>{time.hours}{time.minutes}</span>
       </div>
     )
@@ -54,7 +54,7 @@ class PlannerActivityTimeline extends Component {
     //     return a.day - b.day
     //   }
     // )
-    let timeOfNextActivity, indexOfNextActivity
+    let timeOfNextActivity, indexOfNextActivity, doNotShowTime
     if (this.props.draggingItem) {
       indexOfNextActivity = 0
     } else {
@@ -73,6 +73,11 @@ class PlannerActivityTimeline extends Component {
       if (nextActivity.type === 'Flight') timeOfNextActivity = nextActivity.start || typeof nextActivity.start !== 'boolean' ? nextActivity[nextActivity.type].FlightInstance['startTime'] : nextActivity[nextActivity.type].FlightInstance['endTime']
       const dayOfNextActivity = nextActivity.day
       dayAdjustedTime = timeOfNextActivity + (dayOfNextActivity - this.props.day) * 86400
+      if (nextActivity.timelineClash || nextActivity.inBetweenStartEndRow || nextActivity[nextActivity.type].allDayEvent) {
+        doNotShowTime = true
+      } else {
+        doNotShowTime = false
+      }
     }
     const endTime = this.props.start ? this.props.startTime : this.props.endTime
     switch (type) {
@@ -80,39 +85,39 @@ class PlannerActivityTimeline extends Component {
         return (
           <div>
             {this.renderIcon('directions_run', this.props.expanded && {fontSize: '48px'})}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
           </div>
         )
       case 'Food':
         return (
           <div>
             {this.renderIcon('restaurant', this.props.expanded && {fontSize: '48px'})}
-            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
           </div>
         )
       case 'Lodging':
         return (
           <div>
             {this.renderIcon('hotel', {...!this.props.start && endStyle, ...this.props.expanded && {fontSize: '48px'}})}
-            {this.renderDuration(dayAdjustedTime - endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
+            {this.renderDuration(dayAdjustedTime - endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
           </div>
         )
       case 'Flight':
         return (
           <div>
             {this.props.start && this.renderIcon('flight_takeoff', this.props.expanded && {fontSize: '48px'})}
-            {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime)}
+            {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
             {!this.props.start && this.renderIcon('flight_land', {...endStyle, ...this.props.expanded && {fontSize: '48px'}})}
-            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
           </div>
         )
       case 'LandTransport':
         return (
           <div>
             {this.props.start && this.renderIcon('local_car_wash', this.props.expanded && {fontSize: '48px'})}
-            {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime)}
+            {this.props.start && this.renderDuration(dayAdjustedTime - this.props.startTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
             {!this.props.start && this.renderIcon('local_car_wash', {...endStyle, ...this.props.expanded && {fontSize: '48px'}})}
-            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1})}
+            {!this.props.start && this.renderDuration(dayAdjustedTime - this.props.endTime, this.props.isLast && {top: this.props.expanded ? '165px' : '60px', zIndex: 1}, doNotShowTime || this.props.doNotShowTime)}
           </div>
         )
       default:

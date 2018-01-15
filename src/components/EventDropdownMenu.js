@@ -90,12 +90,12 @@ class EventDropdownMenu extends Component {
 
   render () {
     return (
-      <div style={{width: '145px', position: 'absolute', right: this.props.expandedEvent ? '590px' : '12px', top: '15px', backgroundColor: 'white', zIndex: 1, cursor: 'default', boxShadow: '0px 1px 5px 2px rgba(0, 0, 0, .2)'}}>
+      <div style={{width: '145px', position: 'absolute', right: '-150px', top: '15px', backgroundColor: 'white', zIndex: 1, cursor: 'default', boxShadow: '0px 1px 5px 2px rgba(0, 0, 0, .2)'}}>
         <div style={{margin: '8px'}}>
-          <span key='edit' onClick={() => this.props.toggleEditEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Edit Event</span>
+          <span key='edit' onClick={() => this.props.toggleEditEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed685a'}}}>Edit Event</span>
         </div>
         <div style={{margin: '8px'}}>
-          <span key='delete' onClick={() => this.deleteEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Delete Event</span>
+          <span key='delete' onClick={() => this.deleteEvent()} style={{color: '#3C3A44', ':hover': {color: '#ed685a'}}}>Delete Event</span>
         </div>
         <div style={{margin: '8px'}}>
           <span key='kissDom' onClick={() => window.alert('yoo haz bin bless by koding doge')} style={{color: '#3C3A44', ':hover': {color: '#ed9fad'}}}>Kiss Dom</span>

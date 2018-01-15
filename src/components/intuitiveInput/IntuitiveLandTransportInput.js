@@ -153,26 +153,23 @@ class IntuitiveLandTransportInput extends Component {
     return (
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{display: 'inline-block', width: '35%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>local_car_wash</i>
-          {this.state.departRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
+          {this.state.departRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
           <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location, 'departure')} placeholder={'Departure Location'} currentLocation={this.state.googlePlaceData} />
         </div>
         <div style={{display: 'inline-block', width: '35%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...endStyle, ...{cursor: 'default'}}}>local_car_wash</i>
-          {this.state.arriveRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
+          {this.state.arriveRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
           <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location, 'arrival')} placeholder={'Arrival Location'} currentLocation={this.state.googlePlaceData} />
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>watch_later</i>
-          {(this.state.startTimeRequired || this.state.endTimeRequired) && <span style={{fontWeight: 'bold'}}>(Both Fields Required)</span>}
+          {(this.state.startTimeRequired || this.state.endTimeRequired) && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Both Fields Required)</span>}
           <div style={{position: 'relative'}}>
-            <i key='more' onClick={() => this.props.handleCreateEventClick('LandTransport')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer'}}>more_horiz</i>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('LandTransport')} className='material-icons' style={{position: 'absolute', right: '0%', color: '#ed685a', cursor: 'pointer'}}>more_horiz</i>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'startTime')} />
             <span>{' '}to{' '}</span>
             <input type='time' style={{width: '40%'}} onChange={(e) => this.handleChange(e, 'endTime')} />
           </div>
         </div>
-        <div style={{marginTop: '5px'}}>
+        <div style={{marginTop: '5px', display: 'inline-block', textAlign: 'right', width: '96%'}}>
           <button onClick={() => this.handleSubmit()} style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>
           <button onClick={() => this.props.toggleIntuitiveInput()} style={{backgroundColor: 'white', border: '1px solid #9FACBC'}}>Cancel</button>
         </div>

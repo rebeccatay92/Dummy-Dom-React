@@ -142,22 +142,19 @@ class IntuitiveLodgingInput extends Component {
     return (
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{display: 'inline-block', width: '40%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>place</i>
-          {this.state.locRequired && <span style={{fontWeight: 'bold'}}>(Required)</span>}
+          {this.state.locRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
           <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location)} placeholder={'Location'} currentLocation={this.state.googlePlaceData} />
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...{cursor: 'default'}}}>hotel</i>
           <DateTimePicker intuitiveInput type='checkInTime' dates={this.props.dates} date={this.props.lodgingDate} handleSelect={(type, day, time) => this.handleSelect(type, day, time)} />
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
-          <i key='departure' className='material-icons' style={{...activityIconStyle, ...endStyle, ...{cursor: 'default'}}}>hotel</i>
           <div style={{position: 'relative'}}>
-            <i key='more' onClick={() => this.props.handleCreateEventClick('Lodging')} className='material-icons' style={{position: 'absolute', right: '14%', color: '#ed9fad', cursor: 'pointer', zIndex: 1}}>more_horiz</i>
+            <i key='more' onClick={() => this.props.handleCreateEventClick('Lodging')} className='material-icons' style={{position: 'absolute', right: '0%', color: '#ed685a', cursor: 'pointer', zIndex: 1}}>more_horiz</i>
             <DateTimePicker intuitiveInput type='checkOutTime' dates={this.props.dates} date={this.props.lodgingDate} handleSelect={(type, day, time) => this.handleSelect(type, day, time)} />
           </div>
         </div>
-        <div style={{marginTop: '5px'}}>
+        <div style={{marginTop: '5px', display: 'inline-block', textAlign: 'right', width: '97%'}}>
           <button onClick={() => this.handleSubmit()} style={{marginRight: '5px', backgroundColor: 'white', border: '1px solid #9FACBC'}}>Submit</button>
           <button onClick={() => this.props.toggleIntuitiveInput()} style={{backgroundColor: 'white', border: '1px solid #9FACBC'}}>Cancel</button>
         </div>
