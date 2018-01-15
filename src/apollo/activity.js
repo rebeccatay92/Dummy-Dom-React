@@ -53,8 +53,8 @@ export const createActivity = gql`
 export const updateActivity = gql`
   mutation updateActivity(
     $id: ID!,
-    $startDay: Int!,
-    $endDay: Int!,
+    $startDay: Int,
+    $endDay: Int,
     $startTime: Int,
     $endTime: Int,
     $googlePlaceData: googlePlaceData,
@@ -67,6 +67,8 @@ export const updateActivity = gql`
     $bookingConfirmation: String,
     $notes: String,
     $backgroundImage: String,
+    $addAttachments: [attachmentInput],
+    $removeAttachments: [ID],
     $openingHoursValidation: String,
     $allDayEvent: Boolean
   ) {
@@ -85,8 +87,10 @@ export const updateActivity = gql`
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
       notes: $notes,
-      backgroundImage: $backgroundImage
-      openingHoursValidation: $openingHoursValidation
+      backgroundImage: $backgroundImage,
+      addAttachments: $addAttachments,
+      removeAttachments: $removeAttachments,
+      openingHoursValidation: $openingHoursValidation,
       allDayEvent: $allDayEvent
     ) {
       id

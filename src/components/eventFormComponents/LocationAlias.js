@@ -17,7 +17,7 @@ class LocationAlias extends Component {
         {!this.props.placeholder &&
         <label>Detailed Location</label>
         }
-        <input className='form-input' style={{width: '100%'}} type='text' name='locationAlias' placeholder='(Optional)' onChange={(e) => this.props.handleChange(e)} />
+        <input className='form-input' style={{width: '100%'}} type='text' name='locationAlias' placeholder='(Optional)' value={this.props.locationAlias} onChange={(e) => this.props.handleChange(e)} />
       </div>
     )
   }

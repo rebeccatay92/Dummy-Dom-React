@@ -6,11 +6,11 @@ import { hoverOverActivity, dropActivity, plannerActivityHoverOverActivity } fro
 import { deleteActivityFromBucket, addActivityToBucket } from '../actions/bucketActions'
 import { connect } from 'react-redux'
 import { graphql, compose } from 'react-apollo'
-import { createActivity, deleteActivity } from '../apollo/activity'
-import { createFood, deleteFood } from '../apollo/food'
-import { createFlight, deleteFlight } from '../apollo/flight'
-import { createLandTransport, deleteLandTransport } from '../apollo/landtransport'
-import { createLodging, deleteLodging } from '../apollo/lodging'
+import { createActivity } from '../apollo/activity'
+import { createFood } from '../apollo/food'
+import { createFlight } from '../apollo/flight'
+import { createLandTransport } from '../apollo/landtransport'
+import { createLodging } from '../apollo/lodging'
 import { queryItinerary } from '../apollo/itinerary'
 import ActivityInfo from './ActivityInfo'
 import PlannerColumnValue from './PlannerColumnValue'
@@ -99,6 +99,8 @@ class PlannerActivity extends Component {
     this.state = {
       creatingEvent: false,
       createEventType: null,
+      // editingEvent: false,
+      editEventType: null,
       onBox: false,
       draggable: true,
       expanded: false,
@@ -142,7 +144,7 @@ class PlannerActivity extends Component {
           {this.state.editEventType &&
             <div>
               {this.state.editEventType === 'Activity' &&
-              <EditActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+              <EditActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
               }
             </div>
           }
@@ -189,16 +191,16 @@ class PlannerActivity extends Component {
     } else if (this.state.intuitiveInputType) {
       const types = {
         Flight: (
-          <IntuitiveFlightInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveFlightInput itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         Activity: (
-          <IntuitiveActivityInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} activityDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveActivityInput itineraryId={this.props.itineraryId} dates={this.props.dates} activityDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         Food: (
-          <IntuitiveFoodInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} foodDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveFoodInput itineraryId={this.props.itineraryId} dates={this.props.dates} foodDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         LandTransport: (
-          <IntuitiveLandTransportInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
+          <IntuitiveLandTransportInput itineraryId={this.props.itineraryId} dates={this.props.dates} departureDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
         ),
         Lodging: (
           <IntuitiveLodgingInput countries={this.props.countries} itineraryId={this.props.itineraryId} dates={this.props.dates} day={this.props.day} lodgingDate={this.props.date} handleCreateEventClick={(eventType) => this.handleCreateEventClick(eventType)} toggleIntuitiveInput={() => this.handleIntuitiveInput()} />
@@ -227,19 +229,19 @@ class PlannerActivity extends Component {
             {this.state.createEventType &&
               <div>
                 {this.state.createEventType === 'Activity' &&
-                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Food' &&
-                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Flight' &&
-                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'Lodging' &&
-                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
                 {this.state.createEventType === 'LandTransport' &&
-                <CreateLandTransportForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} countries={this.props.countries} toggleCreateEventType={() => this.handleCreateEventClick()} />
+                <CreateLandTransportForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
                 }
               </div>
             }
@@ -277,10 +279,11 @@ class PlannerActivity extends Component {
     })
   }
 
-  handleEditEventClick () {
+  handleEditEventClick (eventType = null) {
     this.setState({
-      editEventType: this.props.activity.type
-    }, () => console.log(this.state))
+      // editEventType: this.props.activity.type
+      editEventType: eventType
+    }, () => console.log('plannerActivity state', this.state))
   }
 
   toggleEventDropdown (event) {
@@ -322,7 +325,7 @@ class PlannerActivity extends Component {
       position: 'relative'
     }
     const expandMenu = this.state.expandedMenu && (
-      <EventDropdownMenu expandedEvent={this.state.expanded} event={this.props.activity} itineraryId={this.props.itineraryId} toggleEventDropdown={(event) => this.toggleEventDropdown(event)} toggleEditEvent={() => this.handleEditEventClick()} />
+      <EventDropdownMenu expandedEvent={this.state.expanded} event={this.props.activity} itineraryId={this.props.itineraryId} toggleEventDropdown={(event) => this.toggleEventDropdown(event)} toggleEditEvent={() => this.handleEditEventClick(this.props.activity.type)} />
     )
     let expandButton
     if (this.state.hover && !this.state.expandedMenu) {
@@ -399,7 +402,7 @@ class PlannerActivity extends Component {
               </div>
               <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} /><span style={typeStyle}> - </span><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} />{errorIcon}</p>
             </div>
-          )// import CreateActivityForm from './CreateActivityForm'
+          )
         case 'LandTransport':
           if (this.props.activity.start) {
             return (
@@ -619,18 +622,6 @@ class PlannerActivity extends Component {
       draggable: !this.state.draggable
     })
   }
-
-  handleDelete () {
-    this.props.deleteActivity({
-      variables: {
-        id: this.props.activity.id
-      },
-      refetchQueries: [{
-        query: queryItinerary,
-        variables: { id: this.props.itineraryId }
-      }]
-    })
-  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -659,7 +650,7 @@ const mapStateToProps = (state) => {
   }
 }
 
+// REMOVE DELETE ACTIVITY
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
-  graphql(createActivity, { name: 'createActivity' }),
-  graphql(deleteActivity, { name: 'deleteActivity' })
+  graphql(createActivity, { name: 'createActivity' })
 )(DragSource('plannerActivity', plannerActivitySource, collectSource)(DropTarget(['activity', 'plannerActivity'], plannerActivityTarget, collectTarget)(onClickOutside(Radium(PlannerActivity))))))

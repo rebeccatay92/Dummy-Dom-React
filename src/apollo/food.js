@@ -3,7 +3,7 @@ import { gql } from 'react-apollo'
 export const createFood = gql`
   mutation createFood(
     $ItineraryId: ID!,
-    $loadSequence: Int
+    $loadSequence: Int,
     $startDay: Int!,
     $endDay: Int!,
     $startTime: Int,

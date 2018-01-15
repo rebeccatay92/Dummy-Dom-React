@@ -2,6 +2,11 @@
 
 function checkStartAndEndTime (eventsArr, event, type) {
   const eventsInDay = eventsArr.filter(e => e.day === event.startDay)
+  console.log('eventsArr', eventsArr)
+  console.log('event', event)
+  console.log('type', type)
+  console.log('eventsInDay', eventsInDay)
+  
   if (type === 'startTimeMissing') {
     let index = eventsInDay.findIndex(e => {
       return e.time > event.endTime

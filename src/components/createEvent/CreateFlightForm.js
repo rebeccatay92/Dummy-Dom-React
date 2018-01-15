@@ -22,7 +22,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
 
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
@@ -248,7 +248,8 @@ class CreateFlightForm extends Component {
       this.apiToken = obj.token
     })
 
-    var currencyList = countriesToCurrencyList(this.props.countries)
+    // AIRHOB USING USD. FOR FUTURE USE
+    var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
   }

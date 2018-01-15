@@ -9,11 +9,11 @@ class UpdateItineraryDetails extends Component {
       id: this.props.itinerary.id,
       name: this.props.itinerary.name,
       days: this.props.itinerary.days,
-      startDate: this.props.itinerary.startDate,
+      startDate: this.props.itinerary.startDate
       // endDate: this.props.itinerary.endDate,
-      pax: this.props.itinerary.pax,
-      travelInsurance: this.props.itinerary.travelInsurance,
-      budget: this.props.itinerary.budget
+      // pax: this.props.itinerary.pax,
+      // travelInsurance: this.props.itinerary.travelInsurance,
+      // budget: this.props.itinerary.budget
     }
   }
   handleChange (e, field) {
@@ -46,11 +46,11 @@ class UpdateItineraryDetails extends Component {
         id: this.state.id,
         name: this.state.name,
         days: this.state.days,
-        startDate: startUnix,
+        startDate: startUnix
         // endDate: endUnix,
-        pax: this.state.pax,
-        travelInsurance: this.state.travelInsurance,
-        budget: this.state.budget
+        // pax: this.state.pax,
+        // travelInsurance: this.state.travelInsurance,
+        // budget: this.state.budget
       },
       refetchQueries: [{
         query: itinerariesByUser
@@ -77,7 +77,7 @@ class UpdateItineraryDetails extends Component {
             endDate:
             <input type='date' defaultValue={endDate} onChange={(e) => this.handleChange(e, 'endDate')} />
           </label> */}
-          <label>
+          {/* <label>
             pax:
             <input type='number' defaultValue={this.state.pax} onChange={(e) => this.handleChange(e, 'pax')} />
           </label>
@@ -88,7 +88,7 @@ class UpdateItineraryDetails extends Component {
           <label>
             budget:
             <input type='number' defaultValue={this.state.budget} onChange={(e) => this.handleChange(e, 'budget')} />
-          </label>
+          </label> */}
           <button type='submit'>Submit changes</button>
         </form>
       </div>

@@ -19,7 +19,7 @@ import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
@@ -49,7 +49,6 @@ class CreateLodgingForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
       locationDetails: {
         address: null,
         telephone: null,
@@ -101,12 +100,12 @@ class CreateLodgingForm extends Component {
     }
 
     // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
-    console.log('output', output)
-    if (!output.isValid) {
-      window.alert(`time ${newLodging.startTime} // ${newLodging.endTime} clashes with pre existing events.`)
-      console.log('ERROR ROWS', output.errorRows)
-    }
+    // var output = newEventTimelineValidation(this.props.events, 'Lodging', newLodging)
+    // console.log('output', output)
+    // if (!output.isValid) {
+    //   window.alert(`time ${newLodging.startTime} // ${newLodging.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Lodging', newLodging)
     console.log('helper output', helperOutput)
@@ -153,16 +152,17 @@ class CreateLodgingForm extends Component {
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
-      backgroundImage: defaultBackground,
-      googlePlaceDetails: null
+      backgroundImage: defaultBackground
     })
     this.apiToken = null
   }
 
   selectLocation (place) {
     var googlePlaceData = constructGooglePlaceDataObj(place)
-    this.setState({googlePlaceData: googlePlaceData})
-    this.setState({googlePlaceDetails: place})
+    this.setState({googlePlaceData: googlePlaceData}, () => {
+      var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+      this.setState({locationDetails: locationDetails})
+    })
   }
 
   handleFileUpload (attachmentInfo) {
@@ -189,7 +189,7 @@ class CreateLodgingForm extends Component {
       this.apiToken = obj.token
     })
 
-    var currencyList = countriesToCurrencyList(this.props.countries)
+    var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
 
@@ -200,13 +200,13 @@ class CreateLodgingForm extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.googlePlaceDetails) {
-      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+    if (this.state.googlePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
     }
-    // if location/day/time changed, validate opening hours
+    // lodging doesnt need opening hours validation. google almost always gives null data
   }
 
   render () {

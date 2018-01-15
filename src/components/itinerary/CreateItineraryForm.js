@@ -12,10 +12,10 @@ class CreateItineraryForm extends Component {
       CountryId: null,
       days: 0,
       startDate: '',
-      endDate: '',
-      pax: 0,
-      travelInsurance: '',
-      budget: 0
+      endDate: ''
+      // pax: 0,
+      // travelInsurance: '',
+      // budget: 0
     }
   }
 
@@ -96,7 +96,7 @@ class CreateItineraryForm extends Component {
             End Date
             <input type='date' name='endDate' value={this.state.endDate} onChange={(e) => this.handleChange(e, 'endDate')} />
           </label>
-          <label>
+          {/* <label>
             Pax
             <input type='number' name='pax' value={this.state.pax} onChange={(e) => this.handleChange(e, 'pax')} />
           </label>
@@ -107,7 +107,7 @@ class CreateItineraryForm extends Component {
           <label>
             Budget
             <input type='number' name='budget' value={this.state.budget} onChange={(e) => this.handleChange(e, 'budget')} />
-          </label>
+          </label> */}
           <button type='submit'>Add itinerary with apollo</button>
         </form>
       </div>

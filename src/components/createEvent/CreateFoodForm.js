@@ -18,13 +18,13 @@ import { createFood } from '../../apollo/food'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
-import { retrieveToken, removeAllAttachments } from '../../helpers/cloudStorage'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { removeAllAttachments } from '../../helpers/cloudStorage'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import latestTime from '../../helpers/latestTime'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
-import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
+import { validateOpeningHours } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
@@ -51,7 +51,6 @@ class CreateFoodForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
       locationDetails: {
         address: null,
         telephone: null,
@@ -97,28 +96,29 @@ class CreateFoodForm extends Component {
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
 
     // VALIDATE START AND END TIMES
-    if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
-      console.log('time is missing')
-      return
-    }
-
-    // VALIDATE AND ASSIGN MISSING TIMINGS
-    // if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
-    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
-    // } else if (typeof (newFood.startTime) !== 'number') {
-    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
-    // } else if (typeof (newFood.startTime) !== 'number') {
-    //   newFood = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
+    // if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
+    //   console.log('time is missing')
+    //   return
     // }
 
-    // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Food', newFood)
-    console.log('output', output)
-
-    if (!output.isValid) {
-      window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
-      console.log('ERROR ROWS', output.errorRows)
+    // VALIDATE AND ASSIGN MISSING TIMINGS
+    if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
+      newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
+      newFood.allDayEvent = true
+    } else if (typeof (newFood.startTime) !== 'number') {
+      newFood = checkStartAndEndTime(this.props.events, newFood, 'startTimeMissing')
+    } else if (typeof (newFood.startTime) !== 'number') {
+      newFood = checkStartAndEndTime(this.props.events, newFood, 'endTimeMissing')
     }
+
+    // VALIDATE PLANNER TIMINGS
+    // var output = newEventTimelineValidation(this.props.events, 'Food', newFood)
+    // console.log('output', output)
+    //
+    // if (!output.isValid) {
+    //   window.alert(`time ${newFood.startTime} --- ${newFood.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Food', newFood)
     console.log('helper output', helperOutput)
@@ -164,7 +164,6 @@ class CreateFoodForm extends Component {
       bookingConfirmation: '',
       attachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
       locationDetails: {
         address: null,
         telephone: null,
@@ -177,8 +176,10 @@ class CreateFoodForm extends Component {
 
   selectLocation (place) {
     var googlePlaceData = constructGooglePlaceDataObj(place)
-    this.setState({googlePlaceData: googlePlaceData})
-    this.setState({googlePlaceDetails: place})
+    this.setState({googlePlaceData: googlePlaceData}, () => {
+      var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+      this.setState({locationDetails: locationDetails})
+    })
   }
 
   handleFileUpload (attachmentInfo) {
@@ -205,7 +206,7 @@ class CreateFoodForm extends Component {
       this.apiToken = obj.token
     })
 
-    var currencyList = countriesToCurrencyList(this.props.countries)
+    var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
     this.setState({currency: currencyList[0]})
 
@@ -216,63 +217,14 @@ class CreateFoodForm extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.googlePlaceDetails) {
-      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+    if (this.state.googlePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
-      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
-        this.validateOpeningHours()
-      }
-      // if time has been cleared out remove the warning text
-      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
-        this.setState({openingHoursValidation: null})
-      }
-      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
-        this.setState({openingHoursValidation: null})
-      }
-    }
-  }
-
-  validateOpeningHours () {
-    this.setState({openingHoursValidation: null})
-    var openingHoursText = this.state.locationDetails.openingHours
-
-    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
-
-    if (openingHoursText.indexOf('Closed') > -1) {
-      this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
-    } else {
-      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
-
-      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
-      var openingUnix = openingAndClosingArr[0]
-      var closingUnix = openingAndClosingArr[1]
-
-      var startUnix = this.state.startTime
-      var endUnix = this.state.endTime
-
-      if (this.state.endDay === this.state.startDay) {
-        if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-        }
-        if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: '3 -> End time is after closing'})
-        }
-        if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: '4 -> start time is after end time'})
-        }
-      } else if (this.state.endDay === this.state.startDay + 1) {
-        // day 2 unix is 1 full day + unix from midnight
-        endUnix += (24 * 60 * 60)
-        if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-        }
-        if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: '3 -> End time is after closing'})
-        }
-      } else if (this.state.endDay > this.state.startDay + 1) {
-        this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
+        var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
+        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
       }
     }
   }
