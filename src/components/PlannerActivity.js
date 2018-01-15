@@ -23,11 +23,7 @@ import IntuitiveFoodInput from './intuitiveInput/IntuitiveFoodInput'
 import IntuitiveLandTransportInput from './intuitiveInput/IntuitiveLandTransportInput'
 import IntuitiveLodgingInput from './intuitiveInput/IntuitiveLodgingInput'
 
-import CreateActivityForm from './createEvent/CreateActivityForm'
-import CreateFoodForm from './createEvent/CreateFoodForm'
-import CreateFlightForm from './createEvent/CreateFlightForm'
-import CreateLodgingForm from './createEvent/CreateLodgingForm'
-import CreateLandTransportForm from './createEvent/CreateLandTransportForm'
+import CreateEventFormHOC from './createEvent/CreateEventFormHOC'
 
 import EditActivityForm from './editEvent/EditActivityForm'
 
@@ -227,23 +223,7 @@ class PlannerActivity extends Component {
             </div>
 
             {this.state.createEventType &&
-              <div>
-                {this.state.createEventType === 'Activity' &&
-                <CreateActivityForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
-                }
-                {this.state.createEventType === 'Food' &&
-                <CreateFoodForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
-                }
-                {this.state.createEventType === 'Flight' &&
-                <CreateFlightForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
-                }
-                {this.state.createEventType === 'Lodging' &&
-                <CreateLodgingForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
-                }
-                {this.state.createEventType === 'LandTransport' &&
-                <CreateLandTransportForm ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
-                }
-              </div>
+              <CreateEventFormHOC eventType={this.state.createEventType} ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} toggleCreateEventType={() => this.handleCreateEventClick()} />
             }
           </td>
           {this.state.createEventType && <td style={plannerBlurredBackgroundStyle} />}

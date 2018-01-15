@@ -95,12 +95,6 @@ class CreateFoodForm extends Component {
     }
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
 
-    // VALIDATE START AND END TIMES
-    // if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
-    //   console.log('time is missing')
-    //   return
-    // }
-
     // VALIDATE AND ASSIGN MISSING TIMINGS
     if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
       newFood = checkStartAndEndTime(this.props.events, newFood, 'allDayEvent')
@@ -224,7 +218,7 @@ class CreateFoodForm extends Component {
       }
       if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
         var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
-        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
+        this.setState({openingHoursValidation: openingHoursError})
       }
     }
   }

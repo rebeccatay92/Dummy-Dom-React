@@ -100,12 +100,6 @@ class CreateActivityForm extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
-    // VALIDATE START AND END TIMES
-    // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-    //   console.log('time is missing')
-    //   return
-    // }
-
     // VALIDATE AND ASSIGN MISSING TIMINGS.
     if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
       newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
@@ -143,7 +137,6 @@ class CreateActivityForm extends Component {
         variables: { id: this.props.ItineraryId }
       }]
     })
-    // .then() //get created id
 
     this.resetState()
     this.props.toggleCreateEventType()
@@ -234,7 +227,7 @@ class CreateActivityForm extends Component {
       // if location/day/time changed, validate opening hours. if no error -> null, else str
       if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
         var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
-        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
+        this.setState({openingHoursValidation: openingHoursError})
       }
     }
   }
