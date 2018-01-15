@@ -81,7 +81,7 @@ class EditActivityForm extends Component {
       id: this.state.id
     }
     // remove openingHoursValidation from backend if planner can use openingHours helper ok
-    var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'startTime', 'endTime', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation']
+    var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation', 'startTime', 'endTime']
     fieldsToCheck.forEach(field => {
       if (this.props.event[field] !== this.state[field]) {
         updatesObj[field] = this.state[field]
@@ -105,20 +105,52 @@ class EditActivityForm extends Component {
     }
     // removeAttachments obj only takes id
     if (this.state.holderDeleteAttachments.length) {
+      // removing holderDeleteAttachments from cloud
+      removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
+      // set up removeAttachments[ID] arr for backend
       updatesObj.removeAttachments = this.state.holderDeleteAttachments.map(e => {
         return e.id
       })
     }
-    console.log('handlesubmit', updatesObj)
 
-    // removing holderDeleteAttachments from cloud
-    removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
+    // if allDayEvent, and time happens to change to exactly identical unix as what was saved, fieldsToCheck doesnt detect change. hence check if state is not null (since onComponentMount will set state to null if allDayEvent)
+    // IF ALLDAYEVENT GETS ASSIGNED TIME, CHANGE ALLDAYEVENT BOOLEAN
+    if (this.props.event.allDayEvent) {
+      if (typeof (this.state.startTime) === 'number') {
+        updatesObj.startTime = this.state.startTime
+        updatesObj.allDayEvent = false
+      }
+      if (typeof (this.state.endTime) === 'number') {
+        updatesObj.endTime = this.state.endTime
+        updatesObj.allDayEvent = false
+      }
+    }
+    // IF NON-ALLDAYEVENT HAS MISSING TIME FIELDS, ASSIGN VALUES / ALLDAY BOOLEAN. IF ALLDAYEVENT TIMING NOT CHANGED, ALSO ASSIGN TIMINGS (SINCE INITIALIZED TO NULL). EVENTSARR NEED TO REMOVE THE EVENT FIRST.
+    var eventsArr = this.props.events.filter(e => {
+      var isUpdatingEvent = (e.type === 'Activity' && e.modelId === this.state.id)
+      return !isUpdatingEvent
+    })
+
+    if (typeof (this.state.startTime) !== 'number' && typeof (this.state.endTime) !== 'number') {
+      var timeAssignedEvent = checkStartAndEndTime(this.props.events, this.state, 'allDayEvent')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.startTime = timeAssignedEvent.startTime
+      updatesObj.endTime = timeAssignedEvent.endTime
+      updatesObj.allDayEvent = true
+    } else if (typeof (this.state.startTime) !== 'number') {
+      timeAssignedEvent = checkStartAndEndTime(this.props.events, this.state, 'startTimeMissing')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.startTime = timeAssignedEvent.startTime
+    } else if (typeof (this.state.endTime) !== 'number') {
+      timeAssignedEvent = checkStartAndEndTime(this.props.events, this.state, 'endTimeMissing')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.endTime = timeAssignedEvent.endTime
+    }
+
+    console.log('handlesubmit', updatesObj)
 
     // check if updatesObj has fields other than id. if yes, then send to backend
     if (Object.keys(updatesObj).length <= 1) return
-
-    // IF ALLDAYEVENT GETS ASSIGNED TIME, CHANGE ALLDAYEVENT BOOLEAN
-    // IF NON-ALLDAYEVENT HAS MISSING TIME FIELDS, ASSIGN VALUES / ALLDAY BOOLEAN. EVENTS ARR NEED TO REMOVE THE EVENT FIRST.
 
     // if time or day changes, reassign load seq
     if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
@@ -133,9 +165,12 @@ class EditActivityForm extends Component {
       updatesObj.loadSequence = helperOutput.updateEvent.loadSequence
       var loadSequenceInput = helperOutput.loadSequenceInput
     }
+
     if (loadSequenceInput.length) {
       this.props.changingLoadSequence({
-        variables: loadSequenceInput
+        variables: {
+          input: loadSequenceInput
+        }
       })
     }
     this.props.updateActivity({
@@ -148,21 +183,6 @@ class EditActivityForm extends Component {
 
     this.resetState()
     this.props.toggleEditEventType()
-
-    // VALIDATE START AND END TIMES
-    // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-    //   console.log('time is missing')
-    //   return
-    // }
-
-    // VALIDATE AND ASSIGN MISSING TIMINGS
-    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
-    // }
 
     // VALIDATE PLANNER TIMINGS
     // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
@@ -321,8 +341,8 @@ class EditActivityForm extends Component {
     this.setState({
       startDay: this.props.event.startDay,
       endDay: this.props.event.endDay,
-      startTime: this.props.event.startTime, // unix
-      endTime: this.props.event.endTime,
+      startTime: startTime, // unix or null for all day
+      endTime: endTime,
       defaultStartTime: defaultStartTime, // 'HH:mm' string
       defaultEndTime: defaultEndTime,
       description: this.props.event.description,
