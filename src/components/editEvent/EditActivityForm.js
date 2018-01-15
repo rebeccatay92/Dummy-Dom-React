@@ -80,7 +80,6 @@ class EditActivityForm extends Component {
     var updatesObj = {
       id: this.state.id
     }
-
     // remove openingHoursValidation from backend if planner can use openingHours helper ok
     var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'startTime', 'endTime', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation']
     fieldsToCheck.forEach(field => {
@@ -116,30 +115,39 @@ class EditActivityForm extends Component {
     removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
 
     // check if updatesObj has fields other than id. if yes, then send to backend
-    if (Object.keys(updatesObj).length > 1) {
-      // reassign load seq if days or time change
+    if (Object.keys(updatesObj).length <= 1) return
 
-      if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
-        var updateEvent = {
-          startDay: this.state.startDay,
-          endDay: this.state.endDay,
-          startTime: this.state.startTime,
-          endTime: this.state.endTime
-        }
-        var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
-        console.log('helperOutput', helperOutput)
+    // IF ALLDAYEVENT GETS ASSIGNED TIME, CHANGE ALLDAYEVENT BOOLEAN
+    // IF NON-ALLDAYEVENT HAS MISSING TIME FIELDS, ASSIGN VALUES / ALLDAY BOOLEAN. EVENTS ARR NEED TO REMOVE THE EVENT FIRST.
+
+    // if time or day changes, reassign load seq
+    if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
+      var updateEvent = {
+        startDay: this.state.startDay,
+        endDay: this.state.endDay,
+        startTime: this.state.startTime,
+        endTime: this.state.endTime
       }
-
-      // this.props.updateActivity({
-      //   variables: updatesObj,
-      //   refetchQueries: [{
-      //     query: queryItinerary,
-      //     variables: { id: this.props.ItineraryId }
-      //   }]
-      // })
+      var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
+      console.log('helperOutput', helperOutput)
+      updatesObj.loadSequence = helperOutput.updateEvent.loadSequence
+      var loadSequenceInput = helperOutput.loadSequenceInput
     }
-    // this.resetState()
-    // this.props.toggleEditEventType()
+    if (loadSequenceInput.length) {
+      this.props.changingLoadSequence({
+        variables: loadSequenceInput
+      })
+    }
+    this.props.updateActivity({
+      variables: updatesObj,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
+
+    this.resetState()
+    this.props.toggleEditEventType()
 
     // VALIDATE START AND END TIMES
     // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
@@ -147,7 +155,7 @@ class EditActivityForm extends Component {
     //   return
     // }
 
-    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
+    // VALIDATE AND ASSIGN MISSING TIMINGS
     // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
     //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
     // } else if (typeof (newActivity.startTime) !== 'number') {
@@ -164,14 +172,6 @@ class EditActivityForm extends Component {
     //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
     //   console.log('ERROR ROWS', output.errorRows)
     // }
-
-    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-    //
-    // this.props.changingLoadSequence({
-    //   variables: {
-    //     input: helperOutput.loadSequenceInput
-    //   }
-    // })
   }
 
   // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
@@ -299,11 +299,22 @@ class EditActivityForm extends Component {
     var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
 
+    var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.props.event.startDay, this.props.event.endDay, this.props.event.startTime, this.props.event.endTime)
+    this.setState({openingHoursValidation: openingHoursError})
+
+    var startTime = this.props.event.startTime
+    var endTime = this.props.event.endTime
     var defaultStartTime = moment.utc(this.props.event.startTime * 1000).format('HH:mm')
     var defaultEndTime = moment.utc(this.props.event.endTime * 1000).format('HH:mm')
 
-    var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.props.event.startDay, this.props.event.endDay, this.props.event.startTime, this.props.event.endTime)
-    this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
+    // if all day event, datetimepicker displays null instead of midnight. start/end time unix is also null
+    if (this.props.event.allDayEvent) {
+      console.log('all day event')
+      defaultStartTime = null
+      defaultEndTime = null
+      startTime = null
+      endTime = null
+    }
 
     // INSTANTIATE STATE TO BE WHATEVER WAS IN DB
     console.log('event', this.props.event)
@@ -322,10 +333,9 @@ class EditActivityForm extends Component {
       bookingConfirmation: this.props.event.bookingConfirmation || '',
       notes: this.props.event.notes || '',
       backgroundImage: this.props.event.backgroundImage,
-      allDayEvent: this.props.event.allDayEvent,
-      // openingHoursValidation: this.props.event.openingHoursValidation,
       googlePlaceData: this.props.event.location,
-      attachments: this.props.event.attachments
+      attachments: this.props.event.attachments,
+      allDayEvent: this.props.event.allDayEvent
     }, () => console.log('edit form did mount', this.state))
   }
 

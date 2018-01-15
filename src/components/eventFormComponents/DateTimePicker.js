@@ -127,7 +127,7 @@ class DateTimePicker extends Component {
       this.setState({startTime: nextProps.defaultTime, endTime: nextProps.defaultTime})
     }
 
-    //DEFAULT START/END TIME FOR EDIT FORM
+    // DEFAULT START/END TIME FOR EDIT FORM
     if (this.props.defaultStartTime !== nextProps.defaultStartTime) {
       this.setState({startTime: nextProps.defaultStartTime})
     }

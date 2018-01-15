@@ -112,7 +112,7 @@ class CreateActivityForm extends Component {
       newActivity.allDayEvent = true
     } else if (typeof (newActivity.startTime) !== 'number') {
       newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    } else if (typeof (newActivity.startTime) !== 'number') {
+    } else if (typeof (newActivity.endTime) !== 'number') {
       newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
     }
 
