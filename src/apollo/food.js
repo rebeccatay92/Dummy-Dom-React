@@ -53,8 +53,8 @@ export const createFood = gql`
 export const updateFood = gql`
   mutation updateFood(
     $id: ID!,
-    $startDay: Int!,
-    $endDay: Int!,
+    $startDay: Int,
+    $endDay: Int,
     $startTime: Int,
     $endTime: Int,
     $loadSequence: Int,
