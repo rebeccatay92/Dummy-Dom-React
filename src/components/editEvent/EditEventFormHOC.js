@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import EditActivityForm from './EditActivityForm'
 import EditFoodForm from './EditFoodForm'
 import EditLodgingForm from './EditLodgingForm'
+import EditLandTransportForm from './EditLandTransportForm'
 
 class EditEventFormHOC extends Component {
   constructor (props) {
@@ -9,8 +10,8 @@ class EditEventFormHOC extends Component {
     this.components = {
       Activity: EditActivityForm,
       Food: EditFoodForm,
-      Lodging: EditLodgingForm
-      // LandTransport: EditLandTransportForm,
+      Lodging: EditLodgingForm,
+      LandTransport: EditLandTransportForm
       // Flight: EditFlightForm
     }
   }

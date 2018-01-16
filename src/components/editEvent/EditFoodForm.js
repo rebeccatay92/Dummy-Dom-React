@@ -146,7 +146,10 @@ class EditFoodForm extends Component {
     console.log('handlesubmit', updatesObj)
 
     // check if updatesObj has fields other than id. if yes, then send to backend
-    if (Object.keys(updatesObj).length <= 1) return
+    if (Object.keys(updatesObj).length <= 1) {
+      this.resetState()
+      this.props.toggleEditEventType()
+    }
 
     // if time or day changes, reassign load seq
     if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {

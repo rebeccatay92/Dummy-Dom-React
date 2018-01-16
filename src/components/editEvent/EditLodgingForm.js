@@ -32,7 +32,7 @@ class EditLodgingForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      id: this.props.event.id, // activity id
+      id: this.props.event.id,
       startDay: 0,
       endDay: 0,
       startTime: null, // if setstate, will change to unix
@@ -119,7 +119,10 @@ class EditLodgingForm extends Component {
     console.log('handlesubmit', updatesObj)
 
     // check if updatesObj has fields other than id. if yes, then send to backend
-    if (Object.keys(updatesObj).length <= 1) return
+    if (Object.keys(updatesObj).length <= 1) {
+      this.resetState()
+      this.props.toggleEditEventType()
+    }
 
     // if time or day changes, reassign load seq
     if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
