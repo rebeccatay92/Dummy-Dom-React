@@ -32,6 +32,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -76,6 +77,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -122,6 +124,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -166,6 +169,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -186,6 +190,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -231,6 +236,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -251,6 +257,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -296,6 +303,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -316,6 +324,7 @@ export const queryItinerary = gql`
             telephone
             latitude
             longitude
+            utcOffset
             openingHours {
               open {
                 day
@@ -366,6 +375,7 @@ export const queryItinerary = gql`
               telephone
               latitude
               longitude
+              utcOffset
               openingHours {
                 open {
                   day
@@ -386,6 +396,7 @@ export const queryItinerary = gql`
               telephone
               latitude
               longitude
+              utcOffset
               openingHours {
                 open {
                   day

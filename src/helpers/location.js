@@ -10,6 +10,7 @@ export function constructGooglePlaceDataObj (place) {
     telephone: place.international_phone_number || place.formatted_phone_number,
     latitude: null,
     longitude: null,
+    utcOffset: place.utc_offset,
     openingHours: null,
     openingHoursText: null
   }
