@@ -7,7 +7,7 @@ import LocationSearch from '../location/LocationSearch'
 
 import { constructGooglePlaceDataObj } from '../../helpers/location'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle } from '../../Styles/styles'
 
@@ -96,7 +96,7 @@ class IntuitiveFoodInput extends Component {
     const startDay = this.props.dates.map(date => date.getTime()).findIndex((e) => e === this.props.foodDate) + 1
 
     const newFood = {
-      ItineraryId: parseInt(this.props.itineraryId),
+      ItineraryId: parseInt(this.props.itineraryId, 10),
       startDay: startDay,
       endDay: endUnix < startUnix ? startDay + 1 : startDay,
       startTime: startUnix,
@@ -144,7 +144,7 @@ class IntuitiveFoodInput extends Component {
   }
 
   componentDidMount () {
-    const currencyList = countriesToCurrencyList(this.props.countries)
+    var currencyList = allCurrenciesList()
     this.setState({currency: currencyList[0]})
     console.log(this.props.foodDate, this.props.dates.map(date => date.getTime()))
   }

@@ -14,7 +14,7 @@ class Notes extends Component {
         <label style={labelStyle}>
             Notes:
         </label>
-        <textarea type='text' name='notes' onChange={(e) => this.props.flight ? this.props.handleChange(e, 'flightInstances', 'notes', this.props.index) : this.props.handleChange(e, 'notes')} style={{width: '100%', height: '100px', display: 'block'}} />
+        <textarea type='text' name='notes' value={this.props.notes} onChange={(e) => this.props.flight ? this.props.handleChange(e, 'flightInstances', 'notes', this.props.index) : this.props.handleChange(e, 'notes')} style={{width: '100%', height: '100px', display: 'block'}} />
       </div>
     )
   }

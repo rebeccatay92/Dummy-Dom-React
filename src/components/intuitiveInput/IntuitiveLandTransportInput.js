@@ -6,7 +6,7 @@ import Radium from 'radium'
 import LocationSearch from '../location/LocationSearch'
 
 import { constructGooglePlaceDataObj } from '../../helpers/location'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle, primaryColor } from '../../Styles/styles'
 
@@ -90,7 +90,7 @@ class IntuitiveLandTransportInput extends Component {
     console.log(startDay);
 
     const newLandTransport = {
-      ItineraryId: parseInt(this.props.itineraryId),
+      ItineraryId: parseInt(this.props.itineraryId, 10),
       startDay: startDay,
       endDay: endUnix < startUnix ? startDay + 1 : startDay,
       startTime: startUnix,
@@ -139,7 +139,7 @@ class IntuitiveLandTransportInput extends Component {
   }
 
   componentDidMount () {
-    const currencyList = countriesToCurrencyList(this.props.countries)
+    var currencyList = allCurrenciesList()
     this.setState({currency: currencyList[0]})
     console.log(this.props.departureDate, this.props.dates.map(date => date.getTime()))
   }

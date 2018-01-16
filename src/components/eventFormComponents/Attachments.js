@@ -157,7 +157,13 @@ class Attachments extends Component {
     // this.props.handleFileUpload(e)
   }
 
-  removeUpload (index) {
+  removeUpload (index, formType) {
+    // if props formtype = 'edit', block the http req and just pass index up. editEventForm will compare against holding area and delete/delay till form submit/cancel action.
+    if (formType === 'edit') {
+      this.props.removeUpload(index)
+      return
+    }
+
     var objectName = this.props.attachments[index].fileName
     objectName = objectName.replace('/', '%2F')
     var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
@@ -209,7 +215,7 @@ class Attachments extends Component {
             <div style={{display: 'inline-block', cursor: 'pointer', position: 'absolute', bottom: '-5px', right: '0'}}>
               <i key={'attachmentDelete' + i} className='material-icons' value={i} onClick={() => {
                 this.setState({hoveringOver: null})
-                this.removeUpload(i)
+                this.removeUpload(i, this.props.formType)
               }} style={attachmentDeleteBtnStyle(this.state.hoveringOver, i)}>clear</i>
             </div>
 

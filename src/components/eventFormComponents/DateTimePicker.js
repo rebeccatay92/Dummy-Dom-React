@@ -81,15 +81,15 @@ class DateTimePicker extends Component {
       var newDate = moment.unix(newUnix)
 
       if (field === 'startDay') {
-        this.props.updateDayTime('startDay', parseInt(e.target.value))
+        this.props.updateDayTime('startDay', parseInt(e.target.value, 10))
         this.setState({startDate: newDate})
         if (e.target.value > this.props.endDay) {
-          this.props.updateDayTime('endDay', parseInt(e.target.value))
+          this.props.updateDayTime('endDay', parseInt(e.target.value, 10))
           this.setState({endDate: newDate})
         }
       }
       if (field === 'endDay') {
-        this.props.updateDayTime('endDay', parseInt(e.target.value))
+        this.props.updateDayTime('endDay', parseInt(e.target.value, 10))
         this.setState({endDate: newDate})
       }
     }
@@ -120,11 +120,21 @@ class DateTimePicker extends Component {
 
   // updating state '' for start/end time with default time props
   componentWillReceiveProps (nextProps) {
+    // default time props was passed down as a string
+
+    // DEFAULT TIME FOR CREATE FORM
     if (this.props.defaultTime !== nextProps.defaultTime) {
       this.setState({startTime: nextProps.defaultTime, endTime: nextProps.defaultTime})
     }
-  }
 
+    // DEFAULT START/END TIME FOR EDIT FORM
+    if (this.props.defaultStartTime !== nextProps.defaultStartTime) {
+      this.setState({startTime: nextProps.defaultStartTime})
+    }
+    if (this.props.defaultEndTime !== nextProps.defaultEndTime) {
+      this.setState({endTime: nextProps.defaultEndTime})
+    }
+  }
   render () {
     if (this.props.intuitiveInput) {
       return (

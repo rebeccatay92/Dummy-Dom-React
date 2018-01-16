@@ -14,17 +14,16 @@ import Notes from '../eventFormComponents/Notes'
 import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
-import { createActivity } from '../../apollo/activity'
+import { updateActivity } from '../../apollo/activity'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
-import countriesToCurrencyList from '../../helpers/countriesToCurrencyList'
-import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
-import latestTime from '../../helpers/latestTime'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
+import updateEventLoadSeqAssignment from '../../helpers/updateEventLoadSeqAssignment'
 import moment from 'moment'
 import { constructGooglePlaceDataObj, constructLocationDetails } from '../../helpers/location'
-import { findDayOfWeek, findOpenAndCloseUnix } from '../../helpers/openingHoursValidation'
+import { validateOpeningHours } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
@@ -35,105 +34,146 @@ class EditActivityForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      ItineraryId: this.props.ItineraryId,
-      startDay: this.props.day, //int
-      endDay: this.props.day,
-      googlePlaceData: {},
+      id: this.props.event.id, // activity id
+      startDay: 0,
+      endDay: 0,
+      startTime: null, // if setstate, will change to unix
+      endTime: null, // if setstate, will change to unix
       locationAlias: '',
       description: '',
       notes: '',
-      defaultTime: null,
-      startTime: null, // if setstate, will change to unix
-      endTime: null, // if setstate, will change to unix
       cost: 0,
       currency: '',
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
-      attachments: [],
+      attachments: [], // entire arr user sees. not sent to backend.
+      holderNewAttachments: [],
+      holderDeleteAttachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
-      // for google api response, not for db
+      googlePlaceData: {},
       locationDetails: {
         address: null,
         telephone: null,
-        openingHours: null
+        openingHours: null // text for selected day
       },
-      openingHoursValidation: null
+      openingHoursValidation: null,
+      allDayEvent: null
     }
   }
 
   updateDayTime (field, value) {
     this.setState({
       [field]: value
-    })
+    }, () => console.log('after handledaytime', this.state))
   }
 
   handleChange (e, field) {
     this.setState({
       [field]: e.target.value
-    })
+    }, () => console.log('after handle change', this.state))
   }
 
+  // ONLY SEND UPDATED FIELDS. delete all in holderDeleteAttachments. send holderNewAttachments to backend
+
   handleSubmit () {
-    var bookingStatus = this.state.bookingConfirmation ? true : false
-
-    var newActivity = {
-      ItineraryId: parseInt(this.state.ItineraryId),
-      locationAlias: this.state.locationAlias,
-      startDay: this.state.startDay,
-      endDay: this.state.endDay,
-      startTime: this.state.startTime,
-      endTime: this.state.endTime,
-      description: this.state.description,
-      currency: this.state.currency,
-      cost: parseInt(this.state.cost),
-      bookingStatus: bookingStatus,
-      bookedThrough: this.state.bookedThrough,
-      bookingConfirmation: this.state.bookingConfirmation,
-      notes: this.state.notes,
-      attachments: this.state.attachments,
-      backgroundImage: this.state.backgroundImage,
-      openingHoursValidation: this.state.openingHoursValidation
+    var updatesObj = {
+      id: this.state.id
     }
-    if (this.state.googlePlaceData.placeId) {
-      newActivity.googlePlaceData = this.state.googlePlaceData
-    }
-
-    // VALIDATE START AND END TIMES
-    if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-      console.log('time is missing')
-      return
-    }
-
-    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
-    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
-    // }
-
-    // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
-    console.log('output', output)
-
-    if (!output.isValid) {
-      window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
-      console.log('ERROR ROWS', output.errorRows)
-    }
-
-    var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-
-    this.props.changingLoadSequence({
-      variables: {
-        input: helperOutput.loadSequenceInput
+    // remove openingHoursValidation from backend if planner can use openingHours helper ok
+    var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation', 'startTime', 'endTime']
+    fieldsToCheck.forEach(field => {
+      if (this.props.event[field] !== this.state[field]) {
+        updatesObj[field] = this.state[field]
       }
     })
+    // if cost was updated, it is a str. make int.
+    if (updatesObj.cost) {
+      updatesObj.cost = parseInt(updatesObj.cost, 10)
+    }
+    // then manually add booking status, googlePlaceData, attachments, allDayEvent
+    var bookingStatus = this.state.bookingConfirmation ? true : false
+    if (bookingStatus !== this.props.event.bookingStatus) {
+      updatesObj.bookingStatus = bookingStatus
+    }
+    // if location changed, it doesnt contain the id field
+    if (!this.state.googlePlaceData.id) {
+      updatesObj.googlePlaceData = this.state.googlePlaceData
+    }
+    if (this.state.holderNewAttachments.length) {
+      updatesObj.addAttachments = this.state.holderNewAttachments
+    }
+    // removeAttachments obj only takes id
+    if (this.state.holderDeleteAttachments.length) {
+      // removing holderDeleteAttachments from cloud
+      removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
+      // set up removeAttachments[ID] arr for backend
+      updatesObj.removeAttachments = this.state.holderDeleteAttachments.map(e => {
+        return e.id
+      })
+    }
 
-    this.props.createActivity({
-      variables: helperOutput.newEvent,
+    // if allDayEvent, and time happens to change to exactly identical unix as what was saved, fieldsToCheck doesnt detect change. hence check if state is not null (since onComponentMount will set state to null if allDayEvent)
+    // IF ALLDAYEVENT GETS ASSIGNED TIME, CHANGE ALLDAYEVENT BOOLEAN
+    if (this.props.event.allDayEvent) {
+      if (typeof (this.state.startTime) === 'number') {
+        updatesObj.startTime = this.state.startTime
+        updatesObj.allDayEvent = false
+      }
+      if (typeof (this.state.endTime) === 'number') {
+        updatesObj.endTime = this.state.endTime
+        updatesObj.allDayEvent = false
+      }
+    }
+    // IF NON-ALLDAYEVENT HAS MISSING TIME FIELDS, ASSIGN VALUES / ALLDAY BOOLEAN. IF ALLDAYEVENT TIMING NOT CHANGED, ALSO ASSIGN TIMINGS (SINCE INITIALIZED TO NULL). EVENTSARR NEED TO REMOVE THE EVENT FIRST.
+    var eventsArr = this.props.events.filter(e => {
+      var isUpdatingEvent = (e.type === 'Activity' && e.modelId === this.state.id)
+      return !isUpdatingEvent
+    })
+    // use checkStartAndEndTime on eventsArr (doesnt contain currently editing event)
+    if (typeof (this.state.startTime) !== 'number' && typeof (this.state.endTime) !== 'number') {
+      var timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'allDayEvent')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.startTime = timeAssignedEvent.startTime
+      updatesObj.endTime = timeAssignedEvent.endTime
+      updatesObj.allDayEvent = true
+    } else if (typeof (this.state.startTime) !== 'number') {
+      timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'startTimeMissing')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.startTime = timeAssignedEvent.startTime
+    } else if (typeof (this.state.endTime) !== 'number') {
+      timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'endTimeMissing')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.endTime = timeAssignedEvent.endTime
+    }
+
+    console.log('handlesubmit', updatesObj)
+
+    // check if updatesObj has fields other than id. if yes, then send to backend
+    if (Object.keys(updatesObj).length <= 1) return
+
+    // if time or day changes, reassign load seq
+    if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
+      var updateEvent = {
+        startDay: this.state.startDay,
+        endDay: this.state.endDay,
+        startTime: this.state.startTime,
+        endTime: this.state.endTime
+      }
+      var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
+      console.log('helperOutput', helperOutput)
+      updatesObj.loadSequence = helperOutput.updateEvent.loadSequence
+      var loadSequenceInput = helperOutput.loadSequenceInput
+      if (loadSequenceInput.length) {
+        this.props.changingLoadSequence({
+          variables: {
+            input: loadSequenceInput
+          }
+        })
+      }
+    }
+    this.props.updateActivity({
+      variables: updatesObj,
       refetchQueries: [{
         query: queryItinerary,
         variables: { id: this.props.ItineraryId }
@@ -141,59 +181,117 @@ class EditActivityForm extends Component {
     })
 
     this.resetState()
-    this.props.toggleCreateEventType()
+    this.props.toggleEditEventType()
+
+    // VALIDATE PLANNER TIMINGS
+    // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
+    // console.log('output', output)
+    //
+    // if (!output.isValid) {
+    //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
   }
 
-  closeCreateActivity () {
-    removeAllAttachments(this.state.attachments, this.apiToken)
+  // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
+  closeEditActivity () {
+    removeAllAttachments(this.state.holderNewAttachments, this.apiToken)
     this.resetState()
-    this.props.toggleCreateEventType()
+    this.props.toggleEditEventType()
   }
 
   resetState () {
     this.setState({
-      startDay: this.props.startDay,
-      endDay: this.props.endDay,
-      googlePlaceData: {},
+      startDay: 0,
+      endDay: 0,
+      startTime: null,
+      endTime: null,
       locationAlias: '',
       description: '',
       notes: '',
-      startTime: null, // should be Int
-      endTime: null, // should be Int
       cost: 0,
-      currency: this.state.currencyList[0],
+      currency: '',
+      currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
       attachments: [],
+      holderNewAttachments: [],
+      holderDeleteAttachments: [],
       backgroundImage: defaultBackground,
-      googlePlaceDetails: null,
+      googlePlaceData: {},
       locationDetails: {
         address: null,
         telephone: null,
-        openingHours: null
+        openingHours: null // text for selected day
       },
-      openingHoursValidation: null
+      openingHoursValidation: null,
+      allDayEvent: null
     })
     this.apiToken = null
   }
 
   selectLocation (place) {
     var googlePlaceData = constructGooglePlaceDataObj(place)
-    this.setState({googlePlaceData: googlePlaceData})
-    this.setState({googlePlaceDetails: place})
+    this.setState({googlePlaceData: googlePlaceData}, () => {
+      var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
+      this.setState({locationDetails: locationDetails})
+    })
   }
 
   handleFileUpload (attachmentInfo) {
     this.setState({attachments: this.state.attachments.concat([attachmentInfo])})
+    // new attachment that are not in db go into holding area
+    this.setState({holderNewAttachments: this.state.holderNewAttachments.concat([attachmentInfo])})
   }
 
   removeUpload (index) {
     var files = this.state.attachments
-    var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
+    var holderNew = this.state.holderNewAttachments
 
+    var fileToDelete = files[index]
+    var fileNameToRemove = fileToDelete.fileName
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
+    var isRecentUpload = holderNew.includes(fileToDelete)
+
+    // removing from attachments arr
+    var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
     this.setState({attachments: newFilesArr})
 
-    // need to not reset background image everytime a file is removed. backgroundImage is url, while attachments use filename.
+    var uriBase = process.env.REACT_APP_CLOUD_DELETE_URI
+    var objectName = fileToDelete.fileName
+    objectName = objectName.replace('/', '%2F')
+    var uriFull = uriBase + objectName
+
+    if (isRecentUpload) {
+      console.log('isRecentUpload')
+      // remove from holding area, send delete http req
+      var holdingIndex = holderNew.indexOf(fileToDelete)
+      var newArr = (holderNew.slice(0, holdingIndex)).concat(holderNew.slice(holdingIndex + 1))
+      this.setState({holderNewAttachments: newArr})
+
+      fetch(uriFull, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.apiToken}`
+        }
+      })
+      .then(response => {
+        if (response.status === 204) {
+          console.log('delete from cloud storage succeeded')
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    } else {
+      // add to holderDeleteAttachments. dont send req
+      this.setState({holderDeleteAttachments: this.state.holderDeleteAttachments.concat([fileToDelete])})
+    }
+
+    // not fixed yet. only reset background if corresponding file was removed from cloud
     this.setState({backgroundImage: defaultBackground})
   }
 
@@ -202,86 +300,67 @@ class EditActivityForm extends Component {
     this.setState({backgroundImage: `${previewUrl}`})
   }
 
-  componentDidMount () {
-    this.props.retrieveCloudStorageToken()
-
-    this.props.cloudStorageToken.then(obj => {
-      this.apiToken = obj.token
-    })
-
-    var currencyList = countriesToCurrencyList(this.props.countries)
-    this.setState({currencyList: currencyList})
-    this.setState({currency: currencyList[0]})
-
-    var defaultUnix = latestTime(this.props.events, this.props.day)
-    var defaultTime = moment.utc(defaultUnix * 1000).format('HH:mm')
-    this.setState({defaultTime: defaultTime})
-    this.setState({startTime: defaultUnix, endTime: defaultUnix})
-  }
-
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.googlePlaceDetails) {
-      if (prevState.googlePlaceDetails !== this.state.googlePlaceDetails || prevState.startDay !== this.state.startDay) {
-        var locationDetails = constructLocationDetails(this.state.googlePlaceDetails, this.props.dates, this.state.startDay)
+    if (this.state.googlePlaceData) {
+      if (prevState.startDay !== this.state.startDay) {
+        var locationDetails = constructLocationDetails(this.state.googlePlaceData, this.props.dates, this.state.startDay)
         this.setState({locationDetails: locationDetails})
       }
       // if location/day/time changed, validate opening hours
-      // must check start and end time is truthy. clearing the time means time = null
-      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (this.state.startTime && prevState.startTime !== this.state.startTime) || (this.state.endTime && prevState.endTime !== this.state.endTime)) {
-        this.validateOpeningHours()
-      }
-
-      // if time has been cleared out remove the warning text
-      if (!this.state.startTime && this.state.startTime !== prevState.startTime) {
-        this.setState({openingHoursValidation: null})
-      }
-      if (!this.state.endTime && this.state.endTime !== prevState.endTime) {
-        this.setState({openingHoursValidation: null})
+      if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
+        var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
+        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
       }
     }
   }
 
-  validateOpeningHours () {
-    this.setState({openingHoursValidation: null})
-    var openingHoursText = this.state.locationDetails.openingHours
+  componentDidMount () {
+    this.props.retrieveCloudStorageToken()
+    this.props.cloudStorageToken.then(obj => {
+      this.apiToken = obj.token
+    })
+    // DROPDOWN WITH ALL CURRENCIES.
+    var currencyList = allCurrenciesList()
+    this.setState({currencyList: currencyList})
 
-    if (!openingHoursText || openingHoursText.indexOf('Open 24 hours') > -1) return
+    var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.props.event.startDay, this.props.event.endDay, this.props.event.startTime, this.props.event.endTime)
+    this.setState({openingHoursValidation: openingHoursError})
 
-    if (openingHoursText.indexOf('Closed') > -1) {
-      this.setState({openingHoursValidation: '1 -> Place is closed on selected day'})
-    } else {
-      var dayOfWeek = findDayOfWeek(this.props.dates, this.state.startDay)
+    var startTime = this.props.event.startTime
+    var endTime = this.props.event.endTime
+    var defaultStartTime = moment.utc(this.props.event.startTime * 1000).format('HH:mm')
+    var defaultEndTime = moment.utc(this.props.event.endTime * 1000).format('HH:mm')
 
-      var openingAndClosingArr = findOpenAndCloseUnix(dayOfWeek, this.state.googlePlaceDetails)
-      var openingUnix = openingAndClosingArr[0]
-      var closingUnix = openingAndClosingArr[1]
-
-      var startUnix = this.state.startTime
-      var endUnix = this.state.endTime
-
-      if (this.state.endDay === this.state.startDay) {
-        if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-        }
-        if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: '3 -> End time is after closing'})
-        }
-        if (startUnix && endUnix && startUnix > endUnix) {
-          this.setState({openingHoursValidation: '4 -> start time is after end time'})
-        }
-      } else if (this.state.endDay === this.state.startDay + 1) {
-        // day 2 unix is 1 full day + unix from midnight
-        endUnix += (24 * 60 * 60)
-        if (startUnix && startUnix < openingUnix) {
-          this.setState({openingHoursValidation: '2 -> Start time is before opening'})
-        }
-        if (endUnix && endUnix > closingUnix) {
-          this.setState({openingHoursValidation: '3 -> End time is after closing'})
-        }
-      } else if (this.state.endDay > this.state.startDay + 1) {
-        this.setState({openingHoursValidation: '5 -> Location is closed sometime between selected days'})
-      }
+    // if all day event, datetimepicker displays null instead of midnight. start/end time unix is also null
+    if (this.props.event.allDayEvent) {
+      console.log('all day event')
+      defaultStartTime = null
+      defaultEndTime = null
+      startTime = null
+      endTime = null
     }
+
+    // INSTANTIATE STATE TO BE WHATEVER WAS IN DB
+    console.log('event', this.props.event)
+    this.setState({
+      startDay: this.props.event.startDay,
+      endDay: this.props.event.endDay,
+      startTime: startTime, // unix or null for all day
+      endTime: endTime,
+      defaultStartTime: defaultStartTime, // 'HH:mm' string
+      defaultEndTime: defaultEndTime,
+      description: this.props.event.description,
+      locationAlias: this.props.event.locationAlias || '',
+      currency: this.props.event.currency,
+      cost: this.props.event.cost,
+      bookedThrough: this.props.event.bookedThrough || '',
+      bookingConfirmation: this.props.event.bookingConfirmation || '',
+      notes: this.props.event.notes || '',
+      backgroundImage: this.props.event.backgroundImage,
+      googlePlaceData: this.props.event.location,
+      attachments: this.props.event.attachments,
+      allDayEvent: this.props.event.allDayEvent
+    }, () => console.log('edit form did mount', this.state))
   }
 
   render () {
@@ -302,7 +381,7 @@ class EditActivityForm extends Component {
               <input className='left-panel-input' placeholder='Input Description' type='text' name='description' value={this.state.description} onChange={(e) => this.handleChange(e, 'description')} autoComplete='off' style={eventDescriptionStyle(this.state.backgroundImage)} />
             </div>
             {/* CONTINUE PASSING DATE AND DATESARR DOWN */}
-            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultTime={this.state.defaultTime} />
+            <DateTimePicker updateDayTime={(field, value) => this.updateDayTime(field, value)} dates={this.props.dates} date={this.props.date} startDay={this.state.startDay} endDay={this.state.endDay} defaultStartTime={this.state.defaultStartTime} defaultEndTime={this.state.defaultEndTime} />
 
             {this.state.openingHoursValidation &&
               <div>
@@ -314,23 +393,24 @@ class EditActivityForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeEditActivity()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
-              <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
+
+              <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} bookedThrough={this.state.bookedThrough} bookingConfirmation={this.state.bookingConfirmation} />
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>
                   Additional Notes
               </h4>
 
-              <LocationAlias handleChange={(e) => this.handleChange(e, 'locationAlias')} />
+              <LocationAlias locationAlias={this.state.locationAlias} handleChange={(e) => this.handleChange(e, 'locationAlias')} />
 
-              <Notes handleChange={(e, field) => this.handleChange(e, field)} />
+              <Notes notes={this.state.notes} handleChange={(e, field) => this.handleChange(e, field)} />
             </div>
           </div>
         </div>
 
         {/* BOTTOM PANEL --- ATTACHMENTS */}
         <div style={attachmentsStyle}>
-          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} ItineraryId={this.state.ItineraryId} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
+          <Attachments handleFileUpload={(e) => this.handleFileUpload(e)} attachments={this.state.attachments} ItineraryId={this.props.ItineraryId} formType={'edit'} removeUpload={i => this.removeUpload(i)} setBackground={url => this.setBackground(url)} />
         </div>
       </div>
     )
@@ -353,6 +433,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
-  graphql(createActivity, {name: 'createActivity'}),
+  graphql(updateActivity, {name: 'updateActivity'}),
   graphql(changingLoadSequence, {name: 'changingLoadSequence'})
 )(Radium(EditActivityForm)))
