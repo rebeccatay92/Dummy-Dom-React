@@ -4,8 +4,8 @@ export const createActivity = gql`
   mutation createActivity(
     $ItineraryId: ID!,
     $loadSequence: Int
-    $startDay: Int!,
-    $endDay: Int!,
+    $startDay: Int,
+    $endDay: Int,
     $startTime: Int,
     $endTime: Int,
     $googlePlaceData: googlePlaceData,
