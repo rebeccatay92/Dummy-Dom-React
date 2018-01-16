@@ -9,7 +9,7 @@ function checkStartAndEndTime (eventsArr, event, type) {
 
   if (type === 'startTimeMissing') {
     let index = eventsInDay.findIndex(e => {
-      return e.time > event.endTime
+      return e.time >= event.endTime
     })
     if (index === -1) index = eventsInDay.length
     if (index === 0) event.startTime = 0
@@ -18,7 +18,7 @@ function checkStartAndEndTime (eventsArr, event, type) {
     }
   } else if (type === 'endTimeMissing') {
     let index = eventsInDay.findIndex(e => {
-      return e.time > event.startTime
+      return e.time >= event.startTime
     })
     if (index === -1) event.endTime = 86400
     else {

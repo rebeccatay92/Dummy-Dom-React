@@ -66,13 +66,13 @@ class Planner extends Component {
                   <i className='material-icons' style={{...plannerIconStyle, ...{verticalAlign: 'middle', margin: '0 0 10px 10px'}}}>person_add</i>
                 </div>
                 <div style={{position: 'absolute', right: '0', bottom: '0'}}>
-                  <div style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#ed6a5a'}}}>
+                  <div key={'view'} style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#ed6a5a'}}}>
                     <i className='material-icons' style={plannerHeaderRightBarIconStyle} key={1}>view_list</i>
                   </div>
-                  <div style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#438496'}}}>
+                  <div key={'share'} style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#438496'}}}>
                     <i className='material-icons' style={plannerHeaderRightBarIconStyle} key={2}>share</i>
                   </div>
-                  <div style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#a8dadc'}}}>
+                  <div key={'place'} style={{...plannerHeaderRightBarIconContainerStyle, ...{backgroundColor: '#a8dadc'}}}>
                     <i className='material-icons' style={plannerHeaderRightBarIconStyle} key={3}>place</i>
                   </div>
                 </div>

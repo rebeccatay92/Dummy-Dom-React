@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql, compose } from 'react-apollo'
 import { connect } from 'react-redux'
-import Radium, { Style } from 'radium'
+import Radium from 'radium'
 import moment from 'moment'
 import { retrieveCloudStorageToken } from '../../actions/cloudStorageActions'
 import { Button } from 'react-bootstrap'

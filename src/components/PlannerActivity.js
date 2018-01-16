@@ -97,7 +97,7 @@ class PlannerActivity extends Component {
       // editingEvent: false,
       editEventType: null,
       onBox: false,
-      draggable: true,
+      draggable: false,
       expanded: false,
       hover: false,
       showClashes: false
@@ -225,11 +225,11 @@ class PlannerActivity extends Component {
         </tr>
       )
     }
-    if (this.state.draggable && !this.state.expanded) {
-      return connectDragSource(connectDropTarget(activityBox))
-    } else {
+    // if (this.state.draggable && !this.state.expanded) {
+    //   return connectDragSource(connectDropTarget(activityBox))
+    // } else {
       return activityBox
-    }
+    // }
   }
 
   handleClickOutside (event) {
@@ -292,7 +292,9 @@ class PlannerActivity extends Component {
       // textOverflow: 'ellipsis'
     }
     const typeStyle = {
-      verticalAlign: 'top'
+      verticalAlign: 'top',
+      padding: '1px',
+      display: 'inline-block'
     }
     const timeStyle = {
       marginTop: 0,
@@ -325,8 +327,8 @@ class PlannerActivity extends Component {
           return (
             <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
               <p style={nameStyle}>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location && this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='description' value={this.props.activity[type].description} />
               </p>
               <div style={{position: 'relative', display: 'inline'}}>
                 {expandButton}
@@ -369,7 +371,7 @@ class PlannerActivity extends Component {
             <div style={{...activityBoxStyle, ...{height: '10vh'}}}>
               <p style={nameStyle}>
                 <ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
-                <ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
+                <ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='description' value={this.props.activity[type].description} />
               </p>
               <div style={{position: 'relative', display: 'inline'}}>
                 {expandButton}
@@ -388,7 +390,7 @@ class PlannerActivity extends Component {
               {expandButton}
               {expandMenu}
             </div>
-                <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='departureTime' value={startTime} />{errorIcon}</p>
+                <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='startTime' value={startTime} />{errorIcon}</p>
               </div>
             )
           } else if (!this.props.activity.start) {
@@ -400,7 +402,7 @@ class PlannerActivity extends Component {
               {expandButton}
               {expandMenu}
             </div>
-                <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='arrivalTime' value={endTime} />{errorIcon}</p>
+                <p style={timeStyle}><ActivityInfo activityId={this.props.activity.modelId} toggleDraggable={() => this.toggleDraggable()} itineraryId={this.props.itineraryId} type={type} name='endTime' value={endTime} />{errorIcon}</p>
               </div>
             )
           }
@@ -443,8 +445,8 @@ class PlannerActivity extends Component {
           return (
             <div style={{...activityBoxStyle, ...{marginBottom: '20px'}}}>
               <p style={nameStyle}>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location && this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='description' value={this.props.activity[type].description} />
               </p>
               <div style={{position: 'relative', display: 'inline'}}>
                 {expandButton}
@@ -459,13 +461,13 @@ class PlannerActivity extends Component {
                   <p style={{textDecoration: 'underline', fontWeight: 'bold'}}>Details</p>
                   {this.props.activity[type].allDayEvent ? <p style={{fontWeight: 'bold'}}>Time: <span style={{color: '#438496'}}>Unassigned Time</span></p> :
                   <PlannerEventExpandedInfo name='Time:' value={`${startTime} to ${endTime}`} />}{(this.props.activity.timelineClash || this.props.activity.inBetweenStartEndRow) && <i className='material-icons' style={{position: 'absolute', top: '17px', left: '120px', color: 'red'}}>error</i>}
-                  <PlannerEventExpandedInfo name='Location:' value={`${this.props.activity[type].location.name}`} />
+                  {this.props.activity[type].location && <PlannerEventExpandedInfo name='Location:' value={`${this.props.activity[type].location.name}`} />}
                   {this.props.activity[type].locationAlias && <PlannerEventExpandedInfo name='Alias:' value={`${this.props.activity[type].locationAlias}`} />}
-                  <PlannerEventExpandedInfo name='Address:' value={`${this.props.activity[type].location.address}`} />
+                  {this.props.activity[type].location && this.props.activity[type].location.address && <PlannerEventExpandedInfo name='Address:' value={`${this.props.activity[type].location.address}`} />}
                   <p style={{textDecoration: 'underline', fontWeight: 'bold'}}>Booking Details</p>
                   <PlannerEventExpandedInfo name='Booking Service:' value={this.props.activity[type].bookedThrough} />
                   <PlannerEventExpandedInfo name='Confirmation Number:' value={this.props.activity[type].bookingConfirmation} />
-                  <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />
+                  {this.props.activity[type].cost && <PlannerEventExpandedInfo name='Price:' value={`${this.props.activity[type].currency} ${this.props.activity[type].cost}`} />}
                   <p style={{textDecoration: 'underline', fontWeight: 'bold'}}>Notes</p>
                   <PlannerEventExpandedInfo name='' value={this.props.activity[type].notes} />
                 </div>
@@ -477,7 +479,7 @@ class PlannerActivity extends Component {
             <div style={{...activityBoxStyle, ...{marginBottom: '20px'}}}>
               <p style={nameStyle}>
                 <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.modelId} itineraryId={this.props.itineraryId} type={type} name='googlePlaceData' value={this.props.activity[type].location.name} /><span style={typeStyle}> - </span>
-                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='name' value={this.props.activity[type].description} />
+                <ActivityInfo toggleDraggable={() => this.toggleDraggable()} activityId={this.props.activity.id} itineraryId={this.props.itineraryId} type={type} name='description' value={this.props.activity[type].description} />
               </p>
               <div style={{position: 'relative', display: 'inline'}}>
                 {expandButton}

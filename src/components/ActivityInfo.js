@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
+import onClickOutside from 'react-onclickoutside'
 import { graphql, compose } from 'react-apollo'
 
 import { updateActivity } from '../apollo/activity'
@@ -15,26 +17,35 @@ class ActivityInfo extends Component {
 
     this.state = {
       editing: false,
-      value: this.props.value
+      value: this.props.value,
+      newValue: this.props.value
     }
 
     this.toggleDraggable = this.props.toggleDraggable
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({
+        value: nextProps.value,
+        newValue: nextProps.value
+      })
+    }
+  }
+
   render () {
     if (this.state.editing) {
       return (
-        <form onSubmit={(e) => this.handleEdit(e)} style={{display: 'inline'}}>
-          <input name={this.props.name} onChange={(e) => this.setState({ value: e.target.value })} value={this.state.value} />
-          <button type='submit'>ok</button>
-        </form>
+        <input autoFocus onKeyDown={(e) => this.handleKeyDown(e)} style={{position: 'relative', top: '-5px', width: '223px'}} name={this.props.name} onChange={(e) => this.setState({ newValue: e.target.value })} value={this.state.newValue} />
       )
     }
-    if (!this.props.value) return (
-      <span style={{opacity: '0', fontSize: '1px'}}>a</span>
-    )
+    if (!this.props.value) {
+      return (
+        <span style={{opacity: '0', fontSize: '1px'}}>a</span>
+      )
+    }
     return (
-      <span title={this.state.value} style={{display: 'inline-block', height: '18px', maxWidth: '223px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{this.state.value}</span>
+      <span onClick={() => this.handleClick()} title={this.state.value} style={{display: 'inline-block', height: '18px', padding: '1px', maxWidth: '223px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ':hover': {outline: '1px solid black'}}}>{this.state.value}</span>
     )
   }
 
@@ -43,18 +54,42 @@ class ActivityInfo extends Component {
       editing: true
     })
 
-    this.toggleDraggable()
+    // this.toggleDraggable()
+  }
+
+  handleKeyDown (e) {
+    if (e.keyCode === 13) {
+      this.handleEdit()
+    }
+  }
+
+  handleClickOutside (event) {
+    if (event.target.localName === 'input') return
+    this.setState({
+      editing: false,
+      newValue: this.state.value
+    })
   }
 
   handleEdit (e, element) {
-    e.preventDefault()
-
     this.setState({
       editing: false
     })
 
-    if (this.state.value === this.props.value) {
+    if (this.state.newValue === this.props.value) {
       return
+    }
+
+    this.setState({
+      value: this.state.newValue
+    })
+
+    const isTime = this.props.name === 'startTime' || this.props.name === 'endTime'
+    let unix
+    if (isTime) {
+      var hours = this.state.newValue.split(':')[0]
+      var mins = this.state.newValue.split(':')[1]
+      unix = (hours * 60 * 60) + (mins * 60)
     }
 
     const update = {
@@ -62,13 +97,13 @@ class ActivityInfo extends Component {
       Flight: this.props.updateFlightBooking,
       Lodging: this.props.updateLodging,
       Food: this.props.updateFood,
-      Transport: this.props.updateTransport
+      LandTransport: this.props.updateLandTransport
     }
 
     update[this.props.type]({
       variables: {
         id: this.props.activityId,
-        [this.props.name]: this.state.value
+        [this.props.name]: isTime ? unix : this.state.newValue
       },
       refetchQueries: [{
         query: queryItinerary,
@@ -84,4 +119,4 @@ export default (compose(
   graphql(updateLandTransport, { name: 'updateLandTransport' }),
   graphql(updateLodging, { name: 'updateLodging' }),
   graphql(updateFood, { name: 'updateFood' })
-))(ActivityInfo)
+))(onClickOutside(Radium(ActivityInfo)))

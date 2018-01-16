@@ -52,7 +52,7 @@ export const plannerHeaderRightBarIconStyle = {
   fontSize: '20px',
   color: 'white'
 }
-export const plannerHeaderRightBarIconContainerStyle = {backgroundColor: 'black', display: 'inline-block', marginLeft: '5px', height: '28px', padding: '4px', width: '28px', borderRadius: '15%', cursor: 'pointer'}
+export const plannerHeaderRightBarIconContainerStyle = {backgroundColor: 'black', display: 'inline-block', marginLeft: '5px', height: '28px', padding: '4px', width: '28px', borderRadius: '15%', cursor: 'pointer', opacity: '0.8', ':hover': {opacity: '1.0'}}
 
 // Date.js styles
 export const timelineStyle = {
@@ -231,7 +231,7 @@ export const pdfLogoStyle = {color: 'rgb(237, 15, 135)', fontSize: '50px', margi
 export const imageLogoStyle = {color: 'rgb(43, 201, 217)', fontSize: '50px'}
 
 // Create Flight Form Button
-export const createFlightButtonStyle = {backgroundColor: 'rgb(237, 15, 135)', border: 'none'}
+export const createFlightButtonStyle = {backgroundColor: primaryColor, border: 'none'}
 
 // FlightSearchResults.js styles
 export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}

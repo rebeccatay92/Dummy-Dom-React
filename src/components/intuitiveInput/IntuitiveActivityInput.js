@@ -24,7 +24,8 @@ class IntuitiveActivityInput extends Component {
     this.state = {
       location: '',
       search: '',
-      searching: false
+      searching: false,
+      googlePlaceData: {}
     }
   }
 
@@ -36,7 +37,7 @@ class IntuitiveActivityInput extends Component {
 
   resetState () {
     this.setState({
-      googlePlaceData: '',
+      googlePlaceData: {},
       search: ''
     })
   }
