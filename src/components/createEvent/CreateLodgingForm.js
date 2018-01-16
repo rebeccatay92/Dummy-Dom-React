@@ -73,7 +73,7 @@ class CreateLodgingForm extends Component {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newLodging = {
-      ItineraryId: parseInt(this.state.ItineraryId),
+      ItineraryId: parseInt(this.state.ItineraryId, 10),
       locationAlias: this.state.locationAlias,
       startDay: this.state.startDay,
       endDay: this.state.endDay,
@@ -81,7 +81,7 @@ class CreateLodgingForm extends Component {
       endTime: this.state.endTime,
       description: this.state.description,
       currency: this.state.currency,
-      cost: parseInt(this.state.cost),
+      cost: parseInt(this.state.cost, 10),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
@@ -170,11 +170,16 @@ class CreateLodgingForm extends Component {
   }
 
   removeUpload (index) {
+    var fileToRemove = this.state.attachments[index]
+    var fileNameToRemove = fileToRemove.fileName
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var files = this.state.attachments
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
-    this.setState({backgroundImage: defaultBackground})
   }
 
   setBackground (previewUrl) {

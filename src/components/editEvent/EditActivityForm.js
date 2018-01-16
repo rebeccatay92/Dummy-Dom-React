@@ -80,9 +80,8 @@ class EditActivityForm extends Component {
     var updatesObj = {
       id: this.state.id
     }
-
     // remove openingHoursValidation from backend if planner can use openingHours helper ok
-    var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'startTime', 'endTime', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation']
+    var fieldsToCheck = ['locationAlias', 'startDay', 'endDay', 'description', 'currency', 'cost', 'bookedThrough', 'bookingConfirmation', 'notes', 'backgroundImage', 'openingHoursValidation', 'startTime', 'endTime']
     fieldsToCheck.forEach(field => {
       if (this.props.event[field] !== this.state[field]) {
         updatesObj[field] = this.state[field]
@@ -90,7 +89,7 @@ class EditActivityForm extends Component {
     })
     // if cost was updated, it is a str. make int.
     if (updatesObj.cost) {
-      updatesObj.cost = parseInt(updatesObj.cost)
+      updatesObj.cost = parseInt(updatesObj.cost, 10)
     }
     // then manually add booking status, googlePlaceData, attachments, allDayEvent
     var bookingStatus = this.state.bookingConfirmation ? true : false
@@ -106,55 +105,83 @@ class EditActivityForm extends Component {
     }
     // removeAttachments obj only takes id
     if (this.state.holderDeleteAttachments.length) {
+      // removing holderDeleteAttachments from cloud
+      removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
+      // set up removeAttachments[ID] arr for backend
       updatesObj.removeAttachments = this.state.holderDeleteAttachments.map(e => {
         return e.id
       })
     }
+
+    // if allDayEvent, and time happens to change to exactly identical unix as what was saved, fieldsToCheck doesnt detect change. hence check if state is not null (since onComponentMount will set state to null if allDayEvent)
+    // IF ALLDAYEVENT GETS ASSIGNED TIME, CHANGE ALLDAYEVENT BOOLEAN
+    if (this.props.event.allDayEvent) {
+      if (typeof (this.state.startTime) === 'number') {
+        updatesObj.startTime = this.state.startTime
+        updatesObj.allDayEvent = false
+      }
+      if (typeof (this.state.endTime) === 'number') {
+        updatesObj.endTime = this.state.endTime
+        updatesObj.allDayEvent = false
+      }
+    }
+    // IF NON-ALLDAYEVENT HAS MISSING TIME FIELDS, ASSIGN VALUES / ALLDAY BOOLEAN. IF ALLDAYEVENT TIMING NOT CHANGED, ALSO ASSIGN TIMINGS (SINCE INITIALIZED TO NULL). EVENTSARR NEED TO REMOVE THE EVENT FIRST.
+    var eventsArr = this.props.events.filter(e => {
+      var isUpdatingEvent = (e.type === 'Activity' && e.modelId === this.state.id)
+      return !isUpdatingEvent
+    })
+    // use checkStartAndEndTime on eventsArr (doesnt contain currently editing event)
+    if (typeof (this.state.startTime) !== 'number' && typeof (this.state.endTime) !== 'number') {
+      var timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'allDayEvent')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.startTime = timeAssignedEvent.startTime
+      updatesObj.endTime = timeAssignedEvent.endTime
+      updatesObj.allDayEvent = true
+    } else if (typeof (this.state.startTime) !== 'number') {
+      timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'startTimeMissing')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.startTime = timeAssignedEvent.startTime
+    } else if (typeof (this.state.endTime) !== 'number') {
+      timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'endTimeMissing')
+      console.log('timeAssignedEvent', timeAssignedEvent)
+      updatesObj.endTime = timeAssignedEvent.endTime
+    }
+
     console.log('handlesubmit', updatesObj)
 
-    // removing holderDeleteAttachments from cloud
-    removeAllAttachments(this.state.holderDeleteAttachments, this.apiToken)
-
     // check if updatesObj has fields other than id. if yes, then send to backend
-    if (Object.keys(updatesObj).length > 1) {
-      // reassign load seq if days or time change
+    if (Object.keys(updatesObj).length <= 1) return
 
-      if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
-        var updateEvent = {
-          startDay: this.state.startDay,
-          endDay: this.state.endDay,
-          startTime: this.state.startTime,
-          endTime: this.state.endTime
-        }
-        var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
-        console.log('helperOutput', helperOutput)
+    // if time or day changes, reassign load seq
+    if (updatesObj.startDay || updatesObj.endDay || updatesObj.startTime || updatesObj.endTime) {
+      var updateEvent = {
+        startDay: this.state.startDay,
+        endDay: this.state.endDay,
+        startTime: this.state.startTime,
+        endTime: this.state.endTime
       }
-
-      // this.props.updateActivity({
-      //   variables: updatesObj,
-      //   refetchQueries: [{
-      //     query: queryItinerary,
-      //     variables: { id: this.props.ItineraryId }
-      //   }]
-      // })
+      var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
+      console.log('helperOutput', helperOutput)
+      updatesObj.loadSequence = helperOutput.updateEvent.loadSequence
+      var loadSequenceInput = helperOutput.loadSequenceInput
+      if (loadSequenceInput.length) {
+        this.props.changingLoadSequence({
+          variables: {
+            input: loadSequenceInput
+          }
+        })
+      }
     }
-    // this.resetState()
-    // this.props.toggleEditEventType()
+    this.props.updateActivity({
+      variables: updatesObj,
+      refetchQueries: [{
+        query: queryItinerary,
+        variables: { id: this.props.ItineraryId }
+      }]
+    })
 
-    // VALIDATE START AND END TIMES
-    // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-    //   console.log('time is missing')
-    //   return
-    // }
-
-    // VALIDATE AND ASSIGN MISSING TIMINGS. BUGGED?
-    // if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    // } else if (typeof (newActivity.startTime) !== 'number') {
-    //   newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
-    // }
+    this.resetState()
+    this.props.toggleEditEventType()
 
     // VALIDATE PLANNER TIMINGS
     // var output = newEventTimelineValidation(this.props.events, 'Activity', newActivity)
@@ -164,14 +191,6 @@ class EditActivityForm extends Component {
     //   window.alert(`time ${newActivity.startTime} --- ${newActivity.endTime} clashes with pre existing events.`)
     //   console.log('ERROR ROWS', output.errorRows)
     // }
-
-    // var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
-    //
-    // this.props.changingLoadSequence({
-    //   variables: {
-    //     input: helperOutput.loadSequenceInput
-    //   }
-    // })
   }
 
   // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
@@ -230,6 +249,11 @@ class EditActivityForm extends Component {
     var holderNew = this.state.holderNewAttachments
 
     var fileToDelete = files[index]
+    var fileNameToRemove = fileToDelete.fileName
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var isRecentUpload = holderNew.includes(fileToDelete)
 
     // removing from attachments arr
@@ -299,19 +323,30 @@ class EditActivityForm extends Component {
     var currencyList = allCurrenciesList()
     this.setState({currencyList: currencyList})
 
+    var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.props.event.startDay, this.props.event.endDay, this.props.event.startTime, this.props.event.endTime)
+    this.setState({openingHoursValidation: openingHoursError})
+
+    var startTime = this.props.event.startTime
+    var endTime = this.props.event.endTime
     var defaultStartTime = moment.utc(this.props.event.startTime * 1000).format('HH:mm')
     var defaultEndTime = moment.utc(this.props.event.endTime * 1000).format('HH:mm')
 
-    var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.props.event.startDay, this.props.event.endDay, this.props.event.startTime, this.props.event.endTime)
-    this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
+    // if all day event, datetimepicker displays null instead of midnight. start/end time unix is also null
+    if (this.props.event.allDayEvent) {
+      console.log('all day event')
+      defaultStartTime = null
+      defaultEndTime = null
+      startTime = null
+      endTime = null
+    }
 
     // INSTANTIATE STATE TO BE WHATEVER WAS IN DB
     console.log('event', this.props.event)
     this.setState({
       startDay: this.props.event.startDay,
       endDay: this.props.event.endDay,
-      startTime: this.props.event.startTime, // unix
-      endTime: this.props.event.endTime,
+      startTime: startTime, // unix or null for all day
+      endTime: endTime,
       defaultStartTime: defaultStartTime, // 'HH:mm' string
       defaultEndTime: defaultEndTime,
       description: this.props.event.description,
@@ -322,10 +357,9 @@ class EditActivityForm extends Component {
       bookingConfirmation: this.props.event.bookingConfirmation || '',
       notes: this.props.event.notes || '',
       backgroundImage: this.props.event.backgroundImage,
-      allDayEvent: this.props.event.allDayEvent,
-      // openingHoursValidation: this.props.event.openingHoursValidation,
       googlePlaceData: this.props.event.location,
-      attachments: this.props.event.attachments
+      attachments: this.props.event.attachments,
+      allDayEvent: this.props.event.allDayEvent
     }, () => console.log('edit form did mount', this.state))
   }
 

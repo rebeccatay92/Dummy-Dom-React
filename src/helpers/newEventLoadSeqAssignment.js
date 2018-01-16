@@ -57,6 +57,8 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       // if time is equal, it goes after an ending row. if time is before, or if not an ending row, event goes before
       if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent.startTime) {
         dayEvents.splice(index + 1, 0, 'placeholder')
+      } else if (displacedRow.time === newEvent.startTime && displacedRow.type === 'Lodging') {
+        dayEvents.splice(index + 1, 0, 'placeholder')
       } else {
         dayEvents.splice(index, 0, 'placeholder')
       }
@@ -98,6 +100,8 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
           index = dayEvents.indexOf(displacedRow)
           if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent[`${type}Time`]) {
             dayEvents.splice(index + 1, 0, {start: isStart})
+          } else if (displacedRow.time === newEvent[`${type}Time`] && displacedRow.type === 'Lodging') {
+            dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
             dayEvents.splice(index, 0, {start: isStart})
           }
@@ -138,6 +142,8 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         } else {
           index = dayEvents.indexOf(displacedRow)
           if (checkIfEndingRow(displacedRow) && displacedRow.time === newEvent[`${type}Time`]) {
+            dayEvents.splice(index + 1, 0, {start: isStart})
+          } else if (displacedRow.time === newEvent[`${type}Time`] && displacedRow.type === 'Lodging') {
             dayEvents.splice(index + 1, 0, {start: isStart})
           } else {
             dayEvents.splice(index, 0, {start: isStart})
@@ -193,6 +199,8 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
         var index = dayEvents.indexOf(displacedRow)
         if (checkIfEndingRow(displacedRow) && displacedRow.time === dayInstanceRows[0].time) {
           dayEvents.splice(index + 1, 0, ...dayInstanceRows)
+        } else if (displacedRow.time === newEvent.startTime && displacedRow.type === 'Lodging') {
+          dayEvents.splice(index + 1, 0, 'placeholder')
         } else {
           dayEvents.splice(index, 0, ...dayInstanceRows)
         }

@@ -57,6 +57,7 @@ export const updateActivity = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
+    $loadSequence: Int,
     $googlePlaceData: googlePlaceData,
     $locationAlias: String,
     $description: String,
@@ -78,6 +79,7 @@ export const updateActivity = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
+      loadSequence: $loadSequence,
       googlePlaceData: $googlePlaceData,
       locationAlias: $locationAlias
       description: $description,

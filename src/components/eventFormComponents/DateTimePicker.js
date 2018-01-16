@@ -81,15 +81,15 @@ class DateTimePicker extends Component {
       var newDate = moment.unix(newUnix)
 
       if (field === 'startDay') {
-        this.props.updateDayTime('startDay', parseInt(e.target.value))
+        this.props.updateDayTime('startDay', parseInt(e.target.value, 10))
         this.setState({startDate: newDate})
         if (e.target.value > this.props.endDay) {
-          this.props.updateDayTime('endDay', parseInt(e.target.value))
+          this.props.updateDayTime('endDay', parseInt(e.target.value, 10))
           this.setState({endDate: newDate})
         }
       }
       if (field === 'endDay') {
-        this.props.updateDayTime('endDay', parseInt(e.target.value))
+        this.props.updateDayTime('endDay', parseInt(e.target.value, 10))
         this.setState({endDate: newDate})
       }
     }
@@ -127,7 +127,7 @@ class DateTimePicker extends Component {
       this.setState({startTime: nextProps.defaultTime, endTime: nextProps.defaultTime})
     }
 
-    //DEFAULT START/END TIME FOR EDIT FORM
+    // DEFAULT START/END TIME FOR EDIT FORM
     if (this.props.defaultStartTime !== nextProps.defaultStartTime) {
       this.setState({startTime: nextProps.defaultStartTime})
     }

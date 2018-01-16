@@ -76,7 +76,7 @@ class CreateFoodForm extends Component {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newFood = {
-      ItineraryId: parseInt(this.state.ItineraryId),
+      ItineraryId: parseInt(this.state.ItineraryId, 10),
       locationAlias: this.state.locationAlias,
       startDay: this.state.startDay,
       endDay: this.state.endDay,
@@ -85,7 +85,7 @@ class CreateFoodForm extends Component {
       description: this.state.description,
       notes: this.state.notes,
       currency: this.state.currency,
-      cost: parseInt(this.state.cost),
+      cost: parseInt(this.state.cost, 10),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
@@ -94,12 +94,6 @@ class CreateFoodForm extends Component {
       openingHoursValidation: this.state.openingHoursValidation
     }
     if (this.state.googlePlaceData.placeId) newFood.googlePlaceData = this.state.googlePlaceData
-
-    // VALIDATE START AND END TIMES
-    // if (typeof (newFood.startTime) !== 'number' || typeof (newFood.endTime) !== 'number') {
-    //   console.log('time is missing')
-    //   return
-    // }
 
     // VALIDATE AND ASSIGN MISSING TIMINGS
     if (typeof (newFood.startTime) !== 'number' && typeof (newFood.endTime) !== 'number') {
@@ -187,11 +181,16 @@ class CreateFoodForm extends Component {
   }
 
   removeUpload (index) {
+    var fileToRemove = this.state.attachments[index]
+    var fileNameToRemove = fileToRemove.fileName
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var files = this.state.attachments
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
-    this.setState({backgroundImage: defaultBackground})
   }
 
   setBackground (previewUrl) {
@@ -224,7 +223,7 @@ class CreateFoodForm extends Component {
       }
       if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
         var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
-        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
+        this.setState({openingHoursValidation: openingHoursError})
       }
     }
   }

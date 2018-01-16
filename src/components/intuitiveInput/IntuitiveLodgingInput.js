@@ -6,7 +6,7 @@ import LocationSearch from '../location/LocationSearch'
 
 import DateTimePicker from '../eventFormComponents/DateTimePicker'
 import { constructGooglePlaceDataObj } from '../../helpers/location'
-import { countriesToCurrencyList, allCurrenciesList } from '../../helpers/countriesToCurrencyList'
+import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
 import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
 import { activityIconStyle, createEventBoxStyle, intuitiveDropdownStyle, primaryColor } from '../../Styles/styles'
 
@@ -74,7 +74,7 @@ class IntuitiveLodgingInput extends Component {
     if (!validated) return
 
     var newLodging = {
-      ItineraryId: parseInt(this.props.itineraryId),
+      ItineraryId: parseInt(this.props.itineraryId, 10),
       startDay: this.state.checkInDay,
       endDay: this.state.checkOutDay,
       startTime: this.state.checkInTime,
@@ -128,7 +128,6 @@ class IntuitiveLodgingInput extends Component {
   }
 
   componentDidMount () {
-    // const currencyList = countriesToCurrencyList(this.props.countries)
     var currencyList = allCurrenciesList()
     this.setState({currency: currencyList[0]})
     console.log(this.props.activityDate, this.props.dates.map(date => date.getTime()))

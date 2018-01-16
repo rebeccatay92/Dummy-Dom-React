@@ -79,7 +79,7 @@ class CreateActivityForm extends Component {
     var bookingStatus = this.state.bookingConfirmation ? true : false
 
     var newActivity = {
-      ItineraryId: parseInt(this.state.ItineraryId),
+      ItineraryId: parseInt(this.state.ItineraryId, 10),
       locationAlias: this.state.locationAlias,
       startDay: this.state.startDay,
       endDay: this.state.endDay,
@@ -87,7 +87,7 @@ class CreateActivityForm extends Component {
       endTime: this.state.endTime,
       description: this.state.description,
       currency: this.state.currency,
-      cost: parseInt(this.state.cost),
+      cost: parseInt(this.state.cost, 10),
       bookingStatus: bookingStatus,
       bookedThrough: this.state.bookedThrough,
       bookingConfirmation: this.state.bookingConfirmation,
@@ -100,19 +100,13 @@ class CreateActivityForm extends Component {
       newActivity.googlePlaceData = this.state.googlePlaceData
     }
 
-    // VALIDATE START AND END TIMES
-    // if (typeof (newActivity.startTime) !== 'number' || typeof (newActivity.endTime) !== 'number') {
-    //   console.log('time is missing')
-    //   return
-    // }
-
     // VALIDATE AND ASSIGN MISSING TIMINGS.
     if (typeof (newActivity.startTime) !== 'number' && typeof (newActivity.endTime) !== 'number') {
       newActivity = checkStartAndEndTime(this.props.events, newActivity, 'allDayEvent')
       newActivity.allDayEvent = true
     } else if (typeof (newActivity.startTime) !== 'number') {
       newActivity = checkStartAndEndTime(this.props.events, newActivity, 'startTimeMissing')
-    } else if (typeof (newActivity.startTime) !== 'number') {
+    } else if (typeof (newActivity.endTime) !== 'number') {
       newActivity = checkStartAndEndTime(this.props.events, newActivity, 'endTimeMissing')
     }
 
@@ -143,7 +137,6 @@ class CreateActivityForm extends Component {
         variables: { id: this.props.ItineraryId }
       }]
     })
-    // .then() //get created id
 
     this.resetState()
     this.props.toggleCreateEventType()
@@ -194,13 +187,17 @@ class CreateActivityForm extends Component {
   }
 
   removeUpload (index) {
+    var fileToRemove = this.state.attachments[index]
+    var fileNameToRemove = fileToRemove.fileName
+    // reset background img to default only if deleted file is background img file
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var files = this.state.attachments
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
-
-    // need to not reset background image everytime a file is removed. backgroundImage is url, while attachments use filename.
-    this.setState({backgroundImage: defaultBackground})
   }
 
   setBackground (previewUrl) {
@@ -234,7 +231,7 @@ class CreateActivityForm extends Component {
       // if location/day/time changed, validate opening hours. if no error -> null, else str
       if (prevState.locationDetails !== this.state.locationDetails || prevState.startDay !== this.state.startDay || prevState.endDay !== this.state.endDay || (prevState.startTime !== this.state.startTime) || (prevState.endTime !== this.state.endTime)) {
         var openingHoursError = validateOpeningHours(this.state.googlePlaceData, this.props.dates, this.state.startDay, this.state.endDay, this.state.startTime, this.state.endTime)
-        this.setState({openingHoursValidation: openingHoursError}, () => console.log('state', this.state.openingHoursValidation))
+        this.setState({openingHoursValidation: openingHoursError})
       }
     }
   }

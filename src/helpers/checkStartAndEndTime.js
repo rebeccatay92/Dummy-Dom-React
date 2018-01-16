@@ -1,12 +1,12 @@
 // If the event does not have a startTime or endTime, this function will give the event a default endTime or startTime respectively. Eg. A event with 8pm start time but no end time, will have a 10pm end time if the events schedule in that day is: Food: 6pm - 8pm, Movie: 10pm-12am
 
 function checkStartAndEndTime (eventsArr, event, type) {
+  // console.log('eventsArr', eventsArr)
+  // console.log('event', event)
+  // console.log('type', type)
+
   const eventsInDay = eventsArr.filter(e => e.day === event.startDay)
-  console.log('eventsArr', eventsArr)
-  console.log('event', event)
-  console.log('type', type)
-  console.log('eventsInDay', eventsInDay)
-  
+
   if (type === 'startTimeMissing') {
     let index = eventsInDay.findIndex(e => {
       return e.time > event.endTime
