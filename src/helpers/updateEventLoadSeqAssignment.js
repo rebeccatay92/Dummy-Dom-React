@@ -51,6 +51,8 @@ function updateEventLoadSeqAssignment (eventsArr, eventModel, modelId, updateEve
     var dayEvents = allEvents.filter(e => {
       return e.day === updateEvent.startDay
     })
+    console.log('dayevents', dayEvents)
+    console.log('updateEventObj', updateEvent)
     var displacedRow = dayEvents.find(e => {
       if (typeof (updateEvent.startTime) === 'number') {
         return (e.time >= updateEvent.startTime)
@@ -60,9 +62,12 @@ function updateEventLoadSeqAssignment (eventsArr, eventModel, modelId, updateEve
     })
 
     if (!displacedRow) {
-      updateEvent.loadSequence = dayEvents.length + 1
+      console.log('NO DISPLACED ROW')
+      // updateEvent.loadSequence = dayEvents.length + 1
+      dayEvents.push('placeholder')
     } else {
       var index = dayEvents.indexOf(displacedRow)
+      console.log('DISPLACED ROW', displacedRow)
       if (checkIfEndingRow(displacedRow) && displacedRow.time === updateEvent.startTime) {
         dayEvents.splice(index + 1, 0, 'placeholder')
       } else if (displacedRow.time === updateEvent.startTime && displacedRow.type === 'Lodging') {
@@ -71,16 +76,17 @@ function updateEventLoadSeqAssignment (eventsArr, eventModel, modelId, updateEve
         dayEvents.splice(index, 0, 'placeholder')
       }
       console.log('inserted', dayEvents)
-      dayEvents.forEach(event => {
-        var correctLoadSeq = dayEvents.indexOf(event) + 1
-        if (event.modelId && event.loadSequence !== correctLoadSeq) {
-          var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
-          loadSequenceInput.push(inputObj)
-        } else if (event === 'placeholder') {
-          updateEvent.loadSequence = correctLoadSeq
-        }
-      })
     }
+    dayEvents.forEach(event => {
+      var correctLoadSeq = dayEvents.indexOf(event) + 1
+      if (event.modelId && event.loadSequence !== correctLoadSeq) {
+        var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
+        console.log('INPUT OBJ', inputObj)
+        loadSequenceInput.push(inputObj)
+      } else if (event === 'placeholder') {
+        updateEvent.loadSequence = correctLoadSeq
+      }
+    })
 
     // change load seq for affectedDays (days where event was removed only)
     affectedDays.forEach(day => {

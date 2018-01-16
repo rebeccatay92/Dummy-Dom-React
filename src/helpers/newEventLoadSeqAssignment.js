@@ -51,7 +51,8 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
     })
 
     if (!displacedRow) {
-      newEvent.loadSequence = dayEvents.length + 1
+      // newEvent.loadSequence = dayEvents.length + 1
+      dayEvents.push('placeholder')
     } else {
       var index = dayEvents.indexOf(displacedRow)
       // if time is equal, it goes after an ending row. if time is before, or if not an ending row, event goes before
@@ -62,18 +63,18 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
       } else {
         dayEvents.splice(index, 0, 'placeholder')
       }
-
       console.log('inserted', dayEvents)
-      dayEvents.forEach(event => {
-        var correctLoadSeq = dayEvents.indexOf(event) + 1
-        if (event.modelId && event.loadSequence !== correctLoadSeq) {
-          var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
-          loadSequenceInput.push(inputObj)
-        } else if (event === 'placeholder') {
-          newEvent.loadSequence = correctLoadSeq
-        }
-      })
     }
+
+    dayEvents.forEach(event => {
+      var correctLoadSeq = dayEvents.indexOf(event) + 1
+      if (event.modelId && event.loadSequence !== correctLoadSeq) {
+        var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
+        loadSequenceInput.push(inputObj)
+      } else if (event === 'placeholder') {
+        newEvent.loadSequence = correctLoadSeq
+      }
+    })
   }
   if (eventModel === 'Lodging' || eventModel === 'LandTransport' || eventModel === 'SeaTransport' || eventModel === 'Train') {
     if (newEvent.startDay === newEvent.endDay) {
