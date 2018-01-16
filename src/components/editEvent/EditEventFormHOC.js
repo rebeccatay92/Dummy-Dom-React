@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import EditActivityForm from './EditActivityForm'
+import EditFoodForm from './EditFoodForm'
 
 class EditEventFormHOC extends Component {
   constructor (props) {
     super(props)
     this.components = {
-      Activity: EditActivityForm
-      // Food: EditFoodForm,
+      Activity: EditActivityForm,
+      Food: EditFoodForm
       // Lodging: EditLodgingForm,
       // LandTransport: EditLandTransportForm,
       // Flight: EditFlightForm
