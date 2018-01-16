@@ -59,13 +59,16 @@ export const updateSeaTransport = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
+    $loadSequence: Int,
     $notes: String,
     $cost: Int,
     $currency: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $backgroundImage: String
+    $backgroundImage: String,
+    $addAttachments: [attachmentInput],
+    $removeAttachments: [ID]
   ) {
     updateSeaTransport(
       id: $id,
@@ -77,13 +80,16 @@ export const updateSeaTransport = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
+      loadSequence: $loadSequence,
       notes: $notes,
       cost: $cost,
       currency: $currency,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      backgroundImage: $backgroundImage
+      backgroundImage: $backgroundImage,
+      addAttachments: $addAttachments,
+      removeAttachments: $removeAttachments
     ) {
       id
     }
