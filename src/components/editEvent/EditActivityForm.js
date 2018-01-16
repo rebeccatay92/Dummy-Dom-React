@@ -130,19 +130,19 @@ class EditActivityForm extends Component {
       var isUpdatingEvent = (e.type === 'Activity' && e.modelId === this.state.id)
       return !isUpdatingEvent
     })
-
+    // use checkStartAndEndTime on eventsArr (doesnt contain currently editing event)
     if (typeof (this.state.startTime) !== 'number' && typeof (this.state.endTime) !== 'number') {
-      var timeAssignedEvent = checkStartAndEndTime(this.props.events, this.state, 'allDayEvent')
+      var timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'allDayEvent')
       console.log('timeAssignedEvent', timeAssignedEvent)
       updatesObj.startTime = timeAssignedEvent.startTime
       updatesObj.endTime = timeAssignedEvent.endTime
       updatesObj.allDayEvent = true
     } else if (typeof (this.state.startTime) !== 'number') {
-      timeAssignedEvent = checkStartAndEndTime(this.props.events, this.state, 'startTimeMissing')
+      timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'startTimeMissing')
       console.log('timeAssignedEvent', timeAssignedEvent)
       updatesObj.startTime = timeAssignedEvent.startTime
     } else if (typeof (this.state.endTime) !== 'number') {
-      timeAssignedEvent = checkStartAndEndTime(this.props.events, this.state, 'endTimeMissing')
+      timeAssignedEvent = checkStartAndEndTime(eventsArr, this.state, 'endTimeMissing')
       console.log('timeAssignedEvent', timeAssignedEvent)
       updatesObj.endTime = timeAssignedEvent.endTime
     }
@@ -164,14 +164,13 @@ class EditActivityForm extends Component {
       console.log('helperOutput', helperOutput)
       updatesObj.loadSequence = helperOutput.updateEvent.loadSequence
       var loadSequenceInput = helperOutput.loadSequenceInput
-    }
-
-    if (loadSequenceInput.length) {
-      this.props.changingLoadSequence({
-        variables: {
-          input: loadSequenceInput
-        }
-      })
+      if (loadSequenceInput.length) {
+        this.props.changingLoadSequence({
+          variables: {
+            input: loadSequenceInput
+          }
+        })
+      }
     }
     this.props.updateActivity({
       variables: updatesObj,
@@ -250,6 +249,11 @@ class EditActivityForm extends Component {
     var holderNew = this.state.holderNewAttachments
 
     var fileToDelete = files[index]
+    var fileNameToRemove = fileToDelete.fileName
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var isRecentUpload = holderNew.includes(fileToDelete)
 
     // removing from attachments arr

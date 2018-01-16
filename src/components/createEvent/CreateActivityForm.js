@@ -187,13 +187,17 @@ class CreateActivityForm extends Component {
   }
 
   removeUpload (index) {
+    var fileToRemove = this.state.attachments[index]
+    var fileNameToRemove = fileToRemove.fileName
+    // reset background img to default only if deleted file is background img file
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var files = this.state.attachments
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
-
-    // need to not reset background image everytime a file is removed. backgroundImage is url, while attachments use filename.
-    this.setState({backgroundImage: defaultBackground})
   }
 
   setBackground (previewUrl) {

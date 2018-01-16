@@ -181,11 +181,16 @@ class CreateFoodForm extends Component {
   }
 
   removeUpload (index) {
+    var fileToRemove = this.state.attachments[index]
+    var fileNameToRemove = fileToRemove.fileName
+    if (this.state.backgroundImage.indexOf(fileNameToRemove) > -1) {
+      this.setState({backgroundImage: defaultBackground})
+    }
+
     var files = this.state.attachments
     var newFilesArr = (files.slice(0, index)).concat(files.slice(index + 1))
 
     this.setState({attachments: newFilesArr})
-    this.setState({backgroundImage: defaultBackground})
   }
 
   setBackground (previewUrl) {
