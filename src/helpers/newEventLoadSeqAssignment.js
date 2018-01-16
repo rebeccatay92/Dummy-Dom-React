@@ -111,7 +111,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
       dayEvents.forEach(event => {
         var correctLoadSeq = dayEvents.indexOf(event) + 1
-        if (event.modelId && event.loadSeq !== correctLoadSeq) {
+        if (event.modelId && event.loadSequence !== correctLoadSeq) {
           var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
           loadSequenceInput.push(inputObj)
         } else if (!event.modelId && event.start) {
@@ -152,7 +152,7 @@ function newEventLoadSeqAssignment (eventsArr, eventModel, newEvent) {
 
         dayEvents.forEach(event => {
           var correctLoadSeq = dayEvents.indexOf(event) + 1
-          if (event.modelId && event.loadSeq !== correctLoadSeq) {
+          if (event.modelId && event.loadSequence !== correctLoadSeq) {
             var inputObj = constructLoadSeqInputObj(event, correctLoadSeq)
             loadSequenceInput.push(inputObj)
           } else if (!event.modelId) {

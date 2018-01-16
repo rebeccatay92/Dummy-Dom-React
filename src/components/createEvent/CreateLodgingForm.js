@@ -91,11 +91,14 @@ class CreateLodgingForm extends Component {
     }
     if (this.state.googlePlaceData.placeId) {
       newLodging.googlePlaceData = this.state.googlePlaceData
+    } else {
+      window.alert('location is missing!')
+      return
     }
 
     // VALIDATE START AND END TIMES
     if (typeof (newLodging.startTime) !== 'number' || typeof (newLodging.endTime) !== 'number') {
-      console.log('time is missing')
+      window.alert('time is missing')
       return
     }
 

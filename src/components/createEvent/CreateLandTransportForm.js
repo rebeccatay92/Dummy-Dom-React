@@ -100,14 +100,20 @@ class CreateLandTransportForm extends Component {
 
     if (this.state.departureGooglePlaceData.placeId) {
       newLandTransport.departureGooglePlaceData = this.state.departureGooglePlaceData
+    } else {
+      window.alert('location is missing')
+      return
     }
     if (this.state.arrivalGooglePlaceData.placeId) {
       newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
+    } else {
+      window.alert('location is missing')
+      return
     }
 
     // VALIDATE START AND END TIMES
     if (typeof (newLandTransport.startTime) !== 'number' || typeof (newLandTransport.endTime) !== 'number') {
-      console.log('time is missing')
+      window.alert('time is missing')
       return
     }
 
