@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Radium from 'radium'
 import onClickOutside from 'react-onclickoutside'
 import { graphql, compose } from 'react-apollo'
 
@@ -44,7 +45,7 @@ class ActivityInfo extends Component {
       )
     }
     return (
-      <span onClick={() => this.handleClick()} title={this.state.value} style={{display: 'inline-block', height: '18px', maxWidth: '223px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{this.state.value}</span>
+      <span onClick={() => this.handleClick()} title={this.state.value} style={{display: 'inline-block', height: '18px', padding: '1px', maxWidth: '223px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', ':hover': {outline: '1px solid black'}}}>{this.state.value}</span>
     )
   }
 
@@ -118,4 +119,4 @@ export default (compose(
   graphql(updateLandTransport, { name: 'updateLandTransport' }),
   graphql(updateLodging, { name: 'updateLodging' }),
   graphql(updateFood, { name: 'updateFood' })
-))(onClickOutside(ActivityInfo))
+))(onClickOutside(Radium(ActivityInfo)))
