@@ -22,7 +22,9 @@ class IntuitiveLandTransportInput extends Component {
 
     this.state = {
       search: '',
-      searching: false
+      searching: false,
+      departureGooglePlaceData: {},
+      arrivalGooglePlaceData: {}
     }
   }
 
@@ -153,11 +155,11 @@ class IntuitiveLandTransportInput extends Component {
       <div onKeyDown={(e) => this.handleKeydown(e)} tabIndex='0' style={{...createEventBoxStyle, ...{width: '100%', paddingBottom: '10px', top: '-1.5vh'}}}>
         <div style={{display: 'inline-block', width: '35%'}}>
           {this.state.departRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
-          <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location, 'departure')} placeholder={'Departure Location'} currentLocation={this.state.googlePlaceData} />
+          <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location, 'departure')} placeholder={'Departure Location'} currentLocation={{}} />
         </div>
         <div style={{display: 'inline-block', width: '35%'}}>
           {this.state.arriveRequired && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Required)</span>}
-          <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location, 'arrival')} placeholder={'Arrival Location'} currentLocation={this.state.googlePlaceData} />
+          <LocationSearch intuitiveInput selectLocation={location => this.selectLocation(location, 'arrival')} placeholder={'Arrival Location'} currentLocation={{}} />
         </div>
         <div style={{display: 'inline-block', width: '30%'}}>
           {(this.state.startTimeRequired || this.state.endTimeRequired) && <span style={{fontWeight: 'bold', position: 'absolute', top: '-20px'}}>(Both Fields Required)</span>}

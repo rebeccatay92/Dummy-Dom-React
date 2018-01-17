@@ -237,4 +237,4 @@ export const createFlightButtonStyle = {backgroundColor: primaryColor, border: '
 export const searchResultsTableStyle = {width: '100%', color: secondaryFontColor, fontSize: '16px', cursor: 'default'}
 
 // AirportResults.js styles
-export const intuitiveDropdownStyle = {width: '282.5px', maxHeight: '250px', overflowY: 'auto', background: 'white', position: 'absolute', zIndex: '2'}
+export const intuitiveDropdownStyle = {width: '282.5px', maxHeight: '250px', overflowY: 'auto', background: 'white', position: 'absolute', zIndex: '2', display: 'block'}

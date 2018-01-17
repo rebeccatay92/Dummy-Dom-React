@@ -13,7 +13,7 @@ class LocationSearch extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      search: '',
+      search: this.props.currentLocation.name,
       selecting: false,
       results: []
     }
@@ -101,19 +101,19 @@ class LocationSearch extends Component {
   }
 
   render () {
-    if (this.props.intuitiveInput) {
+    if (this.props.intuitiveInput || this.props.eventInfo) {
       return (
-        <div>
-          <input type='text' placeholder={this.props.placeholder} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{width: '90%'}} value={this.state.search} />
+        <span style={{display: 'block'}}>
+          <input autoFocus={this.props.eventInfo} type='text' placeholder={this.props.placeholder} onChange={(e) => this.handleChange(e)} onKeyUp={() => this.customDebounce()} style={{...{width: '90%'}, ...this.props.eventInfo && {width: '100%', position: 'relative', top: '-5px'}}} value={this.state.search} />
 
           {this.state.selecting &&
-            <div style={{...intuitiveDropdownStyle, ...{width: '299.4px'}}}>
+            <span style={{...intuitiveDropdownStyle, ...{width: '299.4px'}}}>
               {this.state.results.map((indiv, i) => {
                 return <GooglePlaceResult intuitiveInput result={indiv} selectLocation={(location) => this.selectLocation(location)} key={i} />
               })}
-            </div>
+            </span>
           }
-        </div>
+        </span>
       )
     } else {
       return (

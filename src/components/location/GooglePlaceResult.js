@@ -24,14 +24,14 @@ class GooglePlaceResult extends Component {
 
   render () {
     return (
-      <div onClick={() => this.selectLocation()} style={{padding: '5px 5px 10px 5px', ':hover': {backgroundColor: 'rgb(210, 210, 210)'}}}>
+      <span onClick={() => this.selectLocation()} style={{padding: '5px 5px 10px 5px', display: 'block', ':hover': {backgroundColor: 'rgb(210, 210, 210)'}}}>
         <i className='material-icons' style={{fontSize: '18px', color: '#3c3a44', verticalAlign: 'top'}}>place</i>
-        <div style={{display: 'inline-block', width: '93%'}}>
-          <h4 style={{fontSize: '1em', margin: '0', color: '#3C3A44', display: 'inline'}}>
+        <span style={{display: 'inline-block', width: '93%'}}>
+          <span style={{fontSize: '1em', margin: '0', color: '#3C3A44', display: 'inline'}}>
             {this.props.result.name} <span style={{color: 'rgb(120, 120, 120)'}}>{this.props.result.formatted_address}</span>
-          </h4>
-        </div>
-      </div>
+          </span>
+        </span>
+      </span>
     )
   }
 }

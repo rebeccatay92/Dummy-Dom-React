@@ -24,7 +24,8 @@ class IntuitiveFoodInput extends Component {
     this.state = {
       location: '',
       search: '',
-      searching: false
+      searching: false,
+      googlePlaceData: {}
     }
   }
 

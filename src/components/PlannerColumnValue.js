@@ -22,7 +22,9 @@ class PlannerColumnValue extends Component {
     }
     return (
       <td colSpan={this.props.column === 'Notes' ? 4 : 1} style={columnValueContainerStyle(this.props.column)}>
-        {this.renderInfo()}
+        <span style={{padding: '1px', ':hover': {outline: '1px solid black'}}}>
+          {this.renderInfo()}
+        </span>
         {this.props.isLast && this.props.hover && !this.props.expandedEvent && !this.props.activity.dropzone && <i key='eventOptions' className='material-icons' style={expandEventIconStyle} onClick={() => this.props.expandEvent()}>expand_more</i>}
       </td>
     )
