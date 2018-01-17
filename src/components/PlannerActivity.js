@@ -137,7 +137,7 @@ class PlannerActivity extends Component {
         </td>
         <td colSpan={this.state.expanded ? '4' : '1'} style={dateTableFirstHeaderStyle}>
           {this.state.editEventType &&
-            <EditEventFormHOC eventType={this.state.editEventType} ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity.Activity} toggleEditEventType={() => this.handleEditEventClick()} />
+            <EditEventFormHOC eventType={this.state.editEventType} ItineraryId={this.props.itineraryId} day={this.props.day} date={this.props.date} dates={this.props.dates} event={this.props.activity[`${this.state.editEventType}`]} toggleEditEventType={() => this.handleEditEventClick()} />
           }
           <div style={eventBoxFirstColumnStyle(this.props.activity.modelId, minHeight)} key={this.props.activity.modelId}>
             {this.renderInfo(this.props.activity.type, this.state.expanded)}

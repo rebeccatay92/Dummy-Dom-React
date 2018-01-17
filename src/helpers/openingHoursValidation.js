@@ -18,10 +18,14 @@ export function findOpenAndCloseUnix (dayOfWeek, googlePlaceData) {
     return (hours * 3600) + (mins * 60)
   })
 
+  // day 0 open day 1 close
+  // alternatively is day 6 open day 0 cose (sat -> sun)
   if (period.close.day === period.open.day + 1) {
     output[1] += (24 * 60 * 60)
   }
-
+  if (period.open.day === 6 && period.close.day === 0) {
+    output[1] += (24 * 60 * 60)
+  }
   return output
 }
 

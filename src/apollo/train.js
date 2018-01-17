@@ -59,13 +59,17 @@ export const updateTrain = gql`
     $endDay: Int,
     $startTime: Int,
     $endTime: Int,
+    $startLoadSequence: Int,
+    $endLoadSequence: Int,
     $notes: String,
     $cost: Int,
     $currency: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $backgroundImage: String
+    $backgroundImage: String,
+    $addAttachments: [attachmentInput],
+    $removeAttachments: [ID]
   ) {
     updateTrain(
       id: $id,
@@ -77,13 +81,17 @@ export const updateTrain = gql`
       endDay: $endDay,
       startTime: $startTime,
       endTime: $endTime,
+      startLoadSequence: $startLoadSequence,
+      endLoadSequence: $endLoadSequence,
       notes: $notes,
       cost: $cost,
       currency: $currency,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      backgroundImage: $backgroundImage
+      backgroundImage: $backgroundImage,
+      addAttachments: $addAttachments,
+      removeAttachments: $removeAttachments
     ) {
       id
     }
