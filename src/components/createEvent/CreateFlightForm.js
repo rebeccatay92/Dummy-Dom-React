@@ -120,12 +120,12 @@ class CreateFlightForm extends Component {
     // console.log('newFlight', newFlight)
 
     // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Flight', newFlight.flightInstances)
-    console.log('output', output)
-    if (!output.isValid) {
-      window.alert(`some flight instances hv timing clash`)
-      console.log('ERROR ROWS', output.errorRows)
-    }
+    // var output = newEventTimelineValidation(this.props.events, 'Flight', newFlight.flightInstances)
+    // console.log('output', output)
+    // if (!output.isValid) {
+    //   window.alert(`some flight instances hv timing clash`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Flight', newFlight.flightInstances)
     console.log('helper output', helperOutput)
@@ -138,6 +138,7 @@ class CreateFlightForm extends Component {
 
     newFlight.flightInstances = helperOutput.newEvent
 
+    console.log('BEFORE SUBMIT', newFlight)
     this.props.createFlightBooking({
       variables: newFlight,
       refetchQueries: [{

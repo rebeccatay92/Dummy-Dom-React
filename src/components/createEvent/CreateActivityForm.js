@@ -28,7 +28,7 @@ import { validateOpeningHours } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
-import createEventTimelineValidation from '../../helpers/createEventTimelineValidation'
+import { validateIntervals } from '../../helpers/intervalValidationTesting'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -119,8 +119,14 @@ class CreateActivityForm extends Component {
     //   console.log('ERROR ROWS', output.errorRows)
     // }
 
-    // REWRITE FUNCTION TO VALIDATE ONLY, NO ERROR ROWS
-    // createEventTimelineValidation(this.props.events, newActivity)
+    // REWRITE FUNCTION TO VALIDATE
+    // var eventObj = {
+    //   startDay: newActivity.startDay,
+    //   endDay: newActivity.endDay,
+    //   startTime: newActivity.startTime,
+    //   endTime: newActivity.endTime
+    // }
+    // validateIntervals(this.props.events, eventObj)
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
 
