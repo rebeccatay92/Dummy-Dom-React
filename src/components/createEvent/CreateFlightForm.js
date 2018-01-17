@@ -23,8 +23,9 @@ import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
 import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
-import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
-import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
+import newEventLoadSeqAssignment from
+ '../../helpers/newEventLoadSeqAssignment'
+// import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 

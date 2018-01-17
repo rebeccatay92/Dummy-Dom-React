@@ -3,6 +3,7 @@ import EditActivityForm from './EditActivityForm'
 import EditFoodForm from './EditFoodForm'
 import EditLodgingForm from './EditLodgingForm'
 import EditLandTransportForm from './EditLandTransportForm'
+import EditFlightForm from './EditFlightForm'
 
 class EditEventFormHOC extends Component {
   constructor (props) {
@@ -11,8 +12,8 @@ class EditEventFormHOC extends Component {
       Activity: EditActivityForm,
       Food: EditFoodForm,
       Lodging: EditLodgingForm,
-      LandTransport: EditLandTransportForm
-      // Flight: EditFlightForm
+      LandTransport: EditLandTransportForm,
+      Flight: EditFlightForm
     }
   }
   render () {
