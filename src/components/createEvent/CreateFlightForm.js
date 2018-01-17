@@ -23,8 +23,9 @@ import { queryItinerary, updateItineraryDetails } from '../../apollo/itinerary'
 
 import { removeAllAttachments } from '../../helpers/cloudStorage'
 import { allCurrenciesList } from '../../helpers/countriesToCurrencyList'
-import newEventLoadSeqAssignment from '../../helpers/newEventLoadSeqAssignment'
-import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
+import newEventLoadSeqAssignment from
+ '../../helpers/newEventLoadSeqAssignment'
+// import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}flightDefaultBackground.jpg`
 
@@ -120,12 +121,12 @@ class CreateFlightForm extends Component {
     // console.log('newFlight', newFlight)
 
     // VALIDATE PLANNER TIMINGS
-    var output = newEventTimelineValidation(this.props.events, 'Flight', newFlight.flightInstances)
-    console.log('output', output)
-    if (!output.isValid) {
-      window.alert(`some flight instances hv timing clash`)
-      console.log('ERROR ROWS', output.errorRows)
-    }
+    // var output = newEventTimelineValidation(this.props.events, 'Flight', newFlight.flightInstances)
+    // console.log('output', output)
+    // if (!output.isValid) {
+    //   window.alert(`some flight instances hv timing clash`)
+    //   console.log('ERROR ROWS', output.errorRows)
+    // }
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Flight', newFlight.flightInstances)
     console.log('helper output', helperOutput)
@@ -138,6 +139,7 @@ class CreateFlightForm extends Component {
 
     newFlight.flightInstances = helperOutput.newEvent
 
+    console.log('BEFORE SUBMIT', newFlight)
     this.props.createFlightBooking({
       variables: newFlight,
       refetchQueries: [{
@@ -150,7 +152,7 @@ class CreateFlightForm extends Component {
     this.props.toggleCreateEventType()
   }
 
-  closeCreateFlight () {
+  closeForm () {
     removeAllAttachments(this.state.attachments, this.apiToken)
     this.resetState()
     this.props.toggleCreateEventType()
@@ -269,7 +271,7 @@ class CreateFlightForm extends Component {
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
             <div style={eventDescContainerStyle}>
-              <FlightSearchParameters searchClicked={this.state.searchClicked} bookingDetails={this.state.bookingDetails} searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType, adults, children, infants, classCode) => this.handleSearch(flights, tripType, adults, children, infants, classCode)} closeCreateForm={() => this.closeCreateFlight()} />
+              <FlightSearchParameters searchClicked={this.state.searchClicked} bookingDetails={this.state.bookingDetails} searching={this.state.searching} dates={this.props.dates} date={this.props.date} handleSearch={(flights, tripType, adults, children, infants, classCode) => this.handleSearch(flights, tripType, adults, children, infants, classCode)} closeForm={() => this.closeForm()} />
               {(this.state.searching || (!this.state.searching && this.state.bookingDetails)) && <FlightSearchDetailsContainer searching={this.state.searching} flights={this.state.flights} selected={this.state.selected} tripType={this.state.tripType} page={this.state.flightDetailsPage} />}
             </div>
           </div>
@@ -278,7 +280,7 @@ class CreateFlightForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGS, MULTIPLE DETAILS/NOTES */}
           <div style={createEventFormRightPanelStyle('flight')}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm flight handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateFlight()} />
+              <SubmitCancelForm flight handleSubmit={() => this.handleSubmit()} closeForm={() => this.closeForm()} />
               {this.state.bookingDetails && (
                 <div>
                   <h4 style={{fontSize: '24px'}}>Booking Details</h4>

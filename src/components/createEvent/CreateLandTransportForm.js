@@ -100,14 +100,20 @@ class CreateLandTransportForm extends Component {
 
     if (this.state.departureGooglePlaceData.placeId) {
       newLandTransport.departureGooglePlaceData = this.state.departureGooglePlaceData
+    } else {
+      window.alert('location is missing')
+      return
     }
     if (this.state.arrivalGooglePlaceData.placeId) {
       newLandTransport.arrivalGooglePlaceData = this.state.arrivalGooglePlaceData
+    } else {
+      window.alert('location is missing')
+      return
     }
 
     // VALIDATE START AND END TIMES
     if (typeof (newLandTransport.startTime) !== 'number' || typeof (newLandTransport.endTime) !== 'number') {
-      console.log('time is missing')
+      window.alert('time is missing')
       return
     }
 
@@ -141,7 +147,7 @@ class CreateLandTransportForm extends Component {
     this.props.toggleCreateEventType()
   }
 
-  closeCreateLandTransport () {
+  closeForm () {
     removeAllAttachments(this.state.attachments, this.apiToken)
     this.resetState()
     this.props.toggleCreateEventType()
@@ -268,7 +274,7 @@ class CreateLandTransportForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateLandTransport()} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeForm={() => this.closeForm()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
               <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>

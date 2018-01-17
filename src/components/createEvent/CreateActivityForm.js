@@ -28,7 +28,7 @@ import { validateOpeningHours } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
-import createEventTimelineValidation from '../../helpers/createEventTimelineValidation'
+import { validateIntervals } from '../../helpers/intervalValidationTesting'
 
 const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
 
@@ -119,8 +119,14 @@ class CreateActivityForm extends Component {
     //   console.log('ERROR ROWS', output.errorRows)
     // }
 
-    // REWRITE FUNCTION TO VALIDATE ONLY, NO ERROR ROWS
-    // createEventTimelineValidation(this.props.events, newActivity)
+    // REWRITE FUNCTION TO VALIDATE
+    // var eventObj = {
+    //   startDay: newActivity.startDay,
+    //   endDay: newActivity.endDay,
+    //   startTime: newActivity.startTime,
+    //   endTime: newActivity.endTime
+    // }
+    // validateIntervals(this.props.events, eventObj)
 
     var helperOutput = newEventLoadSeqAssignment(this.props.events, 'Activity', newActivity)
 
@@ -142,7 +148,7 @@ class CreateActivityForm extends Component {
     this.props.toggleCreateEventType()
   }
 
-  closeCreateActivity () {
+  closeForm () {
     removeAllAttachments(this.state.attachments, this.apiToken)
     this.resetState()
     this.props.toggleCreateEventType()
@@ -266,7 +272,7 @@ class CreateActivityForm extends Component {
           {/* RIGHT PANEL --- SUBMIT/CANCEL, BOOKINGNOTES */}
           <div style={createEventFormRightPanelStyle()}>
             <div style={bookingNotesContainerStyle}>
-              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeCreateForm={() => this.closeCreateActivity()} />
+              <SubmitCancelForm handleSubmit={() => this.handleSubmit()} closeForm={() => this.closeForm()} />
               <h4 style={{fontSize: '24px'}}>Booking Details</h4>
               <BookingDetails handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} />
               <h4 style={{fontSize: '24px', marginTop: '50px'}}>

@@ -206,7 +206,7 @@ class FlightSearchParameters extends Component {
         <div style={{textAlign: 'center'}}>
           <hr style={{opacity: 0.5}} />
           {!this.props.searching && !this.props.bookingDetails && <Button style={{...createFlightButtonStyle, ...{marginRight: '20px'}}} bsStyle='danger' onClick={() => this.handleFlightSearch()}>SEARCH</Button>}
-          {!this.props.searching && !this.props.bookingDetails && <Button style={createFlightButtonStyle} bsStyle='danger' onClick={() => this.props.closeCreateForm()}>CANCEL</Button>}
+          {!this.props.searching && !this.props.bookingDetails && <Button style={createFlightButtonStyle} bsStyle='danger' onClick={() => this.props.closeForm()}>CANCEL</Button>}
         </div>
       </div>
     )

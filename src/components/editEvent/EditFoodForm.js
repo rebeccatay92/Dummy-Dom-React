@@ -14,7 +14,7 @@ import Notes from '../eventFormComponents/Notes'
 import Attachments from '../eventFormComponents/Attachments'
 import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
-import { updateActivity } from '../../apollo/activity'
+import { updateFood } from '../../apollo/food'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
 import { queryItinerary } from '../../apollo/itinerary'
 
@@ -27,14 +27,13 @@ import { validateOpeningHours } from '../../helpers/openingHoursValidation'
 import newEventTimelineValidation from '../../helpers/newEventTimelineValidation'
 import checkStartAndEndTime from '../../helpers/checkStartAndEndTime'
 
-const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}activityDefaultBackground.jpg`
+const defaultBackground = `${process.env.REACT_APP_CLOUD_PUBLIC_URI}foodDefaultBackground.jpg`
 
-
-class EditActivityForm extends Component {
+class EditFoodForm extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      id: this.props.event.id, // activity id
+      id: this.props.event.id, // food id
       startDay: 0,
       endDay: 0,
       startTime: null, // if setstate, will change to unix
@@ -61,7 +60,6 @@ class EditActivityForm extends Component {
       allDayEvent: null
     }
   }
-
   updateDayTime (field, value) {
     this.setState({
       [field]: value
@@ -73,8 +71,6 @@ class EditActivityForm extends Component {
       [field]: e.target.value
     }, () => console.log('after handle change', this.state))
   }
-
-  // ONLY SEND UPDATED FIELDS. delete all in holderDeleteAttachments. send holderNewAttachments to backend
 
   handleSubmit () {
     var updatesObj = {
@@ -127,7 +123,7 @@ class EditActivityForm extends Component {
     }
     // IF NON-ALLDAYEVENT HAS MISSING TIME FIELDS, ASSIGN VALUES / ALLDAY BOOLEAN. IF ALLDAYEVENT TIMING NOT CHANGED, ALSO ASSIGN TIMINGS (SINCE INITIALIZED TO NULL). EVENTSARR NEED TO REMOVE THE EVENT FIRST.
     var eventsArr = this.props.events.filter(e => {
-      var isUpdatingEvent = (e.type === 'Activity' && e.modelId === this.state.id)
+      var isUpdatingEvent = (e.type === 'Food' && e.modelId === this.state.id)
       return !isUpdatingEvent
     })
     // use checkStartAndEndTime on eventsArr (doesnt contain currently editing event)
@@ -163,7 +159,7 @@ class EditActivityForm extends Component {
         startTime: this.state.startTime,
         endTime: this.state.endTime
       }
-      var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Activity', this.state.id, updateEvent)
+      var helperOutput = updateEventLoadSeqAssignment(this.props.events, 'Food', this.state.id, updateEvent)
       console.log('helperOutput', helperOutput)
       updatesObj.loadSequence = helperOutput.updateEvent.loadSequence
       var loadSequenceInput = helperOutput.loadSequenceInput
@@ -175,7 +171,7 @@ class EditActivityForm extends Component {
         })
       }
     }
-    this.props.updateActivity({
+    this.props.updateFood({
       variables: updatesObj,
       refetchQueries: [{
         query: queryItinerary,
@@ -196,7 +192,6 @@ class EditActivityForm extends Component {
     // }
   }
 
-  // changes are not saved. remove all holderNewAttachments. ignore holderDeleteAttachments
   closeForm () {
     removeAllAttachments(this.state.holderNewAttachments, this.apiToken)
     this.resetState()
@@ -433,6 +428,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(compose(
-  graphql(updateActivity, {name: 'updateActivity'}),
+  graphql(updateFood, {name: 'updateFood'}),
   graphql(changingLoadSequence, {name: 'changingLoadSequence'})
-)(Radium(EditActivityForm)))
+)(Radium(EditFoodForm)))
