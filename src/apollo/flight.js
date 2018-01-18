@@ -64,7 +64,7 @@ export const deleteFlightBooking = gql`
 `
 
 export const findFlightInstance = gql`
-  findFlightInstance($id: ID!) {
+  query findFlightInstance($id: ID!) {
     findFlightInstance(id: $id)
   }
 `
@@ -116,7 +116,7 @@ export const updateFlightInstance = gql`
 `
 
 export const deleteFlightInstance = gql`
-  mutation deleteFlightInstance(id: ID!) {
-    deleteFlightInstance(id: ID!)
+  mutation deleteFlightInstance($id: ID!) {
+    deleteFlightInstance(id: $id)
   }
 `
