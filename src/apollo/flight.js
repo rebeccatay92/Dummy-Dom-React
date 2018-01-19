@@ -1,5 +1,102 @@
 import { gql } from 'react-apollo'
 
+export const findFlightBooking = gql`
+  query findFlightBooking($id: ID!) {
+    findFlightBooking(id: $id) {
+      id
+      ItineraryId
+      paxAdults
+      paxChildren
+      paxInfants
+      cost
+      currency
+      classCode
+      bookingStatus
+      bookedThrough
+      bookingConfirmation
+      backgroundImage
+      attachments {
+        id
+        fileName
+        fileAlias
+        fileType
+        fileSize
+      }
+      flightInstances {
+        id
+        FlightBookingId
+        flightNumber
+        airlineCode
+        airlineName
+        departureIATA
+        arrivalIATA
+        departureLocation {
+          id
+          placeId
+          country {
+            id
+            name
+          }
+          name
+          telephone
+          address
+          latitude
+          longitude
+          utcOffset
+          openingHours {
+            open {
+              day
+              time
+            }
+            close {
+              day
+              time
+            }
+          }
+          openingHoursText
+        }
+        arrivalLocation {
+          id
+          placeId
+          country {
+            id
+            name
+          }
+          name
+          telephone
+          address
+          latitude
+          longitude
+          utcOffset
+          openingHours {
+            open {
+              day
+              time
+            }
+            close {
+              day
+              time
+            }
+          }
+          openingHoursText
+        }
+        departureTerminal
+        arrivalTerminal
+        departureGate
+        arrivalGate
+        startDay
+        endDay
+        startTime
+        endTime
+        startLoadSequence
+        endLoadSequence
+        notes
+        firstFlight
+      }
+    }
+  }
+`
+
 export const createFlightBooking = gql`
   mutation createFlightBooking(
     $ItineraryId: ID!,
@@ -40,17 +137,35 @@ export const createFlightBooking = gql`
 export const updateFlightBooking = gql`
   mutation updateFlightBooking(
     $id: ID!,
+    $paxAdults: Int,
+    $paxChildren: Int,
+    $paxInfants: Int,
+    $cost: Int,
+    $currency: String,
+    $classCode: String,
     $bookingStatus: Boolean,
     $bookedThrough: String,
     $bookingConfirmation: String,
-    $backgroundImage: String
+    $backgroundImage: String,
+    $addAttachments: [attachmentInput],
+    $removeAttachments: [ID],
+    $flightInstances: [updateFlightInstanceInput]
   ) {
     updateFlightBooking(
       id: $id,
+      paxAdults: $paxAdults,
+      paxChildren: $paxChildren,
+      paxInfants: $paxInfants,
+      cost: $cost,
+      currency: $currency,
+      classCode: $classCode,
       bookingStatus: $bookingStatus,
       bookedThrough: $bookedThrough,
       bookingConfirmation: $bookingConfirmation,
-      backgroundImage: $backgroundImage
+      backgroundImage: $backgroundImage,
+      addAttachments: $addAttachments,
+      removeAttachments: $removeAttachments,
+      flightInstances: $flightInstances
     ) {
       id
     }
@@ -88,8 +203,7 @@ export const updateFlightInstance = gql`
     $endTime: Int,
     $startLoadSequence: Int,
     $endLoadSequence: Int,
-    $notes: String,
-    $firstFlight: Boolean
+    $notes: String
   ) {
     updateFlightInstance(
       id: $id,
@@ -109,9 +223,10 @@ export const updateFlightInstance = gql`
       endTime: $endTime,
       startLoadSequence: $startLoadSequence,
       endLoadSequence: $endLoadSequence,
-      notes: $notes,
-      firstFlight: $firstFlight
-    )
+      notes: $notes
+    ) {
+      id
+    }
   }
 `
 

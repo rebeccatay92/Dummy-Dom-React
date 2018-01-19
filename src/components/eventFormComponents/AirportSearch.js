@@ -92,9 +92,14 @@ class AirportSearch extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.currentLocation === '') {
+    // if (nextProps.currentLocation === '') {
+    //   this.setState({
+    //     search: ''
+    //   })
+    // }
+    if (nextProps.currentLocation !== this.props.currentLocation) {
       this.setState({
-        search: ''
+        search: nextProps.currentLocation.name
       })
     }
   }
