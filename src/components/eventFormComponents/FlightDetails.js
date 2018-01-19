@@ -15,8 +15,10 @@ class FlightDetails extends Component {
     this.state = {
       departureLocation: null,
       arrivalLocation: null,
-      departureDate: '',
-      arrivalDate: '',
+      departureIATA: '',
+      arrivalIATA: '',
+      departureDate: null,
+      returnDate: null,
       flightInstances: [],
       classCode: '',
       paxAdults: 0,
@@ -26,34 +28,65 @@ class FlightDetails extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.classCode !== nextProps.classCode) {
-      this.setState({classCode: nextProps.classCode})
-    }
-    if (this.props.paxAdults !== nextProps.paxAdults || this.props.paxChildren !== nextProps.paxChildren || this.props.paxInfants !== nextProps.paxInfants) {
+    if (this.props.departureDate !== nextProps.departureDate) {
       this.setState({
-        paxAdults: nextProps.paxAdults,
-        paxChildren: nextProps.paxChildren,
-        paxInfants: nextProps.paxInfants
+        departureDate: moment(nextProps.departureDate * 1000)
+      })
+    }
+    if (this.props.returnDate !== nextProps.returnDate) {
+      this.setState({returnDate: moment(nextProps.returnDate * 1000)})
+    }
+    if (this.props.departureIATA !== nextProps.departureIATA || this.props.arrivalIATA !== nextProps.arrivalIATA) {
+      this.setState({
+        departureIATA: nextProps.departureIATA,
+        arrivalIATA: nextProps.arrivalIATA
+      })
+      // find the departure/arrival location from airports.json
+      var departureRow = airports.find(e => {
+        return e.iata === nextProps.departureIATA
+      })
+      if (departureRow) {
+        var departureLocation = {
+          name: departureRow.name,
+          iata: departureRow.iata,
+          type: 'airport'
+        }
+      } else {
+        departureRow = airports.find(e => {
+          return e.cityCode === nextProps.departureIATA
+        })
+        departureLocation = {
+          name: departureRow.city,
+          iata: departureRow.iata,
+          type: 'city'
+        }
+      }
+      var arrivalRow = airports.find(e => {
+        return e.iata === nextProps.arrivalIATA
+      })
+      if (arrivalRow) {
+        var arrivalLocation = {
+          name: arrivalRow.name,
+          iata: arrivalRow.iata,
+          type: 'airport'
+        }
+      } else {
+        arrivalRow = airports.find(e => {
+          return e.cityCode === nextProps.arrivalIATA
+        })
+        arrivalLocation = {
+          name: arrivalRow.city,
+          iata: arrivalRow.iata,
+          type: 'city'
+        }
+      }
+      this.setState({
+        departureLocation: departureLocation,
+        arrivalLocation: arrivalLocation
       })
     }
     if (this.props.flightInstances !== nextProps.flightInstances) {
       this.setState({flightInstances: nextProps.flightInstances})
-      // make departureLocation obj for AirportSearch (location is the row in airports.json). match IATA
-      // which is the arrivalLocation?
-
-      // testing with random location
-      this.setState({departureLocation: {
-        'id': 1,
-        'name': 'Herat Airport',
-        'city': 'Herat',
-        'country': 'Afghanistan',
-        'countryCode': 'AF',
-        'iata': 'HEA',
-        'latitude': 34.209999084472656,
-        'longitude': 62.22829818725586,
-        'timezone': 4.5
-      }})
-      // find departure, arrival date from start/end day
     }
   }
 
@@ -70,31 +103,31 @@ class FlightDetails extends Component {
 
         {/* DATEBOX */}
         <div style={{textAlign: 'center'}}>
-          {/* <div style={{display: 'inline-block', width: '25%'}}>
-            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />
+          <div style={{display: 'inline-block', width: '25%'}}>
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} onSelect={(e) => this.handleChange(e, 'departureDate')} />
           </div>
           <div style={{display: 'inline-block', width: '25%'}}>
-            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
-          </div> */}
-
-          <select value={this.state.classCode} onChange={(e) => this.handleChange(e, 'classCode')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate || null} dateFormat={'DD MMM YYYY'} onSelect={(e) => this.handleChange(e, 'returnDate')} />
+          </div>
+{/* minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])}  */}
+          <select value={this.props.classCode} onChange={(e) => this.handleChange(e, 'classCode')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
             <option style={{color: 'black'}} value='Economy'>E</option>
             <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
             <option style={{color: 'black'}} value='Business'>B</option>
             <option style={{color: 'black'}} value='First'>F</option>
           </select>
 
-          <select value={this.state.paxAdults} onChange={(e) => this.handleChange(e, 'paxAdults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.props.paxAdults} onChange={(e) => this.handleChange(e, 'paxAdults')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[1, 2, 3, 4, 5, 6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select value={this.state.paxChildren} onChange={(e) => this.handleChange(e, 'paxChildren')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.props.paxChildren} onChange={(e) => this.handleChange(e, 'paxChildren')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[0, 1, 2, 3, 4, 5, 6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}
           </select>
-          <select value={this.state.paxInfants} onChange={(e) => this.handleChange(e, 'paxInfants')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
+          <select value={this.props.paxInfants} onChange={(e) => this.handleChange(e, 'paxInfants')} style={{width: '10%', backgroundColor: 'transparent', marginRight: '5px'}}>
             {[0, 1, 2, 3, 4, 5, 6].map((num) => {
               return <option key={num} style={{color: 'black'}}>{num}</option>
             })}

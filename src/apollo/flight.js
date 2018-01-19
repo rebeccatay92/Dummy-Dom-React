@@ -11,6 +11,10 @@ export const findFlightBooking = gql`
       cost
       currency
       classCode
+      departureDate
+      returnDate
+      departureIATA
+      arrivalIATA
       bookingStatus
       bookedThrough
       bookingConfirmation

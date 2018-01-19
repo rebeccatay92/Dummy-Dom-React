@@ -35,18 +35,6 @@ class EditFlightForm extends Component {
     super(props)
     // this.state = {
     //   ItineraryId: this.props.ItineraryId,
-    //   currencyList: [], // not submitted
-    //   paxAdults: null,
-    //   paxChildren: null,
-    //   paxInfants: null,
-    //   cost: 0,
-    //   currency: '',
-    //   classCode: '',
-    //   bookedThrough: '',
-    //   bookingConfirmation: '',
-    //   backgroundImage: defaultBackground,
-    //   attachments: [],
-    //   flightInstances: [],
     //   flights: [],
     //   searching: false,
     //   bookingDetails: false,
@@ -57,12 +45,16 @@ class EditFlightForm extends Component {
     // }
     this.state = {
       id: null,
-      paxAdults: null,
-      paxChildren: null,
-      paxInfants: null,
+      paxAdults: 0,
+      paxChildren: 0,
+      paxInfants: 0,
       cost: 0,
       currency: '',
-      classCode: null,
+      classCode: '',
+      departureDate: null,
+      returnDate: null,
+      departureIATA: '',
+      arrivalIATA: '',
       currencyList: [],
       bookedThrough: '',
       bookingConfirmation: '',
@@ -144,13 +136,17 @@ class EditFlightForm extends Component {
 
   resetState () {
     this.setState({
-      paxAdults: null,
-      paxChildren: null,
-      paxInfants: null,
+      id: null,
+      paxAdults: 0,
+      paxChildren: 0,
+      paxInfants: 0,
       cost: 0,
       currency: '',
-      classCode: null,
-      currencyList: [],
+      classCode: '',
+      departureDate: null,
+      returnDate: null,
+      departureIATA: '',
+      arrivalIATA: '',
       bookedThrough: '',
       bookingConfirmation: '',
       backgroundImage: defaultBackground,
@@ -280,9 +276,8 @@ class EditFlightForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.props.data.findFlightBooking !== nextProps.data.findFlightBooking) {
+    if (nextProps.data.findFlightBooking) {
       var booking = nextProps.data.findFlightBooking
-      console.log('FLIGHT', booking)
       // INITIALIZE DATA FROM DB
       this.setState({
         id: booking.id,
@@ -291,6 +286,10 @@ class EditFlightForm extends Component {
         paxInfants: booking.paxInfants,
         cost: booking.cost,
         currency: booking.currency,
+        departureDate: booking.departureDate,
+        returnDate: booking.returnDate,
+        departureIATA: booking.departureIATA,
+        arrivalIATA: booking.arrivalIATA,
         classCode: booking.classCode,
         bookingStatus: booking.bookingStatus,
         bookedThrough: booking.bookedThrough,
@@ -311,7 +310,7 @@ class EditFlightForm extends Component {
           {/* LEFT PANEL --- LOCATION X 2, DATE DAY X 2, PAX, SELECTED FLIGHT */}
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
-            <FlightDetails paxAdults={this.state.paxAdults} paxChildren={this.state.paxChildren} paxInfants={this.state.paxInfants} classCode={this.state.classCode} flightInstances={this.state.flightInstances} />
+            <FlightDetails paxAdults={this.state.paxAdults} paxChildren={this.state.paxChildren} paxInfants={this.state.paxInfants} classCode={this.state.classCode} departureDate={this.state.departureDate} returnDate={this.state.returnDate} dates={this.props.dates} departureIATA={this.state.departureIATA} arrivalIATA={this.state.arrivalIATA} flightInstances={this.state.flightInstances} />
           </div>
           {/* RESULTS PANEL(CHILD OF SEARCH PARAMS) */}
 
