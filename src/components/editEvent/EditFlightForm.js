@@ -8,16 +8,16 @@ import { Button } from 'react-bootstrap'
 
 import { labelStyle, createEventFormContainerStyle, createEventFormBoxShadow, createEventFormLeftPanelStyle, greyTintStyle, eventDescriptionStyle, eventDescContainerStyle, createEventFormRightPanelStyle, attachmentsStyle, bookingNotesContainerStyle, createFlightButtonStyle } from '../../Styles/styles'
 
-import FlightDetails from '../eventFormComponents/FlightDetails'
+import EditFormAirhobParams from '../eventFormComponents/EditFormAirhobParams'
+import EditFormFlightDetailsContainer from '../eventFormComponents/EditFormFlightDetailsContainer'
 
-import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
-import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
-import FlightSearchDetailsContainer from '../eventFormComponents/FlightSearchDetailsContainer'
+// import FlightSearchParameters from '../eventFormComponents/FlightSearchParameters'
+// import FlightSearchResults from '../eventFormComponents/FlightSearchResults'
+// import FlightSearchDetailsContainer from '../eventFormComponents/FlightSearchDetailsContainer'
 import BookingDetails from '../eventFormComponents/BookingDetails'
 import Notes from '../eventFormComponents/Notes'
 
 import Attachments from '../eventFormComponents/Attachments'
-// import SubmitCancelForm from '../eventFormComponents/SubmitCancelForm'
 
 import { findFlightBooking, updateFlightBooking } from '../../apollo/flight'
 import { changingLoadSequence } from '../../apollo/changingLoadSequence'
@@ -309,12 +309,13 @@ class EditFlightForm extends Component {
 
           <div style={createEventFormLeftPanelStyle(this.state.backgroundImage, 'flight')}>
             <div style={greyTintStyle} />
-            <FlightDetails paxAdults={this.state.paxAdults} paxChildren={this.state.paxChildren} paxInfants={this.state.paxInfants} classCode={this.state.classCode} departureDate={this.state.departureDate} returnDate={this.state.returnDate} dates={this.props.dates} departureIATA={this.state.departureIATA} arrivalIATA={this.state.arrivalIATA} flightInstances={this.state.flightInstances} />
+            {/* SEARCH PARAMS FOR AIRHOB */}
+            <EditFormAirhobParams paxAdults={this.state.paxAdults} paxChildren={this.state.paxChildren} paxInfants={this.state.paxInfants} classCode={this.state.classCode} departureDate={this.state.departureDate} returnDate={this.state.returnDate} dates={this.props.dates} departureIATA={this.state.departureIATA} arrivalIATA={this.state.arrivalIATA} />
+            <EditFormFlightDetailsContainer />
           </div>
 
           <div style={createEventFormRightPanelStyle('flight')}>
             <div style={bookingNotesContainerStyle}>
-              {/* <SubmitCancelForm flight handleSubmit={() => this.handleSubmit()} closeForm={() => this.closeForm()} /> */}
               <div>
                 <h4 style={{fontSize: '24px'}}>Booking Details</h4>
                 <BookingDetails flight handleChange={(e, field) => this.handleChange(e, field)} currency={this.state.currency} currencyList={this.state.currencyList} cost={this.state.cost} bookedThrough={this.state.bookedThrough} bookingConfirmation={this.state.bookingConfirmation} />

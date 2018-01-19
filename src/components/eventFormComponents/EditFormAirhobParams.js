@@ -9,7 +9,7 @@ import airports from '../../data/airports.json'
 
 import { eventDescContainerStyle } from '../../Styles/styles'
 
-class FlightDetails extends Component {
+class EditFormAirhobParams extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -19,7 +19,6 @@ class FlightDetails extends Component {
       arrivalIATA: '',
       departureDate: null,
       returnDate: null,
-      flightInstances: [],
       classCode: '',
       paxAdults: 0,
       paxChildren: 0,
@@ -85,9 +84,6 @@ class FlightDetails extends Component {
         arrivalLocation: arrivalLocation
       })
     }
-    if (this.props.flightInstances !== nextProps.flightInstances) {
-      this.setState({flightInstances: nextProps.flightInstances})
-    }
   }
 
   render () {
@@ -147,4 +143,4 @@ class FlightDetails extends Component {
   }
 }
 
-export default FlightDetails
+export default EditFormAirhobParams
