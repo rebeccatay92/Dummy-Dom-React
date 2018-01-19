@@ -104,12 +104,12 @@ class FlightDetails extends Component {
         {/* DATEBOX */}
         <div style={{textAlign: 'center'}}>
           <div style={{display: 'inline-block', width: '25%'}}>
-            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} onSelect={(e) => this.handleChange(e, 'departureDate')} />
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.departureDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'departureDate')} />
           </div>
           <div style={{display: 'inline-block', width: '25%'}}>
-            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate || null} dateFormat={'DD MMM YYYY'} onSelect={(e) => this.handleChange(e, 'returnDate')} />
+            <DatePicker customInput={<CustomDatePicker flight />} selected={this.state.returnDate} dateFormat={'DD MMM YYYY'} minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])} onSelect={(e) => this.handleChange(e, 'returnDate')} />
           </div>
-{/* minDate={moment(this.props.dates[0])} maxDate={moment(this.props.dates[this.props.dates.length - 1])}  */}
+
           <select value={this.props.classCode} onChange={(e) => this.handleChange(e, 'classCode')} style={{backgroundColor: 'transparent', marginRight: '5px'}}>
             <option style={{color: 'black'}} value='Economy'>E</option>
             <option style={{color: 'black'}} value='PremiumEconomy'>PE</option>
